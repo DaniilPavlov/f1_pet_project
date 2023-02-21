@@ -2,7 +2,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
-
   static const black = Color(0xFF333333);
   static const textGray = Color(0xFFB6B6B6);
   static const grayBG = Color(0xFFF6F6F6);

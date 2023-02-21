@@ -1,21 +1,21 @@
-import 'package:f1_pet_project/data/models/sections/home/circuits/circuits_model.dart';
+import 'package:elementary/elementary.dart';
+import 'package:f1_pet_project/data/models/sections/home/current_drivers_standings/current_drivers_standings_model.dart';
 import 'package:f1_pet_project/domain/sections/home/home_screen_model.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/home/home_screen.dart';
-import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel> {
-  HomeScreenWM(super.model);
+  final _currentDriversElements = EntityStateNotifier<List<DriverStanding>>();
 
-  ListenableState<EntityState<List<CircuitModel>>> get circuitsElements =>
-      _circuitsElements;
+  final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
+
+  ListenableState<EntityState<List<DriverStanding>>>
+      get currentDriversElements => _currentDriversElements;
 
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
 
-  final _circuitsElements = EntityStateNotifier<List<CircuitModel>>();
-
-  final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
+  HomeScreenWM(super.model);
 
   @override
   void initWidgetModel() {
@@ -24,14 +24,15 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel> {
     super.initWidgetModel();
   }
 
-  Future<void> loadCircuits() async {
-    await execute<CircuitsModel>(
-      model.loadCircuits,
-      before: _circuitsElements.loading,
+  Future<void> loadCurrentDriversStandings() async {
+    await execute<CurrentDriversStandings>(
+      model.loadCurrentDriversStandings,
+      before: _currentDriversElements.loading,
       onSuccess: (data) {
-        _circuitsElements.content(data!.circuitTable.circuits);
+        _currentDriversElements
+            .content(data!.standingsTable.standingsLists[0].driverStandings);
       },
-      onError: _circuitsElements.error,
+      onError: _currentDriversElements.error,
     );
   }
 
@@ -40,7 +41,7 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel> {
 
     await Future.wait(
       [
-        loadCircuits(),
+        loadCurrentDriversStandings(),
       ],
     );
 

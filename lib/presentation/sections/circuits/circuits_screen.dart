@@ -1,19 +1,19 @@
 import 'package:elementary/elementary.dart';
-import 'package:f1_pet_project/data/models/sections/home/current_drivers_standings/current_drivers_standings_model.dart';
-import 'package:f1_pet_project/domain/sections/home/home_screen_wm.dart';
-import 'package:f1_pet_project/presentation/sections/home/driver_standing/driver_standing_element.dart';
+import 'package:f1_pet_project/data/models/sections/circuits/circuits_model.dart';
+import 'package:f1_pet_project/domain/sections/circuits/circuits_screen_wm.dart';
+import 'package:f1_pet_project/presentation/sections/circuits/circuit/circuit_element.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends ElementaryWidget<HomeScreenWM> {
-  const HomeScreen({
+class CircuitsScreen extends ElementaryWidget<CircuitsScreenWM> {
+  const CircuitsScreen({
     super.key,
   }) : super(createHomeScreenWM);
 
   @override
-  Widget build(HomeScreenWM wm) {
+  Widget build(CircuitsScreenWM wm) {
     return Scaffold(
       body: SafeArea(
         child: StateNotifierBuilder<bool>(
@@ -37,7 +37,7 @@ class HomeScreen extends ElementaryWidget<HomeScreenWM> {
 }
 
 class _body extends StatelessWidget {
-  final HomeScreenWM wm;
+  final CircuitsScreenWM wm;
   const _body({
     required this.wm,
     Key? key,
@@ -50,8 +50,8 @@ class _body extends StatelessWidget {
       slivers: [
         //
         SliverToBoxAdapter(
-          child: EntityStateNotifierBuilder<List<DriverStanding>>(
-            listenableEntityState: wm.currentDriversElements,
+          child: EntityStateNotifierBuilder<List<CircuitModel>>(
+            listenableEntityState: wm.circuitsElements,
             builder: (_, items) {
               return items == null
                   ? const SizedBox()
@@ -64,9 +64,8 @@ class _body extends StatelessWidget {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: items.length,
                         shrinkWrap: true,
-                        itemBuilder: (context, index) => DriverStandingElement(
-                          driverStandingModel: items[index],
-                        ),
+                        itemBuilder: (context, index) =>
+                            CircuitElement(circuitModel: items[index]),
                       ),
                     );
             },

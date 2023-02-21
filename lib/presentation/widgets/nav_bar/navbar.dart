@@ -30,6 +30,7 @@ class NavBar extends StatelessWidget {
                 : MediaQuery.of(context).viewPadding.bottom,
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               NavBarItem(
                 icon: Icons.house_sharp,
@@ -39,14 +40,14 @@ class NavBar extends StatelessWidget {
                   tabsRouter?.setActiveIndex(0);
                 },
               ),
-              // NavBarItem(
-              //   icon: Icons.house_sharp,
-              //   title: 'Медиа',
-              //   isSelected: tabsRouter?.activeIndex == 1,
-              //   onPressed: () {
-              //     tabsRouter?.setActiveIndex(1);
-              //   },
-              // ),
+              NavBarItem(
+                icon: Icons.house_sharp,
+                title: 'Трассы',
+                isSelected: tabsRouter?.activeIndex == 1,
+                onPressed: () {
+                  tabsRouter?.setActiveIndex(1);
+                },
+              ),
               // NavBarItem(
               //   icon: Icons.house_sharp,
               //   title: 'Билеты',

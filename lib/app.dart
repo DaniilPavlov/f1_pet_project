@@ -4,8 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class App extends StatelessWidget {
-  App({super.key});
   final _appRouter = AppRouter();
+  App({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,17 +1,22 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:auto_route/empty_router_widgets.dart';
-import 'package:f1_pet_project/presentation/sections/home/home_screen.dart';
+import 'package:f1_pet_project/presentation/sections/circuits/circuits_screen.dart';
 import 'package:f1_pet_project/presentation/sections/circuits/sections/circuit/circuit_screen.dart';
 
-const homeRoute = AutoRoute<dynamic>(
+const circuitsRoute = AutoRoute<dynamic>(
   maintainState: false,
-  path: 'home',
+  path: 'circuits',
   page: EmptyRouterScreen,
-  name: 'HomeRouter',
+  name: 'CircuitsRouter',
   children: <AutoRoute>[
     AutoRoute<dynamic>(
       path: '',
-      page: HomeScreen,
+      page: CircuitsScreen,
+      meta: <String, bool>{'hideBottomNav': false},
+    ),
+    AutoRoute<dynamic>(
+      path: 'circuit',
+      page: CircuitScreen,
       meta: <String, bool>{'hideBottomNav': false},
     ),
   ],

@@ -1,7 +1,8 @@
-import 'package:f1_pet_project/data/models/sections/home/circuits/circuits_model.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/data/models/sections/circuits/circuits_model.dart';
+import 'package:f1_pet_project/router/router.gr.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
-import 'package:f1_pet_project/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class CircuitElement extends StatelessWidget {
@@ -13,12 +14,14 @@ class CircuitElement extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: GestureDetector(
-        onTap: () => Utils.ULaunchUrl(rawUrl: circuitModel.url),
+        onTap: () async =>
+            context.router.navigate(CircuitRoute(circuitModel: circuitModel)),
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-              border: Border.all(color: AppTheme.red),
-              borderRadius: const BorderRadius.all(Radius.circular(20))),
+            border: Border.all(color: AppTheme.red),
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+          ),
           child: Text(circuitModel.circuitName, style: AppStyles.h3),
         ),
       ),

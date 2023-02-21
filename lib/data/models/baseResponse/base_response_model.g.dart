@@ -17,7 +17,7 @@ BaseResponseRepository _$BaseResponseRepositoryFromJson(
 Map<String, dynamic> _$BaseResponseRepositoryToJson(
         BaseResponseRepository instance) =>
     <String, dynamic>{
-      'data': instance.MRData,
+      'MRData': instance.MRData,
       'message': instance.message,
       'code': instance.code,
     };
