@@ -1,8 +1,7 @@
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/home/current_drivers_standings/current_drivers_standings_model.dart';
 import 'package:f1_pet_project/domain/sections/home/home_screen_wm.dart';
-import 'package:f1_pet_project/presentation/sections/home/driver_standing/driver_standing_element.dart';
-import 'package:f1_pet_project/utils/constants/static.dart';
+import 'package:f1_pet_project/presentation/sections/home/tournament_table/tournament_table_section.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -50,25 +49,12 @@ class _body extends StatelessWidget {
       slivers: [
         //
         SliverToBoxAdapter(
-          child: EntityStateNotifierBuilder<List<DriverStanding>>(
+          child: EntityStateNotifierBuilder<List<StandingsList>>(
             listenableEntityState: wm.currentDriversElements,
             builder: (_, items) {
               return items == null
                   ? const SizedBox()
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: StaticData.defaultPadding,
-                      ),
-                      child: ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: items.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) => DriverStandingElement(
-                          driverStandingModel: items[index],
-                        ),
-                      ),
-                    );
+                  : TournamentTableSection(items: items);
             },
           ),
         ),

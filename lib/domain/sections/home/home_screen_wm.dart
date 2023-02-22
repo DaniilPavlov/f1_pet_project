@@ -6,11 +6,11 @@ import 'package:f1_pet_project/presentation/sections/home/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel> {
-  final _currentDriversElements = EntityStateNotifier<List<DriverStanding>>();
+  final _currentDriversElements = EntityStateNotifier<List<StandingsList>>();
 
   final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
 
-  ListenableState<EntityState<List<DriverStanding>>>
+  ListenableState<EntityState<List<StandingsList>>>
       get currentDriversElements => _currentDriversElements;
 
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
@@ -30,7 +30,7 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel> {
       before: _currentDriversElements.loading,
       onSuccess: (data) {
         _currentDriversElements
-            .content(data!.standingsTable.standingsLists[0].driverStandings);
+            .content(data!.standingsTable.standingsLists);
       },
       onError: _currentDriversElements.error,
     );
