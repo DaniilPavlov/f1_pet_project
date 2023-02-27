@@ -41,12 +41,12 @@ class StandingsTable {
   });
 
   final String season;
-  final List<StandingsList> standingsLists;
+  final List<DriversStandingsList> standingsLists;
 
   factory StandingsTable.fromJson(Map<String, dynamic> json) => StandingsTable(
       season: json['season'].toString(),
       standingsLists: (json['StandingsLists'] as List? ?? [])
-          .map((e) => StandingsList.fromJson(e as Map<String, dynamic>))
+          .map((e) => DriversStandingsList.fromJson(e as Map<String, dynamic>))
           .toList());
 
   Map<String, dynamic> toJson() => {
@@ -59,7 +59,7 @@ class StandingsTable {
       standingsLists: standingsLists.map((e) => e.clone()).toList());
 
   StandingsTable copyWith(
-          {String? season, List<StandingsList>? standingsLists}) =>
+          {String? season, List<DriversStandingsList>? standingsLists}) =>
       StandingsTable(
         season: season ?? this.season,
         standingsLists: standingsLists ?? this.standingsLists,
@@ -77,8 +77,8 @@ class StandingsTable {
 }
 
 @immutable
-class StandingsList {
-  const StandingsList({
+class DriversStandingsList {
+  const DriversStandingsList({
     required this.season,
     required this.round,
     required this.driverStandings,
@@ -88,12 +88,13 @@ class StandingsList {
   final String round;
   final List<DriverStanding> driverStandings;
 
-  factory StandingsList.fromJson(Map<String, dynamic> json) => StandingsList(
-      season: json['season'].toString(),
-      round: json['round'].toString(),
-      driverStandings: (json['DriverStandings'] as List? ?? [])
-          .map((e) => DriverStanding.fromJson(e as Map<String, dynamic>))
-          .toList());
+  factory DriversStandingsList.fromJson(Map<String, dynamic> json) =>
+      DriversStandingsList(
+          season: json['season'].toString(),
+          round: json['round'].toString(),
+          driverStandings: (json['DriverStandings'] as List? ?? [])
+              .map((e) => DriverStanding.fromJson(e as Map<String, dynamic>))
+              .toList());
 
   Map<String, dynamic> toJson() => {
         'season': season,
@@ -101,16 +102,16 @@ class StandingsList {
         'DriverStandings': driverStandings.map((e) => e.toJson()).toList()
       };
 
-  StandingsList clone() => StandingsList(
+  DriversStandingsList clone() => DriversStandingsList(
       season: season,
       round: round,
       driverStandings: driverStandings.map((e) => e.clone()).toList());
 
-  StandingsList copyWith(
+  DriversStandingsList copyWith(
           {String? season,
           String? round,
           List<DriverStanding>? driverStandings}) =>
-      StandingsList(
+      DriversStandingsList(
         season: season ?? this.season,
         round: round ?? this.round,
         driverStandings: driverStandings ?? this.driverStandings,
@@ -119,7 +120,7 @@ class StandingsList {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is StandingsList &&
+      other is DriversStandingsList &&
           season == other.season &&
           round == other.round &&
           driverStandings == other.driverStandings;

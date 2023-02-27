@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // ignore_for_file: avoid-returning-widgets
 
 //* Возвращает список детей ряда таблицы
-List<Widget> tournamentTableDetailRowChildren(
+List<Widget> tournamentTableDriversDetailRowChildren(
   DriverStanding driverStanding,
   int place,
 ) {
@@ -28,25 +28,19 @@ List<Widget> tournamentTableDetailRowChildren(
     ),
     Center(
       child: Text(
-        driverStanding.driver.permanentNumber,
-        style: textStyle,
-      ),
-    ),
-    // Center(
-    //   child: Text(
-    //     driverStanding.points,
-    //     style: textStyle,
-    //   ),
-    // ),
-    Center(
-      child: Text(
-        driverStanding.position,
+        driverStanding.points,
         style: textStyle,
       ),
     ),
     Center(
       child: Text(
         driverStanding.constructors[0].name,
+        style: textStyle,
+      ),
+    ),
+    Center(
+      child: Text(
+        driverStanding.driver.permanentNumber,
         style: textStyle,
       ),
     ),
