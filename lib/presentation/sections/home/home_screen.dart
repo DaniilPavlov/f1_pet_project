@@ -21,7 +21,7 @@ class HomeScreen extends ElementaryWidget<HomeScreenWM> {
           builder: (_, dataIsLoaded) {
             if (dataIsLoaded != null) {
               return dataIsLoaded
-                  ? _body(wm: wm)
+                  ? _Body(wm: wm)
                   : const Center(
                       child: CircularProgressIndicator(
                         color: AppTheme.red,
@@ -36,9 +36,9 @@ class HomeScreen extends ElementaryWidget<HomeScreenWM> {
   }
 }
 
-class _body extends StatelessWidget {
+class _Body extends StatelessWidget {
   final HomeScreenWM wm;
-  const _body({
+  const _Body({
     required this.wm,
     Key? key,
   }) : super(key: key);

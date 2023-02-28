@@ -1,6 +1,5 @@
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/circuits/circuit_model.dart';
-import 'package:f1_pet_project/data/models/sections/circuits/circuits_model.dart';
 import 'package:f1_pet_project/domain/sections/circuits/circuits_screen_wm.dart';
 import 'package:f1_pet_project/presentation/sections/circuits/circuit/circuit_element.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
@@ -22,7 +21,7 @@ class CircuitsScreen extends ElementaryWidget<CircuitsScreenWM> {
           builder: (_, dataIsLoaded) {
             if (dataIsLoaded != null) {
               return dataIsLoaded
-                  ? _body(wm: wm)
+                  ? _Body(wm: wm)
                   : const Center(
                       child: CircularProgressIndicator(
                         color: AppTheme.red,
@@ -37,9 +36,9 @@ class CircuitsScreen extends ElementaryWidget<CircuitsScreenWM> {
   }
 }
 
-class _body extends StatelessWidget {
+class _Body extends StatelessWidget {
   final CircuitsScreenWM wm;
-  const _body({
+  const _Body({
     required this.wm,
     Key? key,
   }) : super(key: key);

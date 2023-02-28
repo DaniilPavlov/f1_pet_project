@@ -10,6 +10,10 @@ class AppHtml extends StatelessWidget {
   final Map<bool Function(RenderContext), CustomRender>? otherCustomRenders;
   final bool shrinkWrap;
   final bool openLinkWithExternalApplication;
+  
+  String get dataLineBreaksCut {
+    return data.replaceAll('\r\n\t', '').replaceAll('\r\n', '&thinsp;');
+  }
 
   const AppHtml({
     required this.data,
@@ -19,10 +23,6 @@ class AppHtml extends StatelessWidget {
     this.openLinkWithExternalApplication = false,
     Key? key,
   }) : super(key: key);
-
-  String get dataLineBreaksCut {
-    return data.replaceAll('\r\n\t', '').replaceAll('\r\n', '&thinsp;');
-  }
 
   @override
   Widget build(BuildContext context) {

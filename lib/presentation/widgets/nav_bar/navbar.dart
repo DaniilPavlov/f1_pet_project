@@ -5,12 +5,12 @@ import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class NavBar extends StatelessWidget {
+  final TabsRouter? tabsRouter;
+
   const NavBar({
     this.tabsRouter,
     super.key,
   });
-
-  final TabsRouter? tabsRouter;
 
   @override
   Widget build(BuildContext context) {

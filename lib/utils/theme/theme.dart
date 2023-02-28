@@ -1,4 +1,3 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -37,22 +36,4 @@ class AppTheme {
   ];
 
   static final defaultBorderRadius = BorderRadius.circular(12);
-}
-
-Widget? loadStateChangedFunction(ExtendedImageState state) {
-  if (state.extendedImageLoadState == LoadState.loading) {
-    return const SizedBox(
-      child: Center(
-        child: CircularProgressIndicator(
-          color: AppTheme.red,
-        ),
-      ),
-    );
-  }
-
-  if (state.extendedImageLoadState == LoadState.failed) {
-    return const SizedBox();
-  }
-
-  return null;
 }

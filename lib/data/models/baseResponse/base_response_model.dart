@@ -10,6 +10,18 @@ part 'base_response_model.g.dart';
 
 /// Модель ответа на запрос
 class BaseResponseRepository {
+  /// данные в ответе на запрос
+  /// чаще всего бывает [Map] или [List]
+  final dynamic MRData;
+
+  /// результат выполнения запроса
+  // final bool success;
+
+  /// некое сообщение
+  /// обычно присутствует если [] == false
+  final String? message;
+
+  final int? code;
   const BaseResponseRepository({
     required this.MRData,
     // required this.success,
@@ -38,19 +50,6 @@ class BaseResponseRepository {
       throw ResponseParseException('BaseResponseRepository: $e');
     }
   }
-
-  /// данные в ответе на запрос
-  /// чаще всего бывает [Map] или [List]
-  final dynamic MRData;
-
-  /// результат выполнения запроса
-  // final bool success;
-
-  /// некое сообщение
-  /// обычно присутствует если [] == false
-  final String? message;
-
-  final int? code;
 
   Map<String, dynamic> toJson() => _$BaseResponseRepositoryToJson(this);
 }

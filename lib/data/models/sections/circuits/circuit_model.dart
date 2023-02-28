@@ -2,7 +2,6 @@
 
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
 import 'package:f1_pet_project/data/models/sections/circuits/circuit_location_model.dart';
-import 'package:f1_pet_project/data/models/sections/home/standings/standings_table_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'circuit_model.g.dart';

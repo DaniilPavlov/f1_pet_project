@@ -1,9 +1,11 @@
 // ignore_for_file: avoid_annotating_with_dynamic, avoid_catches_without_on_clauses, no_leading_underscores_for_local_identifiers
 
-import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:dio/dio.dart';
+import 'package:f1_pet_project/utils/constants/static.dart';
 
 class RequestHandler {
+  static final RequestHandler _singleton = RequestHandler._init();
+  Dio? _dio;
   factory RequestHandler() {
     final handler = _singleton;
 
@@ -13,10 +15,6 @@ class RequestHandler {
   RequestHandler._init() {
     _dio = _createDio();
   }
-
-  static final RequestHandler _singleton = RequestHandler._init();
-
-  Dio? _dio;
 
   // ignore: member-ordering-extended
 
@@ -38,7 +36,6 @@ class RequestHandler {
       '$path.json',
       cancelToken: cancelToken,
       onReceiveProgress: onReceiveProgress,
-
       queryParameters: queryParameters,
     );
 
@@ -62,7 +59,6 @@ class RequestHandler {
       '$path.json',
       data: data,
       queryParameters: queryParameters,
-     
       cancelToken: cancelToken,
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,
@@ -74,8 +70,6 @@ class RequestHandler {
 
     return res;
   }
-
-
 
   Dio _createDio() {
     return Dio(

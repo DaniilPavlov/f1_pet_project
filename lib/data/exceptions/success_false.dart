@@ -1,7 +1,6 @@
 class SuccessFalse implements Exception {
-  SuccessFalse([String? message]) : _message = message;
-
   late final String? _message;
+  SuccessFalse([String? message]) : _message = message;
 
   @override
   String toString() => _message ?? 'ResponseParseExeption';

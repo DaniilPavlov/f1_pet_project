@@ -1,5 +1,4 @@
 import 'package:f1_pet_project/data/models/sections/circuits/circuit_model.dart';
-import 'package:f1_pet_project/data/models/sections/circuits/circuits_model.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
