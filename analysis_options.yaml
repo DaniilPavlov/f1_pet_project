@@ -5,8 +5,5 @@ analyzer:
   #   implicit-casts: false
   #   implicit-dynamic: false
   exclude:
-    - "**circuits_model.dart"
-    - "**seasons_model.dart"
-    - "**standings_model.dart"
     - "**.g.dart"
     - "**.gr.dart"

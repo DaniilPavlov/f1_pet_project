@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/data/models/sections/circuits/circuit_model.dart';
 import 'package:f1_pet_project/data/models/sections/circuits/circuits_model.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
@@ -38,12 +39,12 @@ class CircuitScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Страна: ${circuitModel.location.country}',
+                      'Страна: ${circuitModel.Location.country}',
                       style: AppStyles.h3,
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'Город: ${circuitModel.location.locality}',
+                      'Город: ${circuitModel.Location.locality}',
                       style: AppStyles.h3,
                     ),
                   ],

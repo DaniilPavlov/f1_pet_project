@@ -1,11 +1,11 @@
-import 'package:f1_pet_project/data/models/sections/home/current_drivers_standings/current_drivers_standings_model.dart';
+import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:flutter/material.dart';
 // ignore_for_file: avoid-returning-widgets
 
 //* Возвращает список детей ряда таблицы
 List<Widget> tournamentTableDriversDetailRowChildren(
-  DriverStanding driverStanding,
+  DriverStandingsModel driverStanding,
   int place,
 ) {
   const textStyle = AppStyles.caption;
@@ -17,31 +17,36 @@ List<Widget> tournamentTableDriversDetailRowChildren(
         child: Text(
           place.toString(),
           style: textStyle,
+          textAlign: TextAlign.center,
         ),
       ),
     ),
     Center(
       child: Text(
-        driverStanding.driver.code,
+        driverStanding.Driver.code,
         style: textStyle,
+        textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
         driverStanding.points,
         style: textStyle,
+        textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.constructors[0].name,
+        driverStanding.Constructors[0].name,
         style: textStyle,
+        textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.driver.permanentNumber,
+        driverStanding.Driver.permanentNumber,
         style: textStyle,
+        textAlign: TextAlign.center,
       ),
     ),
   ];

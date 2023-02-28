@@ -15,7 +15,7 @@ import 'package:auto_route/auto_route.dart' as _i6;
 import 'package:auto_route/empty_router_widgets.dart' as _i2;
 import 'package:flutter/material.dart' as _i7;
 
-import '../data/models/sections/circuits/circuits_model.dart' as _i8;
+import '../data/models/sections/circuits/circuit_model.dart' as _i8;
 import '../presentation/sections/circuits/circuits_screen.dart' as _i4;
 import '../presentation/sections/circuits/sections/circuit/circuit_screen.dart'
     as _i5;

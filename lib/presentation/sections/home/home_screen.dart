@@ -1,6 +1,6 @@
 import 'package:elementary/elementary.dart';
-import 'package:f1_pet_project/data/models/sections/home/current_constructors_standing/current_constractors_standings_model.dart';
-import 'package:f1_pet_project/data/models/sections/home/current_drivers_standings/current_drivers_standings_model.dart';
+import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
+import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/domain/sections/home/home_screen_wm.dart';
 import 'package:f1_pet_project/presentation/sections/home/tournament_tables/tournament_tables_section.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
@@ -50,10 +50,10 @@ class _body extends StatelessWidget {
       slivers: [
         //
         SliverToBoxAdapter(
-          child: EntityStateNotifierBuilder<List<ConstructorsStandingsList>>(
+          child: EntityStateNotifierBuilder<List<ConstructorStandingsModel>>(
             listenableEntityState: wm.currentConstructorsElements,
             builder: (_, constructors) =>
-                EntityStateNotifierBuilder<List<DriversStandingsList>>(
+                EntityStateNotifierBuilder<List<DriverStandingsModel>>(
               listenableEntityState: wm.currentDriversElements,
               builder: (_, drivers) {
                 return drivers == null || constructors == null
@@ -61,6 +61,8 @@ class _body extends StatelessWidget {
                     : TournamentTableSection(
                         driversStandings: drivers,
                         constructorsStandings: constructors,
+                        season: wm.currentSeason.value!,
+                        round: wm.currentRound.value!,
                       );
               },
             ),

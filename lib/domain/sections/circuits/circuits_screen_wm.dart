@@ -1,4 +1,5 @@
 import 'package:elementary/elementary.dart';
+import 'package:f1_pet_project/data/models/sections/circuits/circuit_model.dart';
 import 'package:f1_pet_project/data/models/sections/circuits/circuits_model.dart';
 import 'package:f1_pet_project/domain/sections/circuits/circuits_screen_model.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
@@ -30,7 +31,7 @@ class CircuitsScreenWM
       model.loadCircuits,
       before: _circuitsElements.loading,
       onSuccess: (data) {
-        _circuitsElements.content(data!.circuitTable.circuits);
+        _circuitsElements.content(data!.CircuitTable.Circuits);
       },
       onError: _circuitsElements.error,
     );

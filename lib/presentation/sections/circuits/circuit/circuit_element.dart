@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/data/models/sections/circuits/circuit_model.dart';
 import 'package:f1_pet_project/data/models/sections/circuits/circuits_model.dart';
 import 'package:f1_pet_project/router/router.gr.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';

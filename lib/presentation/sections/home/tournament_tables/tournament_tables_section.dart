@@ -1,10 +1,10 @@
 import 'package:elementary/elementary.dart';
-import 'package:f1_pet_project/data/models/sections/home/current_constructors_standing/current_constractors_standings_model.dart';
-import 'package:f1_pet_project/data/models/sections/home/current_drivers_standings/current_drivers_standings_model.dart';
+import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
+import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/domain/sections/home/tournament_tables/wm/tournament_tables_section_wm.dart';
-import 'package:f1_pet_project/presentation/sections/home/tournament_tables/widgets/tables_switcher.dart';
-import 'package:f1_pet_project/presentation/sections/home/tournament_tables/widgets/tournament_constructors_table.dart';
-import 'package:f1_pet_project/presentation/sections/home/tournament_tables/widgets/tournament_drivers_table.dart';
+import 'package:f1_pet_project/presentation/sections/home/tournament_tables/switcher/tables_switcher.dart';
+import 'package:f1_pet_project/presentation/sections/home/tournament_tables/tables/tournament_constructors_table.dart';
+import 'package:f1_pet_project/presentation/sections/home/tournament_tables/tables/tournament_drivers_table.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,11 +12,15 @@ import 'package:flutter/material.dart';
 
 class TournamentTableSection
     extends ElementaryWidget<TournamentTablesSectionWM> {
-  final List<DriversStandingsList> driversStandings;
-  final List<ConstructorsStandingsList> constructorsStandings;
+  final List<DriverStandingsModel> driversStandings;
+  final List<ConstructorStandingsModel> constructorsStandings;
+  final String season;
+  final String round;
   const TournamentTableSection({
     required this.driversStandings,
     required this.constructorsStandings,
+    required this.season,
+    required this.round,
     super.key,
   }) : super(createTournamentTableSectionWM);
 
@@ -44,11 +48,11 @@ class TournamentTableSection
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Сезон: ${driversStandings[0].season}',
+                    'Сезон: $season',
                     style: AppStyles.h2,
                   ),
                   Text(
-                    'Раунд: ${driversStandings[0].round}',
+                    'Раунд: $round',
                     style: AppStyles.h2,
                   ),
                 ],
@@ -66,11 +70,11 @@ class TournamentTableSection
               TablesSwitcher(wm: wm),
               if (wm.activePage.value == 0)
                 TournamentDriversTable(
-                  drivers: driversStandings[0].driverStandings,
+                  drivers: driversStandings,
                 )
               else
                 TournamentConstructorsTable(
-                  constructors: constructorsStandings[0].constructorStandings,
+                  constructors: constructorsStandings,
                 ),
             ],
           ),
