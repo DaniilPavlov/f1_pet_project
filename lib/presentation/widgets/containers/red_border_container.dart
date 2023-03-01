@@ -13,18 +13,16 @@ class RedBorderContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            border: Border.all(color: AppTheme.red),
-            borderRadius: const BorderRadius.all(Radius.circular(20)),
-          ),
-          child: Text(title, style: AppStyles.h3),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          border: Border.all(color: AppTheme.red),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
         ),
+        child: Text(title, style: AppStyles.h3),
       ),
     );
   }

@@ -4,7 +4,6 @@ import 'package:f1_pet_project/presentation/sections/circuits/circuits_screen.da
 import 'package:f1_pet_project/presentation/sections/circuits/sections/circuit/circuit_screen.dart';
 
 const circuitsRoute = AutoRoute<dynamic>(
-  maintainState: false,
   path: 'circuits',
   page: EmptyRouterScreen,
   name: 'CircuitsRouter',

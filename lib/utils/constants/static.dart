@@ -1,5 +1,5 @@
-class StaticData{
-  static const defaultPadding = 12.0;
+class StaticData {
+  static const defaultHorizontalPadding = 12.0;
 
   static const apiUrl = 'http://ergast.com/api/f1/';
 }

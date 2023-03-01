@@ -40,14 +40,16 @@ Map<bool Function(RenderContext), CustomRender> customRenders = {
         clipBehavior: Clip.none,
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(
-          horizontal: StaticData.defaultPadding,
+          horizontal: StaticData.defaultHorizontalPadding,
         ),
         child: Row(
           children: imagesList.map((src) {
             return Container(
-              margin: const EdgeInsets.only(right: StaticData.defaultPadding),
+              margin: const EdgeInsets.only(
+                right: StaticData.defaultHorizontalPadding,
+              ),
               width: MediaQuery.of(context.buildContext).size.width -
-                  StaticData.defaultPadding * 4,
+                  StaticData.defaultHorizontalPadding * 4,
               child: ExtendedImage.network(src),
             );
           }).toList(),
@@ -126,7 +128,7 @@ Map<bool Function(RenderContext), CustomRender> customRenders = {
     widget: (ctx, childrens) {
       return SizedBox(
         width: MediaQuery.of(ctx.buildContext).size.width -
-            StaticData.defaultPadding * 2,
+            StaticData.defaultHorizontalPadding * 2,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           clipBehavior: Clip.none,

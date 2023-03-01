@@ -1,5 +1,4 @@
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
-import 'package:f1_pet_project/presentation/sections/hall_of_fame/champions/tables/table_parts/constructors_champions_primary_row.dart';
 import 'package:f1_pet_project/presentation/sections/hall_of_fame/champions/tables/table_parts/drivers_champions_table_detail_row.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +19,6 @@ class DriversChampionsTable extends StatelessWidget {
         Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [
-            // TODO(pavlov): прикреплять ряд наименований
-            constructorsChampionsPrimaryRow(),
             ...List.generate(
               drivers.length,
               (i) => TableRow(
@@ -34,7 +31,7 @@ class DriversChampionsTable extends StatelessWidget {
                   ),
                 ),
                 children: driversChampionsTableDetailRowChildren(
-                  drivers[i],
+                  drivers[drivers.length-i-1],
                 ),
               ),
             ),

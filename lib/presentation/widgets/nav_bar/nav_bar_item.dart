@@ -25,7 +25,7 @@ class NavBarItem extends StatelessWidget {
       children: [
         Container(
           width: (MediaQuery.of(context).size.width -
-                  StaticData.defaultPadding * 2) /
+                  StaticData.defaultHorizontalPadding * 2) /
               5,
           padding: const EdgeInsets.only(top: 12),
           decoration: isSelected
@@ -64,7 +64,7 @@ class NavBarItem extends StatelessWidget {
             color: Colors.white.withOpacity(0),
             height: 70 - 12,
             width: (MediaQuery.of(context).size.width -
-                    StaticData.defaultPadding * 2) /
+                    StaticData.defaultHorizontalPadding * 2) /
                 5,
           ),
         ),

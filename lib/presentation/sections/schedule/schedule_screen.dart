@@ -1,21 +1,20 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
-import 'package:f1_pet_project/data/models/sections/circuits/circuit_model.dart';
-import 'package:f1_pet_project/domain/sections/circuits/circuits_screen_wm.dart';
+import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
+import 'package:f1_pet_project/domain/sections/schedule/schedule_screen_wm.dart';
 import 'package:f1_pet_project/presentation/widgets/containers/red_border_container.dart';
-import 'package:f1_pet_project/router/router.gr.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
-  const CircuitsScreen({
+// TODO(pavlov): подумать как оформить расписание
+class ScheduleScreen extends ElementaryWidget<IScheduleScreenWM> {
+  const ScheduleScreen({
     super.key,
-  }) : super(createCircuitsScreenWM);
+  }) : super(createScheduleScreenWM);
 
   @override
-  Widget build(ICircuitsScreenWM wm) {
+  Widget build(IScheduleScreenWM wm) {
     return Scaffold(
       body: SafeArea(
         child: StateNotifierBuilder<bool>(
@@ -39,7 +38,7 @@ class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
 }
 
 class _Body extends StatelessWidget {
-  final ICircuitsScreenWM wm;
+  final IScheduleScreenWM wm;
   const _Body({
     required this.wm,
     Key? key,
@@ -52,8 +51,8 @@ class _Body extends StatelessWidget {
       slivers: [
         //
         SliverToBoxAdapter(
-          child: EntityStateNotifierBuilder<List<CircuitModel>>(
-            listenableEntityState: wm.circuitsElements,
+          child: EntityStateNotifierBuilder<List<RacesModel>>(
+            listenableEntityState: wm.racesElements,
             builder: (_, items) {
               return items == null
                   ? const SizedBox()
@@ -69,10 +68,11 @@ class _Body extends StatelessWidget {
                         itemBuilder: (context, index) => Padding(
                           padding: const EdgeInsets.only(bottom: 20),
                           child: RedBorderContainer(
-                            title: items[index].circuitName,
-                            onTap: () async => context.router.navigate(
-                              CircuitRoute(circuitModel: items[index]),
-                            ),
+                            title: items[index].raceName,
+                            // onTap: () async => context.router.navigate(
+                            //   CircuitRoute(circuitModel: items[index]),
+                            // ),),
+                            onTap: () {},
                           ),
                         ),
                       ),

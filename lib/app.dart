@@ -17,6 +17,7 @@ class App extends StatelessWidget {
     // SystemChrome.setSystemUIOverlayStyle(mySystemTheme);
 
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       supportedLocales: const [
         Locale('ru', ''),
       ],

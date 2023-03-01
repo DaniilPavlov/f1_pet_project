@@ -5,7 +5,6 @@ import 'package:f1_pet_project/presentation/sections/hall_of_fame/champions/driv
 import 'package:f1_pet_project/presentation/sections/hall_of_fame/hall_of_fame_screen.dart';
 
 const hallOfFameRoute = AutoRoute<dynamic>(
-  maintainState: false,
   path: 'hall_of_fame',
   page: EmptyRouterScreen,
   name: 'HallOfFameRouter',

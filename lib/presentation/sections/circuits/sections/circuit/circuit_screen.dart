@@ -19,7 +19,7 @@ class CircuitScreen extends StatelessWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: StaticData.defaultPadding,
+                  horizontal: StaticData.defaultHorizontalPadding,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

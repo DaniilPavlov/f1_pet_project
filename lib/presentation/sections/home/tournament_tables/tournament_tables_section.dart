@@ -32,7 +32,7 @@ class TournamentTableSection
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: StaticData.defaultPadding,
+            horizontal: StaticData.defaultHorizontalPadding,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

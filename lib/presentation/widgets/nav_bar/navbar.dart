@@ -22,9 +22,9 @@ class NavBar extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.fromLTRB(
-            StaticData.defaultPadding,
+            StaticData.defaultHorizontalPadding,
             0,
-            StaticData.defaultPadding,
+            StaticData.defaultHorizontalPadding,
             MediaQuery.of(context).viewPadding.bottom == 0
                 ? 12
                 : MediaQuery.of(context).viewPadding.bottom,
@@ -42,7 +42,7 @@ class NavBar extends StatelessWidget {
               ),
               NavBarItem(
                 icon: Icons.house_sharp,
-                title: 'Зал славы',
+                title: 'Расписание',
                 isSelected: tabsRouter?.activeIndex == 1,
                 onPressed: () {
                   tabsRouter?.setActiveIndex(1);
@@ -50,10 +50,18 @@ class NavBar extends StatelessWidget {
               ),
               NavBarItem(
                 icon: Icons.house_sharp,
-                title: 'Трассы',
+                title: 'Зал славы',
                 isSelected: tabsRouter?.activeIndex == 2,
                 onPressed: () {
                   tabsRouter?.setActiveIndex(2);
+                },
+              ),
+              NavBarItem(
+                icon: Icons.house_sharp,
+                title: 'Трассы',
+                isSelected: tabsRouter?.activeIndex == 3,
+                onPressed: () {
+                  tabsRouter?.setActiveIndex(3);
                 },
               ),
 

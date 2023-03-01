@@ -19,7 +19,6 @@ class TablesSwitcher extends StatelessWidget {
               child: GestureDetector(
                 onTap: () => wm.changeActivePage(value: 0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
@@ -45,11 +44,10 @@ class TablesSwitcher extends StatelessWidget {
               child: GestureDetector(
                 onTap: () => wm.changeActivePage(value: 1),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Команды',
+                      'Конструкторы',
                       style: wm.activeTable.value == 1
                           ? AppStyles.h2.copyWith(color: AppTheme.red)
                           : AppStyles.h2.copyWith(color: AppTheme.pink),
