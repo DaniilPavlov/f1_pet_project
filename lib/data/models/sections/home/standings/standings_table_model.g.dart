@@ -8,7 +8,6 @@ part of 'standings_table_model.dart';
 
 StandingsTableModel _$StandingsTableModelFromJson(Map<String, dynamic> json) =>
     StandingsTableModel(
-      season: json['season'] as String,
       StandingsLists: (json['StandingsLists'] as List<dynamic>)
           .map((e) => StandingsListsModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -17,6 +16,5 @@ StandingsTableModel _$StandingsTableModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$StandingsTableModelToJson(
         StandingsTableModel instance) =>
     <String, dynamic>{
-      'season': instance.season,
       'StandingsLists': instance.StandingsLists,
     };

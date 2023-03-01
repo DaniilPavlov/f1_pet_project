@@ -42,20 +42,21 @@ class NavBar extends StatelessWidget {
               ),
               NavBarItem(
                 icon: Icons.house_sharp,
-                title: 'Трассы',
+                title: 'Зал славы',
                 isSelected: tabsRouter?.activeIndex == 1,
                 onPressed: () {
                   tabsRouter?.setActiveIndex(1);
                 },
               ),
-              // NavBarItem(
-              //   icon: Icons.house_sharp,
-              //   title: 'Билеты',
-              //   isSelected: tabsRouter?.activeIndex == 2,
-              //   onPressed: () {
-              //     tabsRouter?.setActiveIndex(2);
-              //   },
-              // ),
+              NavBarItem(
+                icon: Icons.house_sharp,
+                title: 'Трассы',
+                isSelected: tabsRouter?.activeIndex == 2,
+                onPressed: () {
+                  tabsRouter?.setActiveIndex(2);
+                },
+              ),
+
               // NavBarItem(
               //   icon: Icons.house_sharp,
               //   title: 'Матчи',

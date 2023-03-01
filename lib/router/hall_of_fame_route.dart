@@ -1,0 +1,29 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:auto_route/empty_router_widgets.dart';
+import 'package:f1_pet_project/presentation/sections/hall_of_fame/champions/constructors/constructors_champions_screen.dart';
+import 'package:f1_pet_project/presentation/sections/hall_of_fame/champions/drivers/drivers_champions_screen.dart';
+import 'package:f1_pet_project/presentation/sections/hall_of_fame/hall_of_fame_screen.dart';
+
+const hallOfFameRoute = AutoRoute<dynamic>(
+  maintainState: false,
+  path: 'hall_of_fame',
+  page: EmptyRouterScreen,
+  name: 'HallOfFameRouter',
+  children: <AutoRoute>[
+    AutoRoute<dynamic>(
+      path: '',
+      page: HallOfFameScreen,
+      meta: <String, bool>{'hideBottomNav': false},
+    ),
+    AutoRoute<dynamic>(
+      path: 'drivers_champions',
+      page: DriversChampionsScreen,
+      meta: <String, bool>{'hideBottomNav': false},
+    ),
+    AutoRoute<dynamic>(
+      path: 'constructors_champions',
+      page: ConstructorsChampionsScreen,
+      meta: <String, bool>{'hideBottomNav': false},
+    ),
+  ],
+);

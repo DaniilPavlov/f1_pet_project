@@ -1,12 +1,11 @@
-import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
+// ignore_for_file: avoid-returning-widgets
+import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:flutter/material.dart';
-// ignore_for_file: avoid-returning-widgets
 
 //* Возвращает список детей ряда таблицы
-List<Widget> tournamentTableDriversDetailRowChildren(
-  DriverStandingsModel driverStanding,
-  int place,
+List<Widget> driversChampionsTableDetailRowChildren(
+  StandingsListsModel driverStanding,
 ) {
   const textStyle = AppStyles.caption;
 
@@ -15,7 +14,7 @@ List<Widget> tournamentTableDriversDetailRowChildren(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Text(
-          place.toString(),
+          driverStanding.season,
           style: textStyle,
           textAlign: TextAlign.center,
         ),
@@ -23,28 +22,35 @@ List<Widget> tournamentTableDriversDetailRowChildren(
     ),
     Center(
       child: Text(
-        driverStanding.Driver.code!,
+        driverStanding.DriverStandings![0].Driver.givenName,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.points,
+        driverStanding.DriverStandings![0].Driver.nationality,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.Constructors[0].name,
+        driverStanding.DriverStandings![0].points,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.Driver.permanentNumber!,
+        driverStanding.round,
+        style: textStyle,
+        textAlign: TextAlign.center,
+      ),
+    ),
+    Center(
+      child: Text(
+        driverStanding.DriverStandings![0].wins,
         style: textStyle,
         textAlign: TextAlign.center,
       ),

@@ -24,8 +24,9 @@ environment:
 dependencies:
   auto_route: ^5.0.4
   cookie_jar: ^3.0.1
-  dio: ^5.0.1
-  dio_cookie_manager: ^2.1.1
+  # не обновлять дио, придется менять request handler
+  dio: ^4.0.6
+  dio_cookie_manager: ^2.0.0
   elementary: ^2.0.0
   extended_image: ^7.0.2
   flutter:

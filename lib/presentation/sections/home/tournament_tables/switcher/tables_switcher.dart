@@ -24,7 +24,7 @@ class TablesSwitcher extends StatelessWidget {
                   children: [
                     Text(
                       'Пилоты',
-                      style: wm.activePage.value == 0
+                      style: wm.activeTable.value == 0
                           ? AppStyles.h2.copyWith(color: AppTheme.red)
                           : AppStyles.h2.copyWith(color: AppTheme.pink),
                     ),
@@ -32,7 +32,7 @@ class TablesSwitcher extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       child: Container(
                         height: 1,
-                        color: wm.activePage.value == 0
+                        color: wm.activeTable.value == 0
                             ? AppTheme.red
                             : AppTheme.pink,
                       ),
@@ -50,7 +50,7 @@ class TablesSwitcher extends StatelessWidget {
                   children: [
                     Text(
                       'Команды',
-                      style: wm.activePage.value == 1
+                      style: wm.activeTable.value == 1
                           ? AppStyles.h2.copyWith(color: AppTheme.red)
                           : AppStyles.h2.copyWith(color: AppTheme.pink),
                     ),
@@ -58,7 +58,7 @@ class TablesSwitcher extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       child: Container(
                         height: 1,
-                        color: wm.activePage.value == 1
+                        color: wm.activeTable.value == 1
                             ? AppTheme.red
                             : AppTheme.pink,
                       ),

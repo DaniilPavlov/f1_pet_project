@@ -7,13 +7,13 @@ import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends ElementaryWidget<HomeScreenWM> {
+class HomeScreen extends ElementaryWidget<IHomeScreenWM> {
   const HomeScreen({
     super.key,
   }) : super(createHomeScreenWM);
 
   @override
-  Widget build(HomeScreenWM wm) {
+  Widget build(IHomeScreenWM wm) {
     return Scaffold(
       body: SafeArea(
         child: StateNotifierBuilder<bool>(
@@ -37,7 +37,7 @@ class HomeScreen extends ElementaryWidget<HomeScreenWM> {
 }
 
 class _Body extends StatelessWidget {
-  final HomeScreenWM wm;
+  final IHomeScreenWM wm;
   const _Body({
     required this.wm,
     Key? key,

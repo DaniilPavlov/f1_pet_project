@@ -8,11 +8,9 @@ part 'standings_table_model.g.dart';
 
 @JsonSerializable()
 class StandingsTableModel {
-  final String season;
   final List<StandingsListsModel> StandingsLists;
 
   StandingsTableModel({
-    required this.season,
     required this.StandingsLists,
   });
 

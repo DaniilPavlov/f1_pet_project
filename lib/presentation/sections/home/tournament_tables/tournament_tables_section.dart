@@ -62,13 +62,13 @@ class TournamentTableSection
         ),
         const SizedBox(height: 32),
         StateNotifierBuilder<int>(
-          listenableState: wm.activePage,
+          listenableState: wm.activeTable,
           builder: (_, activePage) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               TablesSwitcher(wm: wm),
-              if (wm.activePage.value == 0)
+              if (wm.activeTable.value == 0)
                 TournamentDriversTable(
                   drivers: driversStandings,
                 )

@@ -1,12 +1,12 @@
-import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
-import 'package:f1_pet_project/utils/theme/styles.dart';
-import 'package:flutter/material.dart';
 // ignore_for_file: avoid-returning-widgets
 
+import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
+import 'package:f1_pet_project/utils/theme/styles.dart';
+import 'package:flutter/material.dart';
+
 //* Возвращает список детей ряда таблицы
-List<Widget> tournamentTableDriversDetailRowChildren(
-  DriverStandingsModel driverStanding,
-  int place,
+List<Widget> constructorsChampionsTableDetailRowChildren(
+  StandingsListsModel constructorStanding,
 ) {
   const textStyle = AppStyles.caption;
 
@@ -15,7 +15,7 @@ List<Widget> tournamentTableDriversDetailRowChildren(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Text(
-          place.toString(),
+          constructorStanding.season,
           style: textStyle,
           textAlign: TextAlign.center,
         ),
@@ -23,28 +23,35 @@ List<Widget> tournamentTableDriversDetailRowChildren(
     ),
     Center(
       child: Text(
-        driverStanding.Driver.code!,
+        constructorStanding.ConstructorStandings![0].Constructor.name,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.points,
+        constructorStanding.ConstructorStandings![0].Constructor.nationality,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.Constructors[0].name,
+        constructorStanding.ConstructorStandings![0].points,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.Driver.permanentNumber!,
+        constructorStanding.round,
+        style: textStyle,
+        textAlign: TextAlign.center,
+      ),
+    ),
+    Center(
+      child: Text(
+        constructorStanding.ConstructorStandings![0].wins,
         style: textStyle,
         textAlign: TextAlign.center,
       ),

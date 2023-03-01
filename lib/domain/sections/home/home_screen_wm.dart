@@ -7,7 +7,36 @@ import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/home/home_screen.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel> {
+abstract class IHomeScreenWM extends IWidgetModel {
+  /// пилоты текущего сезона
+  ListenableState<EntityState<List<DriverStandingsModel>>>
+      get currentDriversElements;
+
+  /// конструкторы текущего сезона
+  ListenableState<EntityState<List<ConstructorStandingsModel>>>
+      get currentConstructorsElements;
+
+  /// номер текущего раунда
+  ListenableState<String> get currentRound;
+
+  /// год текущего сезона
+  ListenableState<String> get currentSeason;
+
+  /// загружены ли начальные данные
+  ListenableState<bool> get allDataIsLoaded;
+
+  /// загрузка текущей таблицы пилотов
+  void loadCurrentDriversStandings();
+
+  /// загрузка текущей таблицы конструкторов
+  void loadCurrentConstructorsStandings();
+
+  /// загрузка всех данных
+  void loadAllData();
+}
+
+class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel>
+    implements IHomeScreenWM {
   final _currentDriversElements =
       EntityStateNotifier<List<DriverStandingsModel>>();
 
@@ -19,17 +48,17 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel> {
   final _currentRound = StateNotifier<String>();
 
   final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
-
+  @override
   ListenableState<EntityState<List<DriverStandingsModel>>>
       get currentDriversElements => _currentDriversElements;
-
+  @override
   ListenableState<EntityState<List<ConstructorStandingsModel>>>
       get currentConstructorsElements => _currentConstructorsElements;
-
+  @override
   ListenableState<String> get currentRound => _currentRound;
-
+  @override
   ListenableState<String> get currentSeason => _currentSeason;
-
+  @override
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
 
   HomeScreenWM(super.model);
@@ -41,6 +70,7 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel> {
     super.initWidgetModel();
   }
 
+  @override
   Future<void> loadCurrentDriversStandings() async {
     await execute<StandingsModel>(
       model.loadCurrentDriversStandings,
@@ -55,6 +85,7 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel> {
     );
   }
 
+  @override
   Future<void> loadCurrentConstructorsStandings() async {
     await execute<StandingsModel>(
       model.loadCurrentConstructorsStandings,
@@ -68,8 +99,9 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel> {
     );
   }
 
+  @override
   Future<void> loadAllData() async {
-    // _allDataIsLoaded.accept(false);
+    _allDataIsLoaded.accept(false);
 
     await Future.wait(
       [

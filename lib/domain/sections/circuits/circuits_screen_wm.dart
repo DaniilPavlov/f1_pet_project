@@ -6,15 +6,31 @@ import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/circuits/circuits_screen.dart';
 import 'package:flutter/material.dart';
 
-class CircuitsScreenWM
-    extends WidgetModel<CircuitsScreen, CircuitsScreenModel> {
+abstract class ICircuitsScreenWM extends IWidgetModel {
+  /// трассы
+  ListenableState<EntityState<List<CircuitModel>>> get circuitsElements;
+
+  /// загружены ли начальные данные
+  ListenableState<bool> get allDataIsLoaded;
+
+  /// загрузка всех трасс
+  void loadCircuits();
+
+  /// загрузка всех данных
+  void loadAllData();
+}
+
+class CircuitsScreenWM extends WidgetModel<CircuitsScreen, CircuitsScreenModel>
+    implements ICircuitsScreenWM {
   final _circuitsElements = EntityStateNotifier<List<CircuitModel>>();
 
   final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
 
+  @override
   ListenableState<EntityState<List<CircuitModel>>> get circuitsElements =>
       _circuitsElements;
 
+  @override
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
 
   CircuitsScreenWM(super.model);
@@ -26,6 +42,7 @@ class CircuitsScreenWM
     super.initWidgetModel();
   }
 
+  @override
   Future<void> loadCircuits() async {
     await execute<CircuitsModel>(
       model.loadCircuits,
@@ -37,8 +54,9 @@ class CircuitsScreenWM
     );
   }
 
+  @override
   Future<void> loadAllData() async {
-    // _allDataIsLoaded.accept(false);
+    _allDataIsLoaded.accept(false);
 
     await Future.wait(
       [
@@ -50,5 +68,5 @@ class CircuitsScreenWM
   }
 }
 
-CircuitsScreenWM createHomeScreenWM(BuildContext _) =>
+CircuitsScreenWM createCircuitsScreenWM(BuildContext _) =>
     CircuitsScreenWM(CircuitsScreenModel());

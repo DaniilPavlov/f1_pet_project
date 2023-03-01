@@ -33,7 +33,7 @@ class RequestHandler {
     );
 
     final res = await _dio!.get<T>(
-      '$path.json',
+      '$path.json?limit=100',
       cancelToken: cancelToken,
       onReceiveProgress: onReceiveProgress,
       queryParameters: queryParameters,

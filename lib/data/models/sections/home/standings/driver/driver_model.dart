@@ -6,24 +6,27 @@ part 'driver_model.g.dart';
 @JsonSerializable()
 class DriverModel {
   final String driverId;
-  final String permanentNumber;
-  final String code;
   final String url;
   final String givenName;
   final String familyName;
   final String dateOfBirth;
   final String nationality;
+  String? permanentNumber;
+  String? code;
 
   DriverModel({
     required this.driverId,
-    required this.permanentNumber,
-    required this.code,
     required this.url,
     required this.givenName,
     required this.familyName,
     required this.dateOfBirth,
     required this.nationality,
-  });
+    required this.code,
+    required this.permanentNumber,
+  }) {
+    code ??= 'none';
+    permanentNumber ??= 'none';
+  }
 
   factory DriverModel.fromJson(Map<String, dynamic> json) {
     try {

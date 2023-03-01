@@ -25,7 +25,7 @@ void main() {
       tester.init();
       wm.changeActivePage(value: 1);
       Future.delayed(const Duration(milliseconds: 30), () {});
-      final value = wm.activePage.value;
+      final value = wm.activeTable.value;
       expect(value, 1);
     },
   );

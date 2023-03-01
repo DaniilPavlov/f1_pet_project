@@ -3,15 +3,27 @@ import 'package:f1_pet_project/domain/sections/home/tournament_tables/wm/tournam
 import 'package:f1_pet_project/presentation/sections/home/tournament_tables/tournament_tables_section.dart';
 import 'package:flutter/cupertino.dart';
 
-class TournamentTablesSectionWM
-    extends WidgetModel<TournamentTableSection, TournamentTablesSectionModel> {
-  final _activePage = StateNotifier<int>(initValue: 0);
+abstract class ITournamentTablesSectionWM extends IWidgetModel {
+  /// активная таблица
+  ListenableState<int> get activeTable;
 
-  ListenableState<int> get activePage => _activePage;
+  /// сменить таблицу
+  void changeActivePage({required int value});
+}
+
+class TournamentTablesSectionWM
+    extends WidgetModel<TournamentTableSection, TournamentTablesSectionModel>
+    implements ITournamentTablesSectionWM {
+  final _activeTable = StateNotifier<int>(initValue: 0);
+
+  @override
+  ListenableState<int> get activeTable => _activeTable;
+
   TournamentTablesSectionWM(super.model);
 
+  @override
   void changeActivePage({required int value}) {
-    _activePage.accept(value);
+    _activeTable.accept(value);
   }
 }
 

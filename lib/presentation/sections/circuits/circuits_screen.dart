@@ -1,19 +1,21 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/circuits/circuit_model.dart';
 import 'package:f1_pet_project/domain/sections/circuits/circuits_screen_wm.dart';
-import 'package:f1_pet_project/presentation/sections/circuits/circuit/circuit_element.dart';
+import 'package:f1_pet_project/presentation/widgets/containers/red_border_container.dart';
+import 'package:f1_pet_project/router/router.gr.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class CircuitsScreen extends ElementaryWidget<CircuitsScreenWM> {
+class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
   const CircuitsScreen({
     super.key,
-  }) : super(createHomeScreenWM);
+  }) : super(createCircuitsScreenWM);
 
   @override
-  Widget build(CircuitsScreenWM wm) {
+  Widget build(ICircuitsScreenWM wm) {
     return Scaffold(
       body: SafeArea(
         child: StateNotifierBuilder<bool>(
@@ -37,7 +39,7 @@ class CircuitsScreen extends ElementaryWidget<CircuitsScreenWM> {
 }
 
 class _Body extends StatelessWidget {
-  final CircuitsScreenWM wm;
+  final ICircuitsScreenWM wm;
   const _Body({
     required this.wm,
     Key? key,
@@ -64,8 +66,12 @@ class _Body extends StatelessWidget {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: items.length,
                         shrinkWrap: true,
-                        itemBuilder: (context, index) =>
-                            CircuitElement(circuitModel: items[index]),
+                        itemBuilder: (context, index) => RedBorderContainer(
+                          title: items[index].circuitName,
+                          onTap: () async => context.router.navigate(
+                            CircuitRoute(circuitModel: items[index]),
+                          ),
+                        ),
                       ),
                     );
             },

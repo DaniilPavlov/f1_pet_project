@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/presentation/widgets/scaffold_with_navbar.dart';
 import 'package:f1_pet_project/router/circuits_route.dart';
+import 'package:f1_pet_project/router/hall_of_fame_route.dart';
 import 'package:f1_pet_project/router/home_route.dart';
 
 @MaterialAutoRouter(
@@ -12,6 +13,7 @@ import 'package:f1_pet_project/router/home_route.dart';
       initial: true,
       children: [
         homeRoute,
+        hallOfFameRoute,
         circuitsRoute,
       ],
     ),
