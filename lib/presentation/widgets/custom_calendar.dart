@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:f1_pet_project/domain/help/extensions.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
@@ -6,6 +7,13 @@ import 'package:intl/intl.dart'; // ignore_for_file: avoid_annotating_with_dynam
 import 'package:table_calendar/table_calendar.dart';
 
 class CustomCalendar extends StatefulWidget {
+  final DateTime selectedDay;
+  final DateTime focusedDay;
+
+  final void Function(DateTime firstDay) onPageChanged;
+  final void Function(DateTime selectedDay, DateTime focusedDay) onDaySelected;
+  final String? Function(DateTime day) imagePathCallback;
+
   const CustomCalendar({
     required this.selectedDay,
     required this.onPageChanged,
@@ -15,12 +23,6 @@ class CustomCalendar extends StatefulWidget {
     Key? key,
   })  : focusedDay = focusedDay ?? selectedDay,
         super(key: key);
-  final DateTime selectedDay;
-  final DateTime focusedDay;
-
-  final void Function(DateTime firstDay) onPageChanged;
-  final void Function(DateTime selectedDay, DateTime focusedDay) onDaySelected;
-  final String? Function(DateTime day) imagePathCallback;
 
   @override
   State<CustomCalendar> createState() => _CustomCalendarState();
@@ -31,8 +33,8 @@ class _CustomCalendarState extends State<CustomCalendar> {
   Widget build(BuildContext context) {
     const textStyle = AppStyles.body;
 
-    return Container(
-      color: AppTheme.grayBG,
+    return ColoredBox(
+      color: AppTheme.grey,
       child: TableCalendar<dynamic>(
         locale: 'ru_RU',
         availableGestures: AvailableGestures.horizontalSwipe,
@@ -80,34 +82,81 @@ class _CustomCalendarState extends State<CustomCalendar> {
         ),
         calendarBuilders: CalendarBuilders<dynamic>(
           selectedBuilder: (context, day, focusedDay) {
-            return _makeTextWidget(
-              day,
-              textStyle: textStyle.copyWith(color: Colors.white),
-              isSelected: true,
-            );
+            return day.month == focusedDay.month
+                ? _makeLogoWidget(
+                      day,
+                      isSelected: true,
+                    ) ??
+                    _makeTextWidget(
+                      day,
+                      textStyle: textStyle,
+                      isSelected: true,
+                    )
+                : _makeTextWidget(
+                    day,
+                    textStyle: textStyle,
+                    isSelected: true,
+                  );
           },
           outsideBuilder: (context, day, focusedDay) {
-            return const SizedBox();
+            return day.month == focusedDay.month
+                ? _makeLogoWidget(day) ??
+                    _makeTextWidget(
+                      day,
+                      textStyle: textStyle.copyWith(
+                        color: AppTheme.white,
+                      ),
+                    )
+                : _makeTextWidget(
+                    day,
+                    textStyle: textStyle.copyWith(
+                      color: AppTheme.white,
+                    ),
+                  );
           },
           todayBuilder: (context, day, focusedDay) {
-            return _makeTextWidget(
-              day,
-              textStyle: textStyle.copyWith(
-                color: day.month == focusedDay.month ? null : AppTheme.black,
-              ),
-            );
+            return _makeLogoWidget(day) ??
+                _makeTextWidget(
+                  day,
+                  textStyle: textStyle.copyWith(
+                    color: day.month == focusedDay.month
+                        ? null
+                        : AppTheme.turquoise,
+                  ),
+                );
           },
           defaultBuilder: (context, day, focusedDay) {
-            return _makeTextWidget(
-              day,
-              textStyle: textStyle.copyWith(
-                color: day.month == focusedDay.month ? null : AppTheme.black,
-              ),
-            );
+            return _makeLogoWidget(day);
           },
         ),
       ),
     );
+  }
+
+  Widget? _makeLogoWidget(
+    DateTime date, {
+    bool isSelected = false,
+  }) {
+    final imageAsset = widget.imagePathCallback(date);
+
+    if (imageAsset != null) {
+      return Center(
+        child: CircleAvatar(
+          radius: 16,
+          backgroundColor: isSelected ? AppTheme.red : Colors.transparent,
+          child: imageAsset.isEmpty
+              ? const SizedBox(
+                  height: 24,
+                  child: Icon(Icons.home),
+                )
+              : SizedBox(
+                  height: 24,
+                  child: ExtendedImage.asset(imageAsset),
+                ),
+        ),
+      );
+    }
+    return null;
   }
 
   Widget _makeTextWidget(
@@ -116,38 +165,26 @@ class _CustomCalendarState extends State<CustomCalendar> {
     bool isSelected = false,
   }) {
     return Center(
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          CircleAvatar(
-            radius: 16,
-            backgroundColor: isSelected ? AppTheme.red : Colors.transparent,
-            child: Text(
-              date.day.toString(),
-              style: textStyle,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 3.0),
-            child: CircleAvatar(
-              radius: 2,
-              backgroundColor: isSelected ? Colors.white : Colors.black,
-            ),
-          ),
-        ],
+      child: CircleAvatar(
+        radius: 16,
+        backgroundColor: isSelected ? AppTheme.red : Colors.transparent,
+        child: Text(
+          date.day.toString(),
+          style: textStyle,
+        ),
       ),
     );
   }
 }
 
 class ChevronButton extends StatelessWidget {
+  final IconData icon;
+  final AlignmentGeometry alignment;
   const ChevronButton({
     required this.icon,
     this.alignment = Alignment.centerLeft,
     Key? key,
   }) : super(key: key);
-  final IconData icon;
-  final AlignmentGeometry alignment;
 
   @override
   Widget build(BuildContext context) {

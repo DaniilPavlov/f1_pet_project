@@ -19,18 +19,17 @@ import '../data/models/sections/circuits/circuit_model.dart' as _i17;
 import '../data/models/sections/home/standings/standings_lists_model.dart'
     as _i16;
 import '../data/models/sections/results/results_model.dart' as _i15;
+import '../presentation/sections/circuits/circuit/circuit_screen.dart' as _i12;
 import '../presentation/sections/circuits/circuits_screen.dart' as _i11;
-import '../presentation/sections/circuits/sections/circuit/circuit_screen.dart'
-    as _i12;
-import '../presentation/sections/hall_of_fame/champions/constructors/constructors_champions_screen.dart'
+import '../presentation/sections/hall_of_fame/constructors_champions/constructors_champions_screen.dart'
     as _i10;
-import '../presentation/sections/hall_of_fame/champions/drivers/drivers_champions_screen.dart'
+import '../presentation/sections/hall_of_fame/drivers_champions/drivers_champions_screen.dart'
     as _i9;
 import '../presentation/sections/hall_of_fame/hall_of_fame_screen.dart' as _i8;
 import '../presentation/sections/home/home_screen.dart' as _i3;
 import '../presentation/sections/results/certain_race/certain_race_screen.dart'
     as _i6;
-import '../presentation/sections/results/last_race_table/sections/last_race_screen.dart'
+import '../presentation/sections/results/last_race/last_race_screen.dart'
     as _i5;
 import '../presentation/sections/results/results_screen.dart' as _i4;
 import '../presentation/sections/schedule/schedule_screen.dart' as _i7;

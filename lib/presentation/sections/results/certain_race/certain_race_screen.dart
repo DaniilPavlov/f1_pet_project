@@ -4,7 +4,7 @@ import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:flutter/material.dart';
 
-// TODO(pavlov): подумать как оформить поиск гонки
+// TODO(pavlov): сделать поиск
 class CertainRaceScreen extends ElementaryWidget<ICertainRaceScreenWM> {
   const CertainRaceScreen({
     super.key,
