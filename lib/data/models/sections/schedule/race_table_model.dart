@@ -9,11 +9,13 @@ part 'race_table_model.g.dart';
 @JsonSerializable()
 class RaceTableModel {
   final String season;
+  final String? round;
   final List<RacesModel> Races;
 
   RaceTableModel({
     required this.Races,
     required this.season,
+    required this.round,
   });
 
   factory RaceTableModel.fromJson(Map<String, dynamic> json) {

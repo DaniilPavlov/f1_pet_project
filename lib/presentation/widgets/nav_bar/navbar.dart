@@ -42,7 +42,7 @@ class NavBar extends StatelessWidget {
               ),
               NavBarItem(
                 icon: Icons.house_sharp,
-                title: 'Расписание',
+                title: 'Результаты',
                 isSelected: tabsRouter?.activeIndex == 1,
                 onPressed: () {
                   tabsRouter?.setActiveIndex(1);
@@ -50,7 +50,7 @@ class NavBar extends StatelessWidget {
               ),
               NavBarItem(
                 icon: Icons.house_sharp,
-                title: 'Зал славы',
+                title: 'Расписание',
                 isSelected: tabsRouter?.activeIndex == 2,
                 onPressed: () {
                   tabsRouter?.setActiveIndex(2);
@@ -58,21 +58,21 @@ class NavBar extends StatelessWidget {
               ),
               NavBarItem(
                 icon: Icons.house_sharp,
-                title: 'Трассы',
+                title: 'Зал славы',
                 isSelected: tabsRouter?.activeIndex == 3,
                 onPressed: () {
                   tabsRouter?.setActiveIndex(3);
                 },
               ),
+              NavBarItem(
+                icon: Icons.house_sharp,
+                title: 'Трассы',
+                isSelected: tabsRouter?.activeIndex == 4,
+                onPressed: () {
+                  tabsRouter?.setActiveIndex(4);
+                },
+              ),
 
-              // NavBarItem(
-              //   icon: Icons.house_sharp,
-              //   title: 'Матчи',
-              //   isSelected: tabsRouter?.activeIndex == 3,
-              //   onPressed: () {
-              //     tabsRouter?.setActiveIndex(3);
-              //   },
-              // ),
               // NavBarItem(
               //   icon: Icons.house_sharp,
               //   title: 'Команда',

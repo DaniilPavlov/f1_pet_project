@@ -13,6 +13,7 @@ class CustomScaffoldWithNavBar extends StatelessWidget {
       scaffoldKey: Keys.scaffoldKey,
       routes: const [
         HomeRouter(),
+        ResultsRouter(),
         ScheduleRouter(),
         HallOfFameRouter(),
         CircuitsRouter(),
