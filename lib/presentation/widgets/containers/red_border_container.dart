@@ -22,7 +22,13 @@ class RedBorderContainer extends StatelessWidget {
           border: Border.all(color: AppTheme.red),
           borderRadius: const BorderRadius.all(Radius.circular(20)),
         ),
-        child: Text(title, style: AppStyles.h3),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title, style: AppStyles.h3),
+            const Icon(Icons.arrow_right_alt),
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/domain/sections/hall_of_fame/hall_of_fame_screen_wm.dart';
-import 'package:f1_pet_project/presentation/sections/hall_of_fame/champions/champions_section.dart';
+import 'package:f1_pet_project/presentation/sections/hall_of_fame/sections/champions/champions_section.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';

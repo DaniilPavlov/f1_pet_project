@@ -1,13 +1,13 @@
-import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
-import 'package:f1_pet_project/presentation/sections/home/tournament_tables/tables/table_parts/tournament_table_constructors_detail_row.dart';
-import 'package:f1_pet_project/presentation/sections/home/tournament_tables/tables/table_parts/tournament_table_constructors_primary_row.dart';
+import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
+import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/table_parts/tournament_table_drivers_detail_row.dart';
+import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/table_parts/tournament_table_drivers_primary_row.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class TournamentConstructorsTable extends StatelessWidget {
-  final List<ConstructorStandingsModel> constructors;
-  const TournamentConstructorsTable({
-    required this.constructors,
+class TournamentDriversTable extends StatelessWidget {
+  final List<DriverStandingsModel> drivers;
+  const TournamentDriversTable({
+    required this.drivers,
     super.key,
   });
 
@@ -20,9 +20,9 @@ class TournamentConstructorsTable extends StatelessWidget {
         Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [
-            constructorsPrimaryRow(),
+            driversPrimaryRow(),
             ...List.generate(
-              constructors.length,
+              drivers.length,
               (i) => TableRow(
                 decoration: BoxDecoration(
                   color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
@@ -32,8 +32,8 @@ class TournamentConstructorsTable extends StatelessWidget {
                     ),
                   ),
                 ),
-                children: tournamentTableConstructorsDetailRowChildren(
-                  constructors[i],
+                children: tournamentTableDriversDetailRowChildren(
+                  drivers[i],
                   i + 1,
                 ),
               ),

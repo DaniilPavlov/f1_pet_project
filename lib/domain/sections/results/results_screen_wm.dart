@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 abstract class IResultsScreenWM extends IWidgetModel {
   /// результаты последней гонки
-  ListenableState<EntityState<RacesModel>> get lastRaceResults;
+  ListenableState<EntityState<RacesModel>> get lastRace;
 
   /// загружены ли начальные данные
   ListenableState<bool> get allDataIsLoaded;
@@ -22,13 +22,12 @@ abstract class IResultsScreenWM extends IWidgetModel {
 
 class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
     implements IResultsScreenWM {
-  final _lastRaceResults = EntityStateNotifier<RacesModel>();
+  final _lastRace = EntityStateNotifier<RacesModel>();
 
   final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
 
   @override
-  ListenableState<EntityState<RacesModel>> get lastRaceResults =>
-      _lastRaceResults;
+  ListenableState<EntityState<RacesModel>> get lastRace => _lastRace;
 
   @override
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
@@ -46,11 +45,11 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
   Future<void> loadLastRaceResults() async {
     await execute<ScheduleModel>(
       model.loadLastRaceResults,
-      before: _lastRaceResults.loading,
+      before: _lastRace.loading,
       onSuccess: (data) {
-        _lastRaceResults.content(data!.RaceTable.Races[0]);
+        _lastRace.content(data!.RaceTable.Races[0]);
       },
-      onError: _lastRaceResults.error,
+      onError: _lastRace.error,
     );
   }
 

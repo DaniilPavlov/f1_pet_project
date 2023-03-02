@@ -11,97 +11,118 @@
 // ignore_for_file: type=lint
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i11;
+import 'package:auto_route/auto_route.dart' as _i13;
 import 'package:auto_route/empty_router_widgets.dart' as _i2;
-import 'package:flutter/material.dart' as _i12;
+import 'package:flutter/material.dart' as _i14;
 
-import '../data/models/sections/circuits/circuit_model.dart' as _i14;
+import '../data/models/sections/circuits/circuit_model.dart' as _i17;
 import '../data/models/sections/home/standings/standings_lists_model.dart'
-    as _i13;
-import '../presentation/sections/circuits/circuits_screen.dart' as _i9;
+    as _i16;
+import '../data/models/sections/results/results_model.dart' as _i15;
+import '../presentation/sections/circuits/circuits_screen.dart' as _i11;
 import '../presentation/sections/circuits/sections/circuit/circuit_screen.dart'
-    as _i10;
+    as _i12;
 import '../presentation/sections/hall_of_fame/champions/constructors/constructors_champions_screen.dart'
-    as _i8;
+    as _i10;
 import '../presentation/sections/hall_of_fame/champions/drivers/drivers_champions_screen.dart'
-    as _i7;
-import '../presentation/sections/hall_of_fame/hall_of_fame_screen.dart' as _i6;
+    as _i9;
+import '../presentation/sections/hall_of_fame/hall_of_fame_screen.dart' as _i8;
 import '../presentation/sections/home/home_screen.dart' as _i3;
+import '../presentation/sections/results/certain_race/certain_race_screen.dart'
+    as _i6;
+import '../presentation/sections/results/last_race_table/sections/last_race_screen.dart'
+    as _i5;
 import '../presentation/sections/results/results_screen.dart' as _i4;
-import '../presentation/sections/schedule/schedule_screen.dart' as _i5;
+import '../presentation/sections/schedule/schedule_screen.dart' as _i7;
 import '../presentation/widgets/scaffold_with_navbar.dart' as _i1;
 
-class AppRouter extends _i11.RootStackRouter {
-  AppRouter([_i12.GlobalKey<_i12.NavigatorState>? navigatorKey])
+class AppRouter extends _i13.RootStackRouter {
+  AppRouter([_i14.GlobalKey<_i14.NavigatorState>? navigatorKey])
       : super(navigatorKey);
 
   @override
-  final Map<String, _i11.PageFactory> pagesMap = {
+  final Map<String, _i13.PageFactory> pagesMap = {
     CustomScaffoldWithNavBar.name: (routeData) {
-      return _i11.MaterialPageX<dynamic>(
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i1.CustomScaffoldWithNavBar(),
       );
     },
     HomeRouter.name: (routeData) {
-      return _i11.MaterialPageX<dynamic>(
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i2.EmptyRouterScreen(),
       );
     },
     ResultsRouter.name: (routeData) {
-      return _i11.MaterialPageX<dynamic>(
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i2.EmptyRouterScreen(),
       );
     },
     ScheduleRouter.name: (routeData) {
-      return _i11.MaterialPageX<dynamic>(
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i2.EmptyRouterScreen(),
       );
     },
     HallOfFameRouter.name: (routeData) {
-      return _i11.MaterialPageX<dynamic>(
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i2.EmptyRouterScreen(),
       );
     },
     CircuitsRouter.name: (routeData) {
-      return _i11.MaterialPageX<dynamic>(
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i2.EmptyRouterScreen(),
       );
     },
     HomeRoute.name: (routeData) {
-      return _i11.MaterialPageX<dynamic>(
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i3.HomeScreen(),
       );
     },
     ResultsRoute.name: (routeData) {
-      return _i11.MaterialPageX<dynamic>(
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
         child: const _i4.ResultsScreen(),
       );
     },
-    ScheduleRoute.name: (routeData) {
-      return _i11.MaterialPageX<dynamic>(
+    LastRaceRoute.name: (routeData) {
+      final args = routeData.argsAs<LastRaceRouteArgs>();
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i5.ScheduleScreen(),
+        child: _i5.LastRaceScreen(
+          results: args.results,
+          key: args.key,
+        ),
+      );
+    },
+    CertainRaceRoute.name: (routeData) {
+      return _i13.MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: const _i6.CertainRaceScreen(),
+      );
+    },
+    ScheduleRoute.name: (routeData) {
+      return _i13.MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: const _i7.ScheduleScreen(),
       );
     },
     HallOfFameRoute.name: (routeData) {
-      return _i11.MaterialPageX<dynamic>(
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i6.HallOfFameScreen(),
+        child: const _i8.HallOfFameScreen(),
       );
     },
     DriversChampionsRoute.name: (routeData) {
       final args = routeData.argsAs<DriversChampionsRouteArgs>();
-      return _i11.MaterialPageX<dynamic>(
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: _i7.DriversChampionsScreen(
+        child: _i9.DriversChampionsScreen(
           driversChampions: args.driversChampions,
           key: args.key,
         ),
@@ -109,25 +130,25 @@ class AppRouter extends _i11.RootStackRouter {
     },
     ConstructorsChampionsRoute.name: (routeData) {
       final args = routeData.argsAs<ConstructorsChampionsRouteArgs>();
-      return _i11.MaterialPageX<dynamic>(
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: _i8.ConstructorsChampionsScreen(
+        child: _i10.ConstructorsChampionsScreen(
           constructorsChampions: args.constructorsChampions,
           key: args.key,
         ),
       );
     },
     CircuitsRoute.name: (routeData) {
-      return _i11.MaterialPageX<dynamic>(
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i9.CircuitsScreen(),
+        child: const _i11.CircuitsScreen(),
       );
     },
     CircuitRoute.name: (routeData) {
       final args = routeData.argsAs<CircuitRouteArgs>();
-      return _i11.MaterialPageX<dynamic>(
+      return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: _i10.CircuitScreen(
+        child: _i12.CircuitScreen(
           circuitModel: args.circuitModel,
           key: args.key,
         ),
@@ -136,17 +157,17 @@ class AppRouter extends _i11.RootStackRouter {
   };
 
   @override
-  List<_i11.RouteConfig> get routes => [
-        _i11.RouteConfig(
+  List<_i13.RouteConfig> get routes => [
+        _i13.RouteConfig(
           CustomScaffoldWithNavBar.name,
           path: '/',
           children: [
-            _i11.RouteConfig(
+            _i13.RouteConfig(
               HomeRouter.name,
               path: 'home',
               parent: CustomScaffoldWithNavBar.name,
               children: [
-                _i11.RouteConfig(
+                _i13.RouteConfig(
                   HomeRoute.name,
                   path: '',
                   parent: HomeRouter.name,
@@ -154,25 +175,37 @@ class AppRouter extends _i11.RootStackRouter {
                 )
               ],
             ),
-            _i11.RouteConfig(
+            _i13.RouteConfig(
               ResultsRouter.name,
               path: 'results',
               parent: CustomScaffoldWithNavBar.name,
               children: [
-                _i11.RouteConfig(
+                _i13.RouteConfig(
                   ResultsRoute.name,
                   path: '',
                   parent: ResultsRouter.name,
                   meta: <String, dynamic>{'hideBottomNav': false},
-                )
+                ),
+                _i13.RouteConfig(
+                  LastRaceRoute.name,
+                  path: 'last_race',
+                  parent: ResultsRouter.name,
+                  meta: <String, dynamic>{'hideBottomNav': false},
+                ),
+                _i13.RouteConfig(
+                  CertainRaceRoute.name,
+                  path: 'certain_race',
+                  parent: ResultsRouter.name,
+                  meta: <String, dynamic>{'hideBottomNav': false},
+                ),
               ],
             ),
-            _i11.RouteConfig(
+            _i13.RouteConfig(
               ScheduleRouter.name,
               path: 'schedule',
               parent: CustomScaffoldWithNavBar.name,
               children: [
-                _i11.RouteConfig(
+                _i13.RouteConfig(
                   ScheduleRoute.name,
                   path: '',
                   parent: ScheduleRouter.name,
@@ -180,24 +213,24 @@ class AppRouter extends _i11.RootStackRouter {
                 )
               ],
             ),
-            _i11.RouteConfig(
+            _i13.RouteConfig(
               HallOfFameRouter.name,
               path: 'hall_of_fame',
               parent: CustomScaffoldWithNavBar.name,
               children: [
-                _i11.RouteConfig(
+                _i13.RouteConfig(
                   HallOfFameRoute.name,
                   path: '',
                   parent: HallOfFameRouter.name,
                   meta: <String, dynamic>{'hideBottomNav': false},
                 ),
-                _i11.RouteConfig(
+                _i13.RouteConfig(
                   DriversChampionsRoute.name,
                   path: 'drivers_champions',
                   parent: HallOfFameRouter.name,
                   meta: <String, dynamic>{'hideBottomNav': false},
                 ),
-                _i11.RouteConfig(
+                _i13.RouteConfig(
                   ConstructorsChampionsRoute.name,
                   path: 'constructors_champions',
                   parent: HallOfFameRouter.name,
@@ -205,18 +238,18 @@ class AppRouter extends _i11.RootStackRouter {
                 ),
               ],
             ),
-            _i11.RouteConfig(
+            _i13.RouteConfig(
               CircuitsRouter.name,
               path: 'circuits',
               parent: CustomScaffoldWithNavBar.name,
               children: [
-                _i11.RouteConfig(
+                _i13.RouteConfig(
                   CircuitsRoute.name,
                   path: '',
                   parent: CircuitsRouter.name,
                   meta: <String, dynamic>{'hideBottomNav': false},
                 ),
-                _i11.RouteConfig(
+                _i13.RouteConfig(
                   CircuitRoute.name,
                   path: 'circuit',
                   parent: CircuitsRouter.name,
@@ -231,8 +264,8 @@ class AppRouter extends _i11.RootStackRouter {
 
 /// generated route for
 /// [_i1.CustomScaffoldWithNavBar]
-class CustomScaffoldWithNavBar extends _i11.PageRouteInfo<void> {
-  const CustomScaffoldWithNavBar({List<_i11.PageRouteInfo>? children})
+class CustomScaffoldWithNavBar extends _i13.PageRouteInfo<void> {
+  const CustomScaffoldWithNavBar({List<_i13.PageRouteInfo>? children})
       : super(
           CustomScaffoldWithNavBar.name,
           path: '/',
@@ -244,8 +277,8 @@ class CustomScaffoldWithNavBar extends _i11.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.EmptyRouterScreen]
-class HomeRouter extends _i11.PageRouteInfo<void> {
-  const HomeRouter({List<_i11.PageRouteInfo>? children})
+class HomeRouter extends _i13.PageRouteInfo<void> {
+  const HomeRouter({List<_i13.PageRouteInfo>? children})
       : super(
           HomeRouter.name,
           path: 'home',
@@ -257,8 +290,8 @@ class HomeRouter extends _i11.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.EmptyRouterScreen]
-class ResultsRouter extends _i11.PageRouteInfo<void> {
-  const ResultsRouter({List<_i11.PageRouteInfo>? children})
+class ResultsRouter extends _i13.PageRouteInfo<void> {
+  const ResultsRouter({List<_i13.PageRouteInfo>? children})
       : super(
           ResultsRouter.name,
           path: 'results',
@@ -270,8 +303,8 @@ class ResultsRouter extends _i11.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.EmptyRouterScreen]
-class ScheduleRouter extends _i11.PageRouteInfo<void> {
-  const ScheduleRouter({List<_i11.PageRouteInfo>? children})
+class ScheduleRouter extends _i13.PageRouteInfo<void> {
+  const ScheduleRouter({List<_i13.PageRouteInfo>? children})
       : super(
           ScheduleRouter.name,
           path: 'schedule',
@@ -283,8 +316,8 @@ class ScheduleRouter extends _i11.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.EmptyRouterScreen]
-class HallOfFameRouter extends _i11.PageRouteInfo<void> {
-  const HallOfFameRouter({List<_i11.PageRouteInfo>? children})
+class HallOfFameRouter extends _i13.PageRouteInfo<void> {
+  const HallOfFameRouter({List<_i13.PageRouteInfo>? children})
       : super(
           HallOfFameRouter.name,
           path: 'hall_of_fame',
@@ -296,8 +329,8 @@ class HallOfFameRouter extends _i11.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.EmptyRouterScreen]
-class CircuitsRouter extends _i11.PageRouteInfo<void> {
-  const CircuitsRouter({List<_i11.PageRouteInfo>? children})
+class CircuitsRouter extends _i13.PageRouteInfo<void> {
+  const CircuitsRouter({List<_i13.PageRouteInfo>? children})
       : super(
           CircuitsRouter.name,
           path: 'circuits',
@@ -309,7 +342,7 @@ class CircuitsRouter extends _i11.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.HomeScreen]
-class HomeRoute extends _i11.PageRouteInfo<void> {
+class HomeRoute extends _i13.PageRouteInfo<void> {
   const HomeRoute()
       : super(
           HomeRoute.name,
@@ -321,7 +354,7 @@ class HomeRoute extends _i11.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.ResultsScreen]
-class ResultsRoute extends _i11.PageRouteInfo<void> {
+class ResultsRoute extends _i13.PageRouteInfo<void> {
   const ResultsRoute()
       : super(
           ResultsRoute.name,
@@ -332,8 +365,54 @@ class ResultsRoute extends _i11.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i5.ScheduleScreen]
-class ScheduleRoute extends _i11.PageRouteInfo<void> {
+/// [_i5.LastRaceScreen]
+class LastRaceRoute extends _i13.PageRouteInfo<LastRaceRouteArgs> {
+  LastRaceRoute({
+    required List<_i15.ResultsModel> results,
+    _i14.Key? key,
+  }) : super(
+          LastRaceRoute.name,
+          path: 'last_race',
+          args: LastRaceRouteArgs(
+            results: results,
+            key: key,
+          ),
+        );
+
+  static const String name = 'LastRaceRoute';
+}
+
+class LastRaceRouteArgs {
+  const LastRaceRouteArgs({
+    required this.results,
+    this.key,
+  });
+
+  final List<_i15.ResultsModel> results;
+
+  final _i14.Key? key;
+
+  @override
+  String toString() {
+    return 'LastRaceRouteArgs{results: $results, key: $key}';
+  }
+}
+
+/// generated route for
+/// [_i6.CertainRaceScreen]
+class CertainRaceRoute extends _i13.PageRouteInfo<void> {
+  const CertainRaceRoute()
+      : super(
+          CertainRaceRoute.name,
+          path: 'certain_race',
+        );
+
+  static const String name = 'CertainRaceRoute';
+}
+
+/// generated route for
+/// [_i7.ScheduleScreen]
+class ScheduleRoute extends _i13.PageRouteInfo<void> {
   const ScheduleRoute()
       : super(
           ScheduleRoute.name,
@@ -344,8 +423,8 @@ class ScheduleRoute extends _i11.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i6.HallOfFameScreen]
-class HallOfFameRoute extends _i11.PageRouteInfo<void> {
+/// [_i8.HallOfFameScreen]
+class HallOfFameRoute extends _i13.PageRouteInfo<void> {
   const HallOfFameRoute()
       : super(
           HallOfFameRoute.name,
@@ -356,12 +435,12 @@ class HallOfFameRoute extends _i11.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i7.DriversChampionsScreen]
+/// [_i9.DriversChampionsScreen]
 class DriversChampionsRoute
-    extends _i11.PageRouteInfo<DriversChampionsRouteArgs> {
+    extends _i13.PageRouteInfo<DriversChampionsRouteArgs> {
   DriversChampionsRoute({
-    required List<_i13.StandingsListsModel> driversChampions,
-    _i12.Key? key,
+    required List<_i16.StandingsListsModel> driversChampions,
+    _i14.Key? key,
   }) : super(
           DriversChampionsRoute.name,
           path: 'drivers_champions',
@@ -380,9 +459,9 @@ class DriversChampionsRouteArgs {
     this.key,
   });
 
-  final List<_i13.StandingsListsModel> driversChampions;
+  final List<_i16.StandingsListsModel> driversChampions;
 
-  final _i12.Key? key;
+  final _i14.Key? key;
 
   @override
   String toString() {
@@ -391,12 +470,12 @@ class DriversChampionsRouteArgs {
 }
 
 /// generated route for
-/// [_i8.ConstructorsChampionsScreen]
+/// [_i10.ConstructorsChampionsScreen]
 class ConstructorsChampionsRoute
-    extends _i11.PageRouteInfo<ConstructorsChampionsRouteArgs> {
+    extends _i13.PageRouteInfo<ConstructorsChampionsRouteArgs> {
   ConstructorsChampionsRoute({
-    required List<_i13.StandingsListsModel> constructorsChampions,
-    _i12.Key? key,
+    required List<_i16.StandingsListsModel> constructorsChampions,
+    _i14.Key? key,
   }) : super(
           ConstructorsChampionsRoute.name,
           path: 'constructors_champions',
@@ -415,9 +494,9 @@ class ConstructorsChampionsRouteArgs {
     this.key,
   });
 
-  final List<_i13.StandingsListsModel> constructorsChampions;
+  final List<_i16.StandingsListsModel> constructorsChampions;
 
-  final _i12.Key? key;
+  final _i14.Key? key;
 
   @override
   String toString() {
@@ -426,8 +505,8 @@ class ConstructorsChampionsRouteArgs {
 }
 
 /// generated route for
-/// [_i9.CircuitsScreen]
-class CircuitsRoute extends _i11.PageRouteInfo<void> {
+/// [_i11.CircuitsScreen]
+class CircuitsRoute extends _i13.PageRouteInfo<void> {
   const CircuitsRoute()
       : super(
           CircuitsRoute.name,
@@ -438,11 +517,11 @@ class CircuitsRoute extends _i11.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i10.CircuitScreen]
-class CircuitRoute extends _i11.PageRouteInfo<CircuitRouteArgs> {
+/// [_i12.CircuitScreen]
+class CircuitRoute extends _i13.PageRouteInfo<CircuitRouteArgs> {
   CircuitRoute({
-    required _i14.CircuitModel circuitModel,
-    _i12.Key? key,
+    required _i17.CircuitModel circuitModel,
+    _i14.Key? key,
   }) : super(
           CircuitRoute.name,
           path: 'circuit',
@@ -461,9 +540,9 @@ class CircuitRouteArgs {
     this.key,
   });
 
-  final _i14.CircuitModel circuitModel;
+  final _i17.CircuitModel circuitModel;
 
-  final _i12.Key? key;
+  final _i14.Key? key;
 
   @override
   String toString() {

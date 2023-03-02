@@ -1,12 +1,12 @@
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
-import 'package:f1_pet_project/presentation/sections/hall_of_fame/champions/tables/table_parts/constructors_champions_table_detail_row.dart';
+import 'package:f1_pet_project/presentation/sections/hall_of_fame/sections/champions/tables/table_parts/drivers_champions_table_detail_row.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class ConstructorsChampionsTable extends StatelessWidget {
-  final List<StandingsListsModel> constructors;
-  const ConstructorsChampionsTable({
-    required this.constructors,
+class DriversChampionsTable extends StatelessWidget {
+  final List<StandingsListsModel> drivers;
+  const DriversChampionsTable({
+    required this.drivers,
     super.key,
   });
 
@@ -20,7 +20,7 @@ class ConstructorsChampionsTable extends StatelessWidget {
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [
             ...List.generate(
-              constructors.length,
+              drivers.length,
               (i) => TableRow(
                 decoration: BoxDecoration(
                   color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
@@ -30,8 +30,8 @@ class ConstructorsChampionsTable extends StatelessWidget {
                     ),
                   ),
                 ),
-                children: constructorsChampionsTableDetailRowChildren(
-                  constructors[constructors.length - i - 1],
+                children: driversChampionsTableDetailRowChildren(
+                  drivers[drivers.length-i-1],
                 ),
               ),
             ),

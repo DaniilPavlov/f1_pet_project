@@ -1,6 +1,6 @@
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
-import 'package:f1_pet_project/presentation/sections/hall_of_fame/champions/constructors/constructors_champions_appbar.dart';
-import 'package:f1_pet_project/presentation/sections/hall_of_fame/champions/tables/constructors_champions_table.dart';
+import 'package:f1_pet_project/presentation/sections/hall_of_fame/constructors_champions/constructors_champions_appbar.dart';
+import 'package:f1_pet_project/presentation/sections/hall_of_fame/sections/champions/tables/constructors_champions_table.dart';
 
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';

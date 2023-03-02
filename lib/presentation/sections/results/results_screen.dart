@@ -1,13 +1,16 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/domain/sections/results/results_screen_wm.dart';
+import 'package:f1_pet_project/presentation/sections/results/sections/last_race_table/last_race_table_section.dart';
 import 'package:f1_pet_project/presentation/widgets/containers/red_border_container.dart';
+import 'package:f1_pet_project/router/router.gr.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
+import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-// TODO(pavlov): подумать как оформить результаты
 class ResultsScreen extends ElementaryWidget<IResultsScreenWM> {
   const ResultsScreen({
     super.key,
@@ -49,35 +52,41 @@ class _Body extends StatelessWidget {
     return CustomScrollView(
       scrollBehavior: AntiGlowBehavior(),
       slivers: [
-        //
+        const SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: 20,
+              left: StaticData.defaultHorizontalPadding,
+            ),
+            child: Text(
+              'Результаты',
+              style: AppStyles.h1,
+            ),
+          ),
+        ),
         SliverToBoxAdapter(
           child: EntityStateNotifierBuilder<RacesModel>(
-            listenableEntityState: wm.lastRaceResults,
-            builder: (_, items) {
-              return items == null
+            listenableEntityState: wm.lastRace,
+            builder: (_, lastRace) {
+              return lastRace == null
                   ? const SizedBox()
                   : Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: StaticData.defaultHorizontalPadding,
-                      ),
-                      child: ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: items.Results!.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: RedBorderContainer(
-                            title: items.Results![index].Driver.code!,
-                            // onTap: () async => context.router.navigate(
-                            //   CircuitRoute(circuitModel: items[index]),
-                            // ),
-                            onTap: () {},
-                          ),
-                        ),
-                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: LastRaceTableSection(lastRace: lastRace),
                     );
             },
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: StaticData.defaultHorizontalPadding,
+            ),
+            child: RedBorderContainer(
+              title: 'Выбрать конкретную гонку',
+              onTap: () async =>
+                  context.router.navigate(const CertainRaceRoute()),
+            ),
           ),
         ),
       ],

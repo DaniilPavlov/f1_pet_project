@@ -1,13 +1,12 @@
-import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
-import 'package:f1_pet_project/presentation/sections/home/tournament_tables/tables/table_parts/tournament_table_drivers_detail_row.dart';
-import 'package:f1_pet_project/presentation/sections/home/tournament_tables/tables/table_parts/tournament_table_drivers_primary_row.dart';
+import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
+import 'package:f1_pet_project/presentation/sections/hall_of_fame/sections/champions/tables/table_parts/constructors_champions_table_detail_row.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class TournamentDriversTable extends StatelessWidget {
-  final List<DriverStandingsModel> drivers;
-  const TournamentDriversTable({
-    required this.drivers,
+class ConstructorsChampionsTable extends StatelessWidget {
+  final List<StandingsListsModel> constructors;
+  const ConstructorsChampionsTable({
+    required this.constructors,
     super.key,
   });
 
@@ -20,9 +19,8 @@ class TournamentDriversTable extends StatelessWidget {
         Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [
-            driversPrimaryRow(),
             ...List.generate(
-              drivers.length,
+              constructors.length,
               (i) => TableRow(
                 decoration: BoxDecoration(
                   color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
@@ -32,9 +30,8 @@ class TournamentDriversTable extends StatelessWidget {
                     ),
                   ),
                 ),
-                children: tournamentTableDriversDetailRowChildren(
-                  drivers[i],
-                  i + 1,
+                children: constructorsChampionsTableDetailRowChildren(
+                  constructors[constructors.length - i - 1],
                 ),
               ),
             ),

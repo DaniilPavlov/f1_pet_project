@@ -1,12 +1,13 @@
-import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
-import 'package:f1_pet_project/presentation/sections/hall_of_fame/champions/tables/table_parts/drivers_champions_table_detail_row.dart';
+import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
+import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/table_parts/tournament_table_constructors_detail_row.dart';
+import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/table_parts/tournament_table_constructors_primary_row.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class DriversChampionsTable extends StatelessWidget {
-  final List<StandingsListsModel> drivers;
-  const DriversChampionsTable({
-    required this.drivers,
+class TournamentConstructorsTable extends StatelessWidget {
+  final List<ConstructorStandingsModel> constructors;
+  const TournamentConstructorsTable({
+    required this.constructors,
     super.key,
   });
 
@@ -19,8 +20,9 @@ class DriversChampionsTable extends StatelessWidget {
         Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [
+            constructorsPrimaryRow(),
             ...List.generate(
-              drivers.length,
+              constructors.length,
               (i) => TableRow(
                 decoration: BoxDecoration(
                   color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
@@ -30,8 +32,9 @@ class DriversChampionsTable extends StatelessWidget {
                     ),
                   ),
                 ),
-                children: driversChampionsTableDetailRowChildren(
-                  drivers[drivers.length-i-1],
+                children: tournamentTableConstructorsDetailRowChildren(
+                  constructors[i],
+                  i + 1,
                 ),
               ),
             ),

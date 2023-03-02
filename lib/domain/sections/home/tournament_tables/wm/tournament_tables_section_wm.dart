@@ -1,6 +1,6 @@
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/domain/sections/home/tournament_tables/wm/tournament_tables_section_model.dart';
-import 'package:f1_pet_project/presentation/sections/home/tournament_tables/tournament_tables_section.dart';
+import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tournament_tables_section.dart';
 import 'package:flutter/cupertino.dart';
 
 abstract class ITournamentTablesSectionWM extends IWidgetModel {
