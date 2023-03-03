@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // ignore_for_file: avoid_annotating_with_dynamic
 import 'package:table_calendar/table_calendar.dart';
 
+// TODO(pavlov): добавить отображение выбранной даты на календарь
+// TODO(pavlov): добавить отображение количества событий, если их несколько
 class CustomCalendar extends StatefulWidget {
   final DateTime selectedDay;
   final DateTime focusedDay;

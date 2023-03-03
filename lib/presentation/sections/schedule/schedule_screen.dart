@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_bool_literals_in_conditional_expressions
+
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/domain/sections/schedule/schedule_screen_wm.dart';
@@ -6,9 +8,7 @@ import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
 
-// TODO(pavlov): придумать как обозначить дни гонок
 class ScheduleScreen extends ElementaryWidget<IScheduleScreenWM> {
   const ScheduleScreen({
     super.key,
@@ -50,7 +50,6 @@ class _Body extends StatelessWidget {
     return CustomScrollView(
       scrollBehavior: AntiGlowBehavior(),
       slivers: [
-        //
         SliverToBoxAdapter(
           child: EntityStateNotifierBuilder<List<RacesModel>>(
             listenableEntityState: wm.racesElements,
@@ -63,47 +62,31 @@ class _Body extends StatelessWidget {
                         horizontal: StaticData.defaultHorizontalPadding,
                       ),
                       child: CustomCalendar(
-                        imagePathCallback: (day) {
-                          if (wm.racesElements.value!.data!.any((race) =>
-                              isSameDay(DateTime.parse(race.date), day))) {
-                            return 'assets/logos/dynamo.png';
-                          }
-                          return null;
-                        },
-                        onDaySelected: (selectedDay, focusedDay) {},
+                        imagePathCallback: wm.getLogoPath,
+                        onDaySelected: wm.onSelectDay,
                         onPageChanged: (firstDay) {},
                         selectedDay: DateTime.now(),
                       ),
-
-                      ///  Получение логотипа команды оппонента для отображения на календаре
-                      // String? getLogoPath(DateTime day) {
-                      //   if (matchesOfSelectedMonth.any((match) => isSameDay(match.date, day))) {
-                      //     final match = matchesOfSelectedMonth.firstWhere(
-                      //       (match) => isSameDay(match.date, day),
-                      //     );
-                      //     final teams = match.teams;
-                      //     return (teams.teamA.id != 1 && teams.teamA.id != 28)
-                      //         ? teams.teamA.logo
-                      //         : teams.teamB.logo;
-                      //   }
-                      //   return null;
-                      // }
-
-                      // child: ListView.builder(
-                      //   physics: const NeverScrollableScrollPhysics(),
-                      //   itemCount: items.length,
-                      //   shrinkWrap: true,
-                      //   itemBuilder: (context, index) => Padding(
-                      //     padding: const EdgeInsets.only(bottom: 20),
-                      //     child: RedBorderContainer(
-                      //       title: items[index].raceName,
-                      //       // onTap: () async => context.router.navigate(
-                      //       //   CircuitRoute(circuitModel: items[index]),
-                      //       // ),),
-                      //       onTap: () {},
-                      //     ),
-                      //   ),
-                      // ),
+                    );
+            },
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: StateNotifierBuilder<List<Widget>>(
+            listenableState: wm.scheduleOfSelectedDate,
+            builder: (_, items) {
+              return items == null
+                  ? const SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: StaticData.defaultHorizontalPadding,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: items,
+                      ),
                     );
             },
           ),
