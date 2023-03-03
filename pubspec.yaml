@@ -58,7 +58,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/logos/
+    - assets/calendar/
+    - assets/nav_bar/
 
   fonts:
     - family: HelveticaNeueCyr

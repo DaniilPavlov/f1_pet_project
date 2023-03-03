@@ -114,7 +114,7 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
   String? getLogoPath(DateTime day) {
     if (_racesElements.value!.data!
         .any((race) => isSameDay(DateTime.parse(race.date), day))) {
-      return 'assets/logos/finish.png';
+      return 'assets/calendar/finish.png';
     }
     if (_racesElements.value!.data!.any((race) => race.FirstPractice != null
         ? isSameDay(
@@ -122,7 +122,7 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
             day,
           )
         : false)) {
-      return 'assets/logos/car.png';
+      return 'assets/calendar/car.png';
     }
 
     if (_racesElements.value!.data!.any((race) => race.SecondPractice != null
@@ -131,7 +131,7 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
             day,
           )
         : false)) {
-      return 'assets/logos/car.png';
+      return 'assets/calendar/car.png';
     }
 
     if (_racesElements.value!.data!.any((race) => race.Qualifying != null
@@ -140,7 +140,7 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
             day,
           )
         : false)) {
-      return 'assets/logos/car.png';
+      return 'assets/calendar/car.png';
     }
 
     if (_racesElements.value!.data!.any((race) => race.ThirdPractice != null
@@ -149,7 +149,7 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
             day,
           )
         : false)) {
-      return 'assets/logos/car.png';
+      return 'assets/calendar/car.png';
     }
 
     if (_racesElements.value!.data!.any((race) => race.Sprint != null
@@ -158,7 +158,7 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
             day,
           )
         : false)) {
-      return 'assets/logos/car.png';
+      return 'assets/calendar/car.png';
     }
     return null;
   }

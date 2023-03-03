@@ -10,20 +10,6 @@ class Utils {
     bool externalApplication = false,
     void Function(CustomException ex)? onError,
   }) async {
-    // final newRawUrl =
-    //     rawUrl.startsWith('/') ? rawUrl.replaceFirst('/', '') : rawUrl;
-
-    // final url = Uri.parse(
-    //   '${isPhone ? 'tel:' : !rawUrl.contains('http') ? StaticData.url : ''}$newRawUrl',
-    // );
-
-    // final finalUrl = rawUrl.startsWith('mailto')
-    //     ? Uri(
-    //         scheme: 'mailto',
-    //         path: rawUrl.replaceFirst('mailto:', ''),
-    //       )
-    //     : url;
-
     final finalUrl = Uri.parse(rawUrl);
 
     if (await canLaunchUrl(finalUrl)) {
@@ -39,6 +25,37 @@ class Utils {
       );
 
       return false;
+    }
+  }
+
+  static String getMonthNameByNumber({required int month, bool parent = true}) {
+    switch (month) {
+      case 2:
+        return parent ? 'февраля' : 'февраль';
+      case 3:
+        return parent ? 'марта' : 'март';
+      case 4:
+        return parent ? 'апреля' : 'апрель';
+      case 5:
+        return parent ? 'мая' : 'май';
+      case 6:
+        return parent ? 'июня' : 'июнь';
+      case 7:
+        return parent ? 'июля' : 'июль';
+      case 8:
+        return parent ? 'августа' : 'август';
+      case 9:
+        return parent ? 'сентября' : 'сентябрь';
+      case 10:
+        return parent ? 'октября' : 'октябрь';
+      case 11:
+        return parent ? 'ноября' : 'ноябрь';
+      case 12:
+        return parent ? 'декабря' : 'декабрь';
+
+      case 1:
+      default:
+        return parent ? 'января' : 'январь';
     }
   }
 }

@@ -1,10 +1,11 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class NavBarItem extends StatelessWidget {
-  final IconData icon;
+  final String imageAsset;
   final String title;
 
   final VoidCallback? onPressed;
@@ -12,7 +13,7 @@ class NavBarItem extends StatelessWidget {
   final bool isSelected;
 
   const NavBarItem({
-    required this.icon,
+    required this.imageAsset,
     required this.title,
     this.isSelected = false,
     this.onPressed,
@@ -27,32 +28,25 @@ class NavBarItem extends StatelessWidget {
           width: (MediaQuery.of(context).size.width -
                   StaticData.defaultHorizontalPadding * 2) /
               5,
+          height: (MediaQuery.of(context).size.width -
+                  StaticData.defaultHorizontalPadding * 2) /
+              5,
           padding: const EdgeInsets.only(top: 12),
-          decoration: isSelected
-              ? BoxDecoration(
-                  gradient: RadialGradient(
-                    center: Alignment.topCenter,
-                    colors: [
-                      AppTheme.red.withOpacity(.6),
-                      Colors.red.withOpacity(0),
-                    ],
-                  ),
-                )
-              : null,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                color: isSelected ? AppTheme.red : AppTheme.textGray,
+              ExtendedImage.asset(
+                imageAsset,
+                scale: 15,
+                color: isSelected ? AppTheme.red : AppTheme.white,
               ),
               const SizedBox(
                 height: 8,
               ),
               Text(
                 title,
-                style: AppStyles.caption.copyWith(
-                  color: isSelected ? AppTheme.red : AppTheme.textGray,
+                style: AppStyles.navBar.copyWith(
+                  color: isSelected ? AppTheme.red : AppTheme.white,
                 ),
               ),
             ],

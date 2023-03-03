@@ -9,6 +9,7 @@ import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
+// TODO(check): возможно в этом апи учитывается только прошедшее расписание и будущего нет
 class ScheduleScreen extends ElementaryWidget<IScheduleScreenWM> {
   const ScheduleScreen({
     super.key,
@@ -61,11 +62,15 @@ class _Body extends StatelessWidget {
                         vertical: 20,
                         horizontal: StaticData.defaultHorizontalPadding,
                       ),
-                      child: CustomCalendar(
-                        imagePathCallback: wm.getLogoPath,
-                        onDaySelected: wm.onSelectDay,
-                        onPageChanged: (firstDay) {},
-                        selectedDay: DateTime.now(),
+                      child: StateNotifierBuilder<DateTime>(
+                        listenableState: wm.selectedDate,
+                        builder: (_, selectedDate) => CustomCalendar(
+                          imagePathCallback: wm.getLogoPath,
+                          onDaySelected: wm.onSelectDay,
+                          selectedDay: selectedDate!,
+                          // focusedDay: wm.focusedDate,
+                          onPageChanged: (_) {},
+                        ),
                       ),
                     );
             },

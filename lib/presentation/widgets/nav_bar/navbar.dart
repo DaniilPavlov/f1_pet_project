@@ -16,73 +16,68 @@ class NavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
-          height: 1,
-          color: AppTheme.strokeGray,
+        ColoredBox(
+          color: AppTheme.black,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              StaticData.defaultHorizontalPadding,
+              5,
+              StaticData.defaultHorizontalPadding,
+              // MediaQuery.of(context).viewPadding.bottom == 0
+              //     ? 12
+              //     : MediaQuery.of(context).viewPadding.bottom,
+              5,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                NavBarItem(
+                  imageAsset: 'assets/nav_bar/home.png',
+                  title: 'Главная',
+                  isSelected: tabsRouter?.activeIndex == 0,
+                  onPressed: () {
+                    tabsRouter?.setActiveIndex(0);
+                  },
+                ),
+                NavBarItem(
+                  imageAsset: 'assets/nav_bar/racing-car.png',
+                  title: 'Результаты',
+                  isSelected: tabsRouter?.activeIndex == 1,
+                  onPressed: () {
+                    tabsRouter?.setActiveIndex(1);
+                  },
+                ),
+                NavBarItem(
+                  imageAsset: 'assets/nav_bar/lights.png',
+                  title: 'Календарь',
+                  isSelected: tabsRouter?.activeIndex == 2,
+                  onPressed: () {
+                    tabsRouter?.setActiveIndex(2);
+                  },
+                ),
+                NavBarItem(
+                  imageAsset: 'assets/nav_bar/trophy.png',
+                  title: 'Зал славы',
+                  isSelected: tabsRouter?.activeIndex == 3,
+                  onPressed: () {
+                    tabsRouter?.setActiveIndex(3);
+                  },
+                ),
+                NavBarItem(
+                  imageAsset: 'assets/nav_bar/circuit.png',
+                  title: 'Трассы',
+                  isSelected: tabsRouter?.activeIndex == 4,
+                  onPressed: () {
+                    tabsRouter?.setActiveIndex(4);
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
-        Padding(
-          padding: EdgeInsets.fromLTRB(
-            StaticData.defaultHorizontalPadding,
-            0,
-            StaticData.defaultHorizontalPadding,
-            MediaQuery.of(context).viewPadding.bottom == 0
-                ? 12
-                : MediaQuery.of(context).viewPadding.bottom,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              NavBarItem(
-                icon: Icons.house_sharp,
-                title: 'Главная',
-                isSelected: tabsRouter?.activeIndex == 0,
-                onPressed: () {
-                  tabsRouter?.setActiveIndex(0);
-                },
-              ),
-              NavBarItem(
-                icon: Icons.house_sharp,
-                title: 'Результаты',
-                isSelected: tabsRouter?.activeIndex == 1,
-                onPressed: () {
-                  tabsRouter?.setActiveIndex(1);
-                },
-              ),
-              NavBarItem(
-                icon: Icons.house_sharp,
-                title: 'Расписание',
-                isSelected: tabsRouter?.activeIndex == 2,
-                onPressed: () {
-                  tabsRouter?.setActiveIndex(2);
-                },
-              ),
-              NavBarItem(
-                icon: Icons.house_sharp,
-                title: 'Зал славы',
-                isSelected: tabsRouter?.activeIndex == 3,
-                onPressed: () {
-                  tabsRouter?.setActiveIndex(3);
-                },
-              ),
-              NavBarItem(
-                icon: Icons.house_sharp,
-                title: 'Трассы',
-                isSelected: tabsRouter?.activeIndex == 4,
-                onPressed: () {
-                  tabsRouter?.setActiveIndex(4);
-                },
-              ),
-
-              // NavBarItem(
-              //   icon: Icons.house_sharp,
-              //   title: 'Команда',
-              //   isSelected: tabsRouter?.activeIndex == 4,
-              //   onPressed: () {
-              //     tabsRouter?.setActiveIndex(4);
-              //   },
-              // ),
-            ],
-          ),
+        Container(
+          height: 4,
+          color: AppTheme.red,
         ),
       ],
     );

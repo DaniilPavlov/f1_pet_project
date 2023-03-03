@@ -13,7 +13,7 @@ class AppTheme {
   static const grey = Color(0xffB9B9B9);
   static const pink = Color(0xffF3B2AE);
   static const white = Color(0xffFFFFFF);
-  static const red = Color(0xffE24037);
+  static const red = Color.fromARGB(255, 225, 39, 30);
   static const turquoise = Color(0xff52ABB1);
   static const green = Color(0xff1D7D4A);
 

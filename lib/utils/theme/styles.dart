@@ -36,4 +36,11 @@ class AppStyles {
     height: 14 / 12,
     color: Colors.black,
   );
+
+  static const navBar = TextStyle(
+    fontFamily: 'Inter-Regular',
+    fontSize: 10,
+    height: 12 / 10,
+    color: Colors.black,
+  );
 }

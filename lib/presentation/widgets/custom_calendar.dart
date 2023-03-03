@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'package:extended_image/extended_image.dart';
 import 'package:f1_pet_project/domain/help/extensions.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
@@ -6,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // ignore_for_file: avoid_annotating_with_dynamic
 import 'package:table_calendar/table_calendar.dart';
 
-// TODO(pavlov): добавить отображение выбранной даты на календарь
-// TODO(pavlov): добавить отображение количества событий, если их несколько
 class CustomCalendar extends StatefulWidget {
   final DateTime selectedDay;
   final DateTime focusedDay;
@@ -35,13 +35,16 @@ class _CustomCalendarState extends State<CustomCalendar> {
   Widget build(BuildContext context) {
     const textStyle = AppStyles.body;
 
-    return ColoredBox(
-      color: AppTheme.grey,
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(18)),
+        color: AppTheme.shadowColor,
+      ),
       child: TableCalendar<dynamic>(
         locale: 'ru_RU',
         availableGestures: AvailableGestures.horizontalSwipe,
-        firstDay: DateTime.utc(2010, 10, 16),
-        lastDay: DateTime.utc(2030, 3, 14),
+        firstDay: DateTime.utc(DateTime.now().year - 1, 1, 1),
+        lastDay: DateTime.utc(DateTime.now().year + 1, 1, 1),
         focusedDay: widget.focusedDay,
         rowHeight: 48,
         daysOfWeekHeight: 40,
@@ -77,28 +80,22 @@ class _CustomCalendarState extends State<CustomCalendar> {
             alignment: Alignment.centerRight,
           ),
           titleTextFormatter: (date, dynamic f) {
-            final text = DateFormat('MMMM', 'ru_RU').format(date);
+            final text = DateFormat.yMMMM('ru_RU').format(date);
 
             return text.capitalize();
           },
         ),
         calendarBuilders: CalendarBuilders<dynamic>(
           selectedBuilder: (context, day, focusedDay) {
-            return day.month == focusedDay.month
-                ? _makeLogoWidget(
-                      day,
-                      isSelected: true,
-                    ) ??
-                    _makeTextWidget(
-                      day,
-                      textStyle: textStyle,
-                      isSelected: true,
-                    )
-                : _makeTextWidget(
-                    day,
-                    textStyle: textStyle,
-                    isSelected: true,
-                  );
+            return _makeLogoWidget(
+                  day,
+                  isSelected: true,
+                ) ??
+                _makeTextWidget(
+                  day,
+                  textStyle: textStyle,
+                  isSelected: true,
+                );
           },
           outsideBuilder: (context, day, focusedDay) {
             return day.month == focusedDay.month
@@ -117,13 +114,16 @@ class _CustomCalendarState extends State<CustomCalendar> {
                   );
           },
           todayBuilder: (context, day, focusedDay) {
-            return _makeLogoWidget(day) ??
+            return _makeLogoWidget(
+                  day,
+                  isToday: true,
+                ) ??
                 _makeTextWidget(
                   day,
+                  isToday: true,
                   textStyle: textStyle.copyWith(
-                    color: day.month == focusedDay.month
-                        ? null
-                        : AppTheme.turquoise,
+                    color:
+                        day.month == focusedDay.month ? null : AppTheme.white,
                   ),
                 );
           },
@@ -138,6 +138,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
   Widget? _makeLogoWidget(
     DateTime date, {
     bool isSelected = false,
+    bool isToday = false,
   }) {
     final imageAsset = widget.imagePathCallback(date);
 
@@ -145,7 +146,11 @@ class _CustomCalendarState extends State<CustomCalendar> {
       return Center(
         child: CircleAvatar(
           radius: 16,
-          backgroundColor: isSelected ? AppTheme.red : Colors.transparent,
+          backgroundColor: isToday
+              ? AppTheme.red
+              : isSelected
+                  ? AppTheme.white
+                  : Colors.transparent,
           child: imageAsset.isEmpty
               ? const SizedBox(
                   height: 24,
@@ -165,11 +170,16 @@ class _CustomCalendarState extends State<CustomCalendar> {
     DateTime date, {
     required TextStyle textStyle,
     bool isSelected = false,
+    bool isToday = false,
   }) {
     return Center(
       child: CircleAvatar(
         radius: 16,
-        backgroundColor: isSelected ? AppTheme.red : Colors.transparent,
+        backgroundColor: isToday
+            ? AppTheme.red
+            : isSelected
+                ? AppTheme.white
+                : Colors.transparent,
         child: Text(
           date.day.toString(),
           style: textStyle,

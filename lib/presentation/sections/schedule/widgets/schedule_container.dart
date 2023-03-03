@@ -2,6 +2,7 @@ import 'package:f1_pet_project/data/models/sections/schedule/race_date_model.dar
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
+import 'package:f1_pet_project/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class ScheduleContainer extends StatelessWidget {
@@ -41,7 +42,7 @@ class ScheduleContainer extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${parsedDate.day}-${parsedDate.month}-${parsedDate.year}',
+                          '${parsedDate.day} ${Utils.getMonthNameByNumber(month: parsedDate.month)} ${parsedDate.year}',
                           style: AppStyles.body,
                         ),
                         // TODO(pavlov): решить какой часовой пояс показывать
