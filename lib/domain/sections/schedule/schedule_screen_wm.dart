@@ -14,6 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 abstract class IScheduleScreenWM extends IWidgetModel {
+  /// скролл страницы
+  ScrollController get scrollController;
+
   /// расписание
   ListenableState<EntityState<List<RacesModel>>> get racesElements;
 
@@ -41,6 +44,7 @@ abstract class IScheduleScreenWM extends IWidgetModel {
 
 class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
     implements IScheduleScreenWM {
+  final _scrollController = ScrollController();
   final _racesElements = EntityStateNotifier<List<RacesModel>>();
 
   final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
@@ -64,6 +68,9 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
 
   @override
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
+
+  @override
+  ScrollController get scrollController => _scrollController;
 
   ScheduleScreenWM(super.model);
 
@@ -248,32 +255,29 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
         }
 
         _scheduleOfSelectedDate.accept(newSchedule);
+        if (newSchedule.isNotEmpty) {
+          Future<void>.delayed(
+            const Duration(
+              milliseconds: 100,
+            ),
+            _animateToSchedule,
+          );
+        }
         break;
       }
-
-      // if (newSchedule.isNotEmpty) {
-      //   if (withScrollToMatch) {
-      //     Future<void>.delayed(
-      //       const Duration(
-      //         milliseconds: 100,
-      //       ),
-      //       _animateToMatch,
-      //     );
-      //   }
-      // }
     }
   }
 
   /// Скролл к расписанию
-  // void _animateToSchedule() {
-  //   scrollController.animateTo(
-  //     scrollController.position.maxScrollExtent,
-  //     duration: const Duration(
-  //       milliseconds: 200,
-  //     ),
-  //     curve: Curves.easeOutCubic,
-  //   );
-  // }
+  void _animateToSchedule() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(
+        milliseconds: 200,
+      ),
+      curve: Curves.easeOutCubic,
+    );
+  }
 }
 
 ScheduleScreenWM createScheduleScreenWM(BuildContext _) =>

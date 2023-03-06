@@ -31,7 +31,7 @@ class DriversChampionsTable extends StatelessWidget {
                   ),
                 ),
                 children: driversChampionsTableDetailRowChildren(
-                  drivers[drivers.length-i-1],
+                  drivers[drivers.length - i - 1],
                 ),
               ),
             ),

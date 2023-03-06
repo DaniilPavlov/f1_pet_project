@@ -30,19 +30,17 @@ class NavBarItem extends StatelessWidget {
               5,
           height: (MediaQuery.of(context).size.width -
                   StaticData.defaultHorizontalPadding * 2) /
-              5,
+              5.5,
           padding: const EdgeInsets.only(top: 12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ExtendedImage.asset(
                 imageAsset,
-                scale: 15,
+                scale: 17,
                 color: isSelected ? AppTheme.red : AppTheme.white,
               ),
-              const SizedBox(
-                height: 8,
-              ),
+              const SizedBox(height: 8),
               Text(
                 title,
                 style: AppStyles.navBar.copyWith(
@@ -56,7 +54,7 @@ class NavBarItem extends StatelessWidget {
           onTap: onPressed,
           child: Container(
             color: Colors.white.withOpacity(0),
-            height: 70 - 12,
+            height: 60,
             width: (MediaQuery.of(context).size.width -
                     StaticData.defaultHorizontalPadding * 2) /
                 5,

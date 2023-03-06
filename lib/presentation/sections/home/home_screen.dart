@@ -3,6 +3,7 @@ import 'package:f1_pet_project/data/models/sections/home/standings/constructor/c
 import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/domain/sections/home/home_screen_wm.dart';
 import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tournament_tables_section.dart';
+import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class HomeScreen extends ElementaryWidget<IHomeScreenWM> {
   @override
   Widget build(IHomeScreenWM wm) {
     return Scaffold(
+      appBar: const CustomAppBar(),
       body: SafeArea(
         child: StateNotifierBuilder<bool>(
           listenableState: wm.allDataIsLoaded,
@@ -48,7 +50,6 @@ class _Body extends StatelessWidget {
     return CustomScrollView(
       scrollBehavior: AntiGlowBehavior(),
       slivers: [
-        //
         SliverToBoxAdapter(
           child: EntityStateNotifierBuilder<List<ConstructorStandingsModel>>(
             listenableEntityState: wm.currentConstructorsElements,

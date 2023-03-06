@@ -3,6 +3,7 @@
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/domain/sections/schedule/schedule_screen_wm.dart';
+import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/presentation/widgets/custom_calendar.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
@@ -17,6 +18,7 @@ class ScheduleScreen extends ElementaryWidget<IScheduleScreenWM> {
   @override
   Widget build(IScheduleScreenWM wm) {
     return Scaffold(
+      appBar: const CustomAppBar(),
       body: SafeArea(
         child: StateNotifierBuilder<bool>(
           listenableState: wm.allDataIsLoaded,
@@ -48,6 +50,7 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
+      controller: wm.scrollController,
       scrollBehavior: AntiGlowBehavior(),
       slivers: [
         SliverToBoxAdapter(

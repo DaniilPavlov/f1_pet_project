@@ -27,7 +27,7 @@ class LastRaceTableSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: 32),
+         
               const Text(
                 'Последняя гонка',
                 style: AppStyles.h2,
@@ -60,7 +60,7 @@ class LastRaceTableSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 32),
+    
       ],
     );
   }

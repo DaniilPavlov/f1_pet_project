@@ -37,7 +37,7 @@ List<Widget> raceTableDetailRowChildren(
     ),
     Center(
       child: Text(
-        results.Time?.time ?? 'Out',
+        results.Time?.time ?? results.status,
         style: textStyle,
         textAlign: TextAlign.center,
       ),

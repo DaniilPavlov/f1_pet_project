@@ -18,7 +18,7 @@ class TournamentConstructorsTable extends StatelessWidget {
       children: [
         const SizedBox(height: 8),
         Table(
-                 columnWidths: const {
+          columnWidths: const {
             0: FractionColumnWidth(0.1),
             1: FlexColumnWidth(0.3),
             2: FlexColumnWidth(0.2),
