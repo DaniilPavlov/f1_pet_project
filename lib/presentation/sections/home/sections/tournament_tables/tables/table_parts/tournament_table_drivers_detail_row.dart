@@ -30,13 +30,6 @@ List<Widget> tournamentTableDriversDetailRowChildren(
     ),
     Center(
       child: Text(
-        driverStanding.points,
-        style: textStyle,
-        textAlign: TextAlign.center,
-      ),
-    ),
-    Center(
-      child: Text(
         driverStanding.Constructors[0].name,
         style: textStyle,
         textAlign: TextAlign.center,
@@ -44,7 +37,14 @@ List<Widget> tournamentTableDriversDetailRowChildren(
     ),
     Center(
       child: Text(
-        driverStanding.Driver.permanentNumber!,
+        driverStanding.points,
+        style: textStyle,
+        textAlign: TextAlign.center,
+      ),
+    ),
+    Center(
+      child: Text(
+        driverStanding.Driver.nationality,
         style: textStyle,
         textAlign: TextAlign.center,
       ),

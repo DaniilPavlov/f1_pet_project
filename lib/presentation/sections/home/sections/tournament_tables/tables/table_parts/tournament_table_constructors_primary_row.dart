@@ -21,7 +21,7 @@ TableRow constructorsPrimaryRow() {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(
-            'Позиция',
+            '',
             style: textStyle,
           ),
         ),
@@ -30,7 +30,7 @@ TableRow constructorsPrimaryRow() {
         child: Padding(
           padding: EdgeInsets.zero,
           child: Text(
-            'Команда',
+            'Конструктор',
             style: textStyle,
           ),
         ),

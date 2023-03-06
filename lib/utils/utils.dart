@@ -58,4 +58,10 @@ class Utils {
         return parent ? 'января' : 'январь';
     }
   }
+
+  static String formatHourMinute(DateTime date) {
+    final hour = date.hour >= 10 ? date.hour : '0${date.hour}';
+    final minute = date.minute >= 10 ? date.minute : '0${date.minute}';
+    return '$hour:$minute';
+  }
 }

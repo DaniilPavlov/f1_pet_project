@@ -16,7 +16,17 @@ class ScheduleContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final parsedDate = DateTime.parse(date.date);
+    // перевожу время из гринвича в локальное
+    final parsedTime = date.time.split(':');
+    final greenwichDate = DateTime.parse(date.date).add(Duration(
+      hours: int.parse(parsedTime[0]),
+      minutes: int.parse(parsedTime[1]),
+    ));
+
+    final deviceOffset = DateTime.now().timeZoneOffset.toString().split(':');
+    final dateWithOffset =
+        greenwichDate.add(Duration(hours: int.parse(deviceOffset[0])));
+
     return Padding(
       padding:
           const EdgeInsets.only(bottom: StaticData.defaultHorizontalPadding),
@@ -42,12 +52,11 @@ class ScheduleContainer extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${parsedDate.day} ${Utils.getMonthNameByNumber(month: parsedDate.month)} ${parsedDate.year}',
+                          '${dateWithOffset.day} ${Utils.getMonthNameByNumber(month: dateWithOffset.month)} ${dateWithOffset.year}',
                           style: AppStyles.body,
                         ),
-                        // TODO(pavlov): решить какой часовой пояс показывать
                         Text(
-                          date.time.replaceAll('Z', ''),
+                          Utils.formatHourMinute(dateWithOffset),
                           style: AppStyles.body,
                         ),
                         const SizedBox.shrink(),

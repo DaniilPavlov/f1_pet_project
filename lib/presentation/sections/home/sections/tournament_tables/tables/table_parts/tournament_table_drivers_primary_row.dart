@@ -21,7 +21,7 @@ TableRow driversPrimaryRow() {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(
-            'Позиция',
+            '',
             style: textStyle,
           ),
         ),
@@ -39,6 +39,15 @@ TableRow driversPrimaryRow() {
         child: Padding(
           padding: EdgeInsets.zero,
           child: Text(
+            'Конструктор',
+            style: textStyle,
+          ),
+        ),
+      ),
+      Center(
+        child: Padding(
+          padding: EdgeInsets.zero,
+          child: Text(
             'Очки',
             style: textStyle,
           ),
@@ -48,16 +57,7 @@ TableRow driversPrimaryRow() {
         child: Padding(
           padding: EdgeInsets.zero,
           child: Text(
-            'Команда',
-            style: textStyle,
-          ),
-        ),
-      ),
-      Center(
-        child: Padding(
-          padding: EdgeInsets.zero,
-          child: Text(
-            'Номер',
+            'Национальность',
             style: textStyle,
           ),
         ),

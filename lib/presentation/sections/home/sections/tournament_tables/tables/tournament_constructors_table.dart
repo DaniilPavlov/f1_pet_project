@@ -18,6 +18,13 @@ class TournamentConstructorsTable extends StatelessWidget {
       children: [
         const SizedBox(height: 8),
         Table(
+                 columnWidths: const {
+            0: FractionColumnWidth(0.1),
+            1: FlexColumnWidth(0.3),
+            2: FlexColumnWidth(0.2),
+            3: FlexColumnWidth(0.15),
+            4: FlexColumnWidth(0.25),
+          },
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [
             constructorsPrimaryRow(),

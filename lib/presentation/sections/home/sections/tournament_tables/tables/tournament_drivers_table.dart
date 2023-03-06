@@ -18,6 +18,13 @@ class TournamentDriversTable extends StatelessWidget {
       children: [
         const SizedBox(height: 8),
         Table(
+          columnWidths: const {
+            0: FractionColumnWidth(0.1),
+            1: FlexColumnWidth(0.2),
+            2: FlexColumnWidth(0.25),
+            3: FlexColumnWidth(0.1),
+            4: FlexColumnWidth(0.35),
+          },
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [
             driversPrimaryRow(),

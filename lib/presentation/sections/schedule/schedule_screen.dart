@@ -9,7 +9,6 @@ import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-// TODO(check): возможно в этом апи учитывается только прошедшее расписание и будущего нет
 class ScheduleScreen extends ElementaryWidget<IScheduleScreenWM> {
   const ScheduleScreen({
     super.key,
