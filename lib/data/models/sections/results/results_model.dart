@@ -21,7 +21,7 @@ class ResultsModel {
   final String laps;
   final String status;
   final TimeModel? Time;
-  final FastestLapModel FastestLap;
+  final FastestLapModel? FastestLap;
 
   ResultsModel({
     required this.number,

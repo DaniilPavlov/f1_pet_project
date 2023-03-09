@@ -20,8 +20,10 @@ ResultsModel _$ResultsModelFromJson(Map<String, dynamic> json) => ResultsModel(
       Time: json['Time'] == null
           ? null
           : TimeModel.fromJson(json['Time'] as Map<String, dynamic>),
-      FastestLap:
-          FastestLapModel.fromJson(json['FastestLap'] as Map<String, dynamic>),
+      FastestLap: json['FastestLap'] == null
+          ? null
+          : FastestLapModel.fromJson(
+              json['FastestLap'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ResultsModelToJson(ResultsModel instance) =>

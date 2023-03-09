@@ -1,17 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/data/models/sections/results/results_model.dart';
-import 'package:f1_pet_project/presentation/sections/results/sections/last_race_table/table_parts/race_table_detail_row.dart';
-import 'package:f1_pet_project/presentation/sections/results/sections/last_race_table/table_parts/race_table_primary_row.dart';
+import 'package:f1_pet_project/presentation/sections/results/widgets/table_parts/race_table_detail_row.dart';
+import 'package:f1_pet_project/presentation/sections/results/widgets/table_parts/race_table_primary_row.dart';
 import 'package:f1_pet_project/router/router.gr.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class LastRaceTable extends StatelessWidget {
+class RaceInfoTable extends StatelessWidget {
   final List<ResultsModel> results;
   final int? rowsNumber;
   final bool withPrimaryRow;
-  const LastRaceTable({
+  const RaceInfoTable({
     required this.results,
     this.rowsNumber,
     this.withPrimaryRow = true,
@@ -49,7 +49,7 @@ class LastRaceTable extends StatelessWidget {
         if (rowsNumber != null)
           GestureDetector(
             onTap: () async =>
-                context.router.navigate(LastRaceRoute(results: results)),
+                context.router.navigate(RaceInfoRoute(results: results)),
             child: ColoredBox(
               color: AppTheme.grayBG,
               child: Row(
@@ -58,7 +58,7 @@ class LastRaceTable extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: Text(
-                      'Полная таблица',
+                      'Подробная информация',
                       style: AppStyles.caption,
                     ),
                   ),

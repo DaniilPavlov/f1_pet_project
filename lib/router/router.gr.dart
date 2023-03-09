@@ -27,10 +27,10 @@ import '../presentation/sections/hall_of_fame/drivers_champions/drivers_champion
     as _i9;
 import '../presentation/sections/hall_of_fame/hall_of_fame_screen.dart' as _i8;
 import '../presentation/sections/home/home_screen.dart' as _i3;
-import '../presentation/sections/results/certain_race/certain_race_screen.dart'
-    as _i6;
-import '../presentation/sections/results/last_race/last_race_screen.dart'
+import '../presentation/sections/results/race_info/race_info_screen.dart'
     as _i5;
+import '../presentation/sections/results/race_search/race_search_screen.dart'
+    as _i6;
 import '../presentation/sections/results/results_screen.dart' as _i4;
 import '../presentation/sections/schedule/schedule_screen.dart' as _i7;
 import '../presentation/widgets/scaffold_with_navbar.dart' as _i1;
@@ -89,20 +89,20 @@ class AppRouter extends _i13.RootStackRouter {
         child: const _i4.ResultsScreen(),
       );
     },
-    LastRaceRoute.name: (routeData) {
-      final args = routeData.argsAs<LastRaceRouteArgs>();
+    RaceInfoRoute.name: (routeData) {
+      final args = routeData.argsAs<RaceInfoRouteArgs>();
       return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: _i5.LastRaceScreen(
+        child: _i5.RaceInfoScreen(
           results: args.results,
           key: args.key,
         ),
       );
     },
-    CertainRaceRoute.name: (routeData) {
+    RaceSearchRoute.name: (routeData) {
       return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i6.CertainRaceScreen(),
+        child: const _i6.RaceSearchScreen(),
       );
     },
     ScheduleRoute.name: (routeData) {
@@ -186,14 +186,14 @@ class AppRouter extends _i13.RootStackRouter {
                   meta: <String, dynamic>{'hideBottomNav': false},
                 ),
                 _i13.RouteConfig(
-                  LastRaceRoute.name,
-                  path: 'last_race',
+                  RaceInfoRoute.name,
+                  path: 'race_info',
                   parent: ResultsRouter.name,
                   meta: <String, dynamic>{'hideBottomNav': false},
                 ),
                 _i13.RouteConfig(
-                  CertainRaceRoute.name,
-                  path: 'certain_race',
+                  RaceSearchRoute.name,
+                  path: 'race_search',
                   parent: ResultsRouter.name,
                   meta: <String, dynamic>{'hideBottomNav': false},
                 ),
@@ -364,25 +364,25 @@ class ResultsRoute extends _i13.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i5.LastRaceScreen]
-class LastRaceRoute extends _i13.PageRouteInfo<LastRaceRouteArgs> {
-  LastRaceRoute({
+/// [_i5.RaceInfoScreen]
+class RaceInfoRoute extends _i13.PageRouteInfo<RaceInfoRouteArgs> {
+  RaceInfoRoute({
     required List<_i15.ResultsModel> results,
     _i14.Key? key,
   }) : super(
-          LastRaceRoute.name,
-          path: 'last_race',
-          args: LastRaceRouteArgs(
+          RaceInfoRoute.name,
+          path: 'race_info',
+          args: RaceInfoRouteArgs(
             results: results,
             key: key,
           ),
         );
 
-  static const String name = 'LastRaceRoute';
+  static const String name = 'RaceInfoRoute';
 }
 
-class LastRaceRouteArgs {
-  const LastRaceRouteArgs({
+class RaceInfoRouteArgs {
+  const RaceInfoRouteArgs({
     required this.results,
     this.key,
   });
@@ -393,20 +393,20 @@ class LastRaceRouteArgs {
 
   @override
   String toString() {
-    return 'LastRaceRouteArgs{results: $results, key: $key}';
+    return 'RaceInfoRouteArgs{results: $results, key: $key}';
   }
 }
 
 /// generated route for
-/// [_i6.CertainRaceScreen]
-class CertainRaceRoute extends _i13.PageRouteInfo<void> {
-  const CertainRaceRoute()
+/// [_i6.RaceSearchScreen]
+class RaceSearchRoute extends _i13.PageRouteInfo<void> {
+  const RaceSearchRoute()
       : super(
-          CertainRaceRoute.name,
-          path: 'certain_race',
+          RaceSearchRoute.name,
+          path: 'race_search',
         );
 
-  static const String name = 'CertainRaceRoute';
+  static const String name = 'RaceSearchRoute';
 }
 
 /// generated route for

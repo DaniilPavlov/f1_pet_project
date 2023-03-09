@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:auto_route/empty_router_widgets.dart';
-import 'package:f1_pet_project/presentation/sections/results/certain_race/certain_race_screen.dart';
-import 'package:f1_pet_project/presentation/sections/results/last_race/last_race_screen.dart';
+import 'package:f1_pet_project/presentation/sections/results/race_info/race_info_screen.dart';
+import 'package:f1_pet_project/presentation/sections/results/race_search/race_search_screen.dart';
 import 'package:f1_pet_project/presentation/sections/results/results_screen.dart';
 
 const resultsRoute = AutoRoute<dynamic>(
@@ -15,13 +15,13 @@ const resultsRoute = AutoRoute<dynamic>(
       meta: <String, bool>{'hideBottomNav': false},
     ),
     AutoRoute<dynamic>(
-      path: 'last_race',
-      page: LastRaceScreen,
+      path: 'race_info',
+      page: RaceInfoScreen,
       meta: <String, bool>{'hideBottomNav': false},
     ),
     AutoRoute<dynamic>(
-      path: 'certain_race',
-      page: CertainRaceScreen,
+      path: 'race_search',
+      page: RaceSearchScreen,
       meta: <String, bool>{'hideBottomNav': false},
     ),
   ],

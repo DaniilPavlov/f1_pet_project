@@ -87,7 +87,7 @@ class _Body extends StatelessWidget {
             child: RedBorderContainer(
               title: 'Выбрать конкретную гонку',
               onTap: () async =>
-                  context.router.navigate(const CertainRaceRoute()),
+                  context.router.navigate(const RaceSearchRoute()),
             ),
           ),
         ),

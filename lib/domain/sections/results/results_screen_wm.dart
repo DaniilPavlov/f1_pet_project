@@ -13,7 +13,7 @@ abstract class IResultsScreenWM extends IWidgetModel {
   /// загружены ли начальные данные
   ListenableState<bool> get allDataIsLoaded;
 
-  /// загрузка всех трасс
+  /// загрузка результатов последней гонки
   void loadLastRaceResults();
 
   /// загрузка всех данных

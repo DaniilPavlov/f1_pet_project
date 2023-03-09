@@ -1,5 +1,5 @@
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
-import 'package:f1_pet_project/presentation/sections/results/sections/last_race_table/last_race_table.dart';
+import 'package:f1_pet_project/presentation/sections/results/widgets/race_info_table.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,7 +27,6 @@ class LastRaceTableSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-         
               const Text(
                 'Последняя гонка',
                 style: AppStyles.h2,
@@ -54,13 +53,12 @@ class LastRaceTableSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            LastRaceTable(
+            RaceInfoTable(
               rowsNumber: 3,
               results: lastRace.Results!,
             ),
           ],
         ),
-    
       ],
     );
   }

@@ -19,6 +19,7 @@ class CustomTextField extends StatefulWidget {
   final int? maxLines;
   final bool disabled;
   final List<TextInputFormatter>? inputFormatters;
+  final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmit;
   final TextCapitalization textCapitalization;
   final Widget? rightWidget;
@@ -44,6 +45,7 @@ class CustomTextField extends StatefulWidget {
     this.disabled = false,
     this.inputFormatters,
     this.onSubmit,
+    this.onChanged,
     this.textCapitalization = TextCapitalization.none,
     this.rightWidget,
     this.borderColor,
@@ -137,7 +139,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     maxLines: widget.maxLines,
                     keyboardType: widget.keyboardType,
                     textInputAction: widget.textInputAction,
-                    // onChanged: widget.onChanged,
+                    onChanged: widget.onChanged,
                     style: AppStyles.caption.copyWith(
                       color: widget.disabled
                           ? AppTheme.textGray
@@ -183,7 +185,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       controller: widget.controller,
                       keyboardType: widget.keyboardType,
                       textInputAction: widget.textInputAction,
-                      // onChanged: widget.onChanged,
+                      onChanged: widget.onChanged,
                       toolbarOptions: widget.toolbarOptions,
                       style: AppStyles.caption.copyWith(
                         decorationThickness: 0,
@@ -197,7 +199,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       onFieldSubmitted: widget.onSubmit,
                       focusNode: focusNode,
                       maxLines: widget.maxLines,
-
                       enabled: !widget.disabled,
                       decoration: InputDecoration(
                         isDense: true,
