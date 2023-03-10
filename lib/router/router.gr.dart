@@ -18,7 +18,7 @@ import 'package:flutter/material.dart' as _i14;
 import '../data/models/sections/circuits/circuit_model.dart' as _i17;
 import '../data/models/sections/home/standings/standings_lists_model.dart'
     as _i16;
-import '../data/models/sections/results/results_model.dart' as _i15;
+import '../data/models/sections/schedule/races_model.dart' as _i15;
 import '../presentation/sections/circuits/circuit/circuit_screen.dart' as _i12;
 import '../presentation/sections/circuits/circuits_screen.dart' as _i11;
 import '../presentation/sections/hall_of_fame/constructors_champions/constructors_champions_screen.dart'
@@ -94,7 +94,7 @@ class AppRouter extends _i13.RootStackRouter {
       return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
         child: _i5.RaceInfoScreen(
-          results: args.results,
+          raceModel: args.raceModel,
           key: args.key,
         ),
       );
@@ -367,13 +367,13 @@ class ResultsRoute extends _i13.PageRouteInfo<void> {
 /// [_i5.RaceInfoScreen]
 class RaceInfoRoute extends _i13.PageRouteInfo<RaceInfoRouteArgs> {
   RaceInfoRoute({
-    required List<_i15.ResultsModel> results,
+    required _i15.RacesModel raceModel,
     _i14.Key? key,
   }) : super(
           RaceInfoRoute.name,
           path: 'race_info',
           args: RaceInfoRouteArgs(
-            results: results,
+            raceModel: raceModel,
             key: key,
           ),
         );
@@ -383,17 +383,17 @@ class RaceInfoRoute extends _i13.PageRouteInfo<RaceInfoRouteArgs> {
 
 class RaceInfoRouteArgs {
   const RaceInfoRouteArgs({
-    required this.results,
+    required this.raceModel,
     this.key,
   });
 
-  final List<_i15.ResultsModel> results;
+  final _i15.RacesModel raceModel;
 
   final _i14.Key? key;
 
   @override
   String toString() {
-    return 'RaceInfoRouteArgs{results: $results, key: $key}';
+    return 'RaceInfoRouteArgs{raceModel: $raceModel, key: $key}';
   }
 }
 

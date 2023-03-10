@@ -8,7 +8,6 @@ import 'package:f1_pet_project/presentation/widgets/containers/red_border_contai
 import 'package:f1_pet_project/router/router.gr.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
-import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -54,18 +53,6 @@ class _Body extends StatelessWidget {
     return CustomScrollView(
       scrollBehavior: AntiGlowBehavior(),
       slivers: [
-        const SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: 20,
-              left: StaticData.defaultHorizontalPadding,
-            ),
-            child: Text(
-              'Результаты',
-              style: AppStyles.h1,
-            ),
-          ),
-        ),
         SliverToBoxAdapter(
           child: EntityStateNotifierBuilder<RacesModel>(
             listenableEntityState: wm.lastRace,
@@ -73,7 +60,9 @@ class _Body extends StatelessWidget {
               return lastRace == null
                   ? const SizedBox()
                   : Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 40),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: StaticData.defaultVerticallPadding,
+                      ),
                       child: LastRaceTableSection(lastRace: lastRace),
                     );
             },
@@ -83,6 +72,7 @@ class _Body extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: StaticData.defaultHorizontalPadding,
+              vertical: StaticData.defaultVerticallPadding,
             ),
             child: RedBorderContainer(
               title: 'Выбрать конкретную гонку',

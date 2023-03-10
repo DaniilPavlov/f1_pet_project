@@ -28,10 +28,17 @@ class LastRaceTableSection extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Последняя гонка',
+                'Последняя гонка: ',
                 style: AppStyles.h2,
               ),
               const SizedBox(height: 10),
+              Text(
+                lastRace.raceName,
+                style: AppStyles.h2,
+              ),
+              const SizedBox(
+                height: StaticData.defaultVerticallPadding,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -55,7 +62,7 @@ class LastRaceTableSection extends StatelessWidget {
           children: [
             RaceInfoTable(
               rowsNumber: 3,
-              results: lastRace.Results!,
+              raceModel: lastRace,
             ),
           ],
         ),

@@ -247,7 +247,7 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
                 bottom: StaticData.defaultHorizontalPadding,
               ),
               child: Text(
-                race.Circuit.circuitName,
+                race.raceName,
                 style: AppStyles.h3,
               ),
             ),

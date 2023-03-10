@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 class RaceSearchScreen extends ElementaryWidget<IRaceSearchScreenWM> {
   const RaceSearchScreen({
     super.key,
-  }) : super(createCertainRaceScreenWM);
+  }) : super(createRaceSearchScreenWM);
 
   @override
   Widget build(IRaceSearchScreenWM wm) {
@@ -24,6 +24,7 @@ class RaceSearchScreen extends ElementaryWidget<IRaceSearchScreenWM> {
       ),
       body: SafeArea(
         child: CustomScrollView(
+          controller: wm.scrollController,
           shrinkWrap: true,
           scrollBehavior: AntiGlowBehavior(),
           slivers: [

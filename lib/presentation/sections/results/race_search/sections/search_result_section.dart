@@ -21,7 +21,7 @@ class SearchResultSection extends StatelessWidget {
             ),
             child: RaceInfoTable(
               rowsNumber: 3,
-              results: wm.searchedRace.value!.data!.Results!,
+              raceModel: wm.searchedRace.value!.data!,
             ),
           )
         else

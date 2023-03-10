@@ -8,6 +8,9 @@ import 'package:f1_pet_project/presentation/sections/results/race_search/race_se
 import 'package:flutter/material.dart';
 
 abstract class IRaceSearchScreenWM extends IWidgetModel {
+  /// скролл страницы
+  ScrollController get scrollController;
+
   /// год
   TextEditingController get yearController;
 
@@ -34,13 +37,13 @@ abstract class IRaceSearchScreenWM extends IWidgetModel {
 
   /// загрузка результатов для конкретной гонки
   void checkFields();
-
-  // TODO(pavlov): добавить метод скролла вниз
 }
 
 class RaceSearchScreenWM
     extends WidgetModel<RaceSearchScreen, RaceSearchScreenModel>
     implements IRaceSearchScreenWM {
+  final _scrollController = ScrollController();
+
   final _yearController = TextEditingController();
 
   final _roundController = TextEditingController();
@@ -71,6 +74,9 @@ class RaceSearchScreenWM
   @override
   TextEditingController get roundController => _roundController;
 
+  @override
+  ScrollController get scrollController => _scrollController;
+
   RaceSearchScreenWM(super.model);
 
   @override
@@ -96,6 +102,10 @@ class RaceSearchScreenWM
       onSuccess: (data) {
         if (data!.RaceTable.Races.isNotEmpty) {
           _searchedRace.content(data.RaceTable.Races[0]);
+          Future<void>.delayed(
+            const Duration(milliseconds: 100),
+            _animateToTable,
+          );
         } else {
           _searchedRace.content(null);
           _errorMessage.accept(
@@ -110,7 +120,18 @@ class RaceSearchScreenWM
     );
     _dataIsLoaded.accept(true);
   }
+
+  /// Скролл к расписанию
+  void _animateToTable() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(
+        milliseconds: 200,
+      ),
+      curve: Curves.easeOutCubic,
+    );
+  }
 }
 
-RaceSearchScreenWM createCertainRaceScreenWM(BuildContext _) =>
+RaceSearchScreenWM createRaceSearchScreenWM(BuildContext _) =>
     RaceSearchScreenWM(RaceSearchScreenModel());

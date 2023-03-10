@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:f1_pet_project/data/models/sections/results/results_model.dart';
+import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/presentation/sections/results/widgets/table_parts/race_table_detail_row.dart';
 import 'package:f1_pet_project/presentation/sections/results/widgets/table_parts/race_table_primary_row.dart';
 import 'package:f1_pet_project/router/router.gr.dart';
@@ -8,11 +8,11 @@ import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class RaceInfoTable extends StatelessWidget {
-  final List<ResultsModel> results;
+  final RacesModel raceModel;
   final int? rowsNumber;
   final bool withPrimaryRow;
   const RaceInfoTable({
-    required this.results,
+    required this.raceModel,
     this.rowsNumber,
     this.withPrimaryRow = true,
     super.key,
@@ -28,7 +28,7 @@ class RaceInfoTable extends StatelessWidget {
           children: [
             if (withPrimaryRow) raceTablePrimaryRow(),
             ...List.generate(
-              rowsNumber ?? results.length,
+              rowsNumber ?? raceModel.Results!.length,
               (i) => TableRow(
                 decoration: BoxDecoration(
                   color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
@@ -39,7 +39,7 @@ class RaceInfoTable extends StatelessWidget {
                   ),
                 ),
                 children: raceTableDetailRowChildren(
-                  results[i],
+                  raceModel.Results![i],
                   i + 1,
                 ),
               ),
@@ -49,7 +49,7 @@ class RaceInfoTable extends StatelessWidget {
         if (rowsNumber != null)
           GestureDetector(
             onTap: () async =>
-                context.router.navigate(RaceInfoRoute(results: results)),
+                context.router.navigate(RaceInfoRoute(raceModel: raceModel)),
             child: ColoredBox(
               color: AppTheme.grayBG,
               child: Row(

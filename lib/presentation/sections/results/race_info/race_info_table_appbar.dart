@@ -1,8 +1,8 @@
 import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:flutter/material.dart';
 
-class LastRaceAppBar extends StatelessWidget {
-  const LastRaceAppBar({super.key});
+class RaceInfoTableAppBar extends StatelessWidget {
+  const RaceInfoTableAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {

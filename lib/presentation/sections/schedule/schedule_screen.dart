@@ -61,7 +61,7 @@ class _Body extends StatelessWidget {
                   ? const SizedBox()
                   : Padding(
                       padding: const EdgeInsets.symmetric(
-                        vertical: 20,
+                        vertical: StaticData.defaultVerticallPadding,
                         horizontal: StaticData.defaultHorizontalPadding,
                       ),
                       child: StateNotifierBuilder<DateTime>(
@@ -86,7 +86,7 @@ class _Body extends StatelessWidget {
                   ? const SizedBox()
                   : Padding(
                       padding: const EdgeInsets.symmetric(
-                        vertical: 10,
+                        vertical: StaticData.defaultVerticallPadding,
                         horizontal: StaticData.defaultHorizontalPadding,
                       ),
                       child: Column(

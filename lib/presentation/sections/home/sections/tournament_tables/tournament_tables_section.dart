@@ -38,7 +38,7 @@ class TournamentTableSection
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: 32),
+              const SizedBox(height: StaticData.defaultVerticallPadding),
               const Text(
                 'Турнирная таблица текущего сезона',
                 style: AppStyles.h1,
