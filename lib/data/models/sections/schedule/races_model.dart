@@ -16,7 +16,7 @@ class RacesModel {
   final String raceName;
   final CircuitModel Circuit;
   final String date;
-  final String time;
+  final String? time;
   final RaceDateModel? FirstPractice;
   final RaceDateModel? SecondPractice;
   final RaceDateModel? ThirdPractice;

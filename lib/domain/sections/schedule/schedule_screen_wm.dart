@@ -236,7 +236,7 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
         if (isSameDay(DateTime.parse(race.date), _selectedDate.value)) {
           newSchedule.add(ScheduleContainer(
             title: 'Гонка',
-            date: RaceDateModel(date: race.date, time: race.time),
+            date: RaceDateModel(date: race.date, time: race.time ?? ''),
           ));
         }
         if (newSchedule.isNotEmpty) {

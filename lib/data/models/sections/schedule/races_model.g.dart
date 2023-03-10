@@ -13,7 +13,7 @@ RacesModel _$RacesModelFromJson(Map<String, dynamic> json) => RacesModel(
       raceName: json['raceName'] as String,
       Circuit: CircuitModel.fromJson(json['Circuit'] as Map<String, dynamic>),
       date: json['date'] as String,
-      time: json['time'] as String,
+      time: json['time'] as String?,
       FirstPractice: json['FirstPractice'] == null
           ? null
           : RaceDateModel.fromJson(

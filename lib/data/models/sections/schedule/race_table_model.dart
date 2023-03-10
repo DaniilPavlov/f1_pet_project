@@ -26,4 +26,8 @@ class RaceTableModel {
       throw ResponseParseException('RaceTableModel: $e');
     }
   }
+
+  @override
+  String toString() =>
+      'RaceTableModel(season: $season, round: $round, Races: $Races)';
 }

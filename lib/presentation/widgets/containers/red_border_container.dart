@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 
 class RedBorderContainer extends StatelessWidget {
   final String title;
-  final VoidCallback onTap;
+  final TextStyle style;
+  final VoidCallback? onTap;
   const RedBorderContainer({
     required this.title,
-    required this.onTap,
+    this.style = AppStyles.h3,
+    this.onTap,
     super.key,
   });
 
@@ -25,8 +27,11 @@ class RedBorderContainer extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: Text(title, style: AppStyles.h3)),
-            const Icon(Icons.arrow_right_alt),
+            Expanded(child: Text(title, style: style)),
+            if (onTap == null)
+              const SizedBox.shrink()
+            else
+              const Icon(Icons.arrow_right_alt),
           ],
         ),
       ),

@@ -15,7 +15,10 @@ abstract class IRaceSearchScreenWM extends IWidgetModel {
   TextEditingController get roundController;
 
   /// результаты гонки
-  ListenableState<EntityState<RacesModel>> get searchedRace;
+  ListenableState<EntityState<RacesModel?>> get searchedRace;
+
+  /// гонок не найдено
+  ListenableState<String> get errorMessage;
 
   /// загружены ли данные
   ListenableState<bool> get dataIsLoaded;
@@ -31,6 +34,8 @@ abstract class IRaceSearchScreenWM extends IWidgetModel {
 
   /// загрузка результатов для конкретной гонки
   void checkFields();
+
+  // TODO(pavlov): добавить метод скролла вниз
 }
 
 class RaceSearchScreenWM
@@ -40,20 +45,25 @@ class RaceSearchScreenWM
 
   final _roundController = TextEditingController();
 
-  final _searchedRace = EntityStateNotifier<RacesModel>();
+  final _searchedRace = EntityStateNotifier<RacesModel?>();
 
   final _dataIsLoaded = StateNotifier<bool>(initValue: true);
 
   final _fieldsInputted = StateNotifier<bool>(initValue: false);
 
+  final _errorMessage = StateNotifier<String>(initValue: '');
+
   @override
-  ListenableState<EntityState<RacesModel>> get searchedRace => _searchedRace;
+  ListenableState<EntityState<RacesModel?>> get searchedRace => _searchedRace;
 
   @override
   ListenableState<bool> get dataIsLoaded => _dataIsLoaded;
 
   @override
   ListenableState<bool> get fieldsInputted => _fieldsInputted;
+
+  @override
+  ListenableState<String> get errorMessage => _errorMessage;
 
   @override
   TextEditingController get yearController => _yearController;
@@ -70,7 +80,7 @@ class RaceSearchScreenWM
 
   @override
   void checkFields() => _fieldsInputted.accept(
-        _yearController.text.isNotEmpty && _roundController.text.isNotEmpty,
+        _yearController.text.length == 4 && _roundController.text.isNotEmpty,
       );
 
   @override
@@ -84,9 +94,19 @@ class RaceSearchScreenWM
       ),
       before: _searchedRace.loading,
       onSuccess: (data) {
-        _searchedRace.content(data!.RaceTable.Races[0]);
+        if (data!.RaceTable.Races.isNotEmpty) {
+          _searchedRace.content(data.RaceTable.Races[0]);
+        } else {
+          _searchedRace.content(null);
+          _errorMessage.accept(
+            'По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.',
+          );
+        }
       },
-      onError: _searchedRace.error,
+      onError: (error) {
+        _searchedRace.error(error);
+        _errorMessage.accept(error.title);
+      },
     );
     _dataIsLoaded.accept(true);
   }
