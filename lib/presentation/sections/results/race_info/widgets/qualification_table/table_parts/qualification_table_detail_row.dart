@@ -1,11 +1,11 @@
-import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
+import 'package:f1_pet_project/data/models/sections/results/qualifying_results_model.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:flutter/material.dart';
 // ignore_for_file: avoid-returning-widgets
 
 //* Возвращает список детей ряда таблицы
-List<Widget> tournamentTableDriversDetailRowChildren(
-  DriverStandingsModel driverStanding,
+List<Widget> qualificationTableDetailRowChildren(
+  QualifyingResultsModel results,
   int place,
 ) {
   const textStyle = AppStyles.caption;
@@ -23,33 +23,40 @@ List<Widget> tournamentTableDriversDetailRowChildren(
     ),
     Center(
       // child: Text(
-      //   driverStanding.Driver.code!,
+      //   results.Driver.code!,
       //   style: textStyle,
       //   textAlign: TextAlign.center,
       // ),
       child: Text(
-        '${driverStanding.Driver.givenName}\n${driverStanding.Driver.familyName}',
+        '${results.Driver.givenName}\n${results.Driver.familyName}',
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.Constructors[0].name,
+        results.Constructor.name,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.points,
+        results.Q1,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.Driver.nationality,
+        results.Q2 ?? (int.parse(results.position) < 16 ? '-' : ''),
+        style: textStyle,
+        textAlign: TextAlign.center,
+      ),
+    ),
+    Center(
+      child: Text(
+        results.Q3 ?? (int.parse(results.position) < 11 ? '-' : ''),
         style: textStyle,
         textAlign: TextAlign.center,
       ),

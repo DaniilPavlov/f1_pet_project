@@ -14,7 +14,17 @@ class SearchResultSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (wm.dataIsLoaded.value! && wm.searchedRace.value!.data != null)
+        if (wm.dataIsLoaded.value! && wm.searchedRace.value!.data != null) ...[
+          Padding(
+            padding: const EdgeInsets.only(
+                left: StaticData.defaultHorizontalPadding,
+                 right: StaticData.defaultHorizontalPadding,
+                  top: StaticData.defaultVerticallPadding*2,),
+            child: Text(
+              wm.searchedRace.value!.data!.raceName,
+              style: AppStyles.h2,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(
               vertical: StaticData.defaultVerticallPadding,
@@ -23,9 +33,8 @@ class SearchResultSection extends StatelessWidget {
               rowsNumber: 3,
               raceModel: wm.searchedRace.value!.data!,
             ),
-          )
-        else
-          const SizedBox.shrink(),
+          ),
+        ],
         StateNotifierBuilder<String>(
           listenableState: wm.errorMessage,
           builder: (_, errorMessage) => wm.errorMessage.value!.isNotEmpty

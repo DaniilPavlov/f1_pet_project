@@ -22,7 +22,7 @@ List<Widget> driversChampionsTableDetailRowChildren(
     ),
     Center(
       child: Text(
-        '${driverStanding.DriverStandings![0].Driver.givenName} ${driverStanding.DriverStandings![0].Driver.familyName}',
+        '${driverStanding.DriverStandings![0].Driver.givenName}\n${driverStanding.DriverStandings![0].Driver.familyName}',
         style: textStyle,
         textAlign: TextAlign.center,
       ),

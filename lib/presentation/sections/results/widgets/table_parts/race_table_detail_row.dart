@@ -22,8 +22,13 @@ List<Widget> raceTableDetailRowChildren(
       ),
     ),
     Center(
+      // child: Text(
+      //   results.Driver.code!,
+      //   style: textStyle,
+      //   textAlign: TextAlign.center,
+      // ),
       child: Text(
-        results.Driver.code!,
+        '${results.Driver.givenName}\n${results.Driver.familyName}',
         style: textStyle,
         textAlign: TextAlign.center,
       ),

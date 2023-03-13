@@ -31,13 +31,14 @@ class LastRaceTableSection extends StatelessWidget {
                 'Последняя гонка: ',
                 style: AppStyles.h2,
               ),
-              const SizedBox(height: 10),
-              Text(
-                lastRace.raceName,
-                style: AppStyles.h2,
-              ),
-              const SizedBox(
-                height: StaticData.defaultVerticallPadding,
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: StaticData.defaultVerticallPadding,
+                ),
+                child: Text(
+                  lastRace.raceName,
+                  style: AppStyles.h2,
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
