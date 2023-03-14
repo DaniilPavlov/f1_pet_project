@@ -11,8 +11,10 @@ class RaceInfoTable extends StatelessWidget {
   final RacesModel raceModel;
   final int? rowsNumber;
   final bool withPrimaryRow;
+  final String fastestLap;
   const RaceInfoTable({
     required this.raceModel,
+    required this.fastestLap,
     this.rowsNumber,
     this.withPrimaryRow = true,
     super.key,
@@ -40,6 +42,7 @@ class RaceInfoTable extends StatelessWidget {
                 ),
                 children: raceTableDetailRowChildren(
                   raceModel.Results![i],
+                  fastestLap,
                   i + 1,
                 ),
               ),

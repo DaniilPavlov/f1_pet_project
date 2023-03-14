@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 
 class LastRaceTableSection extends StatelessWidget {
   final RacesModel lastRace;
+  final String fastestLap;
 
   const LastRaceTableSection({
     required this.lastRace,
+    required this.fastestLap,
     super.key,
   });
 
@@ -62,6 +64,7 @@ class LastRaceTableSection extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             RaceInfoTable(
+              fastestLap: fastestLap,
               rowsNumber: 3,
               raceModel: lastRace,
             ),

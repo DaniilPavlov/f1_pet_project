@@ -25,16 +25,6 @@ class RaceInfoTableAppBar extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Text(
-                  'Позиция',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.zero,
-                child: Text(
                   'Пилот',
                   style: textStyle,
                   textAlign: TextAlign.center,
@@ -66,6 +56,16 @@ class RaceInfoTableAppBar extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 child: Text(
                   'Очки',
+                  style: textStyle,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.zero,
+                child: Text(
+                  'Лучший\nкруг',
                   style: textStyle,
                   textAlign: TextAlign.center,
                 ),

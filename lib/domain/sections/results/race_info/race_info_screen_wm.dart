@@ -34,6 +34,9 @@ abstract class IRaceInfoScreenWM extends IWidgetModel {
   /// загружены ли начальные данные
   ListenableState<bool> get allDataIsLoaded;
 
+  /// время лучшего круга
+  String get fastestLap;
+
   /// загрузка всех данных
   void loadAllData();
 
@@ -95,6 +98,11 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
 
   @override
   RacesModel get raceModel => _raceModel;
+
+  @override
+  String get fastestLap => _fastestLap;
+
+  String _fastestLap = '999999';
 
   RaceInfoScreenWM({
     required RaceInfoScreenModel model,
@@ -164,7 +172,12 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
         loadPitStops(),
       ],
     );
-    // TODO(pavlov): добавить сюда вытаскивание быстрых кругов
+
+    for (final element in raceModel.Results!) {
+      if (_fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
+        _fastestLap = element.FastestLap!.Time.time;
+      }
+    }
     _allDataIsLoaded.accept(true);
   }
 

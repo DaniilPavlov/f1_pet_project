@@ -63,7 +63,7 @@ class _Body extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                         vertical: StaticData.defaultVerticallPadding,
                       ),
-                      child: LastRaceTableSection(lastRace: lastRace),
+                      child: LastRaceTableSection(lastRace: lastRace,fastestLap: wm.fastestLap,),
                     );
             },
           ),

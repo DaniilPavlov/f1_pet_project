@@ -30,6 +30,7 @@ class SearchResultSection extends StatelessWidget {
               vertical: StaticData.defaultVerticallPadding,
             ),
             child: RaceInfoTable(
+              fastestLap: wm.fastestLap,
               rowsNumber: 3,
               raceModel: wm.searchedRace.value!.data!,
             ),

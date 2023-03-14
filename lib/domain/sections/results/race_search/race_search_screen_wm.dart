@@ -29,6 +29,9 @@ abstract class IRaceSearchScreenWM extends IWidgetModel {
   /// загружены ли данные
   ListenableState<bool> get fieldsInputted;
 
+  /// время лучшего круга
+  String get fastestLap;
+
   /// закрытие страницы
   void onPop();
 
@@ -77,6 +80,11 @@ class RaceSearchScreenWM
   @override
   ScrollController get scrollController => _scrollController;
 
+  @override
+  String get fastestLap => _fastestLap;
+
+  String _fastestLap = '999999';
+
   RaceSearchScreenWM(super.model);
 
   @override
@@ -118,6 +126,14 @@ class RaceSearchScreenWM
         _errorMessage.accept(error.title);
       },
     );
+    if (_searchedRace.value!.data != null) {
+      for (final element in _searchedRace.value!.data!.Results!) {
+        if (_fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
+          _fastestLap = element.FastestLap!.Time.time;
+        }
+      }
+    }
+
     _dataIsLoaded.accept(true);
   }
 

@@ -21,17 +21,9 @@ TableRow raceTablePrimaryRow() {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(
-            'Позиция',
-            style: textStyle,
-          ),
-        ),
-      ),
-      Center(
-        child: Padding(
-          padding: EdgeInsets.zero,
-          child: Text(
             'Пилот',
             style: textStyle,
+            textAlign: TextAlign.center,
           ),
         ),
       ),
@@ -59,6 +51,16 @@ TableRow raceTablePrimaryRow() {
           child: Text(
             'Очки',
             style: textStyle,
+          ),
+        ),
+      ),
+      Center(
+        child: Padding(
+          padding: EdgeInsets.zero,
+          child: Text(
+            'Лучший\nкруг',
+            style: textStyle,
+            textAlign: TextAlign.center,
           ),
         ),
       ),

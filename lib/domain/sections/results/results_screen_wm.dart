@@ -13,6 +13,9 @@ abstract class IResultsScreenWM extends IWidgetModel {
   /// загружены ли начальные данные
   ListenableState<bool> get allDataIsLoaded;
 
+  /// время лучшего круга
+  String get fastestLap;
+
   /// загрузка результатов последней гонки
   void loadLastRaceResults();
 
@@ -31,6 +34,11 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
 
   @override
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
+
+  @override
+  String get fastestLap => _fastestLap;
+
+  String _fastestLap = '999999';
 
   ResultsScreenWM(super.model);
 
@@ -62,6 +70,13 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
         loadLastRaceResults(),
       ],
     );
+    if (_lastRace.value!.data != null) {
+      for (final element in _lastRace.value!.data!.Results!) {
+        if (_fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
+          _fastestLap = element.FastestLap!.Time.time;
+        }
+      }
+    }
 
     _allDataIsLoaded.accept(true);
   }

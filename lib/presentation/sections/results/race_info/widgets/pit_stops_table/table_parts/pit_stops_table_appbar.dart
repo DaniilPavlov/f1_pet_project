@@ -25,16 +25,6 @@ class PitStopsTableAppBar extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Text(
-                  '',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.zero,
-                child: Text(
                   'Пилот',
                   style: textStyle,
                   textAlign: TextAlign.center,

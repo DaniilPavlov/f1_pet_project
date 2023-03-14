@@ -15,8 +15,11 @@ import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+// TODO(think): горизонтальная таблица не вставляется в кастом скрол вью
+// возможно для каждой таблицы нужно сделать отдельный экран
+
 // TODO(pavlov): что осталось добавить
-// 1) информация о лучших кругах и поуле
+// 1) по нажатию на гонщика в первой таблице открывать полную его информацию по гонке
 // ??
 
 class RaceInfoScreen extends ElementaryWidget<IRaceInfoScreenWM> {
@@ -121,6 +124,7 @@ class _Body extends StatelessWidget {
             key: const Key('race_info_table'),
             onVisibilityChanged: wm.onRaceTableVisibilityChanged,
             child: RaceInfoTable(
+              fastestLap: wm.fastestLap,
               raceModel: wm.raceModel,
               withPrimaryRow: false,
             ),
@@ -157,7 +161,6 @@ class _Body extends StatelessWidget {
           listenableState: wm.pitStopsAppBarPinned,
           builder: (_, pitStopsAppBarPinned) {
             return SliverAppBar(
-
               backgroundColor: AppTheme.red,
               pinned: pitStopsAppBarPinned!,
               automaticallyImplyLeading: false,

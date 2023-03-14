@@ -14,23 +14,25 @@ List<Widget> pitStopsTableDetailRowChildren(
     Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Text(
-          place.toString(),
-          style: textStyle,
-          textAlign: TextAlign.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const SizedBox(width: 5),
+            Text(
+              place.toString(),
+              style: textStyle,
+              textAlign: TextAlign.left,
+            ),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Text(
+                results.driverId,
+                style: textStyle,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
         ),
-      ),
-    ),
-    Center(
-      // child: Text(
-      //   results.Driver.code!,
-      //   style: textStyle,
-      //   textAlign: TextAlign.center,
-      // ),
-      child: Text(
-        results.driverId,
-        style: textStyle,
-        textAlign: TextAlign.center,
       ),
     ),
     Center(
