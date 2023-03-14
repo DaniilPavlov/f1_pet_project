@@ -16,8 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 // TODO(pavlov): что осталось добавить
-// 1) информация о пит стопах
-// 2) информация о лучших кругах и поуле
+// 1) информация о лучших кругах и поуле
 // ??
 
 class RaceInfoScreen extends ElementaryWidget<IRaceInfoScreenWM> {
@@ -158,6 +157,7 @@ class _Body extends StatelessWidget {
           listenableState: wm.pitStopsAppBarPinned,
           builder: (_, pitStopsAppBarPinned) {
             return SliverAppBar(
+
               backgroundColor: AppTheme.red,
               pinned: pitStopsAppBarPinned!,
               automaticallyImplyLeading: false,

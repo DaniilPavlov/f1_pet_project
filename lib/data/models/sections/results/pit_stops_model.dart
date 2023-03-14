@@ -29,4 +29,20 @@ class PitStopsModel {
       throw ResponseParseException('PitStopsModel: $e');
     }
   }
+
+  PitStopsModel copyWith({
+    String? driverId,
+    String? lap,
+    String? stop,
+    String? time,
+    String? duration,
+  }) {
+    return PitStopsModel(
+      driverId: driverId ?? this.driverId,
+      lap: lap ?? this.lap,
+      stop: stop ?? this.stop,
+      time: time ?? this.time,
+      duration: duration ?? this.duration,
+    );
+  }
 }

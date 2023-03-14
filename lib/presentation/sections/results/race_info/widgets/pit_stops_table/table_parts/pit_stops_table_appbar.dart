@@ -55,7 +55,7 @@ class PitStopsTableAppBar extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.zero,
                 child: Text(
-                  'Номер остановки',
+                  'Номер\nостановки',
                   style: textStyle,
                   textAlign: TextAlign.center,
                 ),
@@ -65,17 +65,17 @@ class PitStopsTableAppBar extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.zero,
                 child: Text(
-                  'Длительность',
+                  'Время\nстопа',
                   style: textStyle,
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
-               Expanded(
+            Expanded(
               child: Padding(
                 padding: EdgeInsets.zero,
                 child: Text(
-                  'Время гонки',
+                  'Время\nгонки',
                   style: textStyle,
                   textAlign: TextAlign.center,
                 ),

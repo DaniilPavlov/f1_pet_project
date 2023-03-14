@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
+import 'package:f1_pet_project/data/models/sections/results/driver/driver_fetching_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/pit_stops_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/qualifying_results_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
@@ -87,7 +88,7 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
       _qualificationAppBarPinned;
 
   @override
-  ListenableState<bool> get pitStopsAppBarPinned => _qualificationAppBarPinned;
+  ListenableState<bool> get pitStopsAppBarPinned => _pitStopsAppBarPinned;
 
   @override
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
@@ -125,6 +126,7 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
 
   @override
   Future<void> loadPitStops() async {
+    var stops = <PitStopsModel>[];
     await execute<ScheduleModel>(
       () => model.loadPitStops(
         year: _raceModel.season,
@@ -132,10 +134,25 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
       ),
       before: _pitStops.loading,
       onSuccess: (data) {
-        _pitStops.content(data!.RaceTable.Races[0].PitStops!);
+        stops = data!.RaceTable.Races[0].PitStops!;
       },
       onError: _pitStops.error,
     );
+    if (_pitStops.value?.error == null) {
+      for (var i = 0; i < stops.length; i++) {
+        await execute<DriverFetchingModel>(
+          () => model.loadDriverInfo(driverId: stops[i].driverId),
+          onSuccess: (data) {
+            stops[i] = stops[i].copyWith(
+              driverId:
+                  '${data!.DriverTable.Drivers[0].givenName} ${data.DriverTable.Drivers[0].familyName}',
+            );
+          },
+          onError: _pitStops.error,
+        );
+        _pitStops.content(stops);
+      }
+    }
   }
 
   @override
@@ -147,6 +164,7 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
         loadPitStops(),
       ],
     );
+    // TODO(pavlov): добавить сюда вытаскивание быстрых кругов
     _allDataIsLoaded.accept(true);
   }
 
@@ -167,7 +185,6 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
     );
   }
 
-// TODO(pavlov): пит стопы не пинятся
   @override
   void onPitStopsTableVisibilityChanged(VisibilityInfo info) {
     _pitStopsAppBarPinned.accept(

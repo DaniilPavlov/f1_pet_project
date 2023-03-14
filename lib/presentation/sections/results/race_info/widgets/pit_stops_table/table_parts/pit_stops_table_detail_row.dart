@@ -28,7 +28,6 @@ List<Widget> pitStopsTableDetailRowChildren(
       //   textAlign: TextAlign.center,
       // ),
       child: Text(
-        // TODO(pavlov): решить делать ли тут запрос по айди или нет
         results.driverId,
         style: textStyle,
         textAlign: TextAlign.center,
