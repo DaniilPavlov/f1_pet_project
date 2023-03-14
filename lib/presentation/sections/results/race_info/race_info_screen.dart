@@ -1,6 +1,8 @@
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/domain/sections/results/race_info/race_info_screen_wm.dart';
+import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/pit_stops_table/pit_stops_table.dart';
+import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/pit_stops_table/table_parts/pit_stops_table_appbar.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/qualification_table/qualification_table.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/qualification_table/table_parts/qualification_table_appbar.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/race_info_table/race_info_table_appbar.dart';
@@ -149,7 +151,30 @@ class _Body extends StatelessWidget {
             ),
           ),
         ),
-        // TODO(check): что делать, когда у нас есть спринт?
+        const SliverToBoxAdapter(
+          child: SizedBox(height: StaticData.defaultVerticallPadding),
+        ),
+        StateNotifierBuilder<bool>(
+          listenableState: wm.pitStopsAppBarPinned,
+          builder: (_, pitStopsAppBarPinned) {
+            return SliverAppBar(
+              backgroundColor: AppTheme.red,
+              pinned: pitStopsAppBarPinned!,
+              automaticallyImplyLeading: false,
+              titleSpacing: 0,
+              title: const PitStopsTableAppBar(),
+            );
+          },
+        ),
+        SliverToBoxAdapter(
+          child: VisibilityDetector(
+            key: const Key('pit_stops_info_table'),
+            onVisibilityChanged: wm.onPitStopsTableVisibilityChanged,
+            child: PitStopsTable(
+              pitStops: wm.pitStops.value!.data!,
+            ),
+          ),
+        ),
       ],
     );
   }

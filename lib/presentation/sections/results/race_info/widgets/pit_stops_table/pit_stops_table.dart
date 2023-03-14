@@ -1,16 +1,12 @@
-import 'package:f1_pet_project/data/models/sections/results/qualifying_results_model.dart';
-import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/qualification_table/table_parts/qualification_table_detail_row.dart';
+import 'package:f1_pet_project/data/models/sections/results/pit_stops_model.dart';
+import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/pit_stops_table/table_parts/pit_stops_table_detail_row.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-// TODO(check): что делать, когда у нас есть спринт?
-class QualificationTable extends StatelessWidget {
-  final List<QualifyingResultsModel> qualifyingResults;
+class PitStopsTable extends StatelessWidget {
+  final List<PitStopsModel> pitStops;
 
-  const QualificationTable({
-    required this.qualifyingResults,
-    super.key,
-  });
+  const PitStopsTable({required this.pitStops, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +17,7 @@ class QualificationTable extends StatelessWidget {
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [
             ...List.generate(
-              qualifyingResults.length,
+              pitStops.length,
               (i) => TableRow(
                 decoration: BoxDecoration(
                   color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
@@ -31,8 +27,8 @@ class QualificationTable extends StatelessWidget {
                     ),
                   ),
                 ),
-                children: qualificationTableDetailRowChildren(
-                  qualifyingResults[i],
+                children: pitStopsTableDetailRowChildren(
+                  pitStops[i],
                   i + 1,
                 ),
               ),

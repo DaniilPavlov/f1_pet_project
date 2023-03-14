@@ -2,6 +2,7 @@
 
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
 import 'package:f1_pet_project/data/models/sections/circuits/circuit_model.dart';
+import 'package:f1_pet_project/data/models/sections/results/pit_stops_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/qualifying_results_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/results_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/race_date_model.dart';
@@ -25,6 +26,7 @@ class RacesModel {
   final RaceDateModel? Sprint;
   final List<ResultsModel>? Results;
   final List<QualifyingResultsModel>? QualifyingResults;
+  final List<PitStopsModel>? PitStops;
 
   RacesModel({
     required this.season,
@@ -41,6 +43,7 @@ class RacesModel {
     required this.Sprint,
     required this.Results,
     required this.QualifyingResults,
+    required this.PitStops,
   });
 
   factory RacesModel.fromJson(Map<String, dynamic> json) {

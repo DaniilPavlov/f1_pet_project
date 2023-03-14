@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
+import 'package:f1_pet_project/data/models/sections/results/pit_stops_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/qualifying_results_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/schedule_model.dart';
@@ -16,12 +17,18 @@ abstract class IRaceInfoScreenWM extends IWidgetModel {
   /// показываем ли аппбар таблицы квалификации
   ListenableState<bool> get qualificationAppBarPinned;
 
+  /// показываем ли аппбар таблицы пит стопов
+  ListenableState<bool> get pitStopsAppBarPinned;
+
   // основная информация гонки
   RacesModel get raceModel;
 
   // информация о квалификации
   ListenableState<EntityState<List<QualifyingResultsModel>>>
       get qualifyingResults;
+
+  // информация о пит стопах
+  ListenableState<EntityState<List<PitStopsModel>>> get pitStops;
 
   /// загружены ли начальные данные
   ListenableState<bool> get allDataIsLoaded;
@@ -32,11 +39,17 @@ abstract class IRaceInfoScreenWM extends IWidgetModel {
   /// загрузка результатов квалификации
   void loadQualifyingResults();
 
+  /// загрузка результатов пит стопов
+  void loadPitStops();
+
   /// проверка видимости таблицы гонки
   void onRaceTableVisibilityChanged(VisibilityInfo info);
 
   /// проверка видимости таблицы квалификации
   void onQualificationTableVisibilityChanged(VisibilityInfo info);
+
+  /// проверка видимости таблицы пит стопов
+  void onPitStopsTableVisibilityChanged(VisibilityInfo info);
 
   /// закрытие страницы
   void onPop();
@@ -48,6 +61,8 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
 
   final _qualificationAppBarPinned = StateNotifier<bool>(initValue: false);
 
+  final _pitStopsAppBarPinned = StateNotifier<bool>(initValue: false);
+
   final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
 
   late final RacesModel _raceModel;
@@ -55,9 +70,14 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
   final _qualifyingResults =
       EntityStateNotifier<List<QualifyingResultsModel>>();
 
+  final _pitStops = EntityStateNotifier<List<PitStopsModel>>();
+
   @override
   ListenableState<EntityState<List<QualifyingResultsModel>>>
       get qualifyingResults => _qualifyingResults;
+
+  @override
+  ListenableState<EntityState<List<PitStopsModel>>> get pitStops => _pitStops;
 
   @override
   ListenableState<bool> get raceAppBarPinned => _raceAppBarPinned;
@@ -65,6 +85,9 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
   @override
   ListenableState<bool> get qualificationAppBarPinned =>
       _qualificationAppBarPinned;
+
+  @override
+  ListenableState<bool> get pitStopsAppBarPinned => _qualificationAppBarPinned;
 
   @override
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
@@ -82,7 +105,6 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
   @override
   void initWidgetModel() {
     loadAllData();
-
     super.initWidgetModel();
   }
 
@@ -102,15 +124,29 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
   }
 
   @override
+  Future<void> loadPitStops() async {
+    await execute<ScheduleModel>(
+      () => model.loadPitStops(
+        year: _raceModel.season,
+        round: _raceModel.round,
+      ),
+      before: _pitStops.loading,
+      onSuccess: (data) {
+        _pitStops.content(data!.RaceTable.Races[0].PitStops!);
+      },
+      onError: _pitStops.error,
+    );
+  }
+
+  @override
   Future<void> loadAllData() async {
     _allDataIsLoaded.accept(false);
-
     await Future.wait(
       [
         loadQualifyingResults(),
+        loadPitStops(),
       ],
     );
-
     _allDataIsLoaded.accept(true);
   }
 
@@ -126,6 +162,15 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
   @override
   void onQualificationTableVisibilityChanged(VisibilityInfo info) {
     _qualificationAppBarPinned.accept(
+      info.visibleBounds.top < info.size.height - 150 &&
+          info.visibleBounds.right != 0,
+    );
+  }
+
+// TODO(pavlov): пит стопы не пинятся
+  @override
+  void onPitStopsTableVisibilityChanged(VisibilityInfo info) {
+    _pitStopsAppBarPinned.accept(
       info.visibleBounds.top < info.size.height - 150 &&
           info.visibleBounds.right != 0,
     );
