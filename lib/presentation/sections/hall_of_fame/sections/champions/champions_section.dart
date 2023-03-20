@@ -1,7 +1,6 @@
-import 'package:auto_route/auto_route.dart';
+import 'package:beamer/beamer.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
 import 'package:f1_pet_project/presentation/widgets/containers/red_border_container.dart';
-import 'package:f1_pet_project/router/router.gr.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,17 +34,15 @@ class ChampionsSection extends StatelessWidget {
           const SizedBox(height: 32),
           RedBorderContainer(
             title: 'Пилоты',
-            onTap: () async => context.router.navigate(
-              DriversChampionsRoute(driversChampions: driversChampions),
+            onTap: () => Beamer.of(context).beamToNamed(
+              '/hall_of_fame/?driversChampions=$driversChampions',
             ),
           ),
           const SizedBox(height: 20),
           RedBorderContainer(
             title: 'Конструкторы',
-            onTap: () async => context.router.navigate(
-              ConstructorsChampionsRoute(
-                constructorsChampions: constructorsChampions,
-              ),
+            onTap: () => Beamer.of(context).beamToNamed(
+              '/hall_of_fame/?constructorsChampions=$constructorsChampions',
             ),
           ),
           const SizedBox(height: 20),

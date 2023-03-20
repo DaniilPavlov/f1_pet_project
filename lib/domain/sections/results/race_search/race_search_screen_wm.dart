@@ -1,4 +1,4 @@
-import 'package:auto_route/auto_route.dart';
+import 'package:beamer/beamer.dart';
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/schedule_model.dart';
@@ -88,9 +88,7 @@ class RaceSearchScreenWM
   RaceSearchScreenWM(super.model);
 
   @override
-  void onPop() {
-    context.router.removeLast();
-  }
+  void onPop() => Beamer.of(context).popRoute();
 
   @override
   void checkFields() => _fieldsInputted.accept(

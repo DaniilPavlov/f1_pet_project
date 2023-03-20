@@ -1,33 +1,58 @@
-import 'package:f1_pet_project/router/router.gr.dart';
+import 'package:beamer/beamer.dart';
+import 'package:f1_pet_project/router/main_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class App extends StatelessWidget {
-  final _appRouter = AppRouter();
-  App({super.key});
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // final mySystemTheme = SystemUiOverlayStyle.light.copyWith(
-    //   systemNavigationBarColor: AppTheme.grayBG,
-    //   statusBarColor: Colors.black.withOpacity(.3),
+    final routerDelegate = BeamerDelegate(
+      initialPath: '/main',
+      locationBuilder: BeamerLocationBuilder(
+        beamLocations: [
+      MainLocation(),
+        ],
+      ),
+    );
+
+    // final routerDelegate = BeamerDelegate(
+    //   locationBuilder: RoutesLocationBuilder(
+    //     routes: {
+    //       '/*': (context, state, data) => AppScreen(),
+    //     },
+    //   ),
     // );
 
-    // SystemChrome.setSystemUIOverlayStyle(mySystemTheme);
+    // final routerDelegate = BeamerDelegate(
+    //   initialPath: '/home',
+    //   locationBuilder: BeamerLocationBuilder(
+    //     beamLocations: [
+    //       HomeLocation(),
+    //       ResultsLocation(),
+    //       ScheduleLocation(),
+    //       HallOfFameLocation(),
+    //       CircuitsLocation(),
+    //     ],
+    //   ),
+    // );
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      supportedLocales: const [
-        Locale('ru', ''),
-      ],
+      supportedLocales: const [Locale('ru', '')],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      routerDelegate: _appRouter.delegate(),
-      routeInformationParser: _appRouter.defaultRouteParser(),
+      routerDelegate: routerDelegate,
+      routeInformationParser: BeamerParser(),
+      backButtonDispatcher: BeamerBackButtonDispatcher(
+        delegate: routerDelegate,
+        fallbackToBeamBack: false,
+      ),
       builder: (context, child) => ResponsiveWrapper.builder(
         child,
         minWidth: 375,

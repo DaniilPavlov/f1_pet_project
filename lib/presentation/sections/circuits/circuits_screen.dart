@@ -1,10 +1,9 @@
-import 'package:auto_route/auto_route.dart';
+import 'package:beamer/beamer.dart';
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/circuits/circuit_model.dart';
 import 'package:f1_pet_project/domain/sections/circuits/circuits_screen_wm.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/presentation/widgets/containers/red_border_container.dart';
-import 'package:f1_pet_project/router/router.gr.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/theme.dart';
@@ -72,8 +71,8 @@ class _Body extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 20),
                           child: RedBorderContainer(
                             title: items[index].circuitName,
-                            onTap: () async => context.router.navigate(
-                              CircuitRoute(circuitModel: items[index]),
+                            onTap: () => Beamer.of(context).beamToNamed(
+                              '/circuit/?circuitModel=$items[index])',
                             ),
                           ),
                         ),

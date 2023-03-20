@@ -72,7 +72,8 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
     );
     if (_lastRace.value!.data != null) {
       for (final element in _lastRace.value!.data!.Results!) {
-        if (_fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
+        if (element.FastestLap != null &&
+            _fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
           _fastestLap = element.FastestLap!.Time.time;
         }
       }

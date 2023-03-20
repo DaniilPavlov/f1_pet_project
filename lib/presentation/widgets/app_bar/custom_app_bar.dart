@@ -1,4 +1,4 @@
-import 'package:auto_route/auto_route.dart';
+import 'package:beamer/beamer.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:f1_pet_project/presentation/widgets/buttons/circle_button.dart';
@@ -62,7 +62,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                       ),
                       onPressed: () {
-                        if (context.router.canPop()) {
+                        if (Beamer.of(context).canBeamBack) {
                           onPop?.call();
                         }
                       },
