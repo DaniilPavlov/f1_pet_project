@@ -4,8 +4,8 @@ import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver
 import 'package:f1_pet_project/domain/sections/home/home_screen_wm.dart';
 import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tournament_tables_section.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends ElementaryWidget<IHomeScreenWM> {
@@ -24,11 +24,7 @@ class HomeScreen extends ElementaryWidget<IHomeScreenWM> {
             if (dataIsLoaded != null) {
               return dataIsLoaded
                   ? _Body(wm: wm)
-                  : const Center(
-                      child: CircularProgressIndicator(
-                        color: AppTheme.red,
-                      ),
-                    );
+                  : const CustomLoadingIndicator();
             }
             return const SizedBox();
           },

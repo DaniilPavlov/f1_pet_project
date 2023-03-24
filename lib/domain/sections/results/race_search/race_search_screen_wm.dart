@@ -128,7 +128,7 @@ class RaceSearchScreenWM
     );
     if (_searchedRace.value!.data != null) {
       for (final element in _searchedRace.value!.data!.Results!) {
-        if (_fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
+        if (element.FastestLap != null && _fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
           _fastestLap = element.FastestLap!.Time.time;
         }
       }

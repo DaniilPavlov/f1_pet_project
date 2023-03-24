@@ -174,7 +174,7 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
     );
 
     for (final element in raceModel.Results!) {
-      if (_fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
+      if (element.FastestLap != null && _fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
         _fastestLap = element.FastestLap!.Time.time;
       }
     }

@@ -1,8 +1,8 @@
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/domain/sections/results/race_search/race_search_screen_wm.dart';
 import 'package:f1_pet_project/presentation/widgets/buttons/black_button.dart';
+import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class SearchButtonSection extends StatelessWidget {
@@ -24,11 +24,7 @@ class SearchButtonSection extends StatelessWidget {
                   onTap: wm.loadRaceResults,
                   text: 'Поиск',
                 )
-              : const Center(
-                  child: CircularProgressIndicator(
-                    color: AppTheme.red,
-                  ),
-                );
+              : const CustomLoadingIndicator();
         },
       ),
     );

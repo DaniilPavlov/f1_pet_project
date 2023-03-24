@@ -32,14 +32,8 @@ abstract class IScheduleScreenWM extends IWidgetModel {
   /// показ расписания при выборе даты
   void onSelectDay(DateTime _, DateTime __);
 
-  /// загрузка расписания сезона
-  void loadSchedule();
-
   /// логотип события
   String? getLogoPath(DateTime day);
-
-  /// загрузка всех данных
-  void loadAllData();
 }
 
 class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
@@ -76,34 +70,9 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
 
   @override
   void initWidgetModel() {
-    loadAllData();
+    _loadAllData();
 
     super.initWidgetModel();
-  }
-
-  @override
-  Future<void> loadSchedule() async {
-    await execute<ScheduleModel>(
-      model.loadSchedule,
-      before: _racesElements.loading,
-      onSuccess: (data) {
-        _racesElements.content(data!.RaceTable.Races);
-      },
-      onError: _racesElements.error,
-    );
-  }
-
-  @override
-  Future<void> loadAllData() async {
-    _allDataIsLoaded.accept(false);
-
-    await Future.wait(
-      [
-        loadSchedule(),
-      ],
-    );
-
-    _allDataIsLoaded.accept(true);
   }
 
   @override
@@ -168,6 +137,21 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
       return 'assets/calendar/car.png';
     }
     return null;
+  }
+
+  /// загрузка всех данных
+  Future<void> _loadAllData() async {
+    _allDataIsLoaded.accept(false);
+
+    await Future.wait(
+      [
+        _loadSchedule(),
+      ],
+    );
+
+    onSelectDay(DateTime.now(), DateTime.now());
+
+    _allDataIsLoaded.accept(true);
   }
 
   /// Показывает расписание выбранной даты
@@ -266,6 +250,18 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
         break;
       }
     }
+  }
+
+  /// загрузка расписания сезона
+  Future<void> _loadSchedule() async {
+    await execute<ScheduleModel>(
+      model.loadSchedule,
+      before: _racesElements.loading,
+      onSuccess: (data) {
+        _racesElements.content(data!.RaceTable.Races);
+      },
+      onError: _racesElements.error,
+    );
   }
 
   /// Скролл к расписанию

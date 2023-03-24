@@ -60,10 +60,13 @@ List<Widget> raceTableDetailRowChildren(
     ),
     Center(
       child: Text(
-        fastestLap.compareTo(results.FastestLap!.Time.time) == 0
-            ? '${results.FastestLap!.Time.time}\nсамый\nбыстрый'
-            : results.FastestLap!.Time.time,
-        style: fastestLap.compareTo(results.FastestLap!.Time.time) == 0
+        results.FastestLap == null
+            ? 'нет'
+            : fastestLap.compareTo(results.FastestLap!.Time.time) == 0
+                ? '${results.FastestLap!.Time.time}\nсамый\nбыстрый'
+                : results.FastestLap!.Time.time,
+        style: results.FastestLap != null &&
+                fastestLap.compareTo(results.FastestLap!.Time.time) == 0
             ? textStyle.copyWith(color: AppTheme.red)
             : textStyle,
         textAlign: TextAlign.center,

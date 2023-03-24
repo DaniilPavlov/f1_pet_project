@@ -8,6 +8,7 @@ import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/q
 import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/race_info_table/race_info_table_appbar.dart';
 import 'package:f1_pet_project/presentation/sections/results/widgets/race_info_table.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/utils/constants/static.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
 import 'package:f1_pet_project/utils/theme/styles.dart';
@@ -44,11 +45,7 @@ class RaceInfoScreen extends ElementaryWidget<IRaceInfoScreenWM> {
             if (dataIsLoaded != null) {
               return dataIsLoaded
                   ? _Body(wm: wm)
-                  : const Center(
-                      child: CircularProgressIndicator(
-                        color: AppTheme.red,
-                      ),
-                    );
+                  : const CustomLoadingIndicator();
             }
             return const SizedBox();
           },
