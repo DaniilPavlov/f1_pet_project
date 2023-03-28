@@ -2,9 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/presentation/sections/results/widgets/table_parts/race_table_detail_row.dart';
 import 'package:f1_pet_project/presentation/sections/results/widgets/table_parts/race_table_primary_row.dart';
-import 'package:f1_pet_project/router/router.gr.dart';
-import 'package:f1_pet_project/utils/theme/styles.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
+import 'package:f1_pet_project/router/app_router.gr.dart';
+import 'package:f1_pet_project/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class RaceInfoTable extends StatelessWidget {

@@ -41,10 +41,10 @@ class AppRouter extends _i13.RootStackRouter {
 
   @override
   final Map<String, _i13.PageFactory> pagesMap = {
-    CustomScaffoldWithNavBar.name: (routeData) {
+    ScaffoldWithNavBar.name: (routeData) {
       return _i13.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i1.CustomScaffoldWithNavBar(),
+        child: const _i1.ScaffoldWithNavBar(),
       );
     },
     HomeRouter.name: (routeData) {
@@ -158,13 +158,13 @@ class AppRouter extends _i13.RootStackRouter {
   @override
   List<_i13.RouteConfig> get routes => [
         _i13.RouteConfig(
-          CustomScaffoldWithNavBar.name,
+          ScaffoldWithNavBar.name,
           path: '/',
           children: [
             _i13.RouteConfig(
               HomeRouter.name,
               path: 'home',
-              parent: CustomScaffoldWithNavBar.name,
+              parent: ScaffoldWithNavBar.name,
               children: [
                 _i13.RouteConfig(
                   HomeRoute.name,
@@ -177,7 +177,7 @@ class AppRouter extends _i13.RootStackRouter {
             _i13.RouteConfig(
               ResultsRouter.name,
               path: 'results',
-              parent: CustomScaffoldWithNavBar.name,
+              parent: ScaffoldWithNavBar.name,
               children: [
                 _i13.RouteConfig(
                   ResultsRoute.name,
@@ -202,7 +202,7 @@ class AppRouter extends _i13.RootStackRouter {
             _i13.RouteConfig(
               ScheduleRouter.name,
               path: 'schedule',
-              parent: CustomScaffoldWithNavBar.name,
+              parent: ScaffoldWithNavBar.name,
               children: [
                 _i13.RouteConfig(
                   ScheduleRoute.name,
@@ -215,7 +215,7 @@ class AppRouter extends _i13.RootStackRouter {
             _i13.RouteConfig(
               HallOfFameRouter.name,
               path: 'hall_of_fame',
-              parent: CustomScaffoldWithNavBar.name,
+              parent: ScaffoldWithNavBar.name,
               children: [
                 _i13.RouteConfig(
                   HallOfFameRoute.name,
@@ -240,7 +240,7 @@ class AppRouter extends _i13.RootStackRouter {
             _i13.RouteConfig(
               CircuitsRouter.name,
               path: 'circuits',
-              parent: CustomScaffoldWithNavBar.name,
+              parent: ScaffoldWithNavBar.name,
               children: [
                 _i13.RouteConfig(
                   CircuitsRoute.name,
@@ -262,16 +262,16 @@ class AppRouter extends _i13.RootStackRouter {
 }
 
 /// generated route for
-/// [_i1.CustomScaffoldWithNavBar]
-class CustomScaffoldWithNavBar extends _i13.PageRouteInfo<void> {
-  const CustomScaffoldWithNavBar({List<_i13.PageRouteInfo>? children})
+/// [_i1.ScaffoldWithNavBar]
+class ScaffoldWithNavBar extends _i13.PageRouteInfo<void> {
+  const ScaffoldWithNavBar({List<_i13.PageRouteInfo>? children})
       : super(
-          CustomScaffoldWithNavBar.name,
+          ScaffoldWithNavBar.name,
           path: '/',
           initialChildren: children,
         );
 
-  static const String name = 'CustomScaffoldWithNavBar';
+  static const String name = 'ScaffoldWithNavBar';
 }
 
 /// generated route for

@@ -26,7 +26,10 @@ class FastestLapModel {
       return _$FastestLapModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('FastestLapModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('FastestLapModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

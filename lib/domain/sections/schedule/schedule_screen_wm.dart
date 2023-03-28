@@ -8,33 +8,10 @@ import 'package:f1_pet_project/domain/sections/schedule/schedule_screen_model.da
 import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/schedule/schedule_screen.dart';
 import 'package:f1_pet_project/presentation/sections/schedule/widgets/schedule_container.dart';
-import 'package:f1_pet_project/utils/constants/static.dart';
-import 'package:f1_pet_project/utils/theme/styles.dart';
+import 'package:f1_pet_project/utils/constants/static_data.dart';
+import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-abstract class IScheduleScreenWM extends IWidgetModel {
-  /// скролл страницы
-  ScrollController get scrollController;
-
-  /// расписание
-  ListenableState<EntityState<List<RacesModel>>> get racesElements;
-
-  /// загружены ли начальные данные
-  ListenableState<bool> get allDataIsLoaded;
-
-  /// выбранная дата календаря
-  ListenableState<DateTime> get selectedDate;
-
-  /// расписание выбранной даты
-  ListenableState<List<Widget>> get scheduleOfSelectedDate;
-
-  /// показ расписания при выборе даты
-  void onSelectDay(DateTime _, DateTime __);
-
-  /// логотип события
-  String? getLogoPath(DateTime day);
-}
 
 class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
     implements IScheduleScreenWM {
@@ -139,7 +116,6 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
     return null;
   }
 
-  /// загрузка всех данных
   Future<void> _loadAllData() async {
     _allDataIsLoaded.accept(false);
 
@@ -154,7 +130,7 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
     _allDataIsLoaded.accept(true);
   }
 
-  /// Показывает расписание выбранной даты
+  /// Shows schedule of selected date.
   void _showscheduleOfSelectedDate() {
     _scheduleOfSelectedDate.accept([]);
 
@@ -252,7 +228,7 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
     }
   }
 
-  /// загрузка расписания сезона
+  /// Loads schedule.
   Future<void> _loadSchedule() async {
     await execute<ScheduleModel>(
       model.loadSchedule,
@@ -264,7 +240,7 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
     );
   }
 
-  /// Скролл к расписанию
+  /// Scrolls to schedule.
   void _animateToSchedule() {
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
@@ -278,3 +254,26 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
 
 ScheduleScreenWM createScheduleScreenWM(BuildContext _) =>
     ScheduleScreenWM(ScheduleScreenModel());
+
+abstract class IScheduleScreenWM extends IWidgetModel {
+  /// Returns screen scroll controller.
+  ScrollController get scrollController;
+
+  /// Расписание.
+  ListenableState<EntityState<List<RacesModel>>> get racesElements;
+
+  /// Returns is all data loaded.
+  ListenableState<bool> get allDataIsLoaded;
+
+  /// Returns selected date.
+  ListenableState<DateTime> get selectedDate;
+
+  /// Returns schedule of selected date.
+  ListenableState<List<Widget>> get scheduleOfSelectedDate;
+
+  /// Invokes on day selection.
+  void onSelectDay(DateTime _, DateTime __);
+
+  /// Returns logo.
+  String? getLogoPath(DateTime day);
+}

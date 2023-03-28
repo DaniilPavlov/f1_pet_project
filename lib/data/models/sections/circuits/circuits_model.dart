@@ -19,7 +19,10 @@ class CircuitsModel {
       return _$CircuitsModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('CircuitsModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('CircuitsModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

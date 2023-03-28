@@ -1,7 +1,7 @@
 import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/table_parts/tournament_table_drivers_detail_row.dart';
 import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/table_parts/tournament_table_drivers_primary_row.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class TournamentDriversTable extends StatelessWidget {

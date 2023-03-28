@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_annotating_with_dynamic, avoid_catches_without_on_clauses, no_leading_underscores_for_local_identifiers
 
 import 'package:dio/dio.dart';
-import 'package:f1_pet_project/utils/constants/static.dart';
+import 'package:f1_pet_project/utils/constants/static_data.dart';
 
 class RequestHandler {
   static final RequestHandler _singleton = RequestHandler._init();
@@ -21,7 +21,7 @@ class RequestHandler {
   Future<Response<T>> get<T>(
     String path, {
     Map<String, dynamic>? queryParameters,
-    Options? options,
+    // Options? options,
     CancelToken? cancelToken,
     void Function(int, int)? onReceiveProgress,
     String? baseUrl,
@@ -50,7 +50,7 @@ class RequestHandler {
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
-    Options? options,
+    // Options? options,
     CancelToken? cancelToken,
     void Function(int, int)? onSendProgress,
     void Function(int, int)? onReceiveProgress,
@@ -64,10 +64,6 @@ class RequestHandler {
       onReceiveProgress: onReceiveProgress,
     );
 
-    // final base = BaseResponseRepository.fromJson(
-    //   res.data!,
-    // );
-
     return res;
   }
 
@@ -75,8 +71,8 @@ class RequestHandler {
     return Dio(
       BaseOptions(
         baseUrl: StaticData.apiUrl,
-        connectTimeout: 20000,
-        receiveTimeout: 40000,
+        connectTimeout: const Duration(seconds: 20000),
+        receiveTimeout: const Duration(seconds: 40000),
       ),
     );
   }

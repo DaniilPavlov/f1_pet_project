@@ -51,7 +51,10 @@ class RacesModel {
       return _$RacesModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('RacesModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('RacesModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

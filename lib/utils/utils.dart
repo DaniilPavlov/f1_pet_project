@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 class Utils {
   static Future<bool> ULaunchUrl({
     required String rawUrl,
-    bool isPhone = false,
     bool externalApplication = false,
     void Function(CustomException ex)? onError,
   }) async {

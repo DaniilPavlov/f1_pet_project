@@ -1,6 +1,6 @@
 import 'package:f1_pet_project/data/models/sections/results/qualifying_results_model.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/qualification_table/table_parts/qualification_table_detail_row.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 // TODO(check): что делать, когда у нас есть спринт?

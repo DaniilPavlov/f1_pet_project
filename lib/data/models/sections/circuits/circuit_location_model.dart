@@ -22,7 +22,10 @@ class CircuitLocationModel {
       return _$CircuitLocationModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('CircuitLocationModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('CircuitLocationModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

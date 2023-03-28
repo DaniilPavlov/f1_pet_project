@@ -33,7 +33,10 @@ class DriverModel {
       return _$DriverModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('DriverModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('DriverModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

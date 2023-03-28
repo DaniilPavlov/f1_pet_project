@@ -26,7 +26,10 @@ class StandingsListsModel {
       return _$StandingsListsModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('StandingsListsModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('StandingsListsModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

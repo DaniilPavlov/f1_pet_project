@@ -30,7 +30,10 @@ class DriverStandingsModel {
       return _$DriverStandingsModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('DriverStandingsModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('DriverStandingsModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

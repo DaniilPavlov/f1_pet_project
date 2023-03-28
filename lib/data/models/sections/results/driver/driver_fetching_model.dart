@@ -19,7 +19,10 @@ class DriverFetchingModel {
       return _$DriverFetchingModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('DriverFetchingModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('DriverFetchingModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

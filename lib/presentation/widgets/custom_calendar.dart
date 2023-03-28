@@ -1,9 +1,9 @@
 // ignore_for_file: avoid_redundant_argument_values
 
 import 'package:extended_image/extended_image.dart';
-import 'package:f1_pet_project/domain/help/extensions.dart';
-import 'package:f1_pet_project/utils/theme/styles.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
+import 'package:f1_pet_project/domain/help/string_extensions.dart';
+import 'package:f1_pet_project/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // ignore_for_file: avoid_annotating_with_dynamic
 import 'package:table_calendar/table_calendar.dart';
@@ -31,6 +31,59 @@ class CustomCalendar extends StatefulWidget {
 }
 
 class _CustomCalendarState extends State<CustomCalendar> {
+  Widget? _makeLogoWidget(
+    DateTime date, {
+    bool isSelected = false,
+    bool isToday = false,
+  }) {
+    final imageAsset = widget.imagePathCallback(date);
+
+    if (imageAsset != null) {
+      return Center(
+        child: CircleAvatar(
+          radius: 16,
+          backgroundColor: isToday
+              ? AppTheme.red
+              : isSelected
+                  ? AppTheme.white
+                  : Colors.transparent,
+          child: imageAsset.isEmpty
+              ? const SizedBox(
+                  height: 24,
+                  child: Icon(Icons.home),
+                )
+              : SizedBox(
+                  height: 24,
+                  child: ExtendedImage.asset(imageAsset),
+                ),
+        ),
+      );
+    }
+    return null;
+  }
+
+  Widget _makeTextWidget(
+    DateTime date, {
+    required TextStyle textStyle,
+    bool isSelected = false,
+    bool isToday = false,
+  }) {
+    return Center(
+      child: CircleAvatar(
+        radius: 16,
+        backgroundColor: isToday
+            ? AppTheme.red
+            : isSelected
+                ? AppTheme.white
+                : Colors.transparent,
+        child: Text(
+          date.day.toString(),
+          style: textStyle,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     const textStyle = AppStyles.body;
@@ -130,59 +183,6 @@ class _CustomCalendarState extends State<CustomCalendar> {
           defaultBuilder: (context, day, focusedDay) {
             return _makeLogoWidget(day);
           },
-        ),
-      ),
-    );
-  }
-
-  Widget? _makeLogoWidget(
-    DateTime date, {
-    bool isSelected = false,
-    bool isToday = false,
-  }) {
-    final imageAsset = widget.imagePathCallback(date);
-
-    if (imageAsset != null) {
-      return Center(
-        child: CircleAvatar(
-          radius: 16,
-          backgroundColor: isToday
-              ? AppTheme.red
-              : isSelected
-                  ? AppTheme.white
-                  : Colors.transparent,
-          child: imageAsset.isEmpty
-              ? const SizedBox(
-                  height: 24,
-                  child: Icon(Icons.home),
-                )
-              : SizedBox(
-                  height: 24,
-                  child: ExtendedImage.asset(imageAsset),
-                ),
-        ),
-      );
-    }
-    return null;
-  }
-
-  Widget _makeTextWidget(
-    DateTime date, {
-    required TextStyle textStyle,
-    bool isSelected = false,
-    bool isToday = false,
-  }) {
-    return Center(
-      child: CircleAvatar(
-        radius: 16,
-        backgroundColor: isToday
-            ? AppTheme.red
-            : isSelected
-                ? AppTheme.white
-                : Colors.transparent,
-        child: Text(
-          date.day.toString(),
-          style: textStyle,
         ),
       ),
     );

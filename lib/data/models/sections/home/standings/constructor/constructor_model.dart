@@ -22,7 +22,10 @@ class ConstructorModel {
       return _$ConstructorModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('ConstructorModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('ConstructorModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

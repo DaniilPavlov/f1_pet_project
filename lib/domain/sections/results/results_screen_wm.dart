@@ -6,23 +6,6 @@ import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/results/results_screen.dart';
 import 'package:flutter/material.dart';
 
-abstract class IResultsScreenWM extends IWidgetModel {
-  /// результаты последней гонки
-  ListenableState<EntityState<RacesModel>> get lastRace;
-
-  /// загружены ли начальные данные
-  ListenableState<bool> get allDataIsLoaded;
-
-  /// время лучшего круга
-  String get fastestLap;
-
-  /// загрузка результатов последней гонки
-  void loadLastRaceResults();
-
-  /// загрузка всех данных
-  void loadAllData();
-}
-
 class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
     implements IResultsScreenWM {
   final _lastRace = EntityStateNotifier<RacesModel>();
@@ -49,7 +32,6 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
     super.initWidgetModel();
   }
 
-  @override
   Future<void> loadLastRaceResults() async {
     await execute<ScheduleModel>(
       model.loadLastRaceResults,
@@ -61,7 +43,6 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
     );
   }
 
-  @override
   Future<void> loadAllData() async {
     _allDataIsLoaded.accept(false);
 
@@ -85,3 +66,14 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
 
 ResultsScreenWM createResultsScreenWM(BuildContext _) =>
     ResultsScreenWM(ResultsScreenModel());
+
+abstract class IResultsScreenWM extends IWidgetModel {
+  /// Returns last race results.
+  ListenableState<EntityState<RacesModel>> get lastRace;
+
+  /// Returns is all data loaded.
+  ListenableState<bool> get allDataIsLoaded;
+
+  /// Returns fastest lap.
+  String get fastestLap;
+}

@@ -1,7 +1,7 @@
 import 'package:f1_pet_project/data/models/sections/schedule/race_date_model.dart';
-import 'package:f1_pet_project/utils/constants/static.dart';
-import 'package:f1_pet_project/utils/theme/styles.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
+import 'package:f1_pet_project/utils/constants/static_data.dart';
+import 'package:f1_pet_project/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/utils/utils.dart';
 import 'package:flutter/material.dart';
 

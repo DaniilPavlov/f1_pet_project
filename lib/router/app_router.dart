@@ -11,7 +11,7 @@ import 'package:f1_pet_project/router/schedule_route.dart';
   routes: <AutoRoute>[
     AutoRoute<dynamic>(
       path: '/',
-      page: CustomScaffoldWithNavBar,
+      page: ScaffoldWithNavBar,
       initial: true,
       children: [
         homeRoute,

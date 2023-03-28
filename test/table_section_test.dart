@@ -8,7 +8,7 @@ import 'package:f1_pet_project/presentation/sections/home/sections/tournament_ta
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-/// Тесты для [TournamentTablesSectionWM]
+/// Tests for [TournamentTablesSectionWM].
 void main() {
   late TournamentTableSectionModelMock model;
 
@@ -18,12 +18,12 @@ void main() {
     return TournamentTablesSectionWM(model);
   }
 
-  testWidgetModel<TournamentTablesSectionWM, TournamentTableSection>(
-    'проверяем что таблицы переключаются',
+  testWidgetModel<TournamentTablesSectionWM, TournamentTablesSection>(
+    'check that tables changes',
     setUpWm,
     (wm, tester, context) async {
       tester.init();
-      wm.changeActivePage(value: 1);
+      wm.changeActiveTable(value: 1);
       Future.delayed(const Duration(milliseconds: 30), () {});
       final value = wm.activeTable.value;
       expect(value, 1);

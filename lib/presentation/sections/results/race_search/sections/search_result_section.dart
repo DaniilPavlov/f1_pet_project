@@ -1,8 +1,8 @@
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/domain/sections/results/race_search/race_search_screen_wm.dart';
 import 'package:f1_pet_project/presentation/sections/results/widgets/race_info_table.dart';
-import 'package:f1_pet_project/utils/constants/static.dart';
-import 'package:f1_pet_project/utils/theme/styles.dart';
+import 'package:f1_pet_project/utils/constants/static_data.dart';
+import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class SearchResultSection extends StatelessWidget {

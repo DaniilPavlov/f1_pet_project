@@ -5,9 +5,9 @@ import 'package:f1_pet_project/domain/sections/circuits/circuits_screen_wm.dart'
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/presentation/widgets/containers/red_border_container.dart';
 import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
-import 'package:f1_pet_project/router/router.gr.dart';
-import 'package:f1_pet_project/utils/constants/static.dart';
-import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
+import 'package:f1_pet_project/router/app_router.gr.dart';
+import 'package:f1_pet_project/utils/constants/static_data.dart';
+import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
 
 class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
@@ -24,7 +24,9 @@ class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
           listenableState: wm.allDataIsLoaded,
           builder: (_, dataIsLoaded) {
             if (dataIsLoaded != null) {
-              return dataIsLoaded ? _Body(wm: wm) : const CustomLoadingIndicator();
+              return dataIsLoaded
+                  ? _Body(wm: wm)
+                  : const CustomLoadingIndicator();
             }
             return const SizedBox();
           },
@@ -49,7 +51,7 @@ class _Body extends StatelessWidget {
         //
         SliverToBoxAdapter(
           child: EntityStateNotifierBuilder<List<CircuitModel>>(
-            listenableEntityState: wm.circuitsElements,
+            listenableEntityState: wm.circuits,
             builder: (_, items) {
               return items == null
                   ? const SizedBox()

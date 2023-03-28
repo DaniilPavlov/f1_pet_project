@@ -9,10 +9,10 @@ import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/r
 import 'package:f1_pet_project/presentation/sections/results/widgets/race_info_table.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
-import 'package:f1_pet_project/utils/constants/static.dart';
-import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
-import 'package:f1_pet_project/utils/theme/styles.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
+import 'package:f1_pet_project/utils/constants/static_data.dart';
+import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
+import 'package:f1_pet_project/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -28,8 +28,7 @@ class RaceInfoScreen extends ElementaryWidget<IRaceInfoScreenWM> {
   RaceInfoScreen({
     required this.raceModel,
     super.key,
-  }) : super((context) =>
-            createRaceInfoScreenWM(context: context, racesModel: raceModel));
+  }) : super((context) => createRaceInfoScreenWM(racesModel: raceModel));
 
   @override
   Widget build(IRaceInfoScreenWM wm) {
