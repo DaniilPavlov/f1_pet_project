@@ -1,0 +1,21 @@
+dartdoc:
+  # categories:
+  #   "Circuits":
+      # markdown: doc/Domain.md
+      # name: Awesome
+    # "Home":
+      # markdown: doc/Presentation.md
+      # name: Great
+  # categoryOrder: ["Circuits", "Home"]
+  # examplePathPrefix: 'subdir/with/examples'
+  # includeExternal: ['bin/unusually_located_library.dart']
+  # nodoc: ['lib/sekret/*.dart']
+  # linkTo:
+  #   url: "https://my.dartdocumentationsite.org/dev/%v%"
+  showUndocumentedCategories: true
+  ignore:
+    - ambiguous-doc-reference
+  errors:
+    - unresolved-doc-reference
+  warnings:
+    - tool-error

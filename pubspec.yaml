@@ -1,8 +1,7 @@
 name: f1_pet_project
-description: A new Flutter project.
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+description: F1 pet project. State Management - Elementary. Navigation - Auto Route. API - http://ergast.com/mrd/.
+
+publish_to: "none"
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -26,7 +25,6 @@ dependencies:
   colorful_safe_area: ^1.0.0
   cookie_jar: ^3.0.1
   dartdoc: ^6.2.1
-  # не обновлять дио, придется менять request handler
   dio: ^5.1.0
   dio_cookie_manager: ^2.1.3
   elementary: ^2.0.0
