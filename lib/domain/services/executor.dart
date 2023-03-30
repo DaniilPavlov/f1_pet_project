@@ -26,8 +26,7 @@ Future<void> execute<T>(
   try {
     data = await processing();
   } on DioError catch (e) {
-    // TODO(pavlov): проверить
-    if (e.type == DioErrorType.connectionError) {
+    if (e.type == DioErrorType.unknown) {
       ex = const CustomException(
         title: 'Соединение отсутствует',
         subtitle:
