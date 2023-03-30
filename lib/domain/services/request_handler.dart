@@ -71,8 +71,8 @@ class RequestHandler {
     return Dio(
       BaseOptions(
         baseUrl: StaticData.apiUrl,
-        connectTimeout: const Duration(seconds: 20000),
-        receiveTimeout: const Duration(seconds: 40000),
+        connectTimeout: const Duration(milliseconds: 20000),
+        receiveTimeout: const Duration(milliseconds: 40000),
       ),
     );
   }
