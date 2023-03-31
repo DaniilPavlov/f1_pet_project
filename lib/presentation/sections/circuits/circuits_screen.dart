@@ -68,7 +68,8 @@ class _Body extends StatelessWidget {
                           child: RedBorderContainer(
                             title: items[index].circuitName,
                             onTap: () => Beamer.of(context).beamToNamed(
-                              '/circuit/?circuitModel=$items[index])',
+                              '/circuits/circuit',
+                              data: items[index],
                             ),
                           ),
                         ),

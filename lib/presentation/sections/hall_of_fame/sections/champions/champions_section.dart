@@ -35,14 +35,16 @@ class ChampionsSection extends StatelessWidget {
           RedBorderContainer(
             title: 'Пилоты',
             onTap: () => Beamer.of(context).beamToNamed(
-              '/hall_of_fame/?driversChampions=$driversChampions',
+              '/hall_of_fame/drivers_champions',
+              data: driversChampions,
             ),
           ),
           const SizedBox(height: 20),
           RedBorderContainer(
             title: 'Конструкторы',
             onTap: () => Beamer.of(context).beamToNamed(
-              '/hall_of_fame/?constructorsChampions=$constructorsChampions',
+              '/hall_of_fame/constructors_champions',
+              data: constructorsChampions,
             ),
           ),
           const SizedBox(height: 20),

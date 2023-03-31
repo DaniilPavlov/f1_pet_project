@@ -8,10 +8,14 @@ import 'package:flutter/material.dart';
 class ResultsLocation extends BeamLocation<BeamState> {
   // TODO(pavlov): не понятно как передавать данные (например в рейс инфо)
   @override
-  List<Pattern> get pathPatterns => ['/results', '/race_info', '/race_search'];
+  List<Pattern> get pathPatterns => [
+        '/results',
+        '/results/race_info',
+        '/results/race_search',
+        '/results/race_search/race_info',
+      ];
 
-
-      // ResultsLocation(RouteInformation routeInformation) : super(routeInformation);
+  // ResultsLocation(RouteInformation routeInformation) : super(routeInformation);
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {

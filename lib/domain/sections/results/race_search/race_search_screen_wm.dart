@@ -53,7 +53,7 @@ class RaceSearchScreenWM
   RaceSearchScreenWM(super.model);
 
   @override
-  void onPop() => Beamer.of(context).popRoute();
+  void onPop() => Beamer.of(context).beamBack();
 
   @override
   void checkFields() => _fieldsInputted.accept(

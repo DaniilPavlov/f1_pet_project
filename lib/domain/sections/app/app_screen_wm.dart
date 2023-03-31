@@ -8,26 +8,27 @@ import 'package:f1_pet_project/router/hall_of_fame_location.dart';
 import 'package:f1_pet_project/router/home_location.dart';
 import 'package:f1_pet_project/router/results_location.dart';
 import 'package:f1_pet_project/router/schedule_location.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-
-abstract class IAppScreenWM extends IWidgetModel {
-  BeamerDelegate get routerDelegate;
-
-  ListenableState<int> get currentIndexListenable;
-
-  void changeIndex(int index);
-}
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AppScreenWM extends WidgetModel<AppScreen, AppScreenModel>
     implements IAppScreenWM {
   final _currentIndexState = StateNotifier<int>(initValue: 0);
 
+  final _beamerKey = GlobalKey<BeamerState>();
+
+  @override
+  GlobalKey<BeamerState> get beamerKey => _beamerKey;
+
   @override
   ListenableState<int> get currentIndexListenable => _currentIndexState;
 
+
+
   @override
   BeamerDelegate get routerDelegate => BeamerDelegate(
-        initialPath: '/results',
+        initialPath: '/home',
         locationBuilder: BeamerLocationBuilder(
           beamLocations: [
             HomeLocation(),
@@ -39,65 +40,77 @@ class AppScreenWM extends WidgetModel<AppScreen, AppScreenModel>
         ),
       );
 
-  // @override
-  // List<BeamerDelegate> get routerDelegate => [
-  //       BeamerDelegate(
-  //         initialPath: '/home',
-  //         locationBuilder: (routeInformation, _) {
-  //           return HomeLocation();
-  //         },
-  //       ),
-  //       BeamerDelegate(
-  //         initialPath: '/results',
-  //         locationBuilder: (routeInformation, _) {
-  //           return ResultsLocation();
-  //         },
-  //       ),
-  //       BeamerDelegate(
-  //         initialPath: '/schedule',
-  //         locationBuilder: (routeInformation, _) {
-  //           return ScheduleLocation();
-  //         },
-  //       ),
-  //       BeamerDelegate(
-  //         initialPath: '/hall_of_fame',
-  //         locationBuilder: (routeInformation, _) {
-  //           return HallOfFameLocation();
-  //         },
-  //       ),
-  //       BeamerDelegate(
-  //         initialPath: '/circuits',
-  //         locationBuilder: (routeInformation, _) {
-  //           return CircuitsLocation();
-  //         },
-  //       ),
-  //     ];
+  DateTime? _currentBackPressTime;
 
   AppScreenWM(AppScreenModel model) : super(model);
 
-  // @override
-  // void initWidgetModel() {
-  //   super.initWidgetModel();
-  // }
+  @override
+  Future<bool> onPop() {
+    if (_beamerKey.currentState?.routerDelegate.currentBeamLocation.state
+            .routeInformation.location !=
+        '/home') {
+      _beamerKey.currentState?.routerDelegate.beamToNamed('/home');
+      return Future.value(false);
+    } else {
+      final currentTime = DateTime.now();
+      if (_currentBackPressTime == null ||
+          currentTime.difference(_currentBackPressTime ?? DateTime.now()) >
+              const Duration(seconds: 1)) {
+        _currentBackPressTime = currentTime;
+        Fluttertoast.showToast(
+          msg: 'Нажмите еще раз для выхода',
+          backgroundColor: AppTheme.red,
+        );
+        return Future.value(false);
+      }
+      return Future.value(true);
+    }
+  }
 
   @override
   void changeIndex(int index) {
+    debugPrint(index.toString());
+
     _currentIndexState.accept(index);
-
-    // switch (index) {
-    //   case 0:
-    //     Beamer.of(context).beamToNamed('/home');
-    //     break;
-    //   case 2:
-    //     Beamer.of(context).beamToNamed('/schedule');
-    //     break;
-    //   default:
-    // }
-
-    // _beamerState.accept(_routerDelegate[index]);
-    // _routerDelegate[index].update(rebuild: false);
+    switch (index) {
+      case 0:
+        _beamerKey.currentState?.routerDelegate.beamToNamed('/home');
+        break;
+      case 1:
+        _beamerKey.currentState?.routerDelegate.beamToNamed('/results');
+        break;
+      case 2:
+        _beamerKey.currentState?.routerDelegate.beamToNamed('/schedule');
+        break;
+      case 3:
+        _beamerKey.currentState?.routerDelegate.beamToNamed('/hall_of_fame');
+        break;
+      case 4:
+        _beamerKey.currentState?.routerDelegate.beamToNamed('/circuits');
+        break;
+      default:
+        _beamerKey.currentState?.routerDelegate.beamToNamed('/home');
+        break;
+    }
   }
 }
 
 AppScreenWM defaultAppScreenWMFactory(BuildContext _) =>
     AppScreenWM(AppScreenModel());
+
+abstract class IAppScreenWM extends IWidgetModel {
+  /// Returns beamer delegate.
+  BeamerDelegate get routerDelegate;
+
+  /// Returns current nav bar index.
+  ListenableState<int> get currentIndexListenable;
+
+  /// Returns beamer key.
+  GlobalKey<BeamerState> get beamerKey;
+
+  /// Changes nav bar index.
+  void changeIndex(int index);
+
+  /// Decides pop page or not.
+  Future<bool> onPop();
+}

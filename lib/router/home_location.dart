@@ -6,8 +6,6 @@ class HomeLocation extends BeamLocation<BeamState> {
   @override
   List<Pattern> get pathPatterns => ['/home'];
 
-  // HomeLocation(RouteInformation routeInformation) : super(routeInformation);
-
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     final pages = [

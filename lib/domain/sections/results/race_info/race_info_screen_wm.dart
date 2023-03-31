@@ -70,7 +70,7 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
   }
 
   @override
-  void onPop() => Beamer.of(context).popRoute();
+  void onPop() => Beamer.of(context).beamBack();
 
   @override
   void onRaceTableVisibilityChanged(VisibilityInfo info) {
