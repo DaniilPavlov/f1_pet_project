@@ -18,7 +18,10 @@ class AverageSpeedModel {
       return _$AverageSpeedModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('AverageSpeedModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('AverageSpeedModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

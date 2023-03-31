@@ -42,7 +42,10 @@ class ResultsModel {
       return _$ResultsModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('ResultsModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('ResultsModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

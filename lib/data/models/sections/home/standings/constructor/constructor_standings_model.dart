@@ -27,7 +27,10 @@ class ConstructorStandingsModel {
       return _$ConstructorStandingsModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('ConstructorStandingsModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('ConstructorStandingsModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

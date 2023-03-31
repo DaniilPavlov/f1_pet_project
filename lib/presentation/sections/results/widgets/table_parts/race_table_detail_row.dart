@@ -1,6 +1,6 @@
 import 'package:f1_pet_project/data/models/sections/results/results_model.dart';
-import 'package:f1_pet_project/utils/theme/styles.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
+import 'package:f1_pet_project/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 // ignore_for_file: avoid-returning-widgets
 

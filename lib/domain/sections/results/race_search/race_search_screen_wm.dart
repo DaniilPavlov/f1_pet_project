@@ -7,41 +7,6 @@ import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_search/race_search_screen.dart';
 import 'package:flutter/material.dart';
 
-abstract class IRaceSearchScreenWM extends IWidgetModel {
-  /// скролл страницы
-  ScrollController get scrollController;
-
-  /// год
-  TextEditingController get yearController;
-
-  /// раунд
-  TextEditingController get roundController;
-
-  /// результаты гонки
-  ListenableState<EntityState<RacesModel?>> get searchedRace;
-
-  /// гонок не найдено
-  ListenableState<String> get errorMessage;
-
-  /// загружены ли данные
-  ListenableState<bool> get dataIsLoaded;
-
-  /// загружены ли данные
-  ListenableState<bool> get fieldsInputted;
-
-  /// время лучшего круга
-  String get fastestLap;
-
-  /// закрытие страницы
-  void onPop();
-
-  /// загрузка результатов для конкретной гонки
-  void loadRaceResults();
-
-  /// загрузка результатов для конкретной гонки
-  void checkFields();
-}
-
 class RaceSearchScreenWM
     extends WidgetModel<RaceSearchScreen, RaceSearchScreenModel>
     implements IRaceSearchScreenWM {
@@ -106,6 +71,7 @@ class RaceSearchScreenWM
       ),
       before: _searchedRace.loading,
       onSuccess: (data) {
+        _errorMessage.accept('');
         if (data!.RaceTable.Races.isNotEmpty) {
           _searchedRace.content(data.RaceTable.Races[0]);
           Future<void>.delayed(
@@ -126,7 +92,8 @@ class RaceSearchScreenWM
     );
     if (_searchedRace.value!.data != null) {
       for (final element in _searchedRace.value!.data!.Results!) {
-        if (_fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
+        if (element.FastestLap != null &&
+            _fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
           _fastestLap = element.FastestLap!.Time.time;
         }
       }
@@ -135,7 +102,7 @@ class RaceSearchScreenWM
     _dataIsLoaded.accept(true);
   }
 
-  /// Скролл к расписанию
+  /// Scrolls to race table.
   void _animateToTable() {
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
@@ -149,3 +116,40 @@ class RaceSearchScreenWM
 
 RaceSearchScreenWM createRaceSearchScreenWM(BuildContext _) =>
     RaceSearchScreenWM(RaceSearchScreenModel());
+
+abstract class IRaceSearchScreenWM extends IWidgetModel {
+  /// Returns screen scroll controller.
+  ScrollController get scrollController;
+
+  /// Returns year text field controller.
+  TextEditingController get yearController;
+
+  /// Returns round text field controller.
+  TextEditingController get roundController;
+
+  /// Returns searched race info.
+  ListenableState<EntityState<RacesModel?>> get searchedRace;
+
+  /// Returns error message.
+  ///
+  /// It can be 'races were not found', 'no internet connection' or 'server response error'.
+  ListenableState<String> get errorMessage;
+
+  /// Returns is race loaded.
+  ListenableState<bool> get dataIsLoaded;
+
+  /// Returns are fields inputted.
+  ListenableState<bool> get fieldsInputted;
+
+  /// Returns fastest lap.
+  String get fastestLap;
+
+  /// Closes screen.
+  void onPop();
+
+  /// Loads race results.
+  void loadRaceResults();
+
+  /// Checks are fields valid.
+  void checkFields();
+}

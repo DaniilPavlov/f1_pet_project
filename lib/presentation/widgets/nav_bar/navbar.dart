@@ -1,6 +1,6 @@
 import 'package:f1_pet_project/presentation/widgets/nav_bar/nav_bar_item.dart';
-import 'package:f1_pet_project/utils/constants/static.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
+import 'package:f1_pet_project/utils/constants/static_data.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class NavBar extends StatefulWidget {

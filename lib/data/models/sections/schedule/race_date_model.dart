@@ -20,7 +20,10 @@ class RaceDateModel {
       return _$RaceDateModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('RaceDateModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('RaceDateModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

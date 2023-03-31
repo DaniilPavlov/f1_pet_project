@@ -8,56 +8,8 @@ import 'package:f1_pet_project/data/models/sections/schedule/schedule_model.dart
 import 'package:f1_pet_project/domain/sections/results/race_info/race_info_screen_model.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_info/race_info_screen.dart';
-import 'package:flutter/material.dart';
+
 import 'package:visibility_detector/visibility_detector.dart';
-
-abstract class IRaceInfoScreenWM extends IWidgetModel {
-  /// показываем ли аппбар таблицы гонки
-  ListenableState<bool> get raceAppBarPinned;
-
-  /// показываем ли аппбар таблицы квалификации
-  ListenableState<bool> get qualificationAppBarPinned;
-
-  /// показываем ли аппбар таблицы пит стопов
-  ListenableState<bool> get pitStopsAppBarPinned;
-
-  // основная информация гонки
-  RacesModel get raceModel;
-
-  // информация о квалификации
-  ListenableState<EntityState<List<QualifyingResultsModel>>>
-      get qualifyingResults;
-
-  // информация о пит стопах
-  ListenableState<EntityState<List<PitStopsModel>>> get pitStops;
-
-  /// загружены ли начальные данные
-  ListenableState<bool> get allDataIsLoaded;
-
-  /// время лучшего круга
-  String get fastestLap;
-
-  /// загрузка всех данных
-  void loadAllData();
-
-  /// загрузка результатов квалификации
-  void loadQualifyingResults();
-
-  /// загрузка результатов пит стопов
-  void loadPitStops();
-
-  /// проверка видимости таблицы гонки
-  void onRaceTableVisibilityChanged(VisibilityInfo info);
-
-  /// проверка видимости таблицы квалификации
-  void onQualificationTableVisibilityChanged(VisibilityInfo info);
-
-  /// проверка видимости таблицы пит стопов
-  void onPitStopsTableVisibilityChanged(VisibilityInfo info);
-
-  /// закрытие страницы
-  void onPop();
-}
 
 class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
     implements IRaceInfoScreenWM {
@@ -118,6 +70,30 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
   }
 
   @override
+  void onPop() => Beamer.of(context).popRoute();
+
+  @override
+  void onRaceTableVisibilityChanged(VisibilityInfo info) {
+    _raceAppBarPinned.accept(info.visibleBounds.top < info.size.height - 150 &&
+        info.visibleBounds.right != 0);
+  }
+
+  @override
+  void onQualificationTableVisibilityChanged(VisibilityInfo info) {
+    _qualificationAppBarPinned.accept(
+      info.visibleBounds.top < info.size.height - 150 &&
+          info.visibleBounds.right != 0,
+    );
+  }
+
+  @override
+  void onPitStopsTableVisibilityChanged(VisibilityInfo info) {
+    _pitStopsAppBarPinned.accept(
+      info.visibleBounds.top < info.size.height - 150 &&
+          info.visibleBounds.right != 0,
+    );
+  }
+
   Future<void> loadQualifyingResults() async {
     await execute<ScheduleModel>(
       () => model.loadQualifyingResults(
@@ -132,7 +108,6 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
     );
   }
 
-  @override
   Future<void> loadPitStops() async {
     var stops = <PitStopsModel>[];
     await execute<ScheduleModel>(
@@ -163,7 +138,6 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
     }
   }
 
-  @override
   Future<void> loadAllData() async {
     _allDataIsLoaded.accept(false);
     await Future.wait(
@@ -174,42 +148,53 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
     );
 
     for (final element in raceModel.Results!) {
-      if (_fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
+      if (element.FastestLap != null &&
+          _fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
         _fastestLap = element.FastestLap!.Time.time;
       }
     }
     _allDataIsLoaded.accept(true);
   }
-
-  @override
-  void onPop() => Beamer.of(context).popRoute();
-
-  @override
-  void onRaceTableVisibilityChanged(VisibilityInfo info) {
-    _raceAppBarPinned.accept(info.visibleBounds.top < info.size.height - 150 &&
-        info.visibleBounds.right != 0);
-  }
-
-  @override
-  void onQualificationTableVisibilityChanged(VisibilityInfo info) {
-    _qualificationAppBarPinned.accept(
-      info.visibleBounds.top < info.size.height - 150 &&
-          info.visibleBounds.right != 0,
-    );
-  }
-
-  @override
-  void onPitStopsTableVisibilityChanged(VisibilityInfo info) {
-    _pitStopsAppBarPinned.accept(
-      info.visibleBounds.top < info.size.height - 150 &&
-          info.visibleBounds.right != 0,
-    );
-  }
 }
 
-RaceInfoScreenWM createRaceInfoScreenWM({
-  required BuildContext context,
-  required RacesModel racesModel,
-}) {
-  return RaceInfoScreenWM(model: RaceInfoScreenModel(), racesModel: racesModel);
+RaceInfoScreenWM createRaceInfoScreenWM({required RacesModel racesModel}) =>
+    RaceInfoScreenWM(model: RaceInfoScreenModel(), racesModel: racesModel);
+
+abstract class IRaceInfoScreenWM extends IWidgetModel {
+  /// Returns is race app bar pinned.
+  ListenableState<bool> get raceAppBarPinned;
+
+  /// Returns is qualification app bar pinned.
+  ListenableState<bool> get qualificationAppBarPinned;
+
+  /// Returns is pit stops app bar pinned.
+  ListenableState<bool> get pitStopsAppBarPinned;
+
+  /// Returns race main info.
+  RacesModel get raceModel;
+
+  /// Returns qualification results.
+  ListenableState<EntityState<List<QualifyingResultsModel>>>
+      get qualifyingResults;
+
+  /// Returns pit stops info.
+  ListenableState<EntityState<List<PitStopsModel>>> get pitStops;
+
+  /// Returns is all data loaded.
+  ListenableState<bool> get allDataIsLoaded;
+
+  /// Returns fastest lap.
+  String get fastestLap;
+
+  /// Invokes when race table visibility changed.
+  void onRaceTableVisibilityChanged(VisibilityInfo info);
+
+  /// Invokes when qualification table visibility changed.
+  void onQualificationTableVisibilityChanged(VisibilityInfo info);
+
+  /// Invokes when pit stops table visibility changed.
+  void onPitStopsTableVisibilityChanged(VisibilityInfo info);
+
+  /// Closes screen.
+  void onPop();
 }

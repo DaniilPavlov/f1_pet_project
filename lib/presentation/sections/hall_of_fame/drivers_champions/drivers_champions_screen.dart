@@ -2,8 +2,8 @@ import 'package:f1_pet_project/data/models/sections/home/standings/standings_lis
 import 'package:f1_pet_project/presentation/sections/hall_of_fame/drivers_champions/drivers_champions_appbar.dart';
 import 'package:f1_pet_project/presentation/sections/hall_of_fame/sections/champions/tables/drivers_champions_table.dart';
 
-import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
+import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class DriversChampionsScreen extends StatelessWidget {

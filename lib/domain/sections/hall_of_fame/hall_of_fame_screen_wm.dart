@@ -6,27 +6,6 @@ import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/hall_of_fame/hall_of_fame_screen.dart';
 import 'package:flutter/material.dart';
 
-abstract class IHallOfFameScreenWM extends IWidgetModel {
-  /// пилоты чемпионы
-  ListenableState<EntityState<List<StandingsListsModel>>> get driversChampions;
-
-  /// конструкторы чемпионы
-  ListenableState<EntityState<List<StandingsListsModel>>>
-      get constructorsChampions;
-
-  /// загружены ли начальные данные
-  ListenableState<bool> get allDataIsLoaded;
-
-  /// загрузка пилотов чемпионов
-  void loadDriversChampions();
-
-  /// загрузка конструкторов чемпионов
-  void loadConstructorsChampions();
-
-  /// загрузка всех данных
-  void loadAllData();
-}
-
 class HallOfFameScreenWM
     extends WidgetModel<HallOfFameScreen, HallOfFameScreenModel>
     implements IHallOfFameScreenWM {
@@ -36,6 +15,7 @@ class HallOfFameScreenWM
       EntityStateNotifier<List<StandingsListsModel>>();
 
   final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
+
   @override
   ListenableState<EntityState<List<StandingsListsModel>>>
       get driversChampions => _driversChampions;
@@ -55,7 +35,6 @@ class HallOfFameScreenWM
     super.initWidgetModel();
   }
 
-  @override
   Future<void> loadDriversChampions() async {
     await execute<StandingsModel>(
       model.loadDriversChampions,
@@ -67,7 +46,6 @@ class HallOfFameScreenWM
     );
   }
 
-  @override
   Future<void> loadConstructorsChampions() async {
     await execute<StandingsModel>(
       model.loadConstructorsChampions,
@@ -81,7 +59,6 @@ class HallOfFameScreenWM
     );
   }
 
-  @override
   Future<void> loadAllData() async {
     _allDataIsLoaded.accept(false);
 
@@ -98,3 +75,15 @@ class HallOfFameScreenWM
 
 HallOfFameScreenWM createHallOfFameScreenWM(BuildContext _) =>
     HallOfFameScreenWM(HallOfFameScreenModel());
+
+abstract class IHallOfFameScreenWM extends IWidgetModel {
+  /// Returns drivers champions.
+  ListenableState<EntityState<List<StandingsListsModel>>> get driversChampions;
+
+  /// Returns constructors champions.
+  ListenableState<EntityState<List<StandingsListsModel>>>
+      get constructorsChampions;
+
+  /// Returns is all data loaded.
+  ListenableState<bool> get allDataIsLoaded;
+}

@@ -26,7 +26,10 @@ class PitStopsModel {
       return _$PitStopsModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('PitStopsModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('PitStopsModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 

@@ -7,7 +7,7 @@ import 'package:f1_pet_project/presentation/sections/results/race_search/section
 import 'package:f1_pet_project/presentation/sections/results/race_search/sections/search_fields_section.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_search/sections/search_result_section.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
-import 'package:f1_pet_project/utils/theme/anti_glow_behaviour.dart';
+import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
 
 class RaceSearchScreen extends ElementaryWidget<IRaceSearchScreenWM> {

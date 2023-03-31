@@ -3,15 +3,13 @@
 import 'dart:convert';
 
 import 'package:extended_image/extended_image.dart';
-import 'package:f1_pet_project/utils/constants/static.dart';
+import 'package:f1_pet_project/utils/constants/static_data.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/utils/theme/html/app_html.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 Map<bool Function(RenderContext), CustomRender> customRenders = {
-  // iframeMatcher(): iframeRender(),
-
   (ctx) {
     return ctx.tree.element?.localName == 'blockquote';
   }: CustomRender.widget(
@@ -80,7 +78,7 @@ Map<bool Function(RenderContext), CustomRender> customRenders = {
   //     return const SizedBox();
   //   },
   // ),
-  ...CustomRenderDefault.ulDefault(),
+  ...CustomRenders.ulDefault(),
   (ctx) {
     return ctx.tree.element?.localName == 'ol';
   }: CustomRender.widget(
@@ -161,7 +159,7 @@ Map<bool Function(RenderContext), CustomRender> customRenders = {
   // }: tableRender(),
 };
 
-class CustomRenderDefault {
+class CustomRenders {
   static final bool Function(RenderContext) ulDefaultPredicate =
       (ctx) => ctx.tree.element?.localName == 'ul';
 

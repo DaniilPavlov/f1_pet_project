@@ -18,8 +18,10 @@ class TimeModel {
       return _$TimeModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('TimeModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('TimeModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }
-

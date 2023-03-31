@@ -1,4 +1,4 @@
-import 'package:f1_pet_project/utils/theme/styles.dart';
+import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class ConstructorsChampionsAppBar extends StatelessWidget {

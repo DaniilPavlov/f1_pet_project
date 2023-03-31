@@ -19,7 +19,10 @@ class StandingsTableModel {
       return _$StandingsTableModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('StandingsTableModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('StandingsTableModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

@@ -32,7 +32,10 @@ class QualifyingResultsModel {
       return _$QualifyingResultsModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('QualifyingResultsModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('QualifyingResultsModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

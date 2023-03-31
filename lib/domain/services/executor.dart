@@ -10,7 +10,7 @@ Future<void> execute<T>(
   Future<T> Function() processing, {
   String? dioErrorText,
   String? responseParseErrorText,
-  String? successFalseErrorText,
+  // String? successFalseErrorText,
   String? otherErrorText,
   FutureOr<void> Function()? before,
   FutureOr<void> Function()? after,
@@ -26,7 +26,7 @@ Future<void> execute<T>(
   try {
     data = await processing();
   } on DioError catch (e) {
-    if (e.type == DioErrorType.other) {
+    if (e.type == DioErrorType.unknown) {
       ex = const CustomException(
         title: 'Соединение отсутствует',
         subtitle:

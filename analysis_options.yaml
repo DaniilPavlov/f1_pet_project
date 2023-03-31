@@ -1,7 +1,17 @@
 include: package:surf_lint_rules/analysis_options.yaml
 
+dart_code_metrics:
+  rules:
+    - avoid-passing-async-when-sync-expected: false
+    - prefer-moving-to-variable: false
+    - format-comment:
+        only-doc-comments: true
+  exclude:
+    - "**.g.dart"
+    - "**.gr.dart"
+
 analyzer:
-  # strong-mode:
+  strong-mode:
   #   implicit-casts: false
   #   implicit-dynamic: false
   exclude:

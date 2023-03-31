@@ -2,9 +2,9 @@ import 'package:beamer/beamer.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:f1_pet_project/presentation/widgets/buttons/circle_button.dart';
-import 'package:f1_pet_project/utils/constants/static.dart';
-import 'package:f1_pet_project/utils/theme/styles.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
+import 'package:f1_pet_project/utils/constants/static_data.dart';
+import 'package:f1_pet_project/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {

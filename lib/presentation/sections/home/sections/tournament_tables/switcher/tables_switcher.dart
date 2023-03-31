@@ -1,6 +1,6 @@
 import 'package:f1_pet_project/domain/sections/home/tournament_tables/wm/tournament_tables_section_wm.dart';
-import 'package:f1_pet_project/utils/theme/styles.dart';
-import 'package:f1_pet_project/utils/theme/theme.dart';
+import 'package:f1_pet_project/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 
 import 'package:flutter/cupertino.dart';
 
@@ -17,7 +17,7 @@ class TablesSwitcher extends StatelessWidget {
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: () => wm.changeActivePage(value: 0),
+                onTap: () => wm.changeActiveTable(value: 0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -42,7 +42,7 @@ class TablesSwitcher extends StatelessWidget {
             ),
             Expanded(
               child: GestureDetector(
-                onTap: () => wm.changeActivePage(value: 1),
+                onTap: () => wm.changeActiveTable(value: 1),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

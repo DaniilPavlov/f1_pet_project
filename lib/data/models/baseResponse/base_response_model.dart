@@ -8,30 +8,33 @@ part 'base_response_model.g.dart';
 
 @JsonSerializable()
 
-/// Модель ответа на запрос
-class BaseResponseRepository {
-  /// данные в ответе на запрос
-  /// чаще всего бывает [Map] или [List]
+/// Модель ответа на запрос.
+class BaseResponseModel {
+  /// Данные в ответе на запрос.
+  ///
+  /// Чаще всего бывает [Map] или [List].
   final dynamic MRData;
 
-  /// результат выполнения запроса
+  /// Результат выполнения запроса.
   // final bool success;
 
-  /// некое сообщение
-  /// обычно присутствует если [] == false
+  /// Некое сообщение.
+  ///
+  /// Обычно присутствует если [] == false.
   final String? message;
 
   final int? code;
-  const BaseResponseRepository({
+  const BaseResponseModel({
     required this.MRData,
     // required this.success,
     this.code,
     this.message,
   });
 
-  factory BaseResponseRepository.fromJson(Map<String, dynamic> json) {
+  factory BaseResponseModel.fromJson(Map<String, dynamic> json) {
     // if (json['success'] is! bool) {
-    //   throw ResponseParseException('Ответ от сервера не содержит success');
+    //   Error.throwWithStackTrace(
+    ResponseParseException('Ответ от сервера не содержит success');
     // }
 
     // if ((json['code'] as int?) == 403) {
@@ -43,13 +46,16 @@ class BaseResponseRepository {
     // }
 
     try {
-      final res = _$BaseResponseRepositoryFromJson(json);
+      final res = _$BaseResponseModelFromJson(json);
 
       return res;
     } catch (e) {
-      throw ResponseParseException('BaseResponseRepository: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('BaseResponseRepository: $e'),
+        StackTrace.current,
+      );
     }
   }
 
-  Map<String, dynamic> toJson() => _$BaseResponseRepositoryToJson(this);
+  Map<String, dynamic> toJson() => _$BaseResponseModelToJson(this);
 }

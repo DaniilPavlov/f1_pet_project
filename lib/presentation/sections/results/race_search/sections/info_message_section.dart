@@ -1,6 +1,6 @@
 import 'package:f1_pet_project/presentation/widgets/containers/red_border_container.dart';
-import 'package:f1_pet_project/utils/constants/static.dart';
-import 'package:f1_pet_project/utils/theme/styles.dart';
+import 'package:f1_pet_project/utils/constants/static_data.dart';
+import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class InfoMessageSection extends StatelessWidget {

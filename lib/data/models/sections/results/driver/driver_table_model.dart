@@ -21,7 +21,10 @@ class DriverTableModel {
       return _$DriverTableModelFromJson(json);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      throw ResponseParseException('DriverTableModel: $e');
+      Error.throwWithStackTrace(
+        ResponseParseException('DriverTableModel: $e'),
+        StackTrace.current,
+      );
     }
   }
 }

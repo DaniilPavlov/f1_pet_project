@@ -6,12 +6,12 @@ import 'package:f1_pet_project/domain/services/request_handler.dart';
 abstract class RequestHelper {
   static final _rh = RequestHandler();
 
-  static Future<BaseResponseRepository> get(
+  static Future<BaseResponseModel> get(
     String path,
   ) async {
     final res = await _rh.get<dynamic>(path);
 
-    return BaseResponseRepository.fromJson(res.data as Map<String, dynamic>);
+    return BaseResponseModel.fromJson(res.data as Map<String, dynamic>);
   }
 
   // static Future<T> getSimpleObject<T>(

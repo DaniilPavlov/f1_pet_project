@@ -2,7 +2,7 @@
 
 import 'package:f1_pet_project/domain/sections/results/race_search/race_search_screen_wm.dart';
 import 'package:f1_pet_project/presentation/widgets/text_fields/custom_text_field.dart';
-import 'package:f1_pet_project/utils/constants/static.dart';
+import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

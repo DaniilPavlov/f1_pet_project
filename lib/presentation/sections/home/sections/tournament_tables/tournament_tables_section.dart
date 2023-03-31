@@ -5,18 +5,18 @@ import 'package:f1_pet_project/domain/sections/home/tournament_tables/wm/tournam
 import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/switcher/tables_switcher.dart';
 import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/tournament_constructors_table.dart';
 import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/tournament_drivers_table.dart';
-import 'package:f1_pet_project/utils/constants/static.dart';
-import 'package:f1_pet_project/utils/theme/styles.dart';
+import 'package:f1_pet_project/utils/constants/static_data.dart';
+import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class TournamentTableSection
+class TournamentTablesSection
     extends ElementaryWidget<TournamentTablesSectionWM> {
   final List<DriverStandingsModel> driversStandings;
   final List<ConstructorStandingsModel> constructorsStandings;
   final String season;
   final String round;
-  const TournamentTableSection({
+  const TournamentTablesSection({
     required this.driversStandings,
     required this.constructorsStandings,
     required this.season,
