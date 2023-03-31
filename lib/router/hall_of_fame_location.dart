@@ -24,9 +24,9 @@ class HallOfFameLocation extends BeamLocation<BeamState> {
     ];
     if (state.uri.pathSegments.contains('drivers_champions')) {
       pages.add(
-        BeamPage(
+        const BeamPage(
           child: DriversChampionsScreen(),
-          key: const ValueKey('drivers_champions'),
+          key: ValueKey('drivers_champions'),
           name: 'drivers_champions',
         ),
       );

@@ -16,15 +16,78 @@ class AppScreenWM extends WidgetModel<AppScreen, AppScreenModel>
     implements IAppScreenWM {
   final _currentIndexState = StateNotifier<int>(initValue: 0);
 
-  final _beamerKey = GlobalKey<BeamerState>();
+  final _beamerHomeKey = GlobalKey<BeamerState>();
+  final _beamerResultsKey = GlobalKey<BeamerState>();
+  final _beamerScheduleKey = GlobalKey<BeamerState>();
+  final _beamerHallOfFameKey = GlobalKey<BeamerState>();
+  final _beamerCircuitsKey = GlobalKey<BeamerState>();
 
   @override
-  GlobalKey<BeamerState> get beamerKey => _beamerKey;
+  GlobalKey<BeamerState> get beamerHomeKey => _beamerHomeKey;
+
+  @override
+  GlobalKey<BeamerState> get beamerResultsKey => _beamerResultsKey;
+
+  @override
+  GlobalKey<BeamerState> get beamerScheduleKey => _beamerScheduleKey;
+
+  @override
+  GlobalKey<BeamerState> get beamerHallOfFameKey => _beamerHallOfFameKey;
+
+  @override
+  GlobalKey<BeamerState> get beamerCircuitsKey => _beamerCircuitsKey;
 
   @override
   ListenableState<int> get currentIndexListenable => _currentIndexState;
 
-
+  @override
+  List<BeamerDelegate> get routerDelegates => [
+        BeamerDelegate(
+          initialPath: '/home',
+          locationBuilder: (routeInformation, _) {
+            if (routeInformation.location!.contains('home')) {
+              return HomeLocation();
+            }
+            return NotFound(path: routeInformation.location!);
+          },
+        ),
+        BeamerDelegate(
+          initialPath: '/results',
+          locationBuilder: (routeInformation, _) {
+            if (routeInformation.location!.contains('results')) {
+              return ResultsLocation();
+            }
+            return NotFound(path: routeInformation.location!);
+          },
+        ),
+        BeamerDelegate(
+          initialPath: '/schedule',
+          locationBuilder: (routeInformation, _) {
+            if (routeInformation.location!.contains('schedule')) {
+              return ScheduleLocation();
+            }
+            return NotFound(path: routeInformation.location!);
+          },
+        ),
+        BeamerDelegate(
+          initialPath: '/hall_of_fame',
+          locationBuilder: (routeInformation, _) {
+            if (routeInformation.location!.contains('hall_of_fame')) {
+              return HallOfFameLocation();
+            }
+            return NotFound(path: routeInformation.location!);
+          },
+        ),
+        BeamerDelegate(
+          initialPath: '/circuits',
+          locationBuilder: (routeInformation, _) {
+            if (routeInformation.location!.contains('circuits')) {
+              return CircuitsLocation();
+            }
+            return NotFound(path: routeInformation.location!);
+          },
+        ),
+      ];
 
   @override
   BeamerDelegate get routerDelegate => BeamerDelegate(
@@ -46,10 +109,10 @@ class AppScreenWM extends WidgetModel<AppScreen, AppScreenModel>
 
   @override
   Future<bool> onPop() {
-    if (_beamerKey.currentState?.routerDelegate.currentBeamLocation.state
+    if (_beamerHomeKey.currentState?.routerDelegate.currentBeamLocation.state
             .routeInformation.location !=
         '/home') {
-      _beamerKey.currentState?.routerDelegate.beamToNamed('/home');
+      _beamerHomeKey.currentState?.routerDelegate.beamToNamed('/home');
       return Future.value(false);
     } else {
       final currentTime = DateTime.now();
@@ -69,27 +132,27 @@ class AppScreenWM extends WidgetModel<AppScreen, AppScreenModel>
 
   @override
   void changeIndex(int index) {
-    debugPrint(index.toString());
-
     _currentIndexState.accept(index);
+    routerDelegates[index].update(rebuild: false);
     switch (index) {
       case 0:
-        _beamerKey.currentState?.routerDelegate.beamToNamed('/home');
+        _beamerHomeKey.currentState?.routerDelegate.beamToNamed('/home');
         break;
       case 1:
-        _beamerKey.currentState?.routerDelegate.beamToNamed('/results');
+        _beamerHomeKey.currentState?.routerDelegate.beamToNamed('/results');
         break;
       case 2:
-        _beamerKey.currentState?.routerDelegate.beamToNamed('/schedule');
+        _beamerHomeKey.currentState?.routerDelegate.beamToNamed('/schedule');
         break;
       case 3:
-        _beamerKey.currentState?.routerDelegate.beamToNamed('/hall_of_fame');
+        _beamerHomeKey.currentState?.routerDelegate
+            .beamToNamed('/hall_of_fame');
         break;
       case 4:
-        _beamerKey.currentState?.routerDelegate.beamToNamed('/circuits');
+        _beamerHomeKey.currentState?.routerDelegate.beamToNamed('/circuits');
         break;
       default:
-        _beamerKey.currentState?.routerDelegate.beamToNamed('/home');
+        _beamerHomeKey.currentState?.routerDelegate.beamToNamed('/home');
         break;
     }
   }
@@ -102,11 +165,25 @@ abstract class IAppScreenWM extends IWidgetModel {
   /// Returns beamer delegate.
   BeamerDelegate get routerDelegate;
 
+  List<BeamerDelegate> get routerDelegates;
+
   /// Returns current nav bar index.
   ListenableState<int> get currentIndexListenable;
 
   /// Returns beamer key.
-  GlobalKey<BeamerState> get beamerKey;
+  GlobalKey<BeamerState> get beamerHomeKey;
+
+  /// Returns beamer key.
+  GlobalKey<BeamerState> get beamerResultsKey;
+
+  /// Returns beamer key.
+  GlobalKey<BeamerState> get beamerScheduleKey;
+
+  /// Returns beamer key.
+  GlobalKey<BeamerState> get beamerHallOfFameKey;
+
+  /// Returns beamer key.
+  GlobalKey<BeamerState> get beamerCircuitsKey;
 
   /// Changes nav bar index.
   void changeIndex(int index);

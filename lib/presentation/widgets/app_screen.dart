@@ -14,12 +14,41 @@ class AppScreen extends ElementaryWidget<IAppScreenWM> {
 
   @override
   Widget build(IAppScreenWM wm) {
+
     return WillPopScope(
       onWillPop: wm.onPop,
       child: Scaffold(
-        body: Beamer(
-          key: wm.beamerKey,
-          routerDelegate: wm.routerDelegate,
+        // body: Beamer(
+        //   key: wm.beamerKey,
+        //   routerDelegate: wm.routerDelegate,
+        // ),
+        body: StateNotifierBuilder<int>(
+          listenableState: wm.currentIndexListenable,
+          builder: (_, currentIndexListenable) => IndexedStack(
+            index: currentIndexListenable,
+            children: [
+              Beamer(
+                key: wm.beamerHomeKey,
+                routerDelegate: wm.routerDelegates[0],
+              ),
+              Beamer(
+                key: wm.beamerResultsKey,
+                routerDelegate: wm.routerDelegates[1],
+              ),
+              Beamer(
+                key: wm.beamerScheduleKey,
+                routerDelegate: wm.routerDelegates[2],
+              ),
+              Beamer(
+                key: wm.beamerHallOfFameKey,
+                routerDelegate: wm.routerDelegates[3],
+              ),
+              Beamer(
+                key: wm.beamerCircuitsKey,
+                routerDelegate: wm.routerDelegates[4],
+              ),
+            ],
+          ),
         ),
         bottomNavigationBar: StateNotifierBuilder<int>(
           listenableState: wm.currentIndexListenable,
