@@ -1,4 +1,3 @@
-import 'package:beamer/beamer.dart';
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/domain/sections/results/results_screen_wm.dart';
@@ -9,6 +8,7 @@ import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dar
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
+import 'package:qlevar_router/qlevar_router.dart';
 
 class ResultsScreen extends ElementaryWidget<IResultsScreenWM> {
   const ResultsScreen({
@@ -74,7 +74,10 @@ class _Body extends StatelessWidget {
             ),
             child: RedBorderContainer(
               title: 'Выбрать конкретную гонку',
-              onTap: () => Beamer.of(context).beamToNamed('/race_search'),
+              onTap: () => QR.to(
+                'results/race_search',
+                pageAlreadyExistAction: PageAlreadyExistAction.BringToTop,
+              ),
             ),
           ),
         ),

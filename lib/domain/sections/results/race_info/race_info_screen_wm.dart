@@ -1,4 +1,3 @@
-import 'package:beamer/beamer.dart';
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/results/driver/driver_fetching_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/pit_stops_model.dart';
@@ -8,6 +7,7 @@ import 'package:f1_pet_project/data/models/sections/schedule/schedule_model.dart
 import 'package:f1_pet_project/domain/sections/results/race_info/race_info_screen_model.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_info/race_info_screen.dart';
+import 'package:qlevar_router/qlevar_router.dart';
 
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -70,7 +70,7 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
   }
 
   @override
-  void onPop() => Beamer.of(context).beamBack();
+  void onPop() => QR.back();
 
   @override
   void onRaceTableVisibilityChanged(VisibilityInfo info) {

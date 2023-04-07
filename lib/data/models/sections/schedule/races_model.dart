@@ -57,4 +57,9 @@ class RacesModel {
       );
     }
   }
+
+  @override
+  String toString() {
+    return 'RacesModel(season: $season, round: $round, url: $url, raceName: $raceName, Circuit: $Circuit, date: $date, time: $time, FirstPractice: $FirstPractice, SecondPractice: $SecondPractice, ThirdPractice: $ThirdPractice, Qualifying: $Qualifying, Sprint: $Sprint, Results: $Results, QualifyingResults: $QualifyingResults, PitStops: $PitStops)';
+  }
 }

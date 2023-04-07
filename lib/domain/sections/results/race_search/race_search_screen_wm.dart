@@ -1,4 +1,3 @@
-import 'package:beamer/beamer.dart';
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/schedule_model.dart';
@@ -6,6 +5,7 @@ import 'package:f1_pet_project/domain/sections/results/race_search/race_search_s
 import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_search/race_search_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:qlevar_router/qlevar_router.dart';
 
 class RaceSearchScreenWM
     extends WidgetModel<RaceSearchScreen, RaceSearchScreenModel>
@@ -53,7 +53,7 @@ class RaceSearchScreenWM
   RaceSearchScreenWM(super.model);
 
   @override
-  void onPop() => Beamer.of(context).beamBack();
+  void onPop() => QR.back();
 
   @override
   void checkFields() => _fieldsInputted.accept(

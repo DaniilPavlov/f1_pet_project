@@ -1,13 +1,14 @@
-import 'package:beamer/beamer.dart';
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/circuits/circuit_model.dart';
 import 'package:f1_pet_project/domain/sections/circuits/circuits_screen_wm.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/presentation/widgets/containers/red_border_container.dart';
 import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
+import 'package:f1_pet_project/router/circuit_routes.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
+import 'package:qlevar_router/qlevar_router.dart';
 
 class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
   const CircuitsScreen({
@@ -67,10 +68,11 @@ class _Body extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 20),
                           child: RedBorderContainer(
                             title: items[index].circuitName,
-                            onTap: () => Beamer.of(context).beamToNamed(
-                              '/circuits/circuit',
-                              data: items[index],
-                            ),
+                            onTap: () async {
+                              QR.params['circuit'] = items[index];
+    
+                            await   QR.to('/circuits/circuit', pageAlreadyExistAction: PageAlreadyExistAction.BringToTop);
+                            },
                           ),
                         ),
                       ),

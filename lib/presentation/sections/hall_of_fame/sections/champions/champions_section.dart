@@ -1,10 +1,10 @@
-import 'package:beamer/beamer.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
 import 'package:f1_pet_project/presentation/widgets/containers/red_border_container.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:qlevar_router/qlevar_router.dart';
 
 class ChampionsSection extends StatelessWidget {
   final List<StandingsListsModel> driversChampions;
@@ -33,20 +33,18 @@ class ChampionsSection extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           RedBorderContainer(
-            title: 'Пилоты',
-            onTap: () => Beamer.of(context).beamToNamed(
-              '/hall_of_fame/drivers_champions',
-              data: driversChampions,
-            ),
-          ),
+              title: 'Пилоты',
+              onTap: () {
+                QR.params['drivers_champions'] = driversChampions;
+                QR.to('hall_of_fame/drivers_champions', pageAlreadyExistAction: PageAlreadyExistAction.BringToTop);
+              },),
           const SizedBox(height: 20),
           RedBorderContainer(
-            title: 'Конструкторы',
-            onTap: () => Beamer.of(context).beamToNamed(
-              '/hall_of_fame/constructors_champions',
-              data: constructorsChampions,
-            ),
-          ),
+              title: 'Конструкторы',
+              onTap: () {
+                QR.params['constructors_champions'] = driversChampions;
+                QR.to('hall_of_fame/constructors_champions', pageAlreadyExistAction: PageAlreadyExistAction.BringToTop);
+              },),
           const SizedBox(height: 20),
         ],
       ),

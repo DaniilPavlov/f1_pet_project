@@ -1,17 +1,18 @@
-import 'package:beamer/beamer.dart';
+
 import 'package:f1_pet_project/data/models/sections/circuits/circuit_model.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:qlevar_router/qlevar_router.dart';
 
 class CircuitScreen extends StatelessWidget {
   const CircuitScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final circuitModel = context.currentBeamLocation.data as CircuitModel;
+    final circuitModel = QR.params['circuit'] as CircuitModel;
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
