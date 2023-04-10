@@ -21,7 +21,7 @@ class AppScreenWM extends WidgetModel<AppScreen, AppScreenModel>
   @override
   Future<bool> onPop() {
     if (QR.currentPath != '/home') {
-      QR.to('/home');
+      QR.to('/home',pageAlreadyExistAction: PageAlreadyExistAction.BringToTop);
       return Future.value(false);
     } else {
       final currentTime = DateTime.now();
@@ -46,31 +46,31 @@ class AppScreenWM extends WidgetModel<AppScreen, AppScreenModel>
     switch (index) {
       case 0:
         QR.to('/home',
-            pageAlreadyExistAction: PageAlreadyExistAction.BringToTop);
+            pageAlreadyExistAction: PageAlreadyExistAction.BringToTop,);
         break;
       case 1:
         QR.to('/results',
-            pageAlreadyExistAction: PageAlreadyExistAction.BringToTop);
+            pageAlreadyExistAction: PageAlreadyExistAction.BringToTop,);
 
         break;
       case 2:
         QR.to('/schedule',
-            pageAlreadyExistAction: PageAlreadyExistAction.BringToTop);
+            pageAlreadyExistAction: PageAlreadyExistAction.BringToTop,);
 
         break;
       case 3:
         QR.to('/hall_of_fame',
-            pageAlreadyExistAction: PageAlreadyExistAction.BringToTop);
+            pageAlreadyExistAction: PageAlreadyExistAction.BringToTop,);
 
         break;
       case 4:
         QR.to('/circuits',
-            pageAlreadyExistAction: PageAlreadyExistAction.BringToTop);
+            pageAlreadyExistAction: PageAlreadyExistAction.BringToTop,);
 
         break;
       default:
         QR.to('/home',
-            pageAlreadyExistAction: PageAlreadyExistAction.BringToTop);
+            pageAlreadyExistAction: PageAlreadyExistAction.BringToTop,);
 
         break;
     }

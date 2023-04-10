@@ -50,10 +50,10 @@ class AppRoutes {
 
   List<QRoute> routes() => [
         QRoute.withChild(
-          name: 'App',
+          name: 'root',
           path: '/',
           builderChild: AppScreen.new,
-          initRoute: 'home',
+          initRoute: '/home',
           children: [
             HomeRoutes().routes(),
             ResultsRoutes().routes(),

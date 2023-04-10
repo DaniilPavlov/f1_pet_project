@@ -5,8 +5,8 @@ import 'package:qlevar_router/qlevar_router.dart';
 class CircuitRoutes {
   QRoute routes() => QRoute.withChild(
         name: 'Circuits',
-        path: 'circuits',
-        builderChild: (child) =>  const CircuitsScreen(),
+        path: '/circuits',
+        builderChild: (router) => CircuitsScreen(router: router),
         children: [
           QRoute(
             name: 'Circuit',

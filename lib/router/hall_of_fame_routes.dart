@@ -6,8 +6,8 @@ import 'package:qlevar_router/qlevar_router.dart';
 class HallOfFameRoutes {
   QRoute routes() => QRoute.withChild(
         name: 'Hall of fame',
-        path: 'hall_of_fame',
-        builderChild: (child) => const HallOfFameScreen(),
+        path: '/hall_of_fame',
+        builderChild: (router) =>  HallOfFameScreen(router:router),
         children: [
           QRoute(
             name: 'Drivers champions',

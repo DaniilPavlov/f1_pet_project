@@ -4,7 +4,7 @@ import 'package:qlevar_router/qlevar_router.dart';
 class ScheduleRoutes {
   QRoute routes() => QRoute(
         name: 'Schedule',
-        path: 'schedule',
-        builder: () =>  ScheduleScreen(),
+        path: '/schedule',
+        builder: () =>  const ScheduleScreen(),
       );
 }

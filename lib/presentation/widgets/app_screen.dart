@@ -12,10 +12,12 @@ class AppScreen extends ElementaryWidget<IAppScreenWM> {
     WidgetModelFactory wmFactory = defaultAppScreenWMFactory,
   }) : super(wmFactory, key: key);
 
+
   @override
   Widget build(IAppScreenWM wm) {
+    // TODO(pavlov): onPop не вызывается
     return WillPopScope(
-      onWillPop: wm.onPop,
+      onWillPop: () async => wm.onPop(),
       child: Scaffold(
         // TODO(pavlov): не работает навигация внутри секций
         // они могут только переключаться

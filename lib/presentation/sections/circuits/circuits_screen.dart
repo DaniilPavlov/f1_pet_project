@@ -11,7 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
+    final QRouter router;
   const CircuitsScreen({
+    required this.router,
     super.key,
   }) : super(createCircuitsScreenWM);
 

@@ -11,7 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 class ResultsScreen extends ElementaryWidget<IResultsScreenWM> {
+  final QRouter router;
   const ResultsScreen({
+    required this.router,
     super.key,
   }) : super(createResultsScreenWM);
 

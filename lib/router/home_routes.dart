@@ -4,7 +4,7 @@ import 'package:qlevar_router/qlevar_router.dart';
 class HomeRoutes {
   QRoute routes() => QRoute(
         name: 'Home',
-        path: 'home',
+        path: '/home',
         builder: () => const HomeScreen(),
       );
 }
