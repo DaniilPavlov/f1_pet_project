@@ -1,11 +1,11 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
 import 'package:f1_pet_project/presentation/widgets/containers/red_border_container.dart';
-import 'package:f1_pet_project/router/app_router.gr.dart';
+
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ChampionsSection extends StatelessWidget {
   final List<StandingsListsModel> driversChampions;
@@ -35,17 +35,15 @@ class ChampionsSection extends StatelessWidget {
           const SizedBox(height: 32),
           RedBorderContainer(
             title: 'Пилоты',
-            onTap: () async => context.router.navigate(
-              DriversChampionsRoute(driversChampions: driversChampions),
-            ),
+            onTap: () async =>
+                context.go('/hall_of_fame/drivers_champions', extra: driversChampions),
           ),
           const SizedBox(height: 20),
           RedBorderContainer(
             title: 'Конструкторы',
-            onTap: () async => context.router.navigate(
-              ConstructorsChampionsRoute(
-                constructorsChampions: constructorsChampions,
-              ),
+            onTap: () async => context.go(
+              '/hall_of_fame/constructors_champions',
+              extra: constructorsChampions,
             ),
           ),
           const SizedBox(height: 20),

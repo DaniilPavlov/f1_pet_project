@@ -1,16 +1,12 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:auto_route/empty_router_widgets.dart';
+import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
+import 'package:f1_pet_project/presentation/sections/hall_of_fame/constructors_champions/constructors_champions_screen.dart';
+import 'package:f1_pet_project/presentation/sections/hall_of_fame/drivers_champions/drivers_champions_screen.dart';
 import 'package:f1_pet_project/presentation/sections/home/home_screen.dart';
+import 'package:go_router/go_router.dart';
 
-const homeRoute = AutoRoute<dynamic>(
-  path: 'home',
-  page: EmptyRouterScreen,
-  name: 'HomeRouter',
-  children: <AutoRoute>[
-    AutoRoute<dynamic>(
-      path: '',
-      page: HomeScreen,
-      meta: <String, bool>{'hideBottomNav': false},
-    ),
-  ],
+GoRoute homeRoute = GoRoute(
+  path: '/home',
+  pageBuilder: (context, state) => const NoTransitionPage<dynamic>(
+    child: HomeScreen(),
+  ),
 );
