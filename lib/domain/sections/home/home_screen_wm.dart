@@ -1,4 +1,5 @@
 import 'package:elementary/elementary.dart';
+import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_model.dart';
@@ -18,7 +19,12 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel>
 
   final _currentRound = StateNotifier<String>();
 
+  final _screenError = StateNotifier<CustomException?>();
+
   final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
+
+  @override
+  ListenableState<CustomException?> get screenError => _screenError;
 
   @override
   ListenableState<EntityState<List<DriverStandingsModel>>> get currentDrivers =>
@@ -46,6 +52,21 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel>
     super.initWidgetModel();
   }
 
+  @override
+  Future<void> loadAllData() async {
+    _screenError.accept(null);
+    _allDataIsLoaded.accept(false);
+
+    await Future.wait(
+      [
+        loadCurrentDriversStandings(),
+        loadCurrentConstructorsStandings(),
+      ],
+    );
+
+    _allDataIsLoaded.accept(true);
+  }
+
   Future<void> loadCurrentDriversStandings() async {
     await execute<StandingsModel>(
       model.loadCurrentDriversStandings,
@@ -56,7 +77,10 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel>
         _currentSeason.accept(data.StandingsTable.StandingsLists[0].season);
         _currentRound.accept(data.StandingsTable.StandingsLists[0].round);
       },
-      onError: _currentDrivers.error,
+      onError: (value) {
+        _screenError.accept(value);
+        _currentDrivers.error(value);
+      },
     );
   }
 
@@ -69,21 +93,11 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel>
           data!.StandingsTable.StandingsLists[0].ConstructorStandings!,
         );
       },
-      onError: _currentConstructors.error,
+      onError: (value) {
+        _screenError.accept(value);
+        _currentDrivers.error(value);
+      },
     );
-  }
-
-  Future<void> loadAllData() async {
-    _allDataIsLoaded.accept(false);
-
-    await Future.wait(
-      [
-        loadCurrentDriversStandings(),
-        loadCurrentConstructorsStandings(),
-      ],
-    );
-
-    _allDataIsLoaded.accept(true);
   }
 }
 
@@ -104,6 +118,12 @@ abstract class IHomeScreenWM extends IWidgetModel {
   /// Returns current season year.
   ListenableState<String> get currentSeason;
 
+  /// Returns error.
+  ListenableState<CustomException?> get screenError;
+
   /// Returns is all data loaded.
   ListenableState<bool> get allDataIsLoaded;
+
+  /// Loads all data.
+  void loadAllData();
 }

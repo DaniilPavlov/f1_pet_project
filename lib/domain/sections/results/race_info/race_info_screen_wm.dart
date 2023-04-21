@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
+import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/sections/results/driver/driver_fetching_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/pit_stops_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/qualifying_results_model.dart';
@@ -19,6 +20,8 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
 
   final _pitStopsAppBarPinned = StateNotifier<bool>(initValue: false);
 
+  final _screenError = StateNotifier<CustomException?>();
+
   final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
 
   late final RacesModel _raceModel;
@@ -27,6 +30,9 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
       EntityStateNotifier<List<QualifyingResultsModel>>();
 
   final _pitStops = EntityStateNotifier<List<PitStopsModel>>();
+
+  @override
+  ListenableState<CustomException?> get screenError => _screenError;
 
   @override
   ListenableState<EntityState<List<QualifyingResultsModel>>>
@@ -70,6 +76,29 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
   }
 
   @override
+  Future<void> loadAllData() async {
+    _screenError.accept(null);
+    _allDataIsLoaded.accept(false);
+    await Future.wait(
+      [
+        loadQualifyingResults(),
+        loadPitStops(),
+      ],
+    );
+
+    if (_screenError.value == null) {
+      for (final element in raceModel.Results!) {
+        if (element.FastestLap != null &&
+            _fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
+          _fastestLap = element.FastestLap!.Time.time;
+        }
+      }
+    }
+
+    _allDataIsLoaded.accept(true);
+  }
+
+  @override
   void onPop() => context.router.removeLast();
 
   @override
@@ -104,7 +133,10 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
       onSuccess: (data) {
         _qualifyingResults.content(data!.RaceTable.Races[0].QualifyingResults!);
       },
-      onError: _qualifyingResults.error,
+      onError: (value) {
+        _screenError.accept(value);
+        _qualifyingResults.error(value);
+      },
     );
   }
 
@@ -119,7 +151,10 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
       onSuccess: (data) {
         stops = data!.RaceTable.Races[0].PitStops!;
       },
-      onError: _pitStops.error,
+      onError: (value) {
+        _screenError.accept(value);
+        _pitStops.error(value);
+      },
     );
     if (_pitStops.value?.error == null) {
       for (var i = 0; i < stops.length; i++) {
@@ -131,29 +166,14 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
                   '${data!.DriverTable.Drivers[0].givenName} ${data.DriverTable.Drivers[0].familyName}',
             );
           },
-          onError: _pitStops.error,
+          onError: (value) {
+            _screenError.accept(value);
+            _pitStops.error(value);
+          },
         );
         _pitStops.content(stops);
       }
     }
-  }
-
-  Future<void> loadAllData() async {
-    _allDataIsLoaded.accept(false);
-    await Future.wait(
-      [
-        loadQualifyingResults(),
-        loadPitStops(),
-      ],
-    );
-
-    for (final element in raceModel.Results!) {
-      if (element.FastestLap != null &&
-          _fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
-        _fastestLap = element.FastestLap!.Time.time;
-      }
-    }
-    _allDataIsLoaded.accept(true);
   }
 }
 
@@ -180,11 +200,17 @@ abstract class IRaceInfoScreenWM extends IWidgetModel {
   /// Returns pit stops info.
   ListenableState<EntityState<List<PitStopsModel>>> get pitStops;
 
+  /// Returns error.
+  ListenableState<CustomException?> get screenError;
+
   /// Returns is all data loaded.
   ListenableState<bool> get allDataIsLoaded;
 
   /// Returns fastest lap.
   String get fastestLap;
+
+  /// Loads all data.
+  void loadAllData();
 
   /// Invokes when race table visibility changed.
   void onRaceTableVisibilityChanged(VisibilityInfo info);

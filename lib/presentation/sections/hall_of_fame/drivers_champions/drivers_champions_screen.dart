@@ -1,11 +1,11 @@
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
 import 'package:f1_pet_project/presentation/sections/hall_of_fame/drivers_champions/drivers_champions_appbar.dart';
 import 'package:f1_pet_project/presentation/sections/hall_of_fame/sections/champions/tables/drivers_champions_table.dart';
-
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
+// TODO(pavlov): добавить аппбар
 class DriversChampionsScreen extends StatelessWidget {
   final List<StandingsListsModel> driversChampions;
   const DriversChampionsScreen({required this.driversChampions, super.key});

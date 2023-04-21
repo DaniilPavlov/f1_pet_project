@@ -3,6 +3,7 @@ import 'package:f1_pet_project/domain/sections/results/race_search/race_search_s
 import 'package:f1_pet_project/presentation/sections/results/widgets/race_info_table.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class SearchResultSection extends StatelessWidget {
@@ -17,9 +18,10 @@ class SearchResultSection extends StatelessWidget {
         if (wm.dataIsLoaded.value! && wm.searchedRace.value!.data != null) ...[
           Padding(
             padding: const EdgeInsets.only(
-                left: StaticData.defaultHorizontalPadding,
-                 right: StaticData.defaultHorizontalPadding,
-                  top: StaticData.defaultVerticallPadding*2,),
+              left: StaticData.defaultHorizontalPadding,
+              right: StaticData.defaultHorizontalPadding,
+              top: StaticData.defaultVerticallPadding * 2,
+            ),
             child: Text(
               wm.searchedRace.value!.data!.raceName,
               style: AppStyles.h2,
@@ -46,7 +48,7 @@ class SearchResultSection extends StatelessWidget {
                   ),
                   child: Text(
                     wm.errorMessage.value!,
-                    style: AppStyles.body,
+                    style: AppStyles.body.copyWith(color: AppTheme.red),
                   ),
                 )
               : const SizedBox.shrink(),

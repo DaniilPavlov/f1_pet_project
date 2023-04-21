@@ -5,6 +5,7 @@ import 'package:f1_pet_project/domain/sections/circuits/circuits_screen_wm.dart'
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/presentation/widgets/containers/red_border_container.dart';
 import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
+import 'package:f1_pet_project/presentation/widgets/error_body.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
@@ -23,12 +24,16 @@ class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
         child: StateNotifierBuilder<bool>(
           listenableState: wm.allDataIsLoaded,
           builder: (_, dataIsLoaded) {
-            if (dataIsLoaded != null) {
-              return dataIsLoaded
+            if (wm.screenError.value == null) {
+              return dataIsLoaded!
                   ? _Body(wm: wm)
                   : const CustomLoadingIndicator();
             }
-            return const SizedBox();
+            return ErrorBody(
+              onTap: wm.loadAllData,
+              title: wm.screenError.value!.title,
+              subtitle: wm.screenError.value!.subtitle,
+            );
           },
         ),
       ),

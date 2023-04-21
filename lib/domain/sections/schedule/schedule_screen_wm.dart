@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_bool_literals_in_conditional_expressions
 
 import 'package:elementary/elementary.dart';
+import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/race_date_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/schedule_model.dart';
@@ -16,11 +17,14 @@ import 'package:table_calendar/table_calendar.dart';
 class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
     implements IScheduleScreenWM {
   final _scrollController = ScrollController();
+
   final _racesElements = EntityStateNotifier<List<RacesModel>>();
 
   final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
 
   final _selectedDate = StateNotifier<DateTime>(initValue: DateTime.now());
+
+  final _screenError = StateNotifier<CustomException?>();
 
   final _scheduleOfSelectedDate = StateNotifier<List<Widget>>(initValue: []);
 
@@ -41,24 +45,22 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
 
   @override
+  ListenableState<CustomException?> get screenError => _screenError;
+
+  @override
   ScrollController get scrollController => _scrollController;
 
   ScheduleScreenWM(super.model);
 
   @override
   void initWidgetModel() {
-    _loadAllData();
+    loadAllData();
 
     super.initWidgetModel();
   }
 
   @override
   void onSelectDay(DateTime selectedDate, DateTime _) {
-    //    if (selectedDate == _selectedDate.value ||
-    //     selectedDate.month == focusedDate.month) {
-
-    // }
-
     _selectedDate.accept(selectedDate);
     _showscheduleOfSelectedDate();
   }
@@ -116,7 +118,9 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
     return null;
   }
 
-  Future<void> _loadAllData() async {
+  @override
+  Future<void> loadAllData() async {
+    _screenError.accept(null);
     _allDataIsLoaded.accept(false);
 
     await Future.wait(
@@ -125,7 +129,9 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
       ],
     );
 
-    onSelectDay(DateTime.now(), DateTime.now());
+    if (_screenError.value == null) {
+      onSelectDay(DateTime.now(), DateTime.now());
+    }
 
     _allDataIsLoaded.accept(true);
   }
@@ -236,7 +242,10 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
       onSuccess: (data) {
         _racesElements.content(data!.RaceTable.Races);
       },
-      onError: _racesElements.error,
+      onError: (value) {
+        _screenError.accept(value);
+        _racesElements.error(value);
+      },
     );
   }
 
@@ -259,7 +268,7 @@ abstract class IScheduleScreenWM extends IWidgetModel {
   /// Returns screen scroll controller.
   ScrollController get scrollController;
 
-  /// Расписание.
+  /// Returns schedule.
   ListenableState<EntityState<List<RacesModel>>> get racesElements;
 
   /// Returns is all data loaded.
@@ -271,8 +280,14 @@ abstract class IScheduleScreenWM extends IWidgetModel {
   /// Returns schedule of selected date.
   ListenableState<List<Widget>> get scheduleOfSelectedDate;
 
+  /// Returns error.
+  ListenableState<CustomException?> get screenError;
+
   /// Invokes on day selection.
   void onSelectDay(DateTime _, DateTime __);
+
+  /// Loads all data.
+  void loadAllData();
 
   /// Returns logo.
   String? getLogoPath(DateTime day);

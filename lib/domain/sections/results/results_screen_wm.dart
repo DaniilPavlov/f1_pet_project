@@ -1,4 +1,5 @@
 import 'package:elementary/elementary.dart';
+import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/schedule_model.dart';
 import 'package:f1_pet_project/domain/sections/results/results_screen_model.dart';
@@ -10,7 +11,12 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
     implements IResultsScreenWM {
   final _lastRace = EntityStateNotifier<RacesModel>();
 
+  final _screenError = StateNotifier<CustomException?>();
+
   final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
+
+  @override
+  ListenableState<CustomException?> get screenError => _screenError;
 
   @override
   ListenableState<EntityState<RacesModel>> get lastRace => _lastRace;
@@ -32,18 +38,9 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
     super.initWidgetModel();
   }
 
-  Future<void> loadLastRaceResults() async {
-    await execute<ScheduleModel>(
-      model.loadLastRaceResults,
-      before: _lastRace.loading,
-      onSuccess: (data) {
-        _lastRace.content(data!.RaceTable.Races[0]);
-      },
-      onError: _lastRace.error,
-    );
-  }
-
+  @override
   Future<void> loadAllData() async {
+    _screenError.accept(null);
     _allDataIsLoaded.accept(false);
 
     await Future.wait(
@@ -62,6 +59,20 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
 
     _allDataIsLoaded.accept(true);
   }
+
+  Future<void> loadLastRaceResults() async {
+    await execute<ScheduleModel>(
+      model.loadLastRaceResults,
+      before: _lastRace.loading,
+      onSuccess: (data) {
+        _lastRace.content(data!.RaceTable.Races[0]);
+      },
+      onError: (value) {
+        _screenError.accept(value);
+        _lastRace.error(value);
+      },
+    );
+  }
 }
 
 ResultsScreenWM createResultsScreenWM(BuildContext _) =>
@@ -76,4 +87,10 @@ abstract class IResultsScreenWM extends IWidgetModel {
 
   /// Returns fastest lap.
   String get fastestLap;
+
+  /// Returns error.
+  ListenableState<CustomException?> get screenError;
+
+  /// Loads all data.
+  void loadAllData();
 }

@@ -1,4 +1,5 @@
 import 'package:elementary/elementary.dart';
+import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_model.dart';
 import 'package:f1_pet_project/domain/sections/hall_of_fame/hall_of_fame_screen_model.dart';
@@ -14,7 +15,12 @@ class HallOfFameScreenWM
   final _constructorsChampions =
       EntityStateNotifier<List<StandingsListsModel>>();
 
+  final _screenError = StateNotifier<CustomException?>();
+
   final _allDataIsLoaded = StateNotifier<bool>(initValue: false);
+
+  @override
+  ListenableState<CustomException?> get screenError => _screenError;
 
   @override
   ListenableState<EntityState<List<StandingsListsModel>>>
@@ -35,6 +41,21 @@ class HallOfFameScreenWM
     super.initWidgetModel();
   }
 
+  @override
+  Future<void> loadAllData() async {
+    _screenError.accept(null);
+    _allDataIsLoaded.accept(false);
+
+    await Future.wait(
+      [
+        loadConstructorsChampions(),
+        loadDriversChampions(),
+      ],
+    );
+
+    _allDataIsLoaded.accept(true);
+  }
+
   Future<void> loadDriversChampions() async {
     await execute<StandingsModel>(
       model.loadDriversChampions,
@@ -42,7 +63,10 @@ class HallOfFameScreenWM
       onSuccess: (data) {
         _driversChampions.content(data!.StandingsTable.StandingsLists);
       },
-      onError: _driversChampions.error,
+      onError: (value) {
+        _screenError.accept(value);
+        _driversChampions.error(value);
+      },
     );
   }
 
@@ -55,21 +79,11 @@ class HallOfFameScreenWM
           data!.StandingsTable.StandingsLists,
         );
       },
-      onError: _constructorsChampions.error,
+      onError: (value) {
+        _screenError.accept(value);
+        _constructorsChampions.error(value);
+      },
     );
-  }
-
-  Future<void> loadAllData() async {
-    _allDataIsLoaded.accept(false);
-
-    await Future.wait(
-      [
-        loadConstructorsChampions(),
-        loadDriversChampions(),
-      ],
-    );
-
-    _allDataIsLoaded.accept(true);
   }
 }
 
@@ -84,6 +98,12 @@ abstract class IHallOfFameScreenWM extends IWidgetModel {
   ListenableState<EntityState<List<StandingsListsModel>>>
       get constructorsChampions;
 
+  /// Returns error.
+  ListenableState<CustomException?> get screenError;
+
   /// Returns is all data loaded.
   ListenableState<bool> get allDataIsLoaded;
+
+  /// Loads all data.
+  void loadAllData();
 }
