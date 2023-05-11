@@ -10,6 +10,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     debugPrint(objectbox.getValue().toString());
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
