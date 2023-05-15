@@ -1,34 +1,42 @@
-import 'package:elementary/elementary.dart';
-import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
-import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
-import 'package:f1_pet_project/domain/sections/home/home_screen_wm.dart';
 import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tournament_tables_section.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/presentation/widgets/error_body.dart';
+import 'package:f1_pet_project/providers/home/home_data.dart';
+import 'package:f1_pet_project/providers/home/home_providers.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends ElementaryWidget<IHomeScreenWM> {
-  const HomeScreen({super.key}) : super(createHomeScreenWM);
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
-  Widget build(IHomeScreenWM wm) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(),
       body: SafeArea(
-        child: StateNotifierBuilder<bool>(
-          listenableState: wm.allDataIsLoaded,
-          builder: (_, dataIsLoaded) {
-            if (wm.screenError.value == null) {
-              return dataIsLoaded!
-                  ? _Body(wm: wm)
-                  : const CustomLoadingIndicator();
-            }
-            return ErrorBody(
-              onTap: wm.loadAllData,
-              title: wm.screenError.value!.title,
-              subtitle: wm.screenError.value!.subtitle,
+        child: Consumer(
+          builder: (_, ref, __) {
+            final homeData = ref.watch(homeDataProvider);
+
+            return homeData.when(
+              loading: () => const CustomLoadingIndicator(),
+              error: (err, stack) => ErrorBody(
+                onTap: () => ref.refresh(homeDataProvider),
+                title: err.toString(),
+                subtitle: '',
+              ),
+              data: (data) => data.constructors == null ||
+                      data.drivers == null ||
+                      data.round == null ||
+                      data.season == null
+                  ? ErrorBody(
+                      onTap: () => ref.refresh(homeDataProvider),
+                      title: 'Произошла ошибка',
+                      subtitle: '',
+                    )
+                  : _BodyConsumer(homeData: data),
             );
           },
         ),
@@ -37,12 +45,9 @@ class HomeScreen extends ElementaryWidget<IHomeScreenWM> {
   }
 }
 
-class _Body extends StatelessWidget {
-  final IHomeScreenWM wm;
-  const _Body({
-    required this.wm,
-    Key? key,
-  }) : super(key: key);
+class _BodyConsumer extends StatelessWidget {
+  final HomeData homeData;
+  const _BodyConsumer({required this.homeData, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,23 +55,14 @@ class _Body extends StatelessWidget {
       scrollBehavior: AntiGlowBehavior(),
       slivers: [
         SliverToBoxAdapter(
-          child: EntityStateNotifierBuilder<List<ConstructorStandingsModel>>(
-            listenableEntityState: wm.currentConstructors,
-            builder: (_, constructors) =>
-                EntityStateNotifierBuilder<List<DriverStandingsModel>>(
-              listenableEntityState: wm.currentDrivers,
-              builder: (_, drivers) {
-                return drivers == null || constructors == null
-                    ? const SizedBox()
-                    : TournamentTablesSection(
-                        driversStandings: drivers,
-                        constructorsStandings: constructors,
-                        season: wm.currentSeason.value!,
-                        round: wm.currentRound.value!,
-                      );
-              },
-            ),
-          ),
+          child: homeData.drivers == null || homeData.constructors == null
+              ? const SizedBox()
+              : TournamentTablesSection(
+                  driversStandings: homeData.drivers!,
+                  constructorsStandings: homeData.constructors!,
+                  season: homeData.season!,
+                  round: homeData.round!,
+                ),
         ),
       ],
     );

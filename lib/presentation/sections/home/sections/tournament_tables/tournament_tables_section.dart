@@ -1,17 +1,16 @@
-import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
-import 'package:f1_pet_project/domain/sections/home/tournament_tables/wm/tournament_tables_section_wm.dart';
-import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/switcher/tables_switcher.dart';
+import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/switcher/tables_switcher_consumer.dart';
 import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/tournament_constructors_table.dart';
 import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/tournament_drivers_table.dart';
+import 'package:f1_pet_project/providers/home/home_providers.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TournamentTablesSection
-    extends ElementaryWidget<TournamentTablesSectionWM> {
+class TournamentTablesSection extends StatelessWidget {
   final List<DriverStandingsModel> driversStandings;
   final List<ConstructorStandingsModel> constructorsStandings;
   final String season;
@@ -22,10 +21,10 @@ class TournamentTablesSection
     required this.season,
     required this.round,
     super.key,
-  }) : super(createTournamentTableSectionWM);
+  });
 
   @override
-  Widget build(TournamentTablesSectionWM wm) {
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -61,23 +60,26 @@ class TournamentTablesSection
           ),
         ),
         const SizedBox(height: 32),
-        StateNotifierBuilder<int>(
-          listenableState: wm.activeTable,
-          builder: (_, activePage) => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TablesSwitcher(wm: wm),
-              if (wm.activeTable.value == 0)
-                TournamentDriversTable(
-                  drivers: driversStandings,
-                )
-              else
-                TournamentConstructorsTable(
-                  constructors: constructorsStandings,
-                ),
-            ],
-          ),
+        Consumer(
+          // 2. specify the builder and obtain a WidgetRef
+          builder: (_, ref, __) {
+            final activeTable = ref.watch(homeActiveTableProvider);
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const TablesSwitcherConsumer(),
+                if (activeTable == 0)
+                  TournamentDriversTable(
+                    drivers: driversStandings,
+                  )
+                else
+                  TournamentConstructorsTable(
+                    constructors: constructorsStandings,
+                  ),
+              ],
+            );
+          },
         ),
         const SizedBox(height: 32),
       ],

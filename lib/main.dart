@@ -2,6 +2,7 @@ import 'package:f1_pet_project/app.dart';
 import 'package:f1_pet_project/utils/objectbox/isar_value_model.dart';
 import 'package:f1_pet_project/utils/objectbox/objectbox.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -28,5 +29,5 @@ void main() async {
   });
   debugPrint(isar.isarValueModels.count().toString());
   objectbox = await ObjectBox.create();
-  runApp(App());
+  runApp(ProviderScope(child: App()));
 }

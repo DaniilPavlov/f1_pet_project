@@ -1,15 +1,15 @@
-import 'package:f1_pet_project/domain/sections/home/tournament_tables/wm/tournament_tables_section_wm.dart';
+import 'package:f1_pet_project/providers/home/home_providers.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
-
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TablesSwitcher extends StatelessWidget {
-  final TournamentTablesSectionWM wm;
-  const TablesSwitcher({required this.wm, super.key});
+class TablesSwitcherConsumer extends ConsumerWidget {
+  const TablesSwitcherConsumer({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeTable = ref.watch(homeActiveTableProvider);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -17,13 +17,14 @@ class TablesSwitcher extends StatelessWidget {
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: () => wm.changeActiveTable(value: 0),
+                onTap: () =>
+                    ref.read(homeActiveTableProvider.notifier).state = 0,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       'Пилоты',
-                      style: wm.activeTable.value == 0
+                      style: activeTable == 0
                           ? AppStyles.h2.copyWith(color: AppTheme.red)
                           : AppStyles.h2.copyWith(color: AppTheme.pink),
                     ),
@@ -31,9 +32,7 @@ class TablesSwitcher extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       child: Container(
                         height: 1,
-                        color: wm.activeTable.value == 0
-                            ? AppTheme.red
-                            : AppTheme.pink,
+                        color: activeTable == 0 ? AppTheme.red : AppTheme.pink,
                       ),
                     ),
                   ],
@@ -42,13 +41,14 @@ class TablesSwitcher extends StatelessWidget {
             ),
             Expanded(
               child: GestureDetector(
-                onTap: () => wm.changeActiveTable(value: 1),
+                onTap: () =>
+                    ref.read(homeActiveTableProvider.notifier).state = 1,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       'Конструкторы',
-                      style: wm.activeTable.value == 1
+                      style: activeTable == 1
                           ? AppStyles.h2.copyWith(color: AppTheme.red)
                           : AppStyles.h2.copyWith(color: AppTheme.pink),
                     ),
@@ -56,9 +56,7 @@ class TablesSwitcher extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       child: Container(
                         height: 1,
-                        color: wm.activeTable.value == 1
-                            ? AppTheme.red
-                            : AppTheme.pink,
+                        color: activeTable == 1 ? AppTheme.red : AppTheme.pink,
                       ),
                     ),
                   ],
