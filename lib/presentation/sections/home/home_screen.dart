@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
                       title: 'Произошла ошибка',
                       subtitle: '',
                     )
-                  : _BodyConsumer(homeData: data),
+                  : _Body(homeData: data),
             );
           },
         ),
@@ -45,9 +45,9 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _BodyConsumer extends StatelessWidget {
+class _Body extends StatelessWidget {
   final HomeData homeData;
-  const _BodyConsumer({required this.homeData, Key? key}) : super(key: key);
+  const _Body({required this.homeData, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

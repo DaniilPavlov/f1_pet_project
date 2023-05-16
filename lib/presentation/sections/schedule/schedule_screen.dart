@@ -1,38 +1,39 @@
-// ignore_for_file: avoid_bool_literals_in_conditional_expressions
-
-import 'package:elementary/elementary.dart';
-import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
-import 'package:f1_pet_project/domain/sections/schedule/schedule_screen_wm.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/presentation/widgets/custom_calendar.dart';
 import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/presentation/widgets/error_body.dart';
+import 'package:f1_pet_project/providers/schedule/schedule_providers.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ScheduleScreen extends ElementaryWidget<IScheduleScreenWM> {
-  const ScheduleScreen({
-    super.key,
-  }) : super(createScheduleScreenWM);
+class ScheduleScreen extends StatelessWidget {
+  const ScheduleScreen({super.key});
 
   @override
-  Widget build(IScheduleScreenWM wm) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(),
       body: SafeArea(
-        child: StateNotifierBuilder<bool>(
-          listenableState: wm.allDataIsLoaded,
-          builder: (_, dataIsLoaded) {
-            if (wm.screenError.value == null) {
-              return dataIsLoaded!
-                  ? _Body(wm: wm)
-                  : const CustomLoadingIndicator();
-            }
-            return ErrorBody(
-              onTap: wm.loadAllData,
-              title: wm.screenError.value!.title,
-              subtitle: wm.screenError.value!.subtitle,
+        child: Consumer(
+          builder: (_, ref, __) {
+            final homeData = ref.watch(scheduleLoadDataProvider);
+
+            return homeData.when(
+              loading: () => const CustomLoadingIndicator(),
+              error: (err, stack) => ErrorBody(
+                onTap: () => ref.refresh(scheduleLoadDataProvider),
+                title: err.toString(),
+                subtitle: '',
+              ),
+              data: (data) => data == null
+                  ? ErrorBody(
+                      onTap: () => ref.refresh(scheduleLoadDataProvider),
+                      title: 'Произошла ошибка',
+                      subtitle: '',
+                    )
+                  : const _BodyConsumer(),
             );
           },
         ),
@@ -41,65 +42,76 @@ class ScheduleScreen extends ElementaryWidget<IScheduleScreenWM> {
   }
 }
 
-class _Body extends StatelessWidget {
-  final IScheduleScreenWM wm;
-  const _Body({
-    required this.wm,
-    Key? key,
-  }) : super(key: key);
+class _BodyConsumer extends ConsumerStatefulWidget {
+  const _BodyConsumer({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<_BodyConsumer> createState() => _BodyConsumerState();
+}
+
+class _BodyConsumerState extends ConsumerState<_BodyConsumer> {
+  final controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
+    final selectedDate = 
+        ref.watch(scheduleSelectedDateProvider(DateTime.now()));
+    final raceWidgets = ref.watch(scheduleRaceWidgetsProvider);
     return CustomScrollView(
-      controller: wm.scrollController,
+      controller: controller,
       scrollBehavior: AntiGlowBehavior(),
       slivers: [
         SliverToBoxAdapter(
-          child: EntityStateNotifierBuilder<List<RacesModel>>(
-            listenableEntityState: wm.racesElements,
-            builder: (_, items) {
-              return items == null
-                  ? const SizedBox()
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: StaticData.defaultVerticallPadding,
-                        horizontal: StaticData.defaultHorizontalPadding,
-                      ),
-                      child: StateNotifierBuilder<DateTime>(
-                        listenableState: wm.selectedDate,
-                        builder: (_, selectedDate) => CustomCalendar(
-                          imagePathCallback: wm.getLogoPath,
-                          onDaySelected: wm.onSelectDay,
-                          selectedDay: selectedDate!,
-                          // focusedDay: wm.focusedDate,
-                          onPageChanged: (_) {},
-                        ),
-                      ),
-                    );
-            },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: StaticData.defaultVerticallPadding,
+              horizontal: StaticData.defaultHorizontalPadding,
+            ),
+            child: CustomCalendar(
+              imagePathCallback: (value) =>
+                  ref.read(scheduleLogoProvider(value)),
+              onDaySelected: (date1, date2) {
+                final result =
+                    ref.read(fetchScheduleOfSelectedDateProvider(date1));
+                if (result.isNotEmpty) {
+                  Future<void>.delayed(
+                    const Duration(milliseconds: 100),
+                    animateToSchedule,
+                  );
+                }
+              },
+              selectedDay: selectedDate,
+              // focusedDay: wm.focusedDate,
+              onPageChanged: (_) {},
+            ),
           ),
         ),
         SliverToBoxAdapter(
-          child: StateNotifierBuilder<List<Widget>>(
-            listenableState: wm.scheduleOfSelectedDate,
-            builder: (_, items) {
-              return items == null
-                  ? const SizedBox()
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: StaticData.defaultVerticallPadding,
-                        horizontal: StaticData.defaultHorizontalPadding,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: items,
-                      ),
-                    );
-            },
-          ),
+          child: raceWidgets == null
+              ? const SizedBox()
+              : Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: StaticData.defaultVerticallPadding,
+                    horizontal: StaticData.defaultHorizontalPadding,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: raceWidgets,
+                  ),
+                ),
         ),
       ],
+    );
+  }
+
+  void animateToSchedule() {
+    controller.animateTo(
+      controller.position.maxScrollExtent,
+      duration: const Duration(
+        milliseconds: 200,
+      ),
+      curve: Curves.easeOutCubic,
     );
   }
 }

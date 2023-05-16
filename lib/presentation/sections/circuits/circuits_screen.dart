@@ -36,7 +36,7 @@ class CircuitsScreen extends StatelessWidget {
                       title: 'Произошла ошибка',
                       subtitle: '',
                     )
-                  : _BodyConsumer(circuits: data),
+                  : _Body(circuits: data),
             );
           },
         ),
@@ -45,9 +45,9 @@ class CircuitsScreen extends StatelessWidget {
   }
 }
 
-class _BodyConsumer extends StatelessWidget {
+class _Body extends StatelessWidget {
   final List<CircuitModel> circuits;
-  const _BodyConsumer({
+  const _Body({
     required this.circuits,
     Key? key,
   }) : super(key: key);
