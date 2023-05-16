@@ -55,9 +55,7 @@ class _BodyConsumer extends StatelessWidget {
       scrollBehavior: AntiGlowBehavior(),
       slivers: [
         SliverToBoxAdapter(
-          child: homeData.drivers == null || homeData.constructors == null
-              ? const SizedBox()
-              : TournamentTablesSection(
+          child: TournamentTablesSection(
                   driversStandings: homeData.drivers!,
                   constructorsStandings: homeData.constructors!,
                   season: homeData.season!,

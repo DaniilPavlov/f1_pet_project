@@ -9,18 +9,17 @@ final homeActiveTableProvider = StateProvider<int>((ref) {
 });
 
 final homeDataProvider = FutureProvider.autoDispose<HomeData>((ref) async {
-  final currentConstructors = 
-     await ref.read(currentConstructorStandingsProvider.future);
-  final currentDrivers =await  ref.read(currentDriverStandingsProvider.future);
+  final currentConstructors =
+      await ref.read(currentConstructorStandingsProvider.future);
+  final currentDrivers = await ref.read(currentDriverStandingsProvider.future);
   final currentSeason = await ref.read(currentSeasonProvider.future);
   final currentRound = await ref.read(currentRoundProvider.future);
 
-
   return HomeData(
-    constructors:  currentConstructors,
-    drivers:  currentDrivers,
-    season:  currentSeason,
-    round:  currentRound,
+    constructors: currentConstructors,
+    drivers: currentDrivers,
+    season: currentSeason,
+    round: currentRound,
   );
 });
 

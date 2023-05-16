@@ -6,6 +6,7 @@ import 'package:f1_pet_project/router/home_route.dart';
 import 'package:f1_pet_project/router/results_route.dart';
 import 'package:f1_pet_project/router/schedule_route.dart';
 
+// TODO(pavlov): обновить auto_route
 @MaterialAutoRouter(
   replaceInRouteName: 'Screen|Page,Route',
   routes: <AutoRoute>[

@@ -43,6 +43,8 @@ class ObjectBox {
     return ObjectBox._create(store);
   }
 
+  int getValue() => _value.getAll().first.value;
+
   void _putDemoData(int newValue) {
     _value.put(ValueModel(value: newValue));
   }
@@ -68,6 +70,4 @@ class ObjectBox {
   // Future<void> addNote(String text) => _noteBox.putAsync(Note(text));
 
   // Future<void> removeNote(int id) => _noteBox.removeAsync(id);
-
-  int getValue() => _value.getAll().first.value;
 }

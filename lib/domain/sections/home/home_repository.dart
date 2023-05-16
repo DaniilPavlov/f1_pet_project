@@ -1,7 +1,8 @@
 import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_model.dart';
-import 'package:f1_pet_project/domain/sections/home/home_screen_model.dart';
+import 'package:f1_pet_project/domain/sections/home/tournament_tables/current_constructors_standings_loader.dart';
+import 'package:f1_pet_project/domain/sections/home/tournament_tables/current_drivers_standings_loader.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
 
 // TODO(pavlov): обрабатывать ошибки неудобно и пока не ясно как
@@ -9,9 +10,13 @@ class HomeRepository {
   Future<List<DriverStandingsModel>?> loadCurrentDriversStandings() async {
     List<DriverStandingsModel>? result;
     await execute<StandingsModel>(
-      () => HomeScreenModel().loadCurrentDriversStandings(),
+      () async {
+        final rawData = await CurrentDriversStandingsLoader.loadData();
+        return StandingsModel.fromJson(
+          rawData.MRData as Map<String, dynamic>,
+        );
+      },
       // before: _currentConstructors.loading,
-      // ignore: void_checks
       onSuccess: (data) {
         result = data!.StandingsTable.StandingsLists[0].DriverStandings;
         //  _currentSeason.accept(data.StandingsTable.StandingsLists[0].season);
@@ -28,9 +33,14 @@ class HomeRepository {
   Future<String?> loadCurrentRound() async {
     String? result;
     await execute<StandingsModel>(
-      () => HomeScreenModel().loadCurrentConstructorsStandings(),
+      () async {
+        final rawData = await CurrentConstructorsStandingsLoader.loadData();
+
+        return StandingsModel.fromJson(
+          rawData.MRData as Map<String, dynamic>,
+        );
+      },
       // before: _currentConstructors.loading,
-      // ignore: void_checks
       onSuccess: (data) {
         result = data!.StandingsTable.StandingsLists[0].round;
       },
@@ -45,9 +55,14 @@ class HomeRepository {
   Future<String?> loadCurrentSeason() async {
     String? result;
     await execute<StandingsModel>(
-      () => HomeScreenModel().loadCurrentConstructorsStandings(),
+      () async {
+        final rawData = await CurrentConstructorsStandingsLoader.loadData();
+
+        return StandingsModel.fromJson(
+          rawData.MRData as Map<String, dynamic>,
+        );
+      },
       // before: _currentConstructors.loading,
-      // ignore: void_checks
       onSuccess: (data) {
         result = data!.StandingsTable.StandingsLists[0].season;
       },
@@ -63,9 +78,14 @@ class HomeRepository {
       loadCurrentConstructorsStandings() async {
     List<ConstructorStandingsModel>? result;
     await execute<StandingsModel>(
-      () => HomeScreenModel().loadCurrentConstructorsStandings(),
+      () async {
+        final rawData = await CurrentConstructorsStandingsLoader.loadData();
+
+        return StandingsModel.fromJson(
+          rawData.MRData as Map<String, dynamic>,
+        );
+      },
       // before: _currentConstructors.loading,
-      // ignore: void_checks
       onSuccess: (data) {
         result = data!.StandingsTable.StandingsLists[0].ConstructorStandings;
       },
