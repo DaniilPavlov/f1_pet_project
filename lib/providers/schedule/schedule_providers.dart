@@ -10,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-
-
 final scheduleRacesProvider = StateProvider<List<RacesModel>?>((ref) {
   return null;
 });
@@ -20,15 +18,14 @@ final scheduleRaceWidgetsProvider = StateProvider<List<Widget>?>((ref) {
   return null;
 });
 
-final scheduleSelectedDateProvider =
-    StateProvider.family<DateTime, DateTime>((ref, date) {
-  ref.read(fetchScheduleOfSelectedDateProvider(date));
-  return date;
+final scheduleSelectedDateProvider = StateProvider<DateTime>((ref) {
+  // ref.read(fetchScheduleOfSelectedDateProvider(date));
+  return DateTime.now();
 });
 
 final fetchScheduleOfSelectedDateProvider =
     Provider.family<List<Widget>, DateTime>((ref, date) {
-  final scheduleOfSelectedDate = <Widget>[];
+  final raceWidgets = <Widget>[];
   final races = ref.read(scheduleRacesProvider);
 
   final newSchedule = <Widget>[];
@@ -111,7 +108,7 @@ final fetchScheduleOfSelectedDateProvider =
         );
       }
 
-      scheduleOfSelectedDate.addAll(newSchedule);
+      raceWidgets.addAll(newSchedule);
       // if (newSchedule.isNotEmpty) {
       //   Future<void>.delayed(
       //     const Duration(milliseconds: 100),
@@ -123,12 +120,12 @@ final fetchScheduleOfSelectedDateProvider =
       break;
     }
   }
-  // TODO(pavlov): Providers are not allowed to modify other providers during their initialization.
-  ref.read(scheduleRaceWidgetsProvider.notifier).state = scheduleOfSelectedDate;
-  return scheduleOfSelectedDate;
+  // TODO(info): Providers are not allowed to modify other providers during their initialization.
+  // ref.read(scheduleRaceWidgetsProvider.notifier).state = scheduleOfSelectedDate;
+  return raceWidgets;
 });
 
-final scheduleLogoProvider = Provider.family<String?, DateTime>((ref, day) {
+final scheduleDayLogoProvider = Provider.family<String?, DateTime>((ref, day) {
   final races = ref.read(scheduleRacesProvider);
 
   if (races!.any((race) => isSameDay(DateTime.parse(race.date), day))) {
@@ -181,11 +178,13 @@ final scheduleLogoProvider = Provider.family<String?, DateTime>((ref, day) {
   return null;
 });
 
-final scheduleLoadDataProvider =
+final scheduleInitDataProvider =
     FutureProvider.autoDispose<List<RacesModel>?>((ref) async {
   final scheduleRepository = ref.read(scheduleRepositoryProvider);
   final result = await scheduleRepository.loadSchedule();
   ref.read(scheduleRacesProvider.notifier).state = result;
+  ref.read(scheduleRaceWidgetsProvider.notifier).state =
+      ref.read(fetchScheduleOfSelectedDateProvider(DateTime.now()));
   return result;
 });
 

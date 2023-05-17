@@ -18,18 +18,18 @@ class ScheduleScreen extends StatelessWidget {
       body: SafeArea(
         child: Consumer(
           builder: (_, ref, __) {
-            final homeData = ref.watch(scheduleLoadDataProvider);
+            final scheduleData = ref.watch(scheduleInitDataProvider);
 
-            return homeData.when(
+            return scheduleData.when(
               loading: () => const CustomLoadingIndicator(),
               error: (err, stack) => ErrorBody(
-                onTap: () => ref.refresh(scheduleLoadDataProvider),
+                onTap: () => ref.refresh(scheduleInitDataProvider),
                 title: err.toString(),
                 subtitle: '',
               ),
               data: (data) => data == null
                   ? ErrorBody(
-                      onTap: () => ref.refresh(scheduleLoadDataProvider),
+                      onTap: () => ref.refresh(scheduleInitDataProvider),
                       title: 'Произошла ошибка',
                       subtitle: '',
                     )
@@ -53,10 +53,21 @@ class _BodyConsumerState extends ConsumerState<_BodyConsumer> {
   final controller = ScrollController();
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final selectedDate = 
-        ref.watch(scheduleSelectedDateProvider(DateTime.now()));
+    final selectedDate = ref.watch(scheduleSelectedDateProvider);
     final raceWidgets = ref.watch(scheduleRaceWidgetsProvider);
+    if (raceWidgets?.isNotEmpty ?? false) {
+      Future<void>.delayed(
+        const Duration(milliseconds: 100),
+        animateToSchedule,
+      );
+    }
     return CustomScrollView(
       controller: controller,
       scrollBehavior: AntiGlowBehavior(),
@@ -69,16 +80,11 @@ class _BodyConsumerState extends ConsumerState<_BodyConsumer> {
             ),
             child: CustomCalendar(
               imagePathCallback: (value) =>
-                  ref.read(scheduleLogoProvider(value)),
+                  ref.read(scheduleDayLogoProvider(value)),
               onDaySelected: (date1, date2) {
-                final result =
+                ref.read(scheduleRaceWidgetsProvider.notifier).state =
                     ref.read(fetchScheduleOfSelectedDateProvider(date1));
-                if (result.isNotEmpty) {
-                  Future<void>.delayed(
-                    const Duration(milliseconds: 100),
-                    animateToSchedule,
-                  );
-                }
+                ref.read(scheduleSelectedDateProvider.notifier).state = date1;
               },
               selectedDay: selectedDate,
               // focusedDay: wm.focusedDate,
