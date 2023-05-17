@@ -1,44 +1,97 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:elementary/elementary.dart';
-import 'package:f1_pet_project/domain/sections/results/race_search/race_search_screen_wm.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_search/sections/info_message_section.dart';
-import 'package:f1_pet_project/presentation/sections/results/race_search/sections/search_button_section.dart';
+import 'package:f1_pet_project/presentation/sections/results/race_search/sections/search_button_consumer_widget.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_search/sections/search_fields_section.dart';
-import 'package:f1_pet_project/presentation/sections/results/race_search/sections/search_result_section.dart';
+import 'package:f1_pet_project/presentation/sections/results/race_search/sections/search_result_consumer_widget.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
+import 'package:f1_pet_project/providers/results/race_search/race_search_providers.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @RoutePage()
-class RaceSearchScreen extends ElementaryWidget<IRaceSearchScreenWM> {
-  const RaceSearchScreen({
-    super.key,
-  }) : super(createRaceSearchScreenWM);
+class RaceSearchScreen extends ConsumerStatefulWidget {
+  const RaceSearchScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(IRaceSearchScreenWM wm) {
+  ConsumerState<RaceSearchScreen> createState() => _RaceSearchScreenState();
+}
+
+class _RaceSearchScreenState extends ConsumerState<RaceSearchScreen> {
+  final yearController = TextEditingController();
+  final roundController = TextEditingController();
+  final scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    roundController.dispose();
+    yearController.dispose();
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO(pavlov): проблема в том что это family провайдер. не ясно как решать.
+    // в home screen обычный, такой проблемы нет
+    final raceResults = ref.watch(raceSearchLoadResultsProvider(null));
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Поиск гонки',
-        onPop: wm.onPop,
+        onPop: context.router.removeLast,
       ),
       body: SafeArea(
         child: CustomScrollView(
-          controller: wm.scrollController,
+          controller: scrollController,
           shrinkWrap: true,
           scrollBehavior: AntiGlowBehavior(),
           slivers: [
             const SliverToBoxAdapter(child: InfoMessageSection()),
-            SliverToBoxAdapter(child: SearchFieldsSection(wm: wm)),
             SliverToBoxAdapter(
-              child: StateNotifierBuilder<bool>(
-                listenableState: wm.dataIsLoaded,
-                builder: (_, dataIsLoaded) {
+              child: SearchFieldsSection(
+                yearController: yearController,
+                roundController: roundController,
+                checkFields: () =>
+                    ref.read(raceSearchFieldsInputtedProvider.notifier).state =
+                        yearController.text.length == 4 &&
+                            roundController.text.isNotEmpty,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: raceResults.when(
+                loading: () => const CustomLoadingIndicator(),
+                error: (error, _) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SearchResultConsumerWidget(error: error.toString()),
+                  ],
+                ),
+                data: (result) {
+                  if (result != null) {
+                    // _searchedRace.content(data.RaceTable.Races[0]);
+                    Future<void>.delayed(
+                      const Duration(milliseconds: 100),
+                      animateToTable,
+                    );
+                  } else {
+                    // _searchedRace.content(null);
+                    // _errorMessage.accept(
+                    //   'По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.',
+                    // );
+                  }
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SearchButtonSection(wm: wm),
-                      SearchResultSection(wm: wm),
+                      SearchButtonConsumerWidget(
+                        // TODO(pavlov): проблема с обновлением значений
+                        onTap: () => ref.refresh(
+                          raceSearchLoadResultsProvider(
+                            [yearController.text, roundController.text],
+                          ),
+                        ),
+                      ),
+                      SearchResultConsumerWidget(result: result),
                     ],
                   );
                 },
@@ -46,6 +99,19 @@ class RaceSearchScreen extends ElementaryWidget<IRaceSearchScreenWM> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void animateToTable() {
+    Future<void>.delayed(
+      const Duration(milliseconds: 100),
+      () => scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(
+          milliseconds: 200,
+        ),
+        curve: Curves.easeOutCubic,
       ),
     );
   }

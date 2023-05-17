@@ -1,14 +1,20 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:f1_pet_project/domain/sections/results/race_search/race_search_screen_wm.dart';
 import 'package:f1_pet_project/presentation/widgets/text_fields/custom_text_field.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class SearchFieldsSection extends StatelessWidget {
-  final IRaceSearchScreenWM wm;
-  const SearchFieldsSection({required this.wm, super.key});
+  final TextEditingController yearController;
+  final TextEditingController roundController;
+  final VoidCallback checkFields;
+  const SearchFieldsSection({
+    required this.yearController,
+    required this.roundController,
+    required this.checkFields,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +33,7 @@ class SearchFieldsSection extends StatelessWidget {
                 FilteringTextInputFormatter.deny(RegExp('^0+')),
               ],
               keyboardType: TextInputType.number,
-              onChanged: (_) => wm.checkFields(),
+              onChanged: (_) => checkFields(),
               toolbarOptions: const ToolbarOptions(
                 copy: true,
                 selectAll: true,
@@ -35,7 +41,7 @@ class SearchFieldsSection extends StatelessWidget {
               ),
               label: 'Сезон',
               hintText: 'Год',
-              controller: wm.yearController,
+              controller: yearController,
             ),
           ),
           const SizedBox(width: 20),
@@ -50,11 +56,11 @@ class SearchFieldsSection extends StatelessWidget {
                 FilteringTextInputFormatter.digitsOnly,
                 FilteringTextInputFormatter.deny(RegExp('^0+')),
               ],
-              onChanged: (_) => wm.checkFields(),
+              onChanged: (_) => checkFields(),
               keyboardType: TextInputType.number,
               label: 'Раунд',
               hintText: 'Номер',
-              controller: wm.roundController,
+              controller: roundController,
             ),
           ),
         ],
