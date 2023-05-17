@@ -37,7 +37,7 @@ class NavBarItem extends StatelessWidget {
             children: [
               ExtendedImage.asset(
                 imageAsset,
-                scale: 18,
+                scale: 19.5,
                 color: isSelected ? AppTheme.red : AppTheme.white,
               ),
               const SizedBox(height: 8),

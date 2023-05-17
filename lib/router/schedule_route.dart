@@ -1,21 +1,14 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:auto_route/empty_router_widgets.dart';
-import 'package:f1_pet_project/presentation/sections/schedule/schedule_screen.dart';
+import 'package:f1_pet_project/router/app_router.gr.dart';
 
-const scheduleRoute = AutoRoute<dynamic>(
+final AutoRoute scheduleRoute = AutoRoute(
   path: 'schedule',
-  page: EmptyRouterScreen,
-  name: 'ScheduleRouter',
-  children: <AutoRoute>[
-    AutoRoute<dynamic>(
+  page: ScheduleRouter.page,
+  children: [
+    AutoRoute(
       path: '',
-      page: ScheduleScreen,
-      meta: <String, bool>{'hideBottomNav': false},
+      page: ScheduleRoute.page,
+      meta: const <String, bool>{'hideBottomNav': false},
     ),
-    // AutoRoute<dynamic>(
-    //   path: 'track_schedule',
-    //   page: TrackScheduleScreen,
-    //   meta: <String, bool>{'hideBottomNav': false},
-    // ),
   ],
 );

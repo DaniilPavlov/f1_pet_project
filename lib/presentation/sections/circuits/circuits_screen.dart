@@ -11,6 +11,7 @@ import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+@RoutePage()
 class CircuitsScreen extends StatelessWidget {
   const CircuitsScreen({super.key});
 

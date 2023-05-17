@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tournament_tables_section.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
@@ -8,6 +9,7 @@ import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+@RoutePage()
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -56,11 +58,11 @@ class _Body extends StatelessWidget {
       slivers: [
         SliverToBoxAdapter(
           child: TournamentTablesSection(
-                  driversStandings: homeData.drivers!,
-                  constructorsStandings: homeData.constructors!,
-                  season: homeData.season!,
-                  round: homeData.round!,
-                ),
+            driversStandings: homeData.drivers!,
+            constructorsStandings: homeData.constructors!,
+            season: homeData.season!,
+            round: homeData.round!,
+          ),
         ),
       ],
     );
