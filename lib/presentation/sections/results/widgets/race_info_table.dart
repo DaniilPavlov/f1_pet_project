@@ -53,11 +53,11 @@ class RaceInfoTable extends StatelessWidget {
           GestureDetector(
             onTap: () async =>
                 context.router.navigate(RaceInfoRoute(raceModel: raceModel)),
-            child: ColoredBox(
+            child: const ColoredBox(
               color: AppTheme.grayBG,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
+                children: [
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: Text(
