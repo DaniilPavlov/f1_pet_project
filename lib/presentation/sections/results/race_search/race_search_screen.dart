@@ -1,5 +1,4 @@
-// ignore_for_file: deprecated_member_use
-
+import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/domain/sections/results/race_search/race_search_screen_wm.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_search/sections/info_message_section.dart';
@@ -10,6 +9,7 @@ import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart'
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class RaceSearchScreen extends ElementaryWidget<IRaceSearchScreenWM> {
   const RaceSearchScreen({
     super.key,

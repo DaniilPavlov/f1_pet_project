@@ -7,6 +7,7 @@ import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/utils/utils.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class CircuitScreen extends StatelessWidget {
   final CircuitModel circuitModel;
   const CircuitScreen({required this.circuitModel, super.key});

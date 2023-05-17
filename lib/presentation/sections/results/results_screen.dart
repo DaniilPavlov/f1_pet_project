@@ -12,6 +12,7 @@ import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class ResultsScreen extends ElementaryWidget<IResultsScreenWM> {
   const ResultsScreen({super.key}) : super(createResultsScreenWM);
 

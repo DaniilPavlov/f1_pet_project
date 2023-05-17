@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
@@ -9,6 +10,7 @@ import 'package:f1_pet_project/presentation/widgets/error_body.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()  
 class HomeScreen extends ElementaryWidget<IHomeScreenWM> {
   const HomeScreen({super.key}) : super(createHomeScreenWM);
 

@@ -7,6 +7,7 @@ import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class DriversChampionsScreen extends StatelessWidget {
   final List<StandingsListsModel> driversChampions;
   const DriversChampionsScreen({required this.driversChampions, super.key});

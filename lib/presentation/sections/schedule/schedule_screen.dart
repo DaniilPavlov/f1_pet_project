@@ -1,5 +1,4 @@
-// ignore_for_file: avoid_bool_literals_in_conditional_expressions
-
+import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/domain/sections/schedule/schedule_screen_wm.dart';
@@ -11,6 +10,7 @@ import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class ScheduleScreen extends ElementaryWidget<IScheduleScreenWM> {
   const ScheduleScreen({
     super.key,

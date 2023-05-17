@@ -1,5 +1,5 @@
 import 'package:f1_pet_project/main.dart';
-import 'package:f1_pet_project/router/app_router.gr.dart';
+import 'package:f1_pet_project/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:responsive_framework/responsive_framework.dart';

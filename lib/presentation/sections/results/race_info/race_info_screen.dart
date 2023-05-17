@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/domain/sections/results/race_info/race_info_screen_wm.dart';
@@ -24,6 +25,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 // 1) по нажатию на гонщика в первой таблице открывать полную его информацию по гонке
 // ??
 
+@RoutePage()
 class RaceInfoScreen extends ElementaryWidget<IRaceInfoScreenWM> {
   final RacesModel raceModel;
   RaceInfoScreen({
