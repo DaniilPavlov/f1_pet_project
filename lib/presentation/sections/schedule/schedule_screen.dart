@@ -65,10 +65,7 @@ class _BodyConsumerState extends ConsumerState<_BodyConsumer> {
     final selectedDate = ref.watch(scheduleSelectedDateProvider);
     final raceWidgets = ref.watch(scheduleRaceWidgetsProvider);
     if (raceWidgets?.isNotEmpty ?? false) {
-      Future<void>.delayed(
-        const Duration(milliseconds: 100),
-        animateToSchedule,
-      );
+      animateToSchedule();
     }
     return CustomScrollView(
       controller: controller,
@@ -83,11 +80,7 @@ class _BodyConsumerState extends ConsumerState<_BodyConsumer> {
             child: CustomCalendar(
               imagePathCallback: (value) =>
                   ref.read(scheduleDayLogoProvider(value)),
-              onDaySelected: (date1, date2) {
-                ref.read(scheduleRaceWidgetsProvider.notifier).state =
-                    ref.read(fetchScheduleOfSelectedDateProvider(date1));
-                ref.read(scheduleSelectedDateProvider.notifier).state = date1;
-              },
+              onDaySelected: (date1, date2) => onDaySelected(ref, date1),
               selectedDay: selectedDate,
               // focusedDay: wm.focusedDate,
               onPageChanged: (_) {},
@@ -113,13 +106,23 @@ class _BodyConsumerState extends ConsumerState<_BodyConsumer> {
     );
   }
 
+  void onDaySelected(WidgetRef ref, DateTime date) {
+    ref
+        .read(scheduleRaceWidgetsProvider.notifier)
+        .update((state) => ref.read(fetchScheduleOfSelectedDateProvider(date)));
+    ref.read(scheduleSelectedDateProvider.notifier).update((state) => date);
+  }
+
   void animateToSchedule() {
-    controller.animateTo(
-      controller.position.maxScrollExtent,
-      duration: const Duration(
-        milliseconds: 200,
+    Future<void>.delayed(
+      const Duration(milliseconds: 100),
+      () => controller.animateTo(
+        controller.position.maxScrollExtent,
+        duration: const Duration(
+          milliseconds: 200,
+        ),
+        curve: Curves.easeOutCubic,
       ),
-      curve: Curves.easeOutCubic,
     );
   }
 }

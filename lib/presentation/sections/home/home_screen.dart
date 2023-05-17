@@ -21,7 +21,6 @@ class HomeScreen extends StatelessWidget {
         child: Consumer(
           builder: (_, ref, __) {
             final homeData = ref.watch(homeDataProvider);
-
             return homeData.when(
               loading: () => const CustomLoadingIndicator(),
               error: (err, stack) => ErrorBody(

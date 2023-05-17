@@ -19,7 +19,6 @@ final scheduleRaceWidgetsProvider = StateProvider<List<Widget>?>((ref) {
 });
 
 final scheduleSelectedDateProvider = StateProvider<DateTime>((ref) {
-  // ref.read(fetchScheduleOfSelectedDateProvider(date));
   return DateTime.now();
 });
 
@@ -107,16 +106,7 @@ final fetchScheduleOfSelectedDateProvider =
           ),
         );
       }
-
       raceWidgets.addAll(newSchedule);
-      // if (newSchedule.isNotEmpty) {
-      //   Future<void>.delayed(
-      //     const Duration(milliseconds: 100),
-      //     () => ref
-      //         .read(scheduleScrollControllerProvider.notifier)
-      //         .animateToSchedule(),
-      //   );
-      // }
       break;
     }
   }

@@ -1,36 +1,40 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:elementary/elementary.dart';
-import 'package:f1_pet_project/domain/sections/hall_of_fame/hall_of_fame_screen_wm.dart';
 import 'package:f1_pet_project/presentation/sections/hall_of_fame/sections/champions/champions_section.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/presentation/widgets/error_body.dart';
+import 'package:f1_pet_project/providers/hall_of_fame/hall_of_fame_data.dart';
+import 'package:f1_pet_project/providers/hall_of_fame/hall_of_fame_providers.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-@RoutePage()  
-class HallOfFameScreen extends ElementaryWidget<IHallOfFameScreenWM> {
-  const HallOfFameScreen({
-    super.key,
-  }) : super(createHallOfFameScreenWM);
+@RoutePage()
+class HallOfFameScreen extends StatelessWidget {
+  const HallOfFameScreen({super.key});
 
   @override
-  Widget build(IHallOfFameScreenWM wm) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(),
       body: SafeArea(
-        child: StateNotifierBuilder<bool>(
-          listenableState: wm.allDataIsLoaded,
-          builder: (_, dataIsLoaded) {
-            if (wm.screenError.value == null) {
-              return dataIsLoaded!
-                  ? _Body(wm: wm)
-                  : const CustomLoadingIndicator();
-            }
-            return ErrorBody(
-              onTap: wm.loadAllData,
-              title: wm.screenError.value!.title,
-              subtitle: wm.screenError.value!.subtitle,
+        child: Consumer(
+          builder: (_, ref, __) {
+            final hallOfFameData = ref.watch(hallOfFameDataProvider);
+            return hallOfFameData.when(
+              loading: () => const CustomLoadingIndicator(),
+              error: (err, stack) => ErrorBody(
+                onTap: () => ref.refresh(hallOfFameDataProvider),
+                title: err.toString(),
+                subtitle: '',
+              ),
+              data: (data) => data.constructors == null || data.drivers == null
+                  ? ErrorBody(
+                      onTap: () => ref.refresh(hallOfFameDataProvider),
+                      title: 'Произошла ошибка',
+                      subtitle: '',
+                    )
+                  : _Body(data: data),
             );
           },
         ),
@@ -40,11 +44,8 @@ class HallOfFameScreen extends ElementaryWidget<IHallOfFameScreenWM> {
 }
 
 class _Body extends StatelessWidget {
-  final IHallOfFameScreenWM wm;
-  const _Body({
-    required this.wm,
-    Key? key,
-  }) : super(key: key);
+  final HallOfFameData data;
+  const _Body({required this.data, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,12 +57,10 @@ class _Body extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (wm.constructorsChampions.value != null &&
-                  wm.driversChampions.value != null)
-                ChampionsSection(
-                  constructorsChampions: wm.constructorsChampions.value!.data!,
-                  driversChampions: wm.driversChampions.value!.data!,
-                ),
+              ChampionsSection(
+                constructorsChampions: data.constructors!,
+                driversChampions: data.drivers!,
+              ),
             ],
           ),
         ),
