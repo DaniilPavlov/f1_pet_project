@@ -28,6 +28,7 @@ dependencies:
   dio: ^5.1.2
   dio_cookie_manager: ^3.0.0
   elementary: ^2.0.0
+  equatable: ^2.0.5
   extended_image: ^8.0.1
   flutter:
     sdk: flutter

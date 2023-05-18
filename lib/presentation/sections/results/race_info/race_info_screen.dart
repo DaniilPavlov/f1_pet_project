@@ -11,6 +11,7 @@ import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dar
 import 'package:f1_pet_project/presentation/widgets/error_body.dart';
 import 'package:f1_pet_project/providers/results/race_info/race_info_data.dart';
 import 'package:f1_pet_project/providers/results/race_info/race_info_providers.dart';
+import 'package:f1_pet_project/providers/results/race_info/race_model_parameter.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
@@ -44,15 +45,18 @@ class RaceInfoScreen extends StatelessWidget {
       body: SafeArea(
         child: Consumer(
           builder: (_, ref, __) {
-            // TODO(pavlov): постоянно перезагружается
             final raceInfoData = ref.watch(raceInfoDataProvider(
-              [raceModel.season, raceModel.round],
+              RaceModelParameter(
+                yearRound: [raceModel.season, raceModel.round],
+              ),
             ));
             return raceInfoData.when(
               loading: () => const CustomLoadingIndicator(),
               error: (err, stack) => ErrorBody(
                 onTap: () => ref.refresh(raceInfoDataProvider(
-                  [raceModel.season, raceModel.round],
+                  RaceModelParameter(
+                    yearRound: [raceModel.season, raceModel.round],
+                  ),
                 )),
                 title: err.toString(),
                 subtitle: '',
@@ -61,7 +65,9 @@ class RaceInfoScreen extends StatelessWidget {
                 if (data.pitStops == null || data.qualifyingResults == null) {
                   return ErrorBody(
                     onTap: () => ref.refresh(raceInfoDataProvider(
-                      [raceModel.season, raceModel.round],
+                      RaceModelParameter(
+                        yearRound: [raceModel.season, raceModel.round],
+                      ),
                     )),
                     title: 'Произошла ошибка',
                     subtitle: '',
