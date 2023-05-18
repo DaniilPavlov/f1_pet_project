@@ -11,7 +11,7 @@ import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dar
 import 'package:f1_pet_project/presentation/widgets/error_body.dart';
 import 'package:f1_pet_project/providers/results/race_info/race_info_data.dart';
 import 'package:f1_pet_project/providers/results/race_info/race_info_providers.dart';
-import 'package:f1_pet_project/providers/results/race_info/race_model_parameter.dart';
+import 'package:f1_pet_project/providers/results/race_info/race_year_round_parameter.dart.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
@@ -46,7 +46,7 @@ class RaceInfoScreen extends StatelessWidget {
         child: Consumer(
           builder: (_, ref, __) {
             final raceInfoData = ref.watch(raceInfoDataProvider(
-              RaceModelParameter(
+              RaceYearRoundParameter(
                 yearRound: [raceModel.season, raceModel.round],
               ),
             ));
@@ -54,7 +54,7 @@ class RaceInfoScreen extends StatelessWidget {
               loading: () => const CustomLoadingIndicator(),
               error: (err, stack) => ErrorBody(
                 onTap: () => ref.refresh(raceInfoDataProvider(
-                  RaceModelParameter(
+                  RaceYearRoundParameter(
                     yearRound: [raceModel.season, raceModel.round],
                   ),
                 )),
@@ -65,7 +65,7 @@ class RaceInfoScreen extends StatelessWidget {
                 if (data.pitStops == null || data.qualifyingResults == null) {
                   return ErrorBody(
                     onTap: () => ref.refresh(raceInfoDataProvider(
-                      RaceModelParameter(
+                      RaceYearRoundParameter(
                         yearRound: [raceModel.season, raceModel.round],
                       ),
                     )),

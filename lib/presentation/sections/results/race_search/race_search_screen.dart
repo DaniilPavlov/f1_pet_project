@@ -5,6 +5,7 @@ import 'package:f1_pet_project/presentation/sections/results/race_search/section
 import 'package:f1_pet_project/presentation/sections/results/race_search/sections/search_result_consumer_widget.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
+import 'package:f1_pet_project/providers/results/race_info/race_year_round_parameter.dart.dart';
 import 'package:f1_pet_project/providers/results/race_search/race_search_providers.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
@@ -33,9 +34,7 @@ class _RaceSearchScreenState extends ConsumerState<RaceSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO(pavlov): проблема в том что это family провайдер. не ясно как решать.
-    // в home screen обычный, такой проблемы нет
-    final raceResults = ref.watch(raceSearchLoadResultsProvider(null));
+    final raceResults = ref.watch(raceSearchLoadResultsProvider);
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Поиск гонки',
@@ -84,12 +83,13 @@ class _RaceSearchScreenState extends ConsumerState<RaceSearchScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SearchButtonConsumerWidget(
-                        // TODO(pavlov): проблема с обновлением значений
-                        onTap: () => ref.refresh(
-                          raceSearchLoadResultsProvider(
-                            [yearController.text, roundController.text],
-                          ),
-                        ),
+                        onTap: () =>
+                            ref.read(raceYearRoundProvider.notifier).update(
+                                  (state) => RaceYearRoundParameter(yearRound: [
+                                    yearController.text,
+                                    roundController.text,
+                                  ]),
+                                ),
                       ),
                       SearchResultConsumerWidget(result: result),
                     ],

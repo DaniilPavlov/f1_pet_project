@@ -1,17 +1,23 @@
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/domain/sections/results/race_search/race_search_repository.dart';
+import 'package:f1_pet_project/providers/results/race_info/race_year_round_parameter.dart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // TODO(pavlov): делать FutureProvider только для загрузки
 // данные сохранять в отдельные провайдеры
-final raceSearchLoadResultsProvider = FutureProvider.autoDispose
-    .family<RacesModel?, List<String>?>((ref, data) async {
-  final raceSearchRepository = ref.read(raceSearchRepositoryProvider);
-  if (data == null) {
+final raceSearchLoadResultsProvider =
+    FutureProvider.autoDispose<RacesModel?>((ref) async {
+  final raceYearRound = ref.watch(raceYearRoundProvider);
+  if (raceYearRound == null) {
     return null;
   }
-  final raceSearch =
-      await raceSearchRepository.loadRaceResults(year: data[0], round: data[1]);
+
+  final raceSearchRepository = ref.read(raceSearchRepositoryProvider);
+
+  final raceSearch = await raceSearchRepository.loadRaceResults(
+    year: raceYearRound.yearRound[0],
+    round: raceYearRound.yearRound[1],
+  );
 
   if (raceSearch != null) {
     for (final element in raceSearch.Results!) {
@@ -27,12 +33,13 @@ final raceSearchLoadResultsProvider = FutureProvider.autoDispose
     }
   }
 
-  // ref.read(raceSearchResultsProvider.notifier).update((state) => raceSearch);
-
   return raceSearch;
 });
 
 final raceSearchResultsProvider = StateProvider<RacesModel?>((ref) => null);
+
+final raceYearRoundProvider =
+    StateProvider<RaceYearRoundParameter?>((ref) => null);
 
 final raceSearchFieldsInputtedProvider = StateProvider<bool>((ref) => false);
 

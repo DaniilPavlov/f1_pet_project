@@ -1,5 +1,4 @@
 import 'package:f1_pet_project/presentation/widgets/buttons/black_button.dart';
-import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/providers/results/race_search/race_search_providers.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:flutter/material.dart';
@@ -19,17 +18,10 @@ class SearchButtonConsumerWidget extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(
         horizontal: StaticData.defaultHorizontalPadding,
       ),
-      child: Consumer(
-        builder: (_, ref, __) {
-          // return ref.read(raceSearchResultsProvider(data)).isLoading
-          return false
-              ? const CustomLoadingIndicator()
-              : BlackButton(
-                  isDisabled: !fieldsInputted,
-                  onTap: onTap,
-                  text: 'Поиск',
-                );
-        },
+      child: BlackButton(
+        isDisabled: !fieldsInputted,
+        onTap: onTap,
+        text: 'Поиск',
       ),
     );
   }

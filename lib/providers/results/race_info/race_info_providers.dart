@@ -3,12 +3,12 @@ import 'package:f1_pet_project/data/models/sections/results/qualifying_results_m
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/domain/sections/results/race_info/race_info_repository.dart';
 import 'package:f1_pet_project/providers/results/race_info/race_info_data.dart';
-import 'package:f1_pet_project/providers/results/race_info/race_model_parameter.dart';
+import 'package:f1_pet_project/providers/results/race_info/race_year_round_parameter.dart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final raceInfoDataProvider = FutureProvider.autoDispose
-    .family<RaceInfoData, RaceModelParameter>((ref, data) async {
-  final pitStops = await ref.read(pitStopsProvider(data.yearRound).future);
+    .family<RaceInfoData, RaceYearRoundParameter>((ref, data) async {
+  final pitStops = await ref.watch(pitStopsProvider(data.yearRound).future);
   final qualifyingResults =
       await ref.read(qualifyingProvider(data.yearRound).future);
 
@@ -27,7 +27,6 @@ final raceInfoFastestLapProvider =
       result = element.FastestLap!.Time.time;
     }
   }
-
   return result;
 });
 
