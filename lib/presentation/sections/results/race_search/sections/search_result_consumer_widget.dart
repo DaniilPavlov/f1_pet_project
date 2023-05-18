@@ -34,7 +34,7 @@ class SearchResultConsumerWidget extends ConsumerWidget {
               vertical: StaticData.defaultVerticallPadding,
             ),
             child: RaceInfoTable(
-              fastestLap: ref.read(fastestLapProvider),
+              fastestLap: ref.read(raceSearchFastestLapProvider),
               rowsNumber: 3,
               raceModel: result!,
             ),

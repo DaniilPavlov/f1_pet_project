@@ -9,10 +9,10 @@ final resultsDataProvider =
     for (final element in lastRaceResults.Results!) {
       if (element.FastestLap != null &&
           ref
-                  .read(fastestLapProvider)
+                  .read(resultsFastestLapProvider)
                   .compareTo(element.FastestLap!.Time.time) ==
               1) {
-        ref.read(fastestLapProvider.notifier).state =
+        ref.read(resultsFastestLapProvider.notifier).state =
             element.FastestLap!.Time.time;
       }
     }
@@ -21,7 +21,7 @@ final resultsDataProvider =
   return lastRaceResults;
 });
 
-final fastestLapProvider = StateProvider<String>((ref) {
+final resultsFastestLapProvider = StateProvider<String>((ref) {
   return '999999';
 });
 

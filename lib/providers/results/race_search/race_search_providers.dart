@@ -17,11 +17,11 @@ final raceSearchLoadResultsProvider = FutureProvider.autoDispose
     for (final element in raceSearch.Results!) {
       if (element.FastestLap != null &&
           ref
-                  .read(fastestLapProvider)
+                  .read(raceSearchFastestLapProvider)
                   .compareTo(element.FastestLap!.Time.time) ==
               1) {
         ref
-            .read(fastestLapProvider.notifier)
+            .read(raceSearchFastestLapProvider.notifier)
             .update((state) => element.FastestLap!.Time.time);
       }
     }
@@ -36,7 +36,7 @@ final raceSearchResultsProvider = StateProvider<RacesModel?>((ref) => null);
 
 final raceSearchFieldsInputtedProvider = StateProvider<bool>((ref) => false);
 
-final fastestLapProvider = StateProvider<String>((ref) => '999999');
+final raceSearchFastestLapProvider = StateProvider<String>((ref) => '999999');
 
 final raceSearchRepositoryProvider = Provider<RaceSearchRepository>((ref) {
   return RaceSearchRepository();

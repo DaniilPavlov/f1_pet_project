@@ -59,7 +59,7 @@ class _Body extends StatelessWidget {
                   child: Consumer(
                     builder: (context, ref, child) => LastRaceTableSection(
                       lastRace: lastRace!,
-                      fastestLap: ref.read(fastestLapProvider),
+                      fastestLap: ref.read(resultsFastestLapProvider),
                     ),
                   ),
                 ),
