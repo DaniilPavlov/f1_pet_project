@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/sections/results/pit_stops_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/qualifying_results_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
@@ -8,9 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final raceInfoDataProvider = FutureProvider.autoDispose
     .family<RaceInfoData, RaceYearRoundParameter>((ref, data) async {
-  final pitStops = await ref.watch(pitStopsProvider(data.yearRound).future);
-  final qualifyingResults =
-      await ref.read(qualifyingProvider(data.yearRound).future);
+  final pitStops = await ref.read(pitStopsProvider(data.yearRound).future);
+  final qualifyingResults = ref.read(raceInfoErrorProvider) == null
+      ? await ref.read(qualifyingProvider(data.yearRound).future)
+      : null;
 
   return RaceInfoData(
     pitStops: pitStops,
@@ -37,6 +39,7 @@ final pitStopsProvider = FutureProvider.family
   return raceInfoRepository.loadPitStops(
     year: data[0],
     round: data[1],
+    ref: ref,
   );
 });
 
@@ -48,6 +51,7 @@ final qualifyingProvider = FutureProvider.family
     return raceInfoRepository.loadQualifyingResults(
       year: data[0],
       round: data[1],
+      ref: ref,
     );
   },
 );
@@ -57,6 +61,8 @@ final raceAppBarPinnedProvider = StateProvider<bool>((ref) => false);
 final qualificationAppBarPinnedProvider = StateProvider<bool>((ref) => false);
 
 final pitStopsAppBarPinnedProvider = StateProvider<bool>((ref) => false);
+
+final raceInfoErrorProvider = StateProvider<CustomException?>((ref) => null);
 
 final raceInfoRepositoryProvider = Provider<RaceInfoRepository>((ref) {
   return RaceInfoRepository();

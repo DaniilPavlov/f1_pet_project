@@ -1,6 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:dio/dio.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
+import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
+import 'package:f1_pet_project/data/exceptions/success_false.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Utils {
@@ -62,5 +65,49 @@ class Utils {
     final hour = date.hour >= 10 ? date.hour : '0${date.hour}';
     final minute = date.minute >= 10 ? date.minute : '0${date.minute}';
     return '$hour:$minute';
+  }
+
+  static CustomException fetchError(Object e) {
+    CustomException? ex;
+    if (e.runtimeType is DioError) {
+      if ((e as DioError).type == DioErrorType.unknown) {
+        ex = const CustomException(
+          title: 'Соединение отсутствует',
+          subtitle:
+              'Как только соединение восстановится, вы снова сможете пользоваться приложением',
+        );
+      } else {
+        ex = CustomException(
+          // title: dioErrorText ?? 'Ошибка при отправке запроса',
+          title: 'Ошибка при отправке запроса',
+          subtitle: e.message,
+        );
+      }
+    } else if (e.runtimeType is ResponseParseException) {
+      ex = CustomException(
+        // title: responseParseErrorText ?? 'Ошибка при обработке ответа от сервера',
+        title: 'Ошибка при обработке ответа от сервера',
+        subtitle: e.toString(),
+      );
+    } else if (e.runtimeType is SuccessFalse) {
+      ex = CustomException(
+        title: e.toString(),
+      );
+      // } on AccessError catch (e) {
+      //   ex = CustomException(
+      //     title: successFalseErrorText ?? 'Ошибка',
+      //     subtitle: e.toString(),
+      //   );
+      //   onAccessError?.call(ex);
+      // ignore: avoid_catches_without_on_clauses
+    } else {
+      ex = CustomException(
+        // title: otherErrorText ?? 'Непредвиденная ошибка',
+        title: 'Непредвиденная ошибка',
+        subtitle: e.toString(),
+      );
+    }
+
+    return ex;
   }
 }

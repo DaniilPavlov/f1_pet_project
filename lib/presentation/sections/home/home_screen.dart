@@ -6,6 +6,7 @@ import 'package:f1_pet_project/presentation/widgets/error_body.dart';
 import 'package:f1_pet_project/providers/home/home_data.dart';
 import 'package:f1_pet_project/providers/home/home_providers.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
+import 'package:f1_pet_project/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,21 +24,31 @@ class HomeScreen extends StatelessWidget {
             final homeData = ref.watch(homeDataProvider);
             return homeData.when(
               loading: () => const CustomLoadingIndicator(),
-              error: (err, stack) => ErrorBody(
-                onTap: () => ref.refresh(homeDataProvider),
-                title: err.toString(),
-                subtitle: '',
-              ),
-              data: (data) => data.constructors == null ||
-                      data.drivers == null ||
-                      data.round == null ||
-                      data.season == null
-                  ? ErrorBody(
-                      onTap: () => ref.refresh(homeDataProvider),
-                      title: 'Произошла ошибка',
-                      subtitle: '',
-                    )
-                  : _Body(homeData: data),
+              error: (err, stack) {
+                final error = Utils.fetchError(err);
+                return ErrorBody(
+                  onTap: () => ref.refresh(homeDataProvider),
+                  title: error.title,
+                  subtitle: error.subtitle,
+                );
+              },
+              data: (data) {
+                if (homeData.isLoading) {
+                  return const CustomLoadingIndicator();
+                } else if (data.constructors == null ||
+                    data.drivers == null ||
+                    data.round == null ||
+                    data.season == null) {
+                  final homeError = ref.read(homeErrorProvider);
+                  return ErrorBody(
+                    onTap: () => ref.refresh(homeDataProvider),
+                    title: homeError!.title,
+                    subtitle: homeError.subtitle,
+                  );
+                } else {
+                  return _Body(homeData: data);
+                }
+              },
             );
           },
         ),

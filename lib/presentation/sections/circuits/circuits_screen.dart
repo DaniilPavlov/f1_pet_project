@@ -8,6 +8,7 @@ import 'package:f1_pet_project/providers/circuits/circuits_provider.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
+import 'package:f1_pet_project/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,22 +23,33 @@ class CircuitsScreen extends StatelessWidget {
       body: SafeArea(
         child: Consumer(
           builder: (_, ref, __) {
-            final homeData = ref.watch(circuitsDataProvider);
-
-            return homeData.when(
+            final circuitsData = ref.watch(circuitsDataProvider);
+            return circuitsData.when(
               loading: () => const CustomLoadingIndicator(),
-              error: (err, stack) => ErrorBody(
-                onTap: () => ref.refresh(circuitsDataProvider),
-                title: err.toString(),
-                subtitle: '',
-              ),
-              data: (data) => data == null
-                  ? ErrorBody(
-                      onTap: () => ref.refresh(circuitsDataProvider),
-                      title: 'Произошла ошибка',
-                      subtitle: '',
-                    )
-                  : _Body(circuits: data),
+              // TODO(info): обрабатываем ошибку в error с помощью функции, в data - с помощью provider
+              error: (err, stack) {
+                final error = Utils.fetchError(err);
+                return ErrorBody(
+                  onTap: () => ref.refresh(circuitsDataProvider),
+                  title: error.title,
+                  subtitle: error.subtitle,
+                );
+              },
+              // TODO(think): loading state не вызывается повторно, если мы попали в data
+              data: (data) {
+                if (circuitsData.isLoading) {
+                  return const CustomLoadingIndicator();
+                } else if (data == null) {
+                  final circuitsError = ref.read(circuitsErrorProvider);
+                  return ErrorBody(
+                    onTap: () => ref.refresh(circuitsDataProvider),
+                    title: circuitsError!.title,
+                    subtitle: circuitsError.subtitle,
+                  );
+                } else {
+                  return _Body(circuits: data);
+                }
+              },
             );
           },
         ),

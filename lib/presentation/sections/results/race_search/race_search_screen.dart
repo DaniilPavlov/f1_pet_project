@@ -8,8 +8,11 @@ import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dar
 import 'package:f1_pet_project/providers/results/race_info/race_year_round_parameter.dart.dart';
 import 'package:f1_pet_project/providers/results/race_search/race_search_providers.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
+import 'package:f1_pet_project/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// TODO(pavlov): нужно сделать сброс части провайдеров во вложенных страницах, после их закрытия
 
 @RoutePage()
 class RaceSearchScreen extends ConsumerStatefulWidget {
@@ -63,21 +66,30 @@ class _RaceSearchScreenState extends ConsumerState<RaceSearchScreen> {
                 error: (error, _) => Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SearchResultConsumerWidget(error: error.toString()),
+                    SearchButtonConsumerWidget(
+                      onTap: () =>
+                          ref.read(raceYearRoundProvider.notifier).update(
+                                (state) => RaceYearRoundParameter(yearRound: [
+                                  yearController.text,
+                                  roundController.text,
+                                ]),
+                              ),
+                    ),
+                    SearchResultConsumerWidget(
+                      error: Utils.fetchError(error).title,
+                    ),
                   ],
                 ),
                 data: (result) {
+                  String? error;
                   if (result != null) {
-                    // _searchedRace.content(data.RaceTable.Races[0]);
                     Future<void>.delayed(
                       const Duration(milliseconds: 100),
                       animateToTable,
                     );
                   } else {
-                    // _searchedRace.content(null);
-                    // _errorMessage.accept(
-                    //   'По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.',
-                    // );
+                    error =
+                        'По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.';
                   }
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,7 +103,7 @@ class _RaceSearchScreenState extends ConsumerState<RaceSearchScreen> {
                                   ]),
                                 ),
                       ),
-                      SearchResultConsumerWidget(result: result),
+                      SearchResultConsumerWidget(result: result, error: error),
                     ],
                   );
                 },

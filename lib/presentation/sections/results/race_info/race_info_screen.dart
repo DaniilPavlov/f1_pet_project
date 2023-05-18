@@ -16,6 +16,7 @@ import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -52,25 +53,34 @@ class RaceInfoScreen extends StatelessWidget {
             ));
             return raceInfoData.when(
               loading: () => const CustomLoadingIndicator(),
-              error: (err, stack) => ErrorBody(
-                onTap: () => ref.refresh(raceInfoDataProvider(
-                  RaceYearRoundParameter(
-                    yearRound: [raceModel.season, raceModel.round],
-                  ),
-                )),
-                title: err.toString(),
-                subtitle: '',
-              ),
+              error: (err, stack) {
+                final error = Utils.fetchError(err);
+                return ErrorBody(
+                  onTap: () => ref.refresh(raceInfoDataProvider(
+                    RaceYearRoundParameter(
+                      yearRound: [raceModel.season, raceModel.round],
+                    ),
+                  )),
+                  title: error.title,
+                  subtitle: error.subtitle,
+                );
+              },
               data: (data) {
-                if (data.pitStops == null || data.qualifyingResults == null) {
+                if (raceInfoData.isLoading) {
+                  return const CustomLoadingIndicator();
+                } else if (data.pitStops == null ||
+                    data.qualifyingResults == null) {
+                  final raceInfoError = ref.read(raceInfoErrorProvider);
                   return ErrorBody(
-                    onTap: () => ref.refresh(raceInfoDataProvider(
-                      RaceYearRoundParameter(
-                        yearRound: [raceModel.season, raceModel.round],
+                    onTap: () => ref.refresh(
+                      raceInfoDataProvider(
+                        RaceYearRoundParameter(
+                          yearRound: [raceModel.season, raceModel.round],
+                        ),
                       ),
-                    )),
-                    title: 'Произошла ошибка',
-                    subtitle: '',
+                    ),
+                    title: raceInfoError!.title,
+                    subtitle: raceInfoError.subtitle,
                   );
                 } else {
                   return _Body(

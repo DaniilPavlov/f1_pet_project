@@ -6,6 +6,7 @@ import 'package:f1_pet_project/presentation/widgets/error_body.dart';
 import 'package:f1_pet_project/providers/schedule/schedule_providers.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
+import 'package:f1_pet_project/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,21 +22,30 @@ class ScheduleScreen extends StatelessWidget {
         child: Consumer(
           builder: (_, ref, __) {
             final scheduleData = ref.watch(scheduleInitDataProvider);
-
             return scheduleData.when(
               loading: () => const CustomLoadingIndicator(),
-              error: (err, stack) => ErrorBody(
-                onTap: () => ref.refresh(scheduleInitDataProvider),
-                title: err.toString(),
-                subtitle: '',
-              ),
-              data: (data) => data == null
-                  ? ErrorBody(
-                      onTap: () => ref.refresh(scheduleInitDataProvider),
-                      title: 'Произошла ошибка',
-                      subtitle: '',
-                    )
-                  : const _BodyConsumer(),
+              error: (err, stack) {
+                final error = Utils.fetchError(err);
+                return ErrorBody(
+                  onTap: () => ref.refresh(scheduleInitDataProvider),
+                  title: error.title,
+                  subtitle: error.subtitle,
+                );
+              },
+              data: (data) {
+                if (scheduleData.isLoading) {
+                  return const CustomLoadingIndicator();
+                } else if (data == null) {
+                  final circuitsError = ref.read(scheduleErrorProvider);
+                  return ErrorBody(
+                    onTap: () => ref.refresh(scheduleInitDataProvider),
+                    title: circuitsError!.title,
+                    subtitle: circuitsError.subtitle,
+                  );
+                } else {
+                  return const _BodyConsumer();
+                }
+              },
             );
           },
         ),

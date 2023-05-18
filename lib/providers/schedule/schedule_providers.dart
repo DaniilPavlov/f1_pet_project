@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_bool_literals_in_conditional_expressions
 
+import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/race_date_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/domain/sections/schedule/schedule_repository.dart';
@@ -9,6 +10,19 @@ import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+final scheduleInitDataProvider =
+    FutureProvider.autoDispose<List<RacesModel>?>((ref) async {
+  final scheduleRepository = ref.read(scheduleRepositoryProvider);
+  final result = await scheduleRepository.loadSchedule(ref);
+  if (result != null) {
+    ref.read(scheduleRacesProvider.notifier).state = result;
+    ref.read(scheduleRaceWidgetsProvider.notifier).state =
+        ref.read(fetchScheduleOfSelectedDateProvider(DateTime.now()));
+  }
+
+  return result;
+});
 
 final scheduleRacesProvider = StateProvider<List<RacesModel>?>((ref) {
   return null;
@@ -168,15 +182,7 @@ final scheduleDayLogoProvider = Provider.family<String?, DateTime>((ref, day) {
   return null;
 });
 
-final scheduleInitDataProvider =
-    FutureProvider.autoDispose<List<RacesModel>?>((ref) async {
-  final scheduleRepository = ref.read(scheduleRepositoryProvider);
-  final result = await scheduleRepository.loadSchedule();
-  ref.read(scheduleRacesProvider.notifier).state = result;
-  ref.read(scheduleRaceWidgetsProvider.notifier).state =
-      ref.read(fetchScheduleOfSelectedDateProvider(DateTime.now()));
-  return result;
-});
+final scheduleErrorProvider = StateProvider<CustomException?>((ref) => null);
 
 final scheduleRepositoryProvider = Provider<ScheduleRepository>((ref) {
   return ScheduleRepository();

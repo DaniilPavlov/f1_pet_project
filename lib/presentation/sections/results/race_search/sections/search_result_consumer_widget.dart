@@ -53,23 +53,6 @@ class SearchResultConsumerWidget extends ConsumerWidget {
           )
         else
           const SizedBox.shrink(),
-
-        // TODO(pavlov): вернуть потом
-        // StateNotifierBuilder<String>(
-        //   listenableState: wm.errorMessage,
-        //   builder: (_, errorMessage) => wm.errorMessage.value!.isNotEmpty
-        //       ? Padding(
-        //           padding: const EdgeInsets.symmetric(
-        //             vertical: StaticData.defaultVerticallPadding,
-        //             horizontal: StaticData.defaultHorizontalPadding,
-        //           ),
-        //           child: Text(
-        //             wm.errorMessage.value!,
-        //             style: AppStyles.body.copyWith(color: AppTheme.red),
-        //           ),
-        //         )
-        //       : const SizedBox.shrink(),
-        // ),
       ],
     );
   }

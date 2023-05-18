@@ -6,6 +6,7 @@ import 'package:f1_pet_project/presentation/widgets/error_body.dart';
 import 'package:f1_pet_project/providers/hall_of_fame/hall_of_fame_data.dart';
 import 'package:f1_pet_project/providers/hall_of_fame/hall_of_fame_providers.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
+import 'package:f1_pet_project/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,18 +24,28 @@ class HallOfFameScreen extends StatelessWidget {
             final hallOfFameData = ref.watch(hallOfFameDataProvider);
             return hallOfFameData.when(
               loading: () => const CustomLoadingIndicator(),
-              error: (err, stack) => ErrorBody(
-                onTap: () => ref.refresh(hallOfFameDataProvider),
-                title: err.toString(),
-                subtitle: '',
-              ),
-              data: (data) => data.constructors == null || data.drivers == null
-                  ? ErrorBody(
-                      onTap: () => ref.refresh(hallOfFameDataProvider),
-                      title: 'Произошла ошибка',
-                      subtitle: '',
-                    )
-                  : _Body(data: data),
+              error: (err, stack) {
+                final error = Utils.fetchError(err);
+                return ErrorBody(
+                  onTap: () => ref.refresh(hallOfFameDataProvider),
+                  title: error.title,
+                  subtitle: error.subtitle,
+                );
+              },
+              data: (data) {
+                if (hallOfFameData.isLoading) {
+                  return const CustomLoadingIndicator();
+                } else if (data.constructors == null || data.drivers == null) {
+                  final hallOfFameError = ref.read(hallOfFameErrorProvider);
+                  return ErrorBody(
+                    onTap: () => ref.refresh(hallOfFameDataProvider),
+                    title: hallOfFameError!.title,
+                    subtitle: hallOfFameError.subtitle,
+                  );
+                } else {
+                  return _Body(data: data);
+                }
+              },
             );
           },
         ),

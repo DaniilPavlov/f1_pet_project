@@ -9,6 +9,7 @@ import 'package:f1_pet_project/providers/results/results_providers.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
+import 'package:f1_pet_project/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,12 +27,28 @@ class ResultsScreen extends StatelessWidget {
             final lastRaceData = ref.watch(resultsDataProvider);
             return lastRaceData.when(
               loading: () => const CustomLoadingIndicator(),
-              error: (err, stack) => ErrorBody(
-                onTap: () => ref.refresh(resultsDataProvider),
-                title: err.toString(),
-                subtitle: '',
-              ),
-              data: (data) => _Body(lastRace: data),
+              error: (err, stack) {
+                final error = Utils.fetchError(err);
+                return ErrorBody(
+                  onTap: () => ref.refresh(resultsDataProvider),
+                  title: error.title,
+                  subtitle: error.subtitle,
+                );
+              },
+              data: (data) {
+                if (lastRaceData.isLoading) {
+                  return const CustomLoadingIndicator();
+                } else if (data == null) {
+                  final resultsError = ref.read(resultsErrorProvider);
+                  return ErrorBody(
+                    onTap: () => ref.refresh(resultsDataProvider),
+                    title: resultsError!.title,
+                    subtitle: resultsError.subtitle,
+                  );
+                } else {
+                  return _Body(lastRace: data);
+                }
+              },
             );
           },
         ),
@@ -41,7 +58,7 @@ class ResultsScreen extends StatelessWidget {
 }
 
 class _Body extends StatelessWidget {
-  final RacesModel? lastRace;
+  final RacesModel lastRace;
   const _Body({required this.lastRace, Key? key}) : super(key: key);
 
   @override
@@ -50,19 +67,17 @@ class _Body extends StatelessWidget {
       scrollBehavior: AntiGlowBehavior(),
       slivers: [
         SliverToBoxAdapter(
-          child: lastRace == null
-              ? const SizedBox()
-              : Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: StaticData.defaultVerticallPadding,
-                  ),
-                  child: Consumer(
-                    builder: (context, ref, child) => LastRaceTableSection(
-                      lastRace: lastRace!,
-                      fastestLap: ref.read(resultsFastestLapProvider),
-                    ),
-                  ),
-                ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: StaticData.defaultVerticallPadding,
+            ),
+            child: Consumer(
+              builder: (context, ref, child) => LastRaceTableSection(
+                lastRace: lastRace,
+                fastestLap: ref.read(resultsFastestLapProvider),
+              ),
+            ),
+          ),
         ),
         SliverToBoxAdapter(
           child: Padding(

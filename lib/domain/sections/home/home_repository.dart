@@ -4,10 +4,13 @@ import 'package:f1_pet_project/data/models/sections/home/standings/standings_mod
 import 'package:f1_pet_project/domain/sections/home/tournament_tables/current_constructors_standings_loader.dart';
 import 'package:f1_pet_project/domain/sections/home/tournament_tables/current_drivers_standings_loader.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
+import 'package:f1_pet_project/providers/home/home_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// TODO(pavlov): обрабатывать ошибки неудобно и пока не ясно как
 class HomeRepository {
-  Future<List<DriverStandingsModel>?> loadCurrentDriversStandings() async {
+  Future<List<DriverStandingsModel>?> loadCurrentDriversStandings(
+    AutoDisposeFutureProviderRef<List<DriverStandingsModel>?> ref,
+  ) async {
     List<DriverStandingsModel>? result;
     await execute<StandingsModel>(
       () async {
@@ -16,66 +19,26 @@ class HomeRepository {
           rawData.MRData as Map<String, dynamic>,
         );
       },
-      // before: _currentConstructors.loading,
       onSuccess: (data) {
         result = data!.StandingsTable.StandingsLists[0].DriverStandings;
-        //  _currentSeason.accept(data.StandingsTable.StandingsLists[0].season);
-        // _currentRound.accept(data.StandingsTable.StandingsLists[0].round);
+        ref
+            .read(currentRoundProvider.notifier)
+            .update((state) => data.StandingsTable.StandingsLists[0].round);
+        ref
+            .read(currentSeasonProvider.notifier)
+            .update((state) => data.StandingsTable.StandingsLists[0].season);
+        ref.read(homeErrorProvider.notifier).update((state) => null);
       },
-      // onError: (value) {
-      //   _screenError.accept(value);
-      //   _currentDrivers.error(value);
-      // },
+      onError: (value) {
+        ref.read(homeErrorProvider.notifier).update((state) => value);
+      },
     );
     return result;
   }
 
-  Future<String?> loadCurrentRound() async {
-    String? result;
-    await execute<StandingsModel>(
-      () async {
-        final rawData = await CurrentConstructorsStandingsLoader.loadData();
-
-        return StandingsModel.fromJson(
-          rawData.MRData as Map<String, dynamic>,
-        );
-      },
-      // before: _currentConstructors.loading,
-      onSuccess: (data) {
-        result = data!.StandingsTable.StandingsLists[0].round;
-      },
-      // onError: (value) {
-      //   // _screenError.accept(value);
-      //   // _currentDrivers.error(value);
-      // },
-    );
-    return result;
-  }
-
-  Future<String?> loadCurrentSeason() async {
-    String? result;
-    await execute<StandingsModel>(
-      () async {
-        final rawData = await CurrentConstructorsStandingsLoader.loadData();
-
-        return StandingsModel.fromJson(
-          rawData.MRData as Map<String, dynamic>,
-        );
-      },
-      // before: _currentConstructors.loading,
-      onSuccess: (data) {
-        result = data!.StandingsTable.StandingsLists[0].season;
-      },
-      // onError: (value) {
-      //   _screenError.accept(value);
-      //   _currentDrivers.error(value);
-      // },
-    );
-    return result;
-  }
-
-  Future<List<ConstructorStandingsModel>?>
-      loadCurrentConstructorsStandings() async {
+  Future<List<ConstructorStandingsModel>?> loadCurrentConstructorsStandings(
+    AutoDisposeFutureProviderRef<List<ConstructorStandingsModel>?> ref,
+  ) async {
     List<ConstructorStandingsModel>? result;
     await execute<StandingsModel>(
       () async {
@@ -85,14 +48,13 @@ class HomeRepository {
           rawData.MRData as Map<String, dynamic>,
         );
       },
-      // before: _currentConstructors.loading,
       onSuccess: (data) {
         result = data!.StandingsTable.StandingsLists[0].ConstructorStandings;
+        ref.read(homeErrorProvider.notifier).update((state) => null);
       },
-      // onError: (value) {
-      //   _screenError.accept(value);
-      //   _currentDrivers.error(value);
-      // },
+      onError: (value) {
+        ref.read(homeErrorProvider.notifier).update((state) => value);
+      },
     );
     return result;
   }

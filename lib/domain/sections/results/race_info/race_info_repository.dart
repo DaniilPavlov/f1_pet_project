@@ -6,12 +6,14 @@ import 'package:f1_pet_project/domain/sections/results/race_info/loaders/driver_
 import 'package:f1_pet_project/domain/sections/results/race_info/loaders/pit_stops_loader.dart';
 import 'package:f1_pet_project/domain/sections/results/race_info/loaders/qualifying_results_loader.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
+import 'package:f1_pet_project/providers/results/race_info/race_info_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// TODO(pavlov): обрабатывать ошибки неудобно и пока не ясно как
 class RaceInfoRepository {
   Future<List<PitStopsModel>?> loadPitStops({
     required String year,
     required String round,
+    required AutoDisposeFutureProviderRef<List<PitStopsModel>?> ref,
   }) async {
     List<PitStopsModel>? result;
     var hasError = false;
@@ -20,15 +22,11 @@ class RaceInfoRepository {
         final rawData = await PitStopsLoader.loadData(year: year, round: round);
         return ScheduleModel.fromJson(rawData.MRData as Map<String, dynamic>);
       },
-      // before: _currentConstructors.loading,
       onSuccess: (data) {
         result = data!.RaceTable.Races[0].PitStops;
-        //  _currentSeason.accept(data.StandingsTable.StandingsLists[0].season);
-        // _currentRound.accept(data.StandingsTable.StandingsLists[0].round);
       },
       onError: (value) {
-        // _screenError.accept(value);
-        // _currentDrivers.error(value);
+        ref.read(raceInfoErrorProvider.notifier).update((state) => value);
         hasError = true;
       },
     );
@@ -48,10 +46,10 @@ class RaceInfoRepository {
               driverId:
                   '${data!.DriverTable.Drivers[0].givenName} ${data.DriverTable.Drivers[0].familyName}',
             );
+            ref.read(raceInfoErrorProvider.notifier).update((state) => null);
           },
           onError: (value) {
-            // _screenError.accept(value);
-            // _pitStops.error(value);
+            ref.read(raceInfoErrorProvider.notifier).update((state) => value);
           },
         );
       }
@@ -63,6 +61,7 @@ class RaceInfoRepository {
   Future<List<QualifyingResultsModel>?> loadQualifyingResults({
     required String year,
     required String round,
+    required AutoDisposeFutureProviderRef<List<QualifyingResultsModel>?> ref,
   }) async {
     List<QualifyingResultsModel>? result;
     await execute<ScheduleModel>(
@@ -71,14 +70,13 @@ class RaceInfoRepository {
             await QualifyingResultsLoader.loadData(year: year, round: round);
         return ScheduleModel.fromJson(rawData.MRData as Map<String, dynamic>);
       },
-      // before: _currentConstructors.loading,
       onSuccess: (data) {
         result = data!.RaceTable.Races[0].QualifyingResults;
+        ref.read(raceInfoErrorProvider.notifier).update((state) => null);
       },
-      // onError: (value) {
-      //   // _screenError.accept(value);
-      //   // _currentDrivers.error(value);
-      // },
+      onError: (value) {
+        ref.read(raceInfoErrorProvider.notifier).update((state) => value);
+      },
     );
     return result;
   }

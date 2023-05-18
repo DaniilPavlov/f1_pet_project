@@ -3,7 +3,6 @@ import 'package:f1_pet_project/data/models/sections/schedule/schedule_model.dart
 import 'package:f1_pet_project/domain/sections/results/race_search/race_results_loader.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
 
-// TODO(pavlov): обрабатывать ошибки неудобно и пока не ясно как
 class RaceSearchRepository {
   Future<RacesModel?> loadRaceResults({
     required String year,

@@ -3,7 +3,7 @@ import 'package:f1_pet_project/domain/sections/results/race_search/race_search_r
 import 'package:f1_pet_project/providers/results/race_info/race_year_round_parameter.dart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// TODO(pavlov): делать FutureProvider только для загрузки
+// TODO(info): делать FutureProvider только для загрузки
 // данные сохранять в отдельные провайдеры
 final raceSearchLoadResultsProvider =
     FutureProvider.autoDispose<RacesModel?>((ref) async {

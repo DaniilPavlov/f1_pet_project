@@ -2,10 +2,13 @@ import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/schedule_model.dart';
 import 'package:f1_pet_project/domain/sections/results/last_race_results_loader.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
+import 'package:f1_pet_project/providers/results/results_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// TODO(pavlov): обрабатывать ошибки неудобно и пока не ясно как
 class ResultsRepository {
-  Future<RacesModel?> loadLastRaceResults() async {
+  Future<RacesModel?> loadLastRaceResults(
+    AutoDisposeFutureProviderRef<RacesModel?> ref,
+  ) async {
     RacesModel? result;
     await execute<ScheduleModel>(
       () async {
@@ -13,14 +16,13 @@ class ResultsRepository {
 
         return ScheduleModel.fromJson(rawData.MRData as Map<String, dynamic>);
       },
-      // before: _constructorsChampions.loading,
       onSuccess: (data) {
         result = data!.RaceTable.Races[0];
+        ref.read(resultsErrorProvider.notifier).update((state) => null);
       },
-      // onError: (value) {
-      //   _screenError.accept(value);
-      //   _constructorsChampions.error(value);
-      // },
+      onError: (value) {
+        ref.read(resultsErrorProvider.notifier).update((state) => value);
+      },
     );
     return result;
   }
