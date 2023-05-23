@@ -15,7 +15,6 @@ final homeDataProvider = FutureProvider.autoDispose<HomeData>((ref) async {
   final currentDrivers = ref.read(homeErrorProvider) == null
       ? await ref.read(currentDriverStandingsProvider.future)
       : null;
-
   return HomeData(
     constructors: currentConstructors,
     drivers: currentDrivers,

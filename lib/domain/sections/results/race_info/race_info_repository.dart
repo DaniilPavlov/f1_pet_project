@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/data/models/baseResponse/base_response_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/driver/driver_fetching_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/pit_stops_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/qualifying_results_model.dart';
@@ -6,6 +7,7 @@ import 'package:f1_pet_project/domain/sections/results/race_info/loaders/driver_
 import 'package:f1_pet_project/domain/sections/results/race_info/loaders/pit_stops_loader.dart';
 import 'package:f1_pet_project/domain/sections/results/race_info/loaders/qualifying_results_loader.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
+import 'package:f1_pet_project/domain/services/interceptors_functions.dart';
 import 'package:f1_pet_project/providers/results/race_info/race_info_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,8 +21,13 @@ class RaceInfoRepository {
     var hasError = false;
     await execute<ScheduleModel>(
       () async {
-        final rawData = await PitStopsLoader.loadData(year: year, round: round);
-        return ScheduleModel.fromJson(rawData.MRData as Map<String, dynamic>);
+        BaseResponseModel? rawData;
+        // TODO(info): пример использования кэша
+        rawData = await checkCache(
+          () async => PitStopsLoader.loadData(year: year, round: round),
+        );
+
+        return ScheduleModel.fromJson(rawData!.MRData as Map<String, dynamic>);
       },
       onSuccess: (data) {
         result = data!.RaceTable.Races[0].PitStops;
@@ -35,10 +42,13 @@ class RaceInfoRepository {
       for (var i = 0; i < result!.length; i++) {
         await execute<DriverFetchingModel>(
           () async {
-            final rawData =
-                await DriverLoader.loadData(driverId: result![i].driverId);
+            BaseResponseModel? rawData;
+            rawData = await checkCache(
+              () async => DriverLoader.loadData(driverId: result![i].driverId),
+            );
+
             return DriverFetchingModel.fromJson(
-              rawData.MRData as Map<String, dynamic>,
+              rawData!.MRData as Map<String, dynamic>,
             );
           },
           onSuccess: (data) {
@@ -66,9 +76,13 @@ class RaceInfoRepository {
     List<QualifyingResultsModel>? result;
     await execute<ScheduleModel>(
       () async {
-        final rawData =
-            await QualifyingResultsLoader.loadData(year: year, round: round);
-        return ScheduleModel.fromJson(rawData.MRData as Map<String, dynamic>);
+        BaseResponseModel? rawData;
+        rawData = await checkCache(
+          () async =>
+              QualifyingResultsLoader.loadData(year: year, round: round),
+        );
+
+        return ScheduleModel.fromJson(rawData!.MRData as Map<String, dynamic>);
       },
       onSuccess: (data) {
         result = data!.RaceTable.Races[0].QualifyingResults;

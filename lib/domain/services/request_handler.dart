@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:f1_pet_project/domain/services/cache_interceptor.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -12,6 +13,7 @@ import 'package:platform_device_id/platform_device_id.dart';
 
 class RequestHandler {
   static final RequestHandler _singleton = RequestHandler._init();
+  final _cacheInterceptor = CacheInterceptor();
   CookieManager? _cookieManager;
   late Dio? _dio;
 
@@ -22,6 +24,15 @@ class RequestHandler {
 
   RequestHandler._init() {
     _dio = _createDio();
+    _dio!.interceptors.add(addInterceptors());
+  }
+
+  Interceptor addInterceptors() {
+    return InterceptorsWrapper(
+      onRequest: _cacheInterceptor.onRequest,
+      onResponse: _cacheInterceptor.onResponse,
+      onError: _cacheInterceptor.onError,
+    );
   }
 
   Future<Response<T>> get<T>(
@@ -217,7 +228,6 @@ class RequestHandler {
         debugPrint(e.toString());
       }
     }
-
     return dio;
   }
 }
