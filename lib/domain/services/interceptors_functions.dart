@@ -18,6 +18,7 @@ Future<BaseResponseModel?> checkCache(
       rawData =
           BaseResponseModel.fromJson(e.response!.data as Map<String, dynamic>);
 
+// TODO(pavlov): наверное стоит сделать постоянное отображение, подумать как лучше
       /// Showing info that connection is interrapted.
       unawaited(Fluttertoast.showToast(
         msg: 'Соединение отсутствует',
