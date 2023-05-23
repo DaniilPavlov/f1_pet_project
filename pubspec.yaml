@@ -34,6 +34,7 @@ dependencies:
   flutter_html: 3.0.0-alpha.5
   flutter_localizations:
     sdk: flutter
+  fluttertoast: ^8.2.2
   horizontal_data_table: ^4.2.0
   intl: ^0.18.0
   isar: 3.1.0+1
