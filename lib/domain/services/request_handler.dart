@@ -213,7 +213,7 @@ class RequestHandler {
 
     if (_cookieManager == null) {
       try {
-        // TODO(all): придумать как исправить тут замечание
+        // TODO(pavlov): придумать как исправить тут замечание
         // ignore: prefer-async-await
         pp.getApplicationDocumentsDirectory().then((dir) {
           _cookieManager = CookieManager(
