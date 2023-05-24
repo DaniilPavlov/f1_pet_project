@@ -38,8 +38,6 @@ dependencies:
   json_annotation: ^4.8.1
   json_serializable: ^6.6.2 # пока не обновлять до 6.7.0 (проблема с surf_lint_rules)
   loading_animation_widget: ^1.2.0+4
-  package_info_plus: ^4.0.0
-  platform_device_id: ^1.0.1
   provider: ^6.0.5
   quiver: ^3.2.1
   responsive_framework: ^1.0.0
