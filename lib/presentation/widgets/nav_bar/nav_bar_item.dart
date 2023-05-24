@@ -34,6 +34,7 @@ class NavBarItem extends StatelessWidget {
           padding: const EdgeInsets.only(top: 12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ExtendedImage.asset(
                 imageAsset,

@@ -23,10 +23,8 @@ environment:
 dependencies:
   auto_route: ^7.1.0
   colorful_safe_area: ^1.0.0
-  cookie_jar: ^4.0.2
   dartdoc: ^6.2.2
   dio: ^5.1.2
-  dio_cookie_manager: ^3.0.0
   elementary: ^2.0.0
   extended_image: ^8.0.1
   flutter:
@@ -41,7 +39,6 @@ dependencies:
   json_serializable: ^6.6.2 # пока не обновлять до 6.7.0 (проблема с surf_lint_rules)
   loading_animation_widget: ^1.2.0+4
   package_info_plus: ^4.0.0
-  path_provider: ^2.0.15
   platform_device_id: ^1.0.1
   provider: ^6.0.5
   quiver: ^3.2.1
