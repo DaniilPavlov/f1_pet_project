@@ -16,7 +16,8 @@ class NavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        ColoredBox(
+        Container(
+          height: 90,
           color: AppTheme.black,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(
