@@ -1,10 +1,16 @@
 class CustomException implements Exception {
   final String title;
+
   final String? subtitle;
-  final Exception? ex;
+
+  final Exception? parentException;
+
+  final StackTrace? stackTrace;
+
   const CustomException({
     required this.title,
     this.subtitle,
-    this.ex,
+    this.parentException,
+    this.stackTrace,
   });
 }

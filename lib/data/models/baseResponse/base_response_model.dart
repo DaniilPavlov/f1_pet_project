@@ -33,8 +33,10 @@ class BaseResponseModel {
 
   factory BaseResponseModel.fromJson(Map<String, dynamic> json) {
     // if (json['success'] is! bool) {
-    //   Error.throwWithStackTrace(
-    ResponseParseException('Ответ от сервера не содержит success');
+    // throw ResponseParseException(
+    //   'Ответ от сервера не содержит success',
+    //   StackTrace.current,
+    // );
     // }
 
     // if ((json['code'] as int?) == 403) {
@@ -42,7 +44,10 @@ class BaseResponseModel {
     // }
 
     // if (json['success'] == false) {
-    //   throw SuccessFalse(json['message'] as String? ?? 'Произошла ошибка');
+    //  throw SuccessFalse(
+    //         json['message'] as String? ?? 'Произошла ошибка',
+    //         StackTrace.current,
+    //       );
     // }
 
     try {
