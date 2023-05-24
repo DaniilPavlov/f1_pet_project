@@ -37,13 +37,9 @@ dependencies:
   fluttertoast: ^8.2.2
   horizontal_data_table: ^4.2.0
   intl: ^0.18.0
-  isar: 3.1.0+1
-  isar_flutter_libs: 3.1.0+1
   json_annotation: ^4.8.1
   json_serializable: ^6.6.2 # пока не обновлять до 6.7.0 (проблема с surf_lint_rules)
   loading_animation_widget: ^1.2.0+4
-  objectbox: ^2.0.0
-  objectbox_flutter_libs: ^2.0.0
   package_info_plus: ^4.0.0
   path_provider: ^2.0.15
   platform_device_id: ^1.0.1
@@ -63,9 +59,7 @@ dev_dependencies:
   # flutter_launcher_icons: ^0.9.2
   flutter_test:
     sdk: flutter
-  isar_generator: 3.1.0+1
   mocktail: ^0.3.0
-  objectbox_generator: 2.0.0
   surf_lint_rules: ^2.1.0
 
 # flutter_icons:
