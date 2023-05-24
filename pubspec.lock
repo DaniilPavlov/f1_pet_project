@@ -153,14 +153,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
-  cli_util:
-    dependency: transitive
-    description:
-      name: cli_util
-      sha256: b8db3080e59b2503ca9e7922c3df2072cf13992354d5e944074ffa836fba43b7
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0"
   clock:
     dependency: transitive
     description:
@@ -249,14 +241,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
-  dartdoc:
-    dependency: "direct main"
-    description:
-      name: dartdoc
-      sha256: "1712fe73fdfb7d889252234ddd19c707cd3d7c255025521adc90759feb56adb1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.2.2"
   dio:
     dependency: "direct main"
     description:
@@ -334,14 +318,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_html:
-    dependency: "direct main"
-    description:
-      name: flutter_html
-      sha256: "5717c89f126c24e310ef36770a7f4446cba81cb27abd0ce8292d098f45682efc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0-alpha.5"
   flutter_lints:
     dependency: transitive
     description:
@@ -397,14 +373,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
-  horizontal_data_table:
-    dependency: "direct main"
-    description:
-      name: horizontal_data_table
-      sha256: "32d9a29aad16caeb94d49d2310a041a8561d182719c16a21b360d5d8c5e0b2ad"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.2.0"
   html:
     dependency: transitive
     description:
@@ -509,14 +477,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-  markdown:
-    dependency: transitive
-    description:
-      name: markdown
-      sha256: b3c60dee8c2af50ad0e6e90cceba98e47718a6ee0a7a6772c77846a0cc21f78b
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.1"
   matcher:
     dependency: transitive
     description:
@@ -573,14 +533,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
-  numerus:
-    dependency: transitive
-    description:
-      name: numerus
-      sha256: "0087ef729d63b96cb347a9c44b9c592f21cecb3605b415bbd18710aef80ce5cb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.1"
   package_config:
     dependency: transitive
     description:
@@ -717,14 +669,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
-  quiver:
-    dependency: "direct main"
-    description:
-      name: quiver
-      sha256: b1c1ac5ce6688d77f65f3375a9abb9319b3cb32486bdc7a1e0fdf004d7ba4e47
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.1"
   responsive_framework:
     dependency: "direct main"
     description:

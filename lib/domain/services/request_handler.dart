@@ -32,7 +32,7 @@ class RequestHandler {
   Future<Response<T>> get<T>(
     String path, {
     Map<String, dynamic>? queryParameters,
-    // Options? options,
+    Options? options,
     CancelToken? cancelToken,
     void Function(int, int)? onReceiveProgress,
   }) async {
@@ -45,7 +45,7 @@ class RequestHandler {
         '$path.json?limit=100',
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
-        // options: await _getOptions(options),
+        options: await _getOptions(options),
         queryParameters: queryParameters,
       );
     } on DioError catch (e) {
@@ -67,7 +67,7 @@ class RequestHandler {
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
-    // Options? options,
+    Options? options,
     CancelToken? cancelToken,
     void Function(int, int)? onSendProgress,
     void Function(int, int)? onReceiveProgress,
@@ -80,7 +80,7 @@ class RequestHandler {
         '$path.json',
         data: data,
         queryParameters: queryParameters,
-        // options: await _getOptions(options),
+        options: await _getOptions(options),
         cancelToken: cancelToken,
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
@@ -99,7 +99,7 @@ class RequestHandler {
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
-    // Options? options,
+    Options? options,
     CancelToken? cancelToken,
     void Function(int, int)? onSendProgress,
     void Function(int, int)? onReceiveProgress,
@@ -110,7 +110,7 @@ class RequestHandler {
         path,
         data: data,
         queryParameters: queryParameters,
-        // options: await _getOptions(options),
+        options: await _getOptions(options),
         cancelToken: cancelToken,
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
@@ -128,7 +128,7 @@ class RequestHandler {
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
-    // Options? options,
+    Options? options,
     CancelToken? cancelToken,
   }) async {
     try {
@@ -136,7 +136,7 @@ class RequestHandler {
         path,
         data: data,
         queryParameters: queryParameters,
-        // options: await _getOptions(options),
+        options: await _getOptions(options),
         cancelToken: cancelToken,
       );
     } on DioError catch (e) {
@@ -198,6 +198,46 @@ class RequestHandler {
   //           },
   //         );
   // }
+
+  Future<Options> _getOptions(Options? options) async {
+    return options != null
+        ? options.copyWith(
+            headers: options.headers != null
+                ? (options.headers!
+                  ..addAll(
+                    <String, dynamic>{
+                      'Access-Control-Allow-Origin':
+                          '*', // Required for CORS support to work
+                      'Access-Control-Allow-Credentials':
+                          true, // Required for cookies, authorization headers with HTTPS
+                      'Access-Control-Allow-Headers':
+                          'Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale',
+                      'Access-Control-Allow-Methods':
+                          'GET, POST, OPTIONS, HEAD',
+                    },
+                  ))
+                : <String, dynamic>{
+                    'Access-Control-Allow-Origin':
+                        '*', // Required for CORS support to work
+                    'Access-Control-Allow-Credentials':
+                        true, // Required for cookies, authorization headers with HTTPS
+                    'Access-Control-Allow-Headers':
+                        'Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale',
+                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
+                  },
+          )
+        : Options(
+            headers: <String, dynamic>{
+              'Access-Control-Allow-Origin':
+                  '*', // Required for CORS support to work
+              'Access-Control-Allow-Credentials':
+                  true, // Required for cookies, authorization headers with HTTPS
+              'Access-Control-Allow-Headers':
+                  'Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale',
+              'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
+            },
+          );
+  }
 
   Dio _createDio() {
     final dio = Dio(
