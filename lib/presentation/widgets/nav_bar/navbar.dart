@@ -17,7 +17,7 @@ class NavBar extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          height: 90,
+          height: 80,
           color: AppTheme.black,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(
