@@ -1,7 +1,5 @@
 // ignore_for_file: deprecated_member_use
 
-import 'dart:io';
-
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -100,11 +98,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ),
           ),
         Container(
-          padding: Platform.isIOS
-              ? const EdgeInsets.symmetric(
-                  horizontal: 16,
-                )
-              : EdgeInsets.zero,
+          padding: EdgeInsets.zero,
           decoration: BoxDecoration(
             border: Border.all(
               color: widget.disabled
@@ -125,51 +119,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           child: Row(
             children: [
-              if (Platform.isIOS)
-                Expanded(
-                  child: CupertinoTextField.borderless(
-                    inputFormatters: widget.inputFormatters,
-                    cursorRadius: Radius.zero,
-                    cursorWidth: 1,
-                    suffix: widget.suffix,
-                    readOnly: widget.readOnly,
-                    scrollPadding: widget.scrollPadding,
-                    // autofocus: widget.autofocus,
-                    controller: widget.controller,
-                    maxLines: widget.maxLines,
-                    keyboardType: widget.keyboardType,
-                    textInputAction: widget.textInputAction,
-                    onChanged: widget.onChanged,
-                    style: AppStyles.caption.copyWith(
-                      color: widget.disabled
-                          ? AppTheme.textGray
-                          : widget.errorText != null
-                              ? AppTheme.red
-                              : widget.textColor ?? AppTheme.black,
-                    ),
-                    cursorColor: widget.cursorColor ?? AppTheme.black,
-                    textAlign: widget.textAlign,
-                    onSubmitted: widget.onSubmit,
-                    focusNode: focusNode,
-                    toolbarOptions: widget.toolbarOptions,
-                    // readOnly: widget.readOnly,
-                    padding: const EdgeInsets.symmetric(
-                      // horizontal: widget.isOther ? 15 : 16,
-                      vertical: 12,
-                    ),
-
-                    // selectionColor: widget.whiteBackground
-                    //     ? AppTheme.three.withOpacity(0.5)
-                    //     : AppTheme.three,
-                    placeholder: widget.disabled ? null : widget.hintText,
-                    enabled: !widget.disabled,
-                    placeholderStyle: AppStyles.caption.copyWith(
-                      color: AppTheme.strokeGray,
-                    ),
-                    textCapitalization: widget.textCapitalization,
-                  ),
-                )
-              else
                 Expanded(
                   child: TextSelectionTheme(
                     data: const TextSelectionThemeData(
