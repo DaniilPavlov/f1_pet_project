@@ -45,6 +45,7 @@ dependencies:
   loading_animation_widget: ^1.2.0+4
   package_info_plus: ^4.0.0
   path_provider: ^2.0.15
+  permission_handler: ^10.2.0
   platform_device_id: ^1.0.1
   provider: ^6.0.5
   quiver: ^3.2.1
@@ -77,6 +78,7 @@ flutter:
     - assets/
     - assets/calendar/
     - assets/nav_bar/
+    - assets/icons/
 
   fonts:
     - family: HelveticaNeueCyr

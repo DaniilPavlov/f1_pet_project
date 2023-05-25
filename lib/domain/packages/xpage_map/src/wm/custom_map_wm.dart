@@ -282,12 +282,12 @@ class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
         cluster.placemarks,
         controller: controller,
       ),
-      onPointTap: (point) {
-        unawaited(_updateClusterMapObject(points, point));
-        unawaited(CameraServices.moveTo(
+      onPointTap: (point) async {
+        await _updateClusterMapObject(points, point);
+        await CameraServices.moveTo(
           points[point],
           controller: controller,
-        ));
+        );
         onPlacemarkPressed?.call(point);
       },
     );
