@@ -25,7 +25,7 @@ import 'package:f1_pet_project/data/exceptions/success_false.dart';
 /// [maxAttempts] - количество попыток. По-дефолту: 1.
 ///
 /// [attemptsDelayCallback] - коллбекс с задержкой между попытками.
-/// При вызове прокидывает текущую попытку и на основании ее можно уменьшать
+/// При вызове прокидывает текущую попытку и на основании ее можно уменьшать.
 /// или увеличивать количество времени на попытку.
 /// По-дефолту: const Duration(milliseconds: 250).
 Future<void> execute<T>(
@@ -50,17 +50,14 @@ Future<void> execute<T>(
   await before?.call();
 
   while (currentAttempt < maxAttempts) {
-    // TODO(pavlov): если не сделать отдельной переменной, будет ошибка
-    final (data1, ex1) = await _process<T>(
+    // ignore: unnecessary_statements
+    (data, ex) = await _process<T>(
       processing,
       dioErrorText: dioErrorText,
       responseParseErrorText: responseParseErrorText,
       // successFalseErrorText: successFalseErrorText,
       otherErrorText: otherErrorText,
     );
-
-    data = (data1, ex1).$1;
-    ex = (data1, ex1).$2;
 
     currentAttempt += 1;
 
