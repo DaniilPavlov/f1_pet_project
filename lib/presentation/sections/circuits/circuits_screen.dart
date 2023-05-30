@@ -21,43 +21,41 @@ class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
     return Scaffold(
       appBar: const CustomAppBar(),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 12),
-          child: EntityStateNotifierBuilder<List<CircuitModel>>(
-            listenableEntityState: wm.circuits,
-            builder: (_, __) => StateNotifierBuilder<int>(
-              listenableState: wm.activePage,
-              builder: (_, activePage) => Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomSwitcher(
-                    firstTitle: 'На карте',
-                    secondTitle: 'Списком',
-                    onChanged: wm.changeActivePage,
-                    activeValue: activePage!,
+        child: EntityStateNotifierBuilder<List<CircuitModel>>(
+          listenableEntityState: wm.circuits,
+          builder: (_, __) => StateNotifierBuilder<int>(
+            listenableState: wm.activePage,
+            builder: (_, activePage) => Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(height: 12),
+                CustomSwitcher(
+                  firstTitle: 'На карте',
+                  secondTitle: 'Списком',
+                  onChanged: wm.changeActivePage,
+                  activeValue: activePage!,
+                ),
+                Expanded(
+                  child: PageView(
+                    onPageChanged: wm.changeActivePage,
+                    controller: wm.pageController,
+                    children: [
+                      CircuitsMap(
+                        circuits: wm.circuits.value!.data ?? [],
+                        openCircuitInfo: wm.openCircuitInfo,
+                      ),
+                      CircuitsList(circuits: wm.circuits.value!.data ?? []),
+                    ],
                   ),
-                  Expanded(
-                    child: PageView(
-                      onPageChanged: wm.changeActivePage,
-                      controller: wm.pageController,
-                      children: [
-                        CircuitsMap(
-                          circuits: wm.circuits.value!.data ?? [],
-                          openCircuitInfo: wm.openCircuitInfo,
-                        ),
-                        CircuitsList(circuits: wm.circuits.value!.data ?? []),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            loadingBuilder: (_, __) => const CustomLoadingIndicator(),
-            errorBuilder: (_, e, __) => ErrorBody(
-              onTap: wm.loadAllData,
-              title: wm.screenError.value!.title,
-              subtitle: wm.screenError.value!.subtitle,
-            ),
+          ),
+          loadingBuilder: (_, __) => const CustomLoadingIndicator(),
+          errorBuilder: (_, e, __) => ErrorBody(
+            onTap: wm.loadAllData,
+            title: wm.screenError.value!.title,
+            subtitle: wm.screenError.value!.subtitle,
           ),
         ),
       ),
