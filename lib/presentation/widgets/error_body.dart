@@ -33,7 +33,7 @@ class ErrorBody extends StatelessWidget {
           child: ExtendedImage.asset(
             'assets/error_car.png',
             height: MediaQuery.of(context).size.height / 3.6,
-            width: MediaQuery.of(context).size.width / 2.7,
+            width: MediaQuery.of(context).size.width / 2,
             fit: BoxFit.fill,
           ),
         ),

@@ -1,4 +1,4 @@
-// ignore_for_file: use_rethrow_when_possible, only_throw_errors, avoid_catches_without_on_clauses
+// ignore_for_file: avoid_catches_without_on_clauses
 
 import 'dart:async';
 

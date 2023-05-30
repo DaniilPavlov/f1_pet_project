@@ -57,7 +57,7 @@ class RequestHandler {
     } on DioError catch (e) {
       final result = e.response;
       debugPrint('statusCode get ($path): ${result?.statusCode}');
-      rethrow;
+      Error.throwWithStackTrace(e, StackTrace.current);
     }
 
     // res.requestOptions.headers.forEach((key, dynamic value) {
@@ -94,7 +94,7 @@ class RequestHandler {
     } on DioError catch (e) {
       final result = e.response;
       debugPrint('statusCode post ($path): ${result?.statusCode}');
-      rethrow;
+      Error.throwWithStackTrace(e, StackTrace.current);
     }
     // _checkAccess(res);
 
@@ -124,7 +124,7 @@ class RequestHandler {
     } on DioError catch (e) {
       final result = e.response;
       debugPrint('statusCode put ($path): ${result?.statusCode}');
-      rethrow;
+      Error.throwWithStackTrace(e, StackTrace.current);
     }
 
     return res;
@@ -155,7 +155,7 @@ class RequestHandler {
       //   Provider.of<AuthWM>(globalContext!, listen: false).logout();
       // }
 
-      rethrow;
+      Error.throwWithStackTrace(e, StackTrace.current);
     }
   }
 

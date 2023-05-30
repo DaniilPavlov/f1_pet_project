@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Дефолтный закругленный контейнер
+/// Дефолтный закругленный контейнер.
 class RoundedContainer extends StatelessWidget {
   final Widget child;
   final double? height;
@@ -9,7 +9,7 @@ class RoundedContainer extends StatelessWidget {
   final Color backgroundColor;
   final VoidCallback? onTap;
 
-  /// По-дефолту EdgeInsets.zero, т.к. у всех контейнеров свой паддинг
+  /// По-дефолту EdgeInsets.zero, т.к. у всех контейнеров свой паддинг.
   final EdgeInsets contentPadding;
 
   final EdgeInsets margin;
@@ -28,7 +28,6 @@ class RoundedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO(all): сюда нужно добавить возможность добавления бордера
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       clipBehavior: Clip.hardEdge,
@@ -40,7 +39,6 @@ class RoundedContainer extends StatelessWidget {
             height: height,
             width: width,
             margin: margin,
-            clipBehavior: Clip.none,
             padding: contentPadding,
             color: Colors.transparent,
             child: child,
