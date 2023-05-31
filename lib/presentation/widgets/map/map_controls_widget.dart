@@ -65,6 +65,7 @@ class MapControlsWidget extends StatelessWidget {
               child: CustomIconButton(
                 image: 'assets/icons/location_user.png',
                 onPressed: onUserLocationPressed,
+                backgroundColor: AppTheme.red.withOpacity(0.75),
                 iconColor: Colors.white,
               ),
             ),

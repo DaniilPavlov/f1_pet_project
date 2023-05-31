@@ -3,7 +3,7 @@ import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/q
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-// TODO(check): что делать, когда у нас есть спринт?
+// TODO(check): check what sprints shows
 class QualificationTable extends StatelessWidget {
   final List<QualifyingResultsModel> qualifyingResults;
 

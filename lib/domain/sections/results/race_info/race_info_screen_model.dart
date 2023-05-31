@@ -27,7 +27,8 @@ class RaceInfoScreenModel extends ElementaryModel {
     required String round,
   }) async {
     BaseResponseModel? rawData;
-    // TODO(info): пример использования кэша
+
+    /// Cache usage example.
     rawData = await checkCache(
       () async => PitStopsLoader.loadData(year: year, round: round),
     );

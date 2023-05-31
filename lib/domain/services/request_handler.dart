@@ -47,7 +47,7 @@ class RequestHandler {
     try {
       res = await _dio!.get(
         // path,
-        // TODO(info): конкретно в данном АПИ нужен лимит
+        // this api needs '.json?limit=100'
         '$path.json?limit=100',
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
@@ -213,7 +213,6 @@ class RequestHandler {
 
     if (_cookieManager == null) {
       try {
-        // TODO(pavlov): придумать как исправить тут замечание
         // ignore: prefer-async-await
         pp.getApplicationDocumentsDirectory().then((dir) {
           _cookieManager = CookieManager(

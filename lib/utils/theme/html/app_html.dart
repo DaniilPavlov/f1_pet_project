@@ -10,7 +10,7 @@ class AppHtml extends StatelessWidget {
   final Map<bool Function(RenderContext), CustomRender>? otherCustomRenders;
   final bool shrinkWrap;
   final bool openLinkWithExternalApplication;
-  
+
   String get dataLineBreaksCut {
     return data.replaceAll('\r\n\t', '').replaceAll('\r\n', '&thinsp;');
   }
@@ -26,7 +26,10 @@ class AppHtml extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final newStyles = htmlStyles..addAll(otherHtmlStyles ?? <String, Style>{});
+    final localHtmlStyles = {...htmlStyles};
+    final newStyles = localHtmlStyles
+      ..addAll(otherHtmlStyles ?? <String, Style>{});
+
     final newCustomRenders = customRenders
       ..addAll(
         otherCustomRenders ?? <bool Function(RenderContext), CustomRender>{},

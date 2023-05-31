@@ -4,8 +4,9 @@ import 'package:f1_pet_project/data/models/baseResponse/base_response_model.dart
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-// TODO(info): функция проверяет есть ли у нас сохраненный response
-// если да, возвращаем его вместо ответа
+/// Checks if response was already cached.
+///
+/// If yes, returns cached response.
 
 Future<BaseResponseModel?> checkCache(
   Future<BaseResponseModel> Function() checkFunc,
@@ -18,8 +19,8 @@ Future<BaseResponseModel?> checkCache(
       rawData =
           BaseResponseModel.fromJson(e.response!.data as Map<String, dynamic>);
 
-// TODO(pavlov): наверное стоит сделать постоянное отображение, подумать как лучше
-      /// Showing info that connection is interrapted.
+      // TODO(pavlov): do or not to do permanent showing
+
       unawaited(Fluttertoast.showToast(
         msg: 'Соединение отсутствует',
         backgroundColor: AppTheme.red,

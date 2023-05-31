@@ -18,10 +18,7 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-// TODO(think): горизонтальная таблица не вставляется в кастом скрол вью
-// возможно для каждой таблицы нужно сделать отдельный экран
-
-// TODO(pavlov): что осталось добавить
+// TODO(pavlov): to do
 // 1) по нажатию на гонщика в первой таблице открывать полную его информацию по гонке
 // ??
 
