@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -8,15 +9,9 @@ class AppTheme {
   static const grayBG = Color(0xFFF6F6F6);
   static const shadowColor = Color(0xFFD7D7D7);
   static const strokeGray = Color(0xFFD8D8D8);
-  static const pastelFirst = Color(0xffE4E5E6);
-  static const pastelThird = Color(0xffF9F8F7);
   static const pink = Color(0xffF3B2AE);
   static const white = Color(0xffFFFFFF);
   static const red = Color.fromARGB(255, 225, 39, 30);
-  static const turquoise = Color(0xff52ABB1);
-  static const green = Color(0xff1D7D4A);
-
-  static const navBarColor = Color(0xFFD9D9D9);
 
   static const defaultShadows = <BoxShadow>[
     BoxShadow(
@@ -35,4 +30,52 @@ class AppTheme {
   ];
 
   static final defaultBorderRadius = BorderRadius.circular(12);
+}
+
+Widget? loadStateChangedFunction(
+  ExtendedImageState state, {
+  double height = 24,
+  double? width,
+  PlaceholderType? placeholder,
+}) {
+  if (state.extendedImageLoadState == LoadState.loading ||
+      state.extendedImageLoadState == LoadState.failed) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: placeholder == null
+          ? Container(
+              color: AppTheme.strokeGray,
+            )
+          : Image.asset(
+              placeholder.asset,
+              fit: BoxFit.cover,
+            ),
+    );
+  }
+
+  return null;
+}
+
+enum PlaceholderType {
+  type1,
+  type2,
+  type3,
+}
+
+extension PlaceholderExtension on PlaceholderType {
+  static const _path = 'assets/';
+
+  String get asset {
+    switch (this) {
+      case PlaceholderType.type1:
+        return '$_path/typ1.png';
+      case PlaceholderType.type2:
+        return '$_path/typ2.png';
+      case PlaceholderType.type3:
+        return '$_path/typ3.png';
+      default:
+        return '$_path/typ1.png';
+    }
+  }
 }

@@ -54,7 +54,9 @@ class _CustomCalendarState extends State<CustomCalendar> {
                 )
               : SizedBox(
                   height: 24,
-                  child: ExtendedImage.asset(imageAsset),
+                  child: ExtendedImage.asset(
+                    imageAsset,
+                  ),
                 ),
         ),
       );

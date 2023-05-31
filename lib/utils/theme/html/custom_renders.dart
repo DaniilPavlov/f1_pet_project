@@ -48,7 +48,10 @@ Map<bool Function(RenderContext), CustomRender> customRenders = {
               ),
               width: MediaQuery.of(context.buildContext).size.width -
                   StaticData.defaultHorizontalPadding * 4,
-              child: ExtendedImage.network(src),
+              child: ExtendedImage.network(
+                src,
+                loadStateChanged: loadStateChangedFunction,
+              ),
             );
           }).toList(),
         ),

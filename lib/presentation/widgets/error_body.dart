@@ -35,6 +35,7 @@ class ErrorBody extends StatelessWidget {
             height: MediaQuery.of(context).size.height / 3.6,
             width: MediaQuery.of(context).size.width / 2,
             fit: BoxFit.fill,
+            // loadStateChanged: loadStateChangedFunction,
           ),
         ),
         Padding(
