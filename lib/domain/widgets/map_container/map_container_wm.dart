@@ -67,7 +67,7 @@ class MapContainerWM extends WidgetModel<MapContainer, MapContainerModel>
   }
 
   Future<void> requestPermission() async {
-    final _geolocationPermission = await Geolocator.checkPermission();
+    final _geolocationPermission = await Geolocator.requestPermission();
 
     if (_geolocationPermission == LocationPermission.denied ||
         _geolocationPermission == LocationPermission.deniedForever) {

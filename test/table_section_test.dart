@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_implementing_value_types
-
 import 'package:elementary/elementary.dart';
 import 'package:elementary_test/elementary_test.dart';
 import 'package:f1_pet_project/domain/sections/home/tournament_tables/wm/tournament_tables_section_model.dart';
@@ -7,6 +5,8 @@ import 'package:f1_pet_project/domain/sections/home/tournament_tables/wm/tournam
 import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tournament_tables_section.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+// TODO(pavlov): add more tests
 
 /// Tests for [TournamentTablesSectionWM].
 void main() {

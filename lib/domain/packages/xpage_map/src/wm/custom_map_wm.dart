@@ -140,6 +140,7 @@ class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
   void didUpdateWidget(CustomMap oldWidget) {
     _updateClusterMapObject(widget.points);
     // _enableListenUserPosition();
+    setCenterOn(widget.points);
     super.didUpdateWidget(oldWidget);
   }
 
