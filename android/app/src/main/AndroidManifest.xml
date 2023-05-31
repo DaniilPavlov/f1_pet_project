@@ -17,6 +17,7 @@
         android:label="F1 App"
         android:name="${applicationName}"
         android:usesCleartextTraffic="true"
+        android:extractNativeLibs="true"
         android:icon="@mipmap/ic_launcher">
 
         <activity

@@ -14,7 +14,6 @@ class CircuitScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO(pavlov): добавить карту с отображением на ней трассы
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Информация о трассе',

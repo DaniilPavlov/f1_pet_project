@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 // TODO(pavlov): add pushes
-// TODO(pavlov): много весит с картой, посмотреть как урезать размер
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
