@@ -19,7 +19,7 @@ class ScaffoldWithNavBarWM
   ScaffoldWithNavBarWM(ScaffoldWithNavBarModel model) : super(model);
 
   @override
-  Future<bool> onPop() {
+  Future<bool> onPop() async {
     if (ModalRoute.of(context)!.settings.name != '/home') {
       context.go('/home');
       return Future.value(false);
@@ -29,7 +29,7 @@ class ScaffoldWithNavBarWM
           currentTime.difference(_currentBackPressTime ?? DateTime.now()) >
               const Duration(seconds: 1)) {
         _currentBackPressTime = currentTime;
-        Fluttertoast.showToast(
+        await Fluttertoast.showToast(
           msg: 'Нажмите еще раз для выхода',
           backgroundColor: AppTheme.red,
         );
@@ -45,22 +45,22 @@ class ScaffoldWithNavBarWM
 
     switch (index) {
       case 0:
-        context.go('/home');
+        widget.navigationShell.goBranch(0);
         break;
       case 1:
-        context.go('/results');
+        widget.navigationShell.goBranch(1);
         break;
       case 2:
-        context.go('/schedule');
+        widget.navigationShell.goBranch(2);
         break;
       case 3:
-        context.go('/hall_of_fame');
+        widget.navigationShell.goBranch(3);
         break;
       case 4:
-        context.go('/circuits');
+        widget.navigationShell.goBranch(4);
         break;
       default:
-        context.go('/home');
+        widget.navigationShell.goBranch(0);
         break;
     }
   }

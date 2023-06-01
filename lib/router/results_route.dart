@@ -4,21 +4,26 @@ import 'package:f1_pet_project/presentation/sections/results/race_search/race_se
 import 'package:f1_pet_project/presentation/sections/results/results_screen.dart';
 import 'package:go_router/go_router.dart';
 
-GoRoute resultsRoute = GoRoute(
-  path: '/results',
-  pageBuilder: (context, state) => const NoTransitionPage<dynamic>(
-    child: ResultsScreen(),
-  ),
-  routes: [
+StatefulShellBranch resultsBranch = StatefulShellBranch(
+  restorationScopeId: 'branchResults',
+  routes: <RouteBase>[
     GoRoute(
-      path: 'race_info',
-      builder: (context, state) => RaceInfoScreen(
-        raceModel: state.extra as RacesModel,
+      path: '/results',
+      pageBuilder: (context, state) => const NoTransitionPage<dynamic>(
+        child: ResultsScreen(),
       ),
-    ),
-    GoRoute(
-      path: 'race_search',
-      builder: (context, state) => const RaceSearchScreen(),
+      routes: [
+        GoRoute(
+          path: 'race_info',
+          builder: (context, state) => RaceInfoScreen(
+            raceModel: state.extra as RacesModel,
+          ),
+        ),
+        GoRoute(
+          path: 'race_search',
+          builder: (context, state) => const RaceSearchScreen(),
+        ),
+      ],
     ),
   ],
 );

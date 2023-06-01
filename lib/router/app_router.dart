@@ -14,17 +14,28 @@ class AppRouter {
   static final router = GoRouter(
     navigatorKey: navigatorKey,
     initialLocation: '/home',
-    redirect: (context, state) => '/home',
+    restorationScopeId: 'router',
+    // redirect: (context, state) => '/home',
     routes: [
-      ShellRoute(
-        navigatorKey: navbarNavigatorKey,
-        builder: (context, state, child) => ScaffoldWithNavBar(child: child),
-        routes: [
-          circuitsRoute,
-          hallOfFameRoute,
-          homeRoute,
-          resultsRoute,
-          scheduleRoute,
+      StatefulShellRoute.indexedStack(
+        restorationScopeId: 'shellRouteOne',
+        pageBuilder: (
+          context,
+          state,
+          navigationShell,
+        ) {
+          debugPrint(state.fullPath);
+          return MaterialPage<void>(
+            restorationId: 'shellRouteOneScaffold',
+            child: ScaffoldWithNavBar(navigationShell: navigationShell),
+          );
+        },
+        branches: [
+          homeBranch,
+          resultsBranch,
+          scheduleBranch,
+          hallOfFameBranch,
+          circuitsBranch,
         ],
       ),
     ],

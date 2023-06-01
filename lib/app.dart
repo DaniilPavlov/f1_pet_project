@@ -5,7 +5,9 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 // TODO(pavlov): добавить экран ошибки с возможностью перезагрузки данных
 class App extends StatelessWidget {
-  const App({super.key});
+  App({super.key});
+
+  final _router = AppRouter.router;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,8 @@ class App extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      routerConfig: AppRouter.router,
+      routerConfig: _router,
+      restorationScopeId: 'app',
       builder: (context, child) => ResponsiveWrapper.builder(
         child,
         minWidth: 375,
