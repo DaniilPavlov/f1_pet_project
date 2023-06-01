@@ -52,11 +52,11 @@ class RaceInfoTable extends StatelessWidget {
         if (rowsNumber != null)
           GestureDetector(
             onTap: () async => context.go('/results/race_info', extra: raceModel),
-            child: ColoredBox(
+            child: const ColoredBox(
               color: AppTheme.grayBG,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
+                children: [
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
                     child: Text(
