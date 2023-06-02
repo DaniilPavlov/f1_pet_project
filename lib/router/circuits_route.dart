@@ -17,6 +17,11 @@ StatefulShellBranch circuitsBranch = StatefulShellBranch(
         GoRoute(
           path: 'circuit',
           pageBuilder: (context, state) => MaterialPage<void>(
+            // TODO(pavlov): routes with extras have this problem:
+            // ════════ Exception caught by foundation library ════════════════════════════════
+            // 'package:flutter/src/services/restoration.dart': Failed assertion: line 650 pos 12:
+            // 'debugIsSerializableForRestoration(value)': is not true.
+            // but navigation works correctly
             restorationId: 'screenCircuit',
             child: CircuitScreen(circuitModel: state.extra as CircuitModel),
           ),

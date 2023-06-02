@@ -20,7 +20,7 @@ class ScaffoldWithNavBarWM
 
   @override
   void initWidgetModel() {
-// TODO(info): navigation doesn't work without accessing go router before build.
+    // TODO(info): navigation doesn't work without accessing go router before build.
     debugPrint(GoRouter.of(context).location);
     super.initWidgetModel();
   }

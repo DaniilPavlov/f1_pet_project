@@ -21,11 +21,8 @@ class ScaffoldWithNavBar extends ElementaryWidget<IScaffoldWithNavBarWM> {
     return WillPopScope(
       onWillPop: wm.onPop,
       child: Scaffold(
-        body: StateNotifierBuilder<int>(
-          listenableState: wm.currentIndexListenable,
-          builder: (_, currentIndexListenable) => navigationShell,
-        ),
-        bottomNavigationBar: StateNotifierBuilder<int>(
+        body: navigationShell,
+         bottomNavigationBar: StateNotifierBuilder<int>(
           listenableState: wm.currentIndexListenable,
           builder: (_, currentIndexListenable) => NavBar(
             currentIndex: wm.currentIndexListenable.value!,

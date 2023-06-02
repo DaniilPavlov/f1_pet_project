@@ -74,7 +74,7 @@ class _Body extends StatelessWidget {
             ),
             child: RedBorderContainer(
               title: 'Выбрать конкретную гонку',
-              onTap: () async => context.go('/results/search_info'),
+              onTap: () async => context.go('/results/race_search'),
             ),
           ),
         ),

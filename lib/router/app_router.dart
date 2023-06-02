@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/presentation/sections/error/error_route_screen.dart';
 import 'package:f1_pet_project/presentation/widgets/scaffold_with_navbar.dart';
 import 'package:f1_pet_project/router/circuits_route.dart';
 import 'package:f1_pet_project/router/hall_of_fame_route.dart';
@@ -15,7 +16,7 @@ class AppRouter {
     navigatorKey: navigatorKey,
     initialLocation: '/home',
     restorationScopeId: 'router',
-    // redirect: (context, state) => '/home',
+    errorBuilder: (context, state) => const ErrorRouteScreen(),
     routes: [
       StatefulShellRoute.indexedStack(
         restorationScopeId: 'shellRouteOne',
