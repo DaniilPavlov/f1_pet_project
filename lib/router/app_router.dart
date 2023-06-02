@@ -11,7 +11,7 @@ class AppRouter {
   static final navigatorKey = GlobalKey<NavigatorState>();
   static final navbarNavigatorKey = GlobalKey<NavigatorState>();
 
-  static final router = GoRouter(
+  static final _router = GoRouter(
     navigatorKey: navigatorKey,
     initialLocation: '/home',
     restorationScopeId: 'router',
@@ -40,4 +40,6 @@ class AppRouter {
       ),
     ],
   );
+
+  GoRouter get router => _router;
 }

@@ -17,6 +17,7 @@ class ScaffoldWithNavBar extends ElementaryWidget<IScaffoldWithNavBarWM> {
 
   @override
   Widget build(IScaffoldWithNavBarWM wm) {
+    debugPrint('rebuild');
     return WillPopScope(
       onWillPop: wm.onPop,
       child: Scaffold(

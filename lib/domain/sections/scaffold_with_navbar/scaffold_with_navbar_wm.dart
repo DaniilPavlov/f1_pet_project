@@ -19,8 +19,17 @@ class ScaffoldWithNavBarWM
   ScaffoldWithNavBarWM(ScaffoldWithNavBarModel model) : super(model);
 
   @override
+  void initWidgetModel() {
+// TODO(info): navigation doesn't work without accessing go router before build.
+    debugPrint(GoRouter.of(context).location);
+    super.initWidgetModel();
+  }
+
+  @override
   Future<bool> onPop() async {
-    if (ModalRoute.of(context)!.settings.name != '/home') {
+    if (GoRouter.of(context).location != '/home') {
+      debugPrint(GoRouter.of(context).location);
+      _currentIndexState.accept(0);
       context.go('/home');
       return Future.value(false);
     } else {
