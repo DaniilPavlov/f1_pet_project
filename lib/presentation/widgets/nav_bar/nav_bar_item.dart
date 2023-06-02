@@ -1,4 +1,3 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
@@ -36,7 +35,7 @@ class NavBarItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              ExtendedImage.asset(
+              Image.asset(
                 imageAsset,
                 scale: 19.5,
                 color: isSelected ? AppTheme.red : AppTheme.white,

@@ -74,7 +74,7 @@ Map<bool Function(RenderContext), CustomRender> customRenders = {
 
   //       return Container(
   //         margin: const EdgeInsets.only(top: 30),
-  //         child: ExtendedImage.network('${StaticData.a}$src'),
+  //         child: Image.network('${StaticData.a}$src'),
   //       );
   //     }
 

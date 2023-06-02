@@ -1,4 +1,3 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +37,7 @@ class CustomIconButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
           child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: ExtendedImage.asset(
+            child: Image.asset(
               image,
               color: AppTheme.white,
             ),

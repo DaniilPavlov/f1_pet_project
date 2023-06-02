@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
-import 'package:extended_image/extended_image.dart';
+
 import 'package:f1_pet_project/presentation/widgets/buttons/circle_button.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
@@ -77,9 +77,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                           color: AppTheme.white,
                         ),
                       )
-                    : ExtendedImage.asset(
-                        'assets/app_logo.png',
-                      ),
+                    : Image.asset('assets/app_logo.png'),
               ),
             ],
           ),

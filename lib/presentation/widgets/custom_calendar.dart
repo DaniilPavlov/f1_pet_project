@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_redundant_argument_values
 
-import 'package:extended_image/extended_image.dart';
 import 'package:f1_pet_project/domain/help/string_extensions.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
@@ -54,9 +53,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
                 )
               : SizedBox(
                   height: 24,
-                  child: ExtendedImage.asset(
-                    imageAsset,
-                  ),
+                  child: Image.asset(imageAsset),
                 ),
         ),
       );

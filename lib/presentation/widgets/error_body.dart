@@ -1,4 +1,3 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:f1_pet_project/presentation/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
@@ -30,7 +29,7 @@ class ErrorBody extends StatelessWidget {
             right: MediaQuery.of(context).size.width / 4,
             bottom: 10,
           ),
-          child: ExtendedImage.asset(
+          child: Image.asset(
             'assets/error_car.png',
             height: MediaQuery.of(context).size.height / 3.6,
             width: MediaQuery.of(context).size.width / 2,
