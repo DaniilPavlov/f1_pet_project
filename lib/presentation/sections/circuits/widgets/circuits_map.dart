@@ -5,14 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class CircuitsMap extends StatefulWidget {
-  final List<CircuitModel> circuits;
-  final Function(int id) openCircuitInfo;
-
   const CircuitsMap({
     required this.circuits,
     required this.openCircuitInfo,
     super.key,
   });
+  final List<CircuitModel> circuits;
+  final Function(int id) openCircuitInfo;
 
   @override
   State<CircuitsMap> createState() => _CircuitsMapState();
@@ -28,10 +27,12 @@ class _CircuitsMapState extends State<CircuitsMap>
   @override
   void initState() {
     for (final element in widget.circuits) {
-      pins.add(Point(
-        latitude: double.parse(element.Location.lat),
-        longitude: double.parse(element.Location.long),
-      ));
+      pins.add(
+        Point(
+          latitude: double.parse(element.location.lat),
+          longitude: double.parse(element.location.long),
+        ),
+      );
     }
 
     super.initState();

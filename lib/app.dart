@@ -5,8 +5,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class App extends StatelessWidget {
-  final _appRouter = AppRouter();
   App({super.key});
+  final _appRouter = AppRouter();
 
   @override
   Widget build(BuildContext context) {
@@ -35,19 +35,10 @@ class App extends StatelessWidget {
         final data = MediaQuery.of(context);
         return MediaQuery(
           data: data.copyWith(
-            textScaleFactor:
-                data.textScaleFactor > 1.2 ? 1.2 : data.textScaleFactor,
+            textScaler: TextScaler.linear(
+              data.textScaleFactor > 1.2 ? 1.2 : data.textScaleFactor,
+            ),
           ),
-          // child: ResponsiveBreakpoints.builder(
-          //   child: child!,
-          //   breakpoints: [
-          //     const Breakpoint(start: 0, end: 450, name: MOBILE),
-          //     const Breakpoint(start: 451, end: 800, name: TABLET),
-          //     const Breakpoint(start: 801, end: 1920, name: DESKTOP),
-          //     const Breakpoint(
-          //         start: 1921, end: double.infinity, name: '4K',),
-          //   ],
-          // ),
           child: ResponsiveBreakpoints.builder(
             child: child!,
             breakpoints: [

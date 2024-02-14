@@ -5,22 +5,9 @@ part 'circuit_location_model.g.dart';
 
 @JsonSerializable()
 class CircuitLocationModel {
-  final String lat;
-  final String long;
-  final String locality;
-  final String country;
-
-  CircuitLocationModel({
-    required this.lat,
-    required this.long,
-    required this.locality,
-    required this.country,
-  });
-
   factory CircuitLocationModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$CircuitLocationModelFromJson(json);
-      // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       Error.throwWithStackTrace(
         ResponseParseException('CircuitLocationModel: $e'),
@@ -28,4 +15,15 @@ class CircuitLocationModel {
       );
     }
   }
+
+  CircuitLocationModel({
+    required this.lat,
+    required this.long,
+    required this.locality,
+    required this.country,
+  });
+  final String lat;
+  final String long;
+  final String locality;
+  final String country;
 }

@@ -22,10 +22,12 @@ class MapController {
   }
 
   void moveCameraTo(List<double> point) {
-    _controller.add(MapEvent(
-      'moveCameraTo',
-      point,
-    ));
+    _controller.add(
+      MapEvent(
+        'moveCameraTo',
+        point,
+      ),
+    );
   }
 
   void selectPlacemark(int point) {
@@ -39,8 +41,7 @@ class MapController {
 }
 
 class MapEvent {
+  MapEvent(this.type, [this.args]);
   final String type;
   final dynamic args;
-
-  MapEvent(this.type, [this.args]);
 }

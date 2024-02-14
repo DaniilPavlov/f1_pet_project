@@ -1,15 +1,18 @@
 import 'package:elementary/elementary.dart';
+import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_model.dart';
 import 'package:f1_pet_project/domain/sections/hall_of_fame/hall_of_fame_screen_model.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/hall_of_fame/hall_of_fame_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class HallOfFameScreenWM
     extends WidgetModel<HallOfFameScreen, HallOfFameScreenModel>
     implements IHallOfFameScreenWM {
+  HallOfFameScreenWM(super._model);
   final _driversChampions = EntityStateNotifier<List<StandingsListsModel>>();
 
   final _constructorsChampions =
@@ -23,16 +26,14 @@ class HallOfFameScreenWM
   ListenableState<CustomException?> get screenError => _screenError;
 
   @override
-  ListenableState<EntityState<List<StandingsListsModel>>>
+  ValueListenable<EntityState<List<StandingsListsModel>>>
       get driversChampions => _driversChampions;
   @override
-  ListenableState<EntityState<List<StandingsListsModel>>>
+  ValueListenable<EntityState<List<StandingsListsModel>>>
       get constructorsChampions => _constructorsChampions;
 
   @override
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
-
-  HallOfFameScreenWM(super.model);
 
   @override
   void initWidgetModel() {
@@ -61,7 +62,7 @@ class HallOfFameScreenWM
       model.loadDriversChampions,
       before: _driversChampions.loading,
       onSuccess: (data) {
-        _driversChampions.content(data!.StandingsTable.StandingsLists);
+        _driversChampions.content(data!.standingsTable.standingsLists);
       },
       onError: (value) {
         _screenError.accept(value);
@@ -76,7 +77,7 @@ class HallOfFameScreenWM
       before: _constructorsChampions.loading,
       onSuccess: (data) {
         _constructorsChampions.content(
-          data!.StandingsTable.StandingsLists,
+          data!.standingsTable.standingsLists,
         );
       },
       onError: (value) {
@@ -90,12 +91,12 @@ class HallOfFameScreenWM
 HallOfFameScreenWM createHallOfFameScreenWM(BuildContext _) =>
     HallOfFameScreenWM(HallOfFameScreenModel());
 
-abstract class IHallOfFameScreenWM extends IWidgetModel {
+abstract interface class IHallOfFameScreenWM implements IWidgetModel {
   /// Returns drivers champions.
-  ListenableState<EntityState<List<StandingsListsModel>>> get driversChampions;
+  ValueListenable<EntityState<List<StandingsListsModel>>> get driversChampions;
 
   /// Returns constructors champions.
-  ListenableState<EntityState<List<StandingsListsModel>>>
+  ValueListenable<EntityState<List<StandingsListsModel>>>
       get constructorsChampions;
 
   /// Returns error.

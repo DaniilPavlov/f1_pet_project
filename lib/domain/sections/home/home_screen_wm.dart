@@ -1,4 +1,5 @@
 import 'package:elementary/elementary.dart';
+import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
@@ -6,10 +7,12 @@ import 'package:f1_pet_project/data/models/sections/home/standings/standings_mod
 import 'package:f1_pet_project/domain/sections/home/home_screen_model.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/home/home_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel>
     implements IHomeScreenWM {
+  HomeScreenWM(super._model);
   final _currentDrivers = EntityStateNotifier<List<DriverStandingsModel>>();
 
   final _currentConstructors =
@@ -27,11 +30,11 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel>
   ListenableState<CustomException?> get screenError => _screenError;
 
   @override
-  ListenableState<EntityState<List<DriverStandingsModel>>> get currentDrivers =>
+  ValueListenable<EntityState<List<DriverStandingsModel>>> get currentDrivers =>
       _currentDrivers;
 
   @override
-  ListenableState<EntityState<List<ConstructorStandingsModel>>>
+  ValueListenable<EntityState<List<ConstructorStandingsModel>>>
       get currentConstructors => _currentConstructors;
 
   @override
@@ -42,8 +45,6 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel>
 
   @override
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
-
-  HomeScreenWM(super.model);
 
   @override
   void initWidgetModel() {
@@ -73,9 +74,9 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel>
       before: _currentDrivers.loading,
       onSuccess: (data) {
         _currentDrivers
-            .content(data!.StandingsTable.StandingsLists[0].DriverStandings!);
-        _currentSeason.accept(data.StandingsTable.StandingsLists[0].season);
-        _currentRound.accept(data.StandingsTable.StandingsLists[0].round);
+            .content(data!.standingsTable.standingsLists[0].driverStandings!);
+        _currentSeason.accept(data.standingsTable.standingsLists[0].season);
+        _currentRound.accept(data.standingsTable.standingsLists[0].round);
       },
       onError: (value) {
         _screenError.accept(value);
@@ -90,7 +91,7 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel>
       before: _currentConstructors.loading,
       onSuccess: (data) {
         _currentConstructors.content(
-          data!.StandingsTable.StandingsLists[0].ConstructorStandings!,
+          data!.standingsTable.standingsLists[0].constructorStandings!,
         );
       },
       onError: (value) {
@@ -104,12 +105,12 @@ class HomeScreenWM extends WidgetModel<HomeScreen, HomeScreenModel>
 HomeScreenWM createHomeScreenWM(BuildContext _) =>
     HomeScreenWM(HomeScreenModel());
 
-abstract class IHomeScreenWM extends IWidgetModel {
+abstract interface class IHomeScreenWM implements IWidgetModel {
   /// Returns current season drivers.
-  ListenableState<EntityState<List<DriverStandingsModel>>> get currentDrivers;
+  ValueListenable<EntityState<List<DriverStandingsModel>>> get currentDrivers;
 
   /// Returns current season constructors.
-  ListenableState<EntityState<List<ConstructorStandingsModel>>>
+  ValueListenable<EntityState<List<ConstructorStandingsModel>>>
       get currentConstructors;
 
   /// Returns current season round.

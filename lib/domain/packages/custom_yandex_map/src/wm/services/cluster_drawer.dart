@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:f1_pet_project/domain/packages/xpage_map/src/wm/services/points_drawer.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/services/points_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 

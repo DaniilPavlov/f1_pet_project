@@ -1,7 +1,6 @@
-// ignore_for_file: prefer_function_declarations_over_variables, avoid_annotating_with_dynamic
+// ignore_for_file: prefer_function_declarations_over_variables
 
 import 'dart:convert';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';

@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 
 @RoutePage()
 class DriversChampionsScreen extends StatelessWidget {
-  final List<StandingsListsModel> driversChampions;
   const DriversChampionsScreen({required this.driversChampions, super.key});
+  final List<StandingsListsModel> driversChampions;
 
   @override
   Widget build(BuildContext context) {

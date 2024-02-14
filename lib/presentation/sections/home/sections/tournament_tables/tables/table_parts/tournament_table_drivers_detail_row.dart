@@ -1,7 +1,6 @@
 import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/material.dart';
-// ignore_for_file: avoid-returning-widgets
 
 //* Возвращает список детей ряда таблицы
 List<Widget> tournamentTableDriversDetailRowChildren(
@@ -28,14 +27,14 @@ List<Widget> tournamentTableDriversDetailRowChildren(
       //   textAlign: TextAlign.center,
       // ),
       child: Text(
-        '${driverStanding.Driver.givenName}\n${driverStanding.Driver.familyName}',
+        '${driverStanding.driver.givenName}\n${driverStanding.driver.familyName}',
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.Constructors[0].name,
+        driverStanding.constructors[0].name,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
@@ -49,7 +48,7 @@ List<Widget> tournamentTableDriversDetailRowChildren(
     ),
     Center(
       child: Text(
-        driverStanding.Driver.nationality,
+        driverStanding.driver.nationality,
         style: textStyle,
         textAlign: TextAlign.center,
       ),

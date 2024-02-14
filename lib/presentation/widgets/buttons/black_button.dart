@@ -3,12 +3,6 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class BlackButton extends StatelessWidget {
-  final Widget? leadIcon;
-  final Widget? midIcon;
-  final bool haveShadow;
-  final VoidCallback onTap;
-  final String text;
-  final bool isDisabled;
   const BlackButton({
     required this.onTap,
     required this.text,
@@ -16,8 +10,14 @@ class BlackButton extends StatelessWidget {
     this.haveShadow = false,
     this.leadIcon,
     this.midIcon,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final Widget? leadIcon;
+  final Widget? midIcon;
+  final bool haveShadow;
+  final VoidCallback onTap;
+  final String text;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context) {

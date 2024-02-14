@@ -1,38 +1,19 @@
-// ignore_for_file: avoid_positional_boolean_parameters
-
 import 'dart:async';
 
 import 'package:elementary/elementary.dart';
-import 'package:f1_pet_project/domain/packages/xpage_map/src/animated_map_pin.dart';
-import 'package:f1_pet_project/domain/packages/xpage_map/src/map_controller.dart';
-import 'package:f1_pet_project/domain/packages/xpage_map/src/wm/custom_map_wm.dart';
+import 'package:elementary_helper/elementary_helper.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/animated_map_pin.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/map_controller.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/custom_map_wm.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class CustomMap extends ElementaryWidget<CustomMapWM> {
-  final MapController mapController;
-  final List<Point> points;
-  final YandexMapController? controller;
-  final Widget? userInterface;
-  final Function(Exception)? onGetUserPositionError;
-  final Function(int)? onPlacemarkPressed;
-  final Function(bool)? onUserPositionStatusUpdated;
-  final Function(CameraPosition, CameraUpdateReason, bool)?
-      onCameraPositionChanged;
-  final Function()? onMapCreated;
-  final String? userIcon;
-  final String? mapObjectIcon;
-  final String? selectedMapObjectIcon;
-  final Color? clusterColor;
-  final TextStyle? clusterTextStyle;
-  final double? placemarkIconSize;
-  final double? selectedPlacemarkIconSize;
   const CustomMap({
     required this.mapController,
     required this.points,
-    // required this.dynamicToPointPredecate,
     this.controller,
     this.userInterface,
     this.onGetUserPositionError,
@@ -52,6 +33,23 @@ class CustomMap extends ElementaryWidget<CustomMapWM> {
           createMapWM,
           key: key,
         );
+  final MapController mapController;
+  final List<Point> points;
+  final YandexMapController? controller;
+  final Widget? userInterface;
+  final Function(Exception)? onGetUserPositionError;
+  final Function(int)? onPlacemarkPressed;
+  final Function(bool)? onUserPositionStatusUpdated;
+  final Function(CameraPosition, CameraUpdateReason, bool)?
+      onCameraPositionChanged;
+  final Function()? onMapCreated;
+  final String? userIcon;
+  final String? mapObjectIcon;
+  final String? selectedMapObjectIcon;
+  final Color? clusterColor;
+  final TextStyle? clusterTextStyle;
+  final double? placemarkIconSize;
+  final double? selectedPlacemarkIconSize;
 
   @override
   Widget build(CustomMapWM wm) {
@@ -80,7 +78,6 @@ class CustomMap extends ElementaryWidget<CustomMapWM> {
                     ),
                   ),
                 onMapCreated: (yandexMapController) async {
-                  // onMapCreated?.call(yandexMapController);
                   wm
                     ..controller = yandexMapController
                     ..onGetUserPositionError = onGetUserPositionError

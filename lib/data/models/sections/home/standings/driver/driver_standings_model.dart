@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_model.dart';
@@ -9,16 +7,9 @@ part 'driver_standings_model.g.dart';
 
 @JsonSerializable()
 class DriverStandingsModel {
-  final String position;
-  final String positionText;
-  final String points;
-  final String wins;
-  final DriverModel Driver;
-  final List<ConstructorModel> Constructors;
-
   DriverStandingsModel({
-    required this.Constructors,
-    required this.Driver,
+    required this.constructors,
+    required this.driver,
     required this.points,
     required this.wins,
     required this.positionText,
@@ -28,7 +19,6 @@ class DriverStandingsModel {
   factory DriverStandingsModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$DriverStandingsModelFromJson(json);
-      // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       Error.throwWithStackTrace(
         ResponseParseException('DriverStandingsModel: $e'),
@@ -36,4 +26,12 @@ class DriverStandingsModel {
       );
     }
   }
+  final String position;
+  final String positionText;
+  final String points;
+  final String wins;
+  @JsonKey(name: 'Driver')
+  final DriverModel driver;
+  @JsonKey(name: 'Constructors')
+  final List<ConstructorModel> constructors;
 }

@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class SearchFieldsSection extends StatelessWidget {
-  final IRaceSearchScreenWM wm;
   const SearchFieldsSection({required this.wm, super.key});
+  final IRaceSearchScreenWM wm;
 
   @override
   Widget build(BuildContext context) {

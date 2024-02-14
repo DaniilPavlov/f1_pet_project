@@ -5,8 +5,8 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/cupertino.dart';
 
 class TablesSwitcher extends StatelessWidget {
-  final TournamentTablesSectionWM wm;
   const TablesSwitcher({required this.wm, super.key});
+  final TournamentTablesSectionWM wm;
 
   @override
   Widget build(BuildContext context) {

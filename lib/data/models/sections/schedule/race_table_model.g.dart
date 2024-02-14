@@ -8,7 +8,7 @@ part of 'race_table_model.dart';
 
 RaceTableModel _$RaceTableModelFromJson(Map<String, dynamic> json) =>
     RaceTableModel(
-      Races: (json['Races'] as List<dynamic>)
+      races: (json['Races'] as List<dynamic>)
           .map((e) => RacesModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       season: json['season'] as String,
@@ -19,5 +19,5 @@ Map<String, dynamic> _$RaceTableModelToJson(RaceTableModel instance) =>
     <String, dynamic>{
       'season': instance.season,
       'round': instance.round,
-      'Races': instance.Races,
+      'Races': instance.races,
     };

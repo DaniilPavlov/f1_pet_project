@@ -1,9 +1,10 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers, depend_on_referenced_packages, avoid_positional_boolean_parameters, avoid_dynamic_calls
-import 'dart:async';
+// ignore_for_file: depend_on_referenced_packages, avoid_dynamic_calls
 
+import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:elementary/elementary.dart';
-import 'package:f1_pet_project/domain/packages/xpage_map/src/map_controller.dart';
+import 'package:elementary_helper/elementary_helper.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/map_controller.dart';
 import 'package:f1_pet_project/domain/widgets/map_container/map_container_model.dart';
 import 'package:f1_pet_project/presentation/widgets/bottom_sheets/bottom_sheet_permissions.dart';
 import 'package:f1_pet_project/presentation/widgets/map/map_container.dart';
@@ -17,6 +18,7 @@ import 'package:yandex_mapkit/yandex_mapkit.dart' as ym;
 
 class MapContainerWM extends WidgetModel<MapContainer, MapContainerModel>
     with WidgetsBindingObserver, AutomaticKeepAliveWidgetModelMixin {
+  MapContainerWM(super.model);
   final mapController = MapController();
 
   List<ym.Point> listPoint = <ym.Point>[];
@@ -27,8 +29,6 @@ class MapContainerWM extends WidgetModel<MapContainer, MapContainerModel>
 
   bool isRequestPermission = false;
   bool userPositionExceptionIsShowed = false;
-
-  MapContainerWM(super.model);
 
   // Timer? _debounce;
 
@@ -67,10 +67,10 @@ class MapContainerWM extends WidgetModel<MapContainer, MapContainerModel>
   }
 
   Future<void> requestPermission() async {
-    final _geolocationPermission = await Geolocator.requestPermission();
+    final geolocationPermission = await Geolocator.requestPermission();
 
-    if (_geolocationPermission == LocationPermission.denied ||
-        _geolocationPermission == LocationPermission.deniedForever) {
+    if (geolocationPermission == LocationPermission.denied ||
+        geolocationPermission == LocationPermission.deniedForever) {
       unawaited(openBottomSheetPermissionsLocation());
     }
   }

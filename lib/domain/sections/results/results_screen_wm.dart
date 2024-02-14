@@ -1,14 +1,17 @@
 import 'package:elementary/elementary.dart';
+import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/schedule_model.dart';
 import 'package:f1_pet_project/domain/sections/results/results_screen_model.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/results/results_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
     implements IResultsScreenWM {
+  ResultsScreenWM(super._model);
   final _lastRace = EntityStateNotifier<RacesModel>();
 
   final _screenError = StateNotifier<CustomException?>();
@@ -19,7 +22,7 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
   ListenableState<CustomException?> get screenError => _screenError;
 
   @override
-  ListenableState<EntityState<RacesModel>> get lastRace => _lastRace;
+  ValueListenable<EntityState<RacesModel>> get lastRace => _lastRace;
 
   @override
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
@@ -28,8 +31,6 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
   String get fastestLap => _fastestLap;
 
   String _fastestLap = '999999';
-
-  ResultsScreenWM(super.model);
 
   @override
   void initWidgetModel() {
@@ -48,11 +49,11 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
         loadLastRaceResults(),
       ],
     );
-    if (_lastRace.value!.data != null) {
-      for (final element in _lastRace.value!.data!.Results!) {
-        if (element.FastestLap != null &&
-            _fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
-          _fastestLap = element.FastestLap!.Time.time;
+    if (_lastRace.value.data != null) {
+      for (final element in _lastRace.value.data!.results!) {
+        if (element.fastestLap != null &&
+            _fastestLap.compareTo(element.fastestLap!.time.time) == 1) {
+          _fastestLap = element.fastestLap!.time.time;
         }
       }
     }
@@ -65,7 +66,7 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
       model.loadLastRaceResults,
       before: _lastRace.loading,
       onSuccess: (data) {
-        _lastRace.content(data!.RaceTable.Races[0]);
+        _lastRace.content(data!.raceTable.races[0]);
       },
       onError: (value) {
         _screenError.accept(value);
@@ -78,9 +79,9 @@ class ResultsScreenWM extends WidgetModel<ResultsScreen, ResultsScreenModel>
 ResultsScreenWM createResultsScreenWM(BuildContext _) =>
     ResultsScreenWM(ResultsScreenModel());
 
-abstract class IResultsScreenWM extends IWidgetModel {
+abstract interface class IResultsScreenWM implements IWidgetModel {
   /// Returns last race results.
-  ListenableState<EntityState<RacesModel>> get lastRace;
+  ValueListenable<EntityState<RacesModel>> get lastRace;
 
   /// Returns is all data loaded.
   ListenableState<bool> get allDataIsLoaded;

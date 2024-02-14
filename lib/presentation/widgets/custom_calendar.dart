@@ -1,29 +1,25 @@
-// ignore_for_file: avoid_redundant_argument_values
-
 import 'package:f1_pet_project/domain/help/string_extensions.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // ignore_for_file: avoid_annotating_with_dynamic
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CustomCalendar extends StatefulWidget {
-  final DateTime selectedDay;
-  final DateTime focusedDay;
-
-  final void Function(DateTime firstDay) onPageChanged;
-  final void Function(DateTime selectedDay, DateTime focusedDay) onDaySelected;
-  final String? Function(DateTime day) imagePathCallback;
-
   const CustomCalendar({
     required this.selectedDay,
     required this.onPageChanged,
     required this.imagePathCallback,
     required this.onDaySelected,
     DateTime? focusedDay,
-    Key? key,
-  })  : focusedDay = focusedDay ?? selectedDay,
-        super(key: key);
+    super.key,
+  }) : focusedDay = focusedDay ?? selectedDay;
+  final DateTime selectedDay;
+  final DateTime focusedDay;
+
+  final void Function(DateTime firstDay) onPageChanged;
+  final void Function(DateTime selectedDay, DateTime focusedDay) onDaySelected;
+  final String? Function(DateTime day) imagePathCallback;
 
   @override
   State<CustomCalendar> createState() => _CustomCalendarState();
@@ -189,13 +185,13 @@ class _CustomCalendarState extends State<CustomCalendar> {
 }
 
 class ChevronButton extends StatelessWidget {
-  final IconData icon;
-  final AlignmentGeometry alignment;
   const ChevronButton({
     required this.icon,
     this.alignment = Alignment.centerLeft,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final IconData icon;
+  final AlignmentGeometry alignment;
 
   @override
   Widget build(BuildContext context) {

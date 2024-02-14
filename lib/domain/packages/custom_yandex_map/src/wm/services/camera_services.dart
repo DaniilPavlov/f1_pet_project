@@ -1,4 +1,4 @@
-import 'package:f1_pet_project/domain/packages/xpage_map/src/wm/services/bounds_service.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/services/geometry_service.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 /// Camera service.
@@ -10,18 +10,14 @@ class CameraServices {
   }) async {
     if (list.isEmpty) return;
 
-    await Future<void>.delayed(
-      const Duration(
-        milliseconds: 200,
-      ),
-    );
+    await Future<void>.delayed(const Duration(milliseconds: 200));
 
-    BoundingBox? bounds;
+    Geometry? geometry;
 
     if (list is List<Point>) {
-      bounds = BoundsService.getBounds(list as List<Point>);
+      geometry = GeometryService.getGeometry(list as List<Point>);
     } else if (list is List<PlacemarkMapObject>) {
-      bounds = BoundsService.getBounds(
+      geometry = GeometryService.getGeometry(
         (list as List<PlacemarkMapObject>).map((e) => e.point).toList(),
       );
     } else {
@@ -33,7 +29,7 @@ class CameraServices {
         milliseconds: 200,
       ),
       () async => controller?.moveCamera(
-        CameraUpdate.newBounds(bounds!),
+        CameraUpdate.newGeometry(geometry!),
       ),
     );
   }

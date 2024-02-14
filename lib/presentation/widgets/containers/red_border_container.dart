@@ -3,15 +3,15 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class RedBorderContainer extends StatelessWidget {
-  final String title;
-  final TextStyle style;
-  final VoidCallback? onTap;
   const RedBorderContainer({
     required this.title,
     this.style = AppStyles.h3,
     this.onTap,
     super.key,
   });
+  final String title;
+  final TextStyle style;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

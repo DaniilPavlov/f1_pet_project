@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
+import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/domain/sections/results/results_screen_wm.dart';
 import 'package:f1_pet_project/presentation/sections/results/sections/last_race_table/last_race_table_section.dart';
@@ -42,11 +43,8 @@ class ResultsScreen extends ElementaryWidget<IResultsScreenWM> {
 }
 
 class _Body extends StatelessWidget {
+  const _Body({required this.wm});
   final IResultsScreenWM wm;
-  const _Body({
-    required this.wm,
-    Key? key,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class AppHtml extends StatelessWidget {
+  const AppHtml({
+    required this.data,
+    this.otherHtmlStyles,
+    this.otherCustomRenders,
+    this.shrinkWrap = false,
+    this.openLinkWithExternalApplication = false,
+    super.key,
+  });
   final String data;
   final Map<String, Style>? otherHtmlStyles;
   final Map<bool Function(RenderContext), CustomRender>? otherCustomRenders;
@@ -14,15 +22,6 @@ class AppHtml extends StatelessWidget {
   String get dataLineBreaksCut {
     return data.replaceAll('\r\n\t', '').replaceAll('\r\n', '&thinsp;');
   }
-
-  const AppHtml({
-    required this.data,
-    this.otherHtmlStyles,
-    this.otherCustomRenders,
-    this.shrinkWrap = false,
-    this.openLinkWithExternalApplication = false,
-    Key? key,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +40,7 @@ class AppHtml extends StatelessWidget {
       shrinkWrap: shrinkWrap,
       customRenders: newCustomRenders,
       onLinkTap: (url, context, attributes, element) async {
-        await Utils.ULaunchUrl(
+        await Utils.openUrl(
           rawUrl: url ?? '',
           externalApplication: openLinkWithExternalApplication,
         );

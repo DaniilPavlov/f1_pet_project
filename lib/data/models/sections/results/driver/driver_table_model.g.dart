@@ -8,7 +8,7 @@ part of 'driver_table_model.dart';
 
 DriverTableModel _$DriverTableModelFromJson(Map<String, dynamic> json) =>
     DriverTableModel(
-      Drivers: (json['Drivers'] as List<dynamic>)
+      drivers: (json['Drivers'] as List<dynamic>)
           .map((e) => DriverModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       driverId: json['driverId'] as String,
@@ -17,5 +17,5 @@ DriverTableModel _$DriverTableModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$DriverTableModelToJson(DriverTableModel instance) =>
     <String, dynamic>{
       'driverId': instance.driverId,
-      'Drivers': instance.Drivers,
+      'Drivers': instance.drivers,
     };

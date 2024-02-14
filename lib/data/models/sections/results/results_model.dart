@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_model.dart';
@@ -11,36 +9,23 @@ part 'results_model.g.dart';
 
 @JsonSerializable()
 class ResultsModel {
-  final String number;
-  final String position;
-  final String positionText;
-  final String points;
-  final DriverModel Driver;
-  final ConstructorModel Constructor;
-  final String grid;
-  final String laps;
-  final String status;
-  final TimeModel? Time;
-  final FastestLapModel? FastestLap;
-
   ResultsModel({
     required this.number,
     required this.position,
     required this.positionText,
     required this.points,
-    required this.Driver,
-    required this.Constructor,
+    required this.driver,
+    required this.constructor,
     required this.grid,
     required this.laps,
     required this.status,
-    required this.Time,
-    required this.FastestLap,
+    required this.time,
+    required this.fastestLap,
   });
 
   factory ResultsModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$ResultsModelFromJson(json);
-      // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       Error.throwWithStackTrace(
         ResponseParseException('ResultsModel: $e'),
@@ -48,4 +33,19 @@ class ResultsModel {
       );
     }
   }
+  final String number;
+  final String position;
+  final String positionText;
+  final String points;
+  @JsonKey(name: 'Driver')
+  final DriverModel driver;
+  @JsonKey(name: 'Constructor')
+  final ConstructorModel constructor;
+  final String grid;
+  final String laps;
+  final String status;
+  @JsonKey(name: 'Time')
+  final TimeModel? time;
+  @JsonKey(name: 'FastestLap')
+  final FastestLapModel? fastestLap;
 }

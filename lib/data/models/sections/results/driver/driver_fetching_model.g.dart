@@ -8,12 +8,12 @@ part of 'driver_fetching_model.dart';
 
 DriverFetchingModel _$DriverFetchingModelFromJson(Map<String, dynamic> json) =>
     DriverFetchingModel(
-      DriverTable: DriverTableModel.fromJson(
+      driverTable: DriverTableModel.fromJson(
           json['DriverTable'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$DriverFetchingModelToJson(
         DriverFetchingModel instance) =>
     <String, dynamic>{
-      'DriverTable': instance.DriverTable,
+      'DriverTable': instance.driverTable,
     };

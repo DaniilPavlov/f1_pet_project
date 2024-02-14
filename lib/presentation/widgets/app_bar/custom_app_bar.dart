@@ -8,18 +8,17 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const CustomAppBar({
+    this.title,
+    this.onPop,
+    super.key,
+  });
   final String? title;
 
   final VoidCallback? onPop;
 
   @override
   Size get preferredSize => const Size.fromHeight(56);
-
-  const CustomAppBar({
-    this.title,
-    this.onPop,
-    Key? key,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +32,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           boxShadow: [
             BoxShadow(
               color: AppTheme.black.withOpacity(0.5),
-              blurRadius: 8.0,
+              blurRadius: 8,
               blurStyle: BlurStyle.outer,
             ),
           ],

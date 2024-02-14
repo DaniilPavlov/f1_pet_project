@@ -4,10 +4,6 @@ import 'package:flutter/material.dart';
 
 // TODO(pavlov): add this to home screen
 class CustomSwitcher extends StatelessWidget {
-  final String firstTitle;
-  final String secondTitle;
-  final Function(int) onChanged;
-  final int activeValue;
   const CustomSwitcher({
     required this.firstTitle,
     required this.secondTitle,
@@ -15,6 +11,10 @@ class CustomSwitcher extends StatelessWidget {
     required this.activeValue,
     super.key,
   });
+  final String firstTitle;
+  final String secondTitle;
+  final Function(int) onChanged;
+  final int activeValue;
 
   @override
   Widget build(BuildContext context) {

@@ -14,24 +14,25 @@ Future<BaseResponseModel?> checkCache(
   BaseResponseModel? rawData;
   try {
     rawData = await checkFunc();
-  } on DioError catch (e) {
+  } on DioException catch (e) {
     if (e.response?.data != null) {
       rawData =
           BaseResponseModel.fromJson(e.response!.data as Map<String, dynamic>);
 
-      // TODO(pavlov): do or not to do permanent showing
+      // TODO(pavlov): idk do or not to do permanent showing
 
-      unawaited(Fluttertoast.showToast(
-        msg: 'Соединение отсутствует',
-        backgroundColor: AppTheme.red,
-      ));
+      unawaited(
+        Fluttertoast.showToast(
+          msg: 'Соединение отсутствует',
+          backgroundColor: AppTheme.red,
+        ),
+      );
     } else {
       Error.throwWithStackTrace(
         e,
         StackTrace.current,
       );
     }
-    // ignore: avoid_catches_without_on_clauses
   } catch (e) {
     Error.throwWithStackTrace(
       e,

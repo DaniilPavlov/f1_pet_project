@@ -11,12 +11,12 @@ QualifyingResultsModel _$QualifyingResultsModelFromJson(
     QualifyingResultsModel(
       number: json['number'] as String,
       position: json['position'] as String,
-      Driver: DriverModel.fromJson(json['Driver'] as Map<String, dynamic>),
-      Constructor: ConstructorModel.fromJson(
+      driver: DriverModel.fromJson(json['Driver'] as Map<String, dynamic>),
+      constructor: ConstructorModel.fromJson(
           json['Constructor'] as Map<String, dynamic>),
-      Q1: json['Q1'] as String,
-      Q2: json['Q2'] as String?,
-      Q3: json['Q3'] as String?,
+      q1: json['Q1'] as String,
+      q2: json['Q2'] as String?,
+      q3: json['Q3'] as String?,
     );
 
 Map<String, dynamic> _$QualifyingResultsModelToJson(
@@ -24,9 +24,9 @@ Map<String, dynamic> _$QualifyingResultsModelToJson(
     <String, dynamic>{
       'number': instance.number,
       'position': instance.position,
-      'Driver': instance.Driver,
-      'Constructor': instance.Constructor,
-      'Q1': instance.Q1,
-      'Q2': instance.Q2,
-      'Q3': instance.Q3,
+      'Driver': instance.driver,
+      'Constructor': instance.constructor,
+      'Q1': instance.q1,
+      'Q2': instance.q2,
+      'Q3': instance.q3,
     };

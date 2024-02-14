@@ -9,30 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomTextField extends StatefulWidget {
-  final TextEditingController? controller;
-  final TextInputType? keyboardType;
-  final TextInputAction? textInputAction;
-  final FocusNode? focusNode;
-  final String? hintText;
-  final String? errorText;
-  final String? label;
-  final int? maxLines;
-  final bool disabled;
-  final List<TextInputFormatter>? inputFormatters;
-  final ValueChanged<String>? onChanged;
-  final ValueChanged<String>? onSubmit;
-  final TextCapitalization textCapitalization;
-  final Widget? rightWidget;
-  final Color? textColor;
-  final Color? borderColor;
-  final Color? cursorColor;
-  final TextAlign textAlign;
-  final EdgeInsets scrollPadding;
-  final bool readOnly;
-  final Widget? suffix;
-  final ToolbarOptions? toolbarOptions;
-  final BorderRadius? borderRadius;
-
   const CustomTextField({
     this.controller,
     this.keyboardType,
@@ -57,10 +33,32 @@ class CustomTextField extends StatefulWidget {
     this.suffix,
     this.toolbarOptions,
     this.borderRadius,
-    Key? key,
+    super.key,
   })  : scrollPadding = scrollPadding ?? const EdgeInsets.all(20.0),
-        textAlign = textAlign ?? TextAlign.start,
-        super(key: key);
+        textAlign = textAlign ?? TextAlign.start;
+  final TextEditingController? controller;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final FocusNode? focusNode;
+  final String? hintText;
+  final String? errorText;
+  final String? label;
+  final int? maxLines;
+  final bool disabled;
+  final List<TextInputFormatter>? inputFormatters;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmit;
+  final TextCapitalization textCapitalization;
+  final Widget? rightWidget;
+  final Color? textColor;
+  final Color? borderColor;
+  final Color? cursorColor;
+  final TextAlign textAlign;
+  final EdgeInsets scrollPadding;
+  final bool readOnly;
+  final Widget? suffix;
+  final ToolbarOptions? toolbarOptions;
+  final BorderRadius? borderRadius;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();

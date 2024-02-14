@@ -8,9 +8,9 @@ part of 'fastest_lap_model.dart';
 
 FastestLapModel _$FastestLapModelFromJson(Map<String, dynamic> json) =>
     FastestLapModel(
-      AverageSpeed: AverageSpeedModel.fromJson(
+      averageSpeed: AverageSpeedModel.fromJson(
           json['AverageSpeed'] as Map<String, dynamic>),
-      Time: TimeModel.fromJson(json['Time'] as Map<String, dynamic>),
+      time: TimeModel.fromJson(json['Time'] as Map<String, dynamic>),
       lap: json['lap'] as String,
       rank: json['rank'] as String,
     );
@@ -19,6 +19,6 @@ Map<String, dynamic> _$FastestLapModelToJson(FastestLapModel instance) =>
     <String, dynamic>{
       'rank': instance.rank,
       'lap': instance.lap,
-      'Time': instance.Time,
-      'AverageSpeed': instance.AverageSpeed,
+      'Time': instance.time,
+      'AverageSpeed': instance.averageSpeed,
     };

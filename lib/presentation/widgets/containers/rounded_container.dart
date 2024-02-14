@@ -2,22 +2,11 @@ import 'package:flutter/material.dart';
 
 /// Дефолтный закругленный контейнер.
 class RoundedContainer extends StatelessWidget {
-  final Widget child;
-  final double? height;
-  final double? width;
-  final double borderRadius;
-  final Color backgroundColor;
-  final VoidCallback? onTap;
-
-  /// По-дефолту EdgeInsets.zero, т.к. у всех контейнеров свой паддинг.
-  final EdgeInsets contentPadding;
-
-  final EdgeInsets margin;
-
   const RoundedContainer({
     required this.child,
     this.borderRadius = 20,
     this.backgroundColor = Colors.white,
+    /// Default EdgeInsets.zero, because Container has it's own padding.
     this.contentPadding = EdgeInsets.zero,
     this.margin = EdgeInsets.zero,
     this.width,
@@ -25,6 +14,15 @@ class RoundedContainer extends StatelessWidget {
     this.onTap,
     super.key,
   });
+  final Widget child;
+  final double? height;
+  final double? width;
+  final double borderRadius;
+  final Color backgroundColor;
+  final VoidCallback? onTap;
+  final EdgeInsets contentPadding;
+
+  final EdgeInsets margin;
 
   @override
   Widget build(BuildContext context) {

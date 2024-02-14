@@ -3,14 +3,13 @@ import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/q
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-// TODO(check): check what sprints shows
+// TODO(check): check what sprints show
 class QualificationTable extends StatelessWidget {
-  final List<QualifyingResultsModel> qualifyingResults;
-
   const QualificationTable({
     required this.qualifyingResults,
     super.key,
   });
+  final List<QualifyingResultsModel> qualifyingResults;
 
   @override
   Widget build(BuildContext context) {

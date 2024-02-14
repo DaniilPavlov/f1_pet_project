@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_annotating_with_dynamic
-
 import 'dart:io';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
@@ -12,11 +10,6 @@ import 'package:path_provider/path_provider.dart' as pp;
 import 'package:platform_device_id/platform_device_id.dart';
 
 class RequestHandler {
-  static final RequestHandler _singleton = RequestHandler._init();
-  final _cacheInterceptor = CacheInterceptor();
-  CookieManager? _cookieManager;
-  late Dio? _dio;
-
   factory RequestHandler() {
     final handler = _singleton;
     return handler;
@@ -26,6 +19,10 @@ class RequestHandler {
     _dio = _createDio();
     _dio!.interceptors.add(addInterceptors());
   }
+  static final RequestHandler _singleton = RequestHandler._init();
+  final _cacheInterceptor = CacheInterceptor();
+  CookieManager? _cookieManager;
+  late Dio? _dio;
 
   Interceptor addInterceptors() {
     return InterceptorsWrapper(
@@ -54,7 +51,7 @@ class RequestHandler {
         options: await _getOptions(options),
         queryParameters: queryParameters,
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       final result = e.response;
       debugPrint('statusCode get ($path): ${result?.statusCode}');
       Error.throwWithStackTrace(e, StackTrace.current);
@@ -91,7 +88,7 @@ class RequestHandler {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       final result = e.response;
       debugPrint('statusCode post ($path): ${result?.statusCode}');
       Error.throwWithStackTrace(e, StackTrace.current);
@@ -121,7 +118,7 @@ class RequestHandler {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       final result = e.response;
       debugPrint('statusCode put ($path): ${result?.statusCode}');
       Error.throwWithStackTrace(e, StackTrace.current);
@@ -145,7 +142,7 @@ class RequestHandler {
         options: await _getOptions(options),
         cancelToken: cancelToken,
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       final result = e.response;
 
       debugPrint('statusCode delete ($path): ${result?.statusCode}');
@@ -213,7 +210,6 @@ class RequestHandler {
 
     if (_cookieManager == null) {
       try {
-        // ignore: prefer-async-await
         pp.getApplicationDocumentsDirectory().then((dir) {
           _cookieManager = CookieManager(
             PersistCookieJar(
@@ -222,7 +218,6 @@ class RequestHandler {
           );
           dio.interceptors.add(_cookieManager!);
         });
-        // ignore: avoid_catches_without_on_clauses
       } catch (e) {
         debugPrint(e.toString());
       }

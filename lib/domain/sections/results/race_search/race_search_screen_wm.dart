@@ -1,15 +1,18 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
+import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/schedule_model.dart';
 import 'package:f1_pet_project/domain/sections/results/race_search/race_search_screen_model.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_search/race_search_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class RaceSearchScreenWM
     extends WidgetModel<RaceSearchScreen, RaceSearchScreenModel>
     implements IRaceSearchScreenWM {
+  RaceSearchScreenWM(super._model);
   final _scrollController = ScrollController();
 
   final _yearController = TextEditingController();
@@ -25,7 +28,7 @@ class RaceSearchScreenWM
   final _errorMessage = StateNotifier<String>(initValue: '');
 
   @override
-  ListenableState<EntityState<RacesModel?>> get searchedRace => _searchedRace;
+  ValueListenable<EntityState<RacesModel?>> get searchedRace => _searchedRace;
 
   @override
   ListenableState<bool> get dataIsLoaded => _dataIsLoaded;
@@ -50,8 +53,6 @@ class RaceSearchScreenWM
 
   String _fastestLap = '999999';
 
-  RaceSearchScreenWM(super.model);
-
   @override
   void onPop() {
     context.router.removeLast();
@@ -74,8 +75,8 @@ class RaceSearchScreenWM
       before: _searchedRace.loading,
       onSuccess: (data) {
         _errorMessage.accept('');
-        if (data!.RaceTable.Races.isNotEmpty) {
-          _searchedRace.content(data.RaceTable.Races[0]);
+        if (data!.raceTable.races.isNotEmpty) {
+          _searchedRace.content(data.raceTable.races[0]);
           Future<void>.delayed(
             const Duration(milliseconds: 100),
             _animateToTable,
@@ -92,11 +93,11 @@ class RaceSearchScreenWM
         _errorMessage.accept(error.title);
       },
     );
-    if (_searchedRace.value!.data != null) {
-      for (final element in _searchedRace.value!.data!.Results!) {
-        if (element.FastestLap != null &&
-            _fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
-          _fastestLap = element.FastestLap!.Time.time;
+    if (_searchedRace.value.data != null) {
+      for (final element in _searchedRace.value.data!.results!) {
+        if (element.fastestLap != null &&
+            _fastestLap.compareTo(element.fastestLap!.time.time) == 1) {
+          _fastestLap = element.fastestLap!.time.time;
         }
       }
     }
@@ -119,7 +120,7 @@ class RaceSearchScreenWM
 RaceSearchScreenWM createRaceSearchScreenWM(BuildContext _) =>
     RaceSearchScreenWM(RaceSearchScreenModel());
 
-abstract class IRaceSearchScreenWM extends IWidgetModel {
+abstract interface class IRaceSearchScreenWM implements IWidgetModel {
   /// Returns screen scroll controller.
   ScrollController get scrollController;
 
@@ -130,7 +131,7 @@ abstract class IRaceSearchScreenWM extends IWidgetModel {
   TextEditingController get roundController;
 
   /// Returns searched race info.
-  ListenableState<EntityState<RacesModel?>> get searchedRace;
+  ValueListenable<EntityState<RacesModel?>> get searchedRace;
 
   /// Returns error message.
   ///

@@ -6,14 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LastRaceTableSection extends StatelessWidget {
-  final RacesModel lastRace;
-  final String fastestLap;
-
   const LastRaceTableSection({
     required this.lastRace,
     required this.fastestLap,
     super.key,
   });
+  final RacesModel lastRace;
+  final String fastestLap;
 
   @override
   Widget build(BuildContext context) {

@@ -4,18 +4,18 @@ import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class BottomSheetPermissions extends StatelessWidget {
-  /// Текст описания для чего нужно разрешение.
-  final String text;
-
-  /// Колбек если пользователь хочет перейти в настройки.
-  final VoidCallback onTapSettings;
-
   /// Виджет для того, чтобы объяснить пользователю зачем нам нужно разрешение.
   const BottomSheetPermissions({
     required this.text,
     required this.onTapSettings,
     super.key,
   });
+
+  /// Текст описания для чего нужно разрешение.
+  final String text;
+
+  /// Колбек если пользователь хочет перейти в настройки.
+  final VoidCallback onTapSettings;
 
   @override
   Widget build(BuildContext context) {

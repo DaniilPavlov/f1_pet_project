@@ -11,35 +11,35 @@ RacesModel _$RacesModelFromJson(Map<String, dynamic> json) => RacesModel(
       round: json['round'] as String,
       url: json['url'] as String,
       raceName: json['raceName'] as String,
-      Circuit: CircuitModel.fromJson(json['Circuit'] as Map<String, dynamic>),
+      circuit: CircuitModel.fromJson(json['Circuit'] as Map<String, dynamic>),
       date: json['date'] as String,
       time: json['time'] as String?,
-      FirstPractice: json['FirstPractice'] == null
+      firstPractice: json['FirstPractice'] == null
           ? null
           : RaceDateModel.fromJson(
               json['FirstPractice'] as Map<String, dynamic>),
-      SecondPractice: json['SecondPractice'] == null
+      secondPractice: json['SecondPractice'] == null
           ? null
           : RaceDateModel.fromJson(
               json['SecondPractice'] as Map<String, dynamic>),
-      ThirdPractice: json['ThirdPractice'] == null
+      thirdPractice: json['ThirdPractice'] == null
           ? null
           : RaceDateModel.fromJson(
               json['ThirdPractice'] as Map<String, dynamic>),
-      Qualifying: json['Qualifying'] == null
+      qualifying: json['Qualifying'] == null
           ? null
           : RaceDateModel.fromJson(json['Qualifying'] as Map<String, dynamic>),
-      Sprint: json['Sprint'] == null
+      sprint: json['Sprint'] == null
           ? null
           : RaceDateModel.fromJson(json['Sprint'] as Map<String, dynamic>),
-      Results: (json['Results'] as List<dynamic>?)
+      results: (json['Results'] as List<dynamic>?)
           ?.map((e) => ResultsModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      QualifyingResults: (json['QualifyingResults'] as List<dynamic>?)
+      qualifyingResults: (json['QualifyingResults'] as List<dynamic>?)
           ?.map(
               (e) => QualifyingResultsModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      PitStops: (json['PitStops'] as List<dynamic>?)
+      pitStops: (json['PitStops'] as List<dynamic>?)
           ?.map((e) => PitStopsModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
@@ -50,15 +50,15 @@ Map<String, dynamic> _$RacesModelToJson(RacesModel instance) =>
       'round': instance.round,
       'url': instance.url,
       'raceName': instance.raceName,
-      'Circuit': instance.Circuit,
+      'Circuit': instance.circuit,
       'date': instance.date,
       'time': instance.time,
-      'FirstPractice': instance.FirstPractice,
-      'SecondPractice': instance.SecondPractice,
-      'ThirdPractice': instance.ThirdPractice,
-      'Qualifying': instance.Qualifying,
-      'Sprint': instance.Sprint,
-      'Results': instance.Results,
-      'QualifyingResults': instance.QualifyingResults,
-      'PitStops': instance.PitStops,
+      'FirstPractice': instance.firstPractice,
+      'SecondPractice': instance.secondPractice,
+      'ThirdPractice': instance.thirdPractice,
+      'Qualifying': instance.qualifying,
+      'Sprint': instance.sprint,
+      'Results': instance.results,
+      'QualifyingResults': instance.qualifyingResults,
+      'PitStops': instance.pitStops,
     };

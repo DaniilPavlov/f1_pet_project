@@ -1,24 +1,23 @@
-// ignore_for_file: unused_element,member-ordering-extended, avoid_catches_without_on_clauses, library_prefixes, avoid_dynamic_calls, avoid_positional_boolean_parameters
+// ignore_for_file: library_prefixes, avoid_dynamic_calls
 
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as UI;
-import 'dart:ui';
-
 import 'package:elementary/elementary.dart';
-import 'package:f1_pet_project/domain/packages/xpage_map/src/custom_map.dart';
-import 'package:f1_pet_project/domain/packages/xpage_map/src/wm/custom_map_model.dart';
-import 'package:f1_pet_project/domain/packages/xpage_map/src/wm/services/camera_services.dart';
-import 'package:f1_pet_project/domain/packages/xpage_map/src/wm/services/cluster_drawer.dart';
-import 'package:f1_pet_project/domain/packages/xpage_map/src/wm/services/user_position_getter.dart';
+import 'package:elementary_helper/elementary_helper.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/custom_map.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/custom_map_model.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/services/geometry_service.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/services/camera_services.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/services/cluster_drawer.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/services/user_position_getter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:image/image.dart' as IMG;
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
+  CustomMapWM(super.model);
   final mapKey = GlobalKey();
 
   late final onMapCreated = widget.onMapCreated;
@@ -69,8 +68,6 @@ class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
       model.streamedMapObjects;
 
   ListenableState<bool> get isDraggingListenable => _isDraggingState;
-
-  CustomMapWM(super.model);
 
   @override
   Future<void> initWidgetModel() async {
@@ -169,78 +166,25 @@ class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
     bool withUserPosition = true,
   }) async {
     if (newList.isEmpty) return;
-
     final list = newList;
-    // debugPrint('list: $list');
-
     await Future<void>.delayed(
       const Duration(
         milliseconds: 100,
       ),
     );
 
-    BoundingBox? bounds;
+    Geometry? geometry;
 
-    bounds = _getBounds(
-      list as List<Point>,
-      withUserPosition: withUserPosition,
-    );
+    geometry = GeometryService.getGeometry(list as List<Point>);
 
     await Future.delayed(
       const Duration(
         milliseconds: 100,
       ),
       () async => controller?.moveCamera(
-        CameraUpdate.newBounds(bounds!),
-        animation: const MapAnimation(
-          duration: 0.4,
-        ),
+        CameraUpdate.newGeometry(geometry!),
+        animation: const MapAnimation(duration: 0.4),
       ),
-    );
-  }
-
-  BoundingBox _getBounds(List<Point> points, {bool withUserPosition = true}) {
-    final lngs = points.map<double>((m) => m.longitude).toList();
-    final lats = points.map<double>((m) => m.latitude).toList();
-
-    final highestLat = lats.reduce(max);
-    final highestLng = lngs.reduce(max);
-    final lowestLat = lats.reduce(min);
-    final lowestLng = lngs.reduce(min);
-
-    final offset = _calcBoundsOffset(
-      highestLat,
-      highestLng,
-      lowestLat,
-      lowestLng,
-    );
-
-    return BoundingBox(
-      northEast: Point(
-        latitude: highestLat + offset,
-        longitude: highestLng + offset,
-      ),
-      southWest: Point(
-        latitude: lowestLat - offset,
-        longitude: lowestLng - offset,
-      ),
-    );
-  }
-
-  double _calcBoundsOffset(
-    double highestLat,
-    double highestLng,
-    double lowestLat,
-    double lowestLng,
-  ) {
-    final distance = sqrt(
-      pow(lowestLat - highestLat, 2) + pow(lowestLng - highestLng, 2),
-    );
-
-    // От 0.001 до 1
-    return max(
-      min(distance / 10, 1),
-      0.001,
     );
   }
 
@@ -380,12 +324,14 @@ class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
 
     final position = await Geolocator.getCurrentPosition();
 
-    unawaited(_updateUserPosition(
-      newUserPosition: Point(
-        latitude: position.latitude,
-        longitude: position.longitude,
+    unawaited(
+      _updateUserPosition(
+        newUserPosition: Point(
+          latitude: position.latitude,
+          longitude: position.longitude,
+        ),
       ),
-    ));
+    );
 
     await userPositionStream?.cancel();
 
@@ -421,10 +367,12 @@ class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
           );
 
       if (withMoveToUser) {
-        unawaited(CameraServices.setCenterOn(
-          [userPosition!],
-          controller: controller,
-        ));
+        unawaited(
+          CameraServices.setCenterOn(
+            [userPosition!],
+            controller: controller,
+          ),
+        );
       }
     } catch (e) {
       // e as Exception;
@@ -433,56 +381,56 @@ class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
     }
   }
 
-  Future<Uint8List> _rawPlacemarkImage(
-    String img,
-  ) async {
-    final recorder = PictureRecorder();
-    final canvas = Canvas(recorder);
-    const height = 100.0;
-    const imageRatio = 1;
+  // Future<Uint8List> _rawPlacemarkImage(
+  //   String img,
+  // ) async {
+  //   final recorder = PictureRecorder();
+  //   final canvas = Canvas(recorder);
+  //   const height = 100.0;
+  //   const imageRatio = 1;
 
-    const size = Size(height, height / imageRatio);
+  //   const size = Size(height, height / imageRatio);
 
-    // final imageWidth = size.height * imageRatio;
-    shopMarkerBase ??= await _loadUiImage(
-      img,
-      size: size,
-    );
+  //   // final imageWidth = size.height * imageRatio;
+  //   shopMarkerBase ??= await _loadUiImage(
+  //     img,
+  //     size: size,
+  //   );
 
-    canvas.drawImage(
-      shopMarkerBase!,
-      Offset.zero,
-      Paint()..color = Colors.red,
-    );
+  //   canvas.drawImage(
+  //     shopMarkerBase!,
+  //     Offset.zero,
+  //     Paint()..color = Colors.red,
+  //   );
 
-    final image = await recorder
-        .endRecording()
-        .toImage(size.width.toInt(), size.height.toInt());
-    final pngBytes = await image.toByteData(format: ImageByteFormat.png);
+  //   final image = await recorder
+  //       .endRecording()
+  //       .toImage(size.width.toInt(), size.height.toInt());
+  //   final pngBytes = await image.toByteData(format: ImageByteFormat.png);
 
-    return pngBytes!.buffer.asUint8List();
-  }
+  //   return pngBytes!.buffer.asUint8List();
+  // }
 
-  Future<UI.Image> _loadUiImage(
-    String imageAssetPath, {
-    required Size size,
-  }) async {
-    final data = await rootBundle.load(imageAssetPath);
+  // Future<UI.Image> _loadUiImage(
+  //   String imageAssetPath, {
+  //   required Size size,
+  // }) async {
+  //   final data = await rootBundle.load(imageAssetPath);
 
-    final image = IMG.decodeImage(data.buffer.asUint8List())!;
-    final resized = IMG.copyResize(
-      image,
-      height: size.height.toInt(),
-    );
-    final resizedBytes = IMG.encodePng(resized);
-    final completer = Completer<UI.Image>();
+  //   final image = IMG.decodeImage(data.buffer.asUint8List())!;
+  //   final resized = IMG.copyResize(
+  //     image,
+  //     height: size.height.toInt(),
+  //   );
+  //   final resizedBytes = IMG.encodePng(resized);
+  //   final completer = Completer<UI.Image>();
 
-    UI.decodeImageFromList(
-      Uint8List.fromList(resizedBytes),
-      completer.complete,
-    );
-    return completer.future;
-  }
+  //   UI.decodeImageFromList(
+  //     Uint8List.fromList(resizedBytes),
+  //     completer.complete,
+  //   );
+  //   return completer.future;
+  // }
 }
 
 CustomMapWM createMapWM(BuildContext _) => CustomMapWM(CustomMapModel());

@@ -1,7 +1,4 @@
-// ignore_for_file: avoid_catches_without_on_clauses
-
 import 'dart:async';
-
 import 'package:geolocator/geolocator.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 

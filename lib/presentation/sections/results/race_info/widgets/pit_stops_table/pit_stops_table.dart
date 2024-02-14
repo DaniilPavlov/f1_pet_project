@@ -4,9 +4,8 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class PitStopsTable extends StatelessWidget {
-  final List<PitStopsModel> pitStops;
-
   const PitStopsTable({required this.pitStops, super.key});
+  final List<PitStopsModel> pitStops;
 
   @override
   Widget build(BuildContext context) {

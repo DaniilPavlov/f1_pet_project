@@ -11,16 +11,16 @@ ResultsModel _$ResultsModelFromJson(Map<String, dynamic> json) => ResultsModel(
       position: json['position'] as String,
       positionText: json['positionText'] as String,
       points: json['points'] as String,
-      Driver: DriverModel.fromJson(json['Driver'] as Map<String, dynamic>),
-      Constructor: ConstructorModel.fromJson(
+      driver: DriverModel.fromJson(json['Driver'] as Map<String, dynamic>),
+      constructor: ConstructorModel.fromJson(
           json['Constructor'] as Map<String, dynamic>),
       grid: json['grid'] as String,
       laps: json['laps'] as String,
       status: json['status'] as String,
-      Time: json['Time'] == null
+      time: json['Time'] == null
           ? null
           : TimeModel.fromJson(json['Time'] as Map<String, dynamic>),
-      FastestLap: json['FastestLap'] == null
+      fastestLap: json['FastestLap'] == null
           ? null
           : FastestLapModel.fromJson(
               json['FastestLap'] as Map<String, dynamic>),
@@ -32,11 +32,11 @@ Map<String, dynamic> _$ResultsModelToJson(ResultsModel instance) =>
       'position': instance.position,
       'positionText': instance.positionText,
       'points': instance.points,
-      'Driver': instance.Driver,
-      'Constructor': instance.Constructor,
+      'Driver': instance.driver,
+      'Constructor': instance.constructor,
       'grid': instance.grid,
       'laps': instance.laps,
       'status': instance.status,
-      'Time': instance.Time,
-      'FastestLap': instance.FastestLap,
+      'Time': instance.time,
+      'FastestLap': instance.fastestLap,
     };

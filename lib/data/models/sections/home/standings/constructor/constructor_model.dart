@@ -5,11 +5,6 @@ part 'constructor_model.g.dart';
 
 @JsonSerializable()
 class ConstructorModel {
-  final String constructorId;
-  final String url;
-  final String name;
-  final String nationality;
-
   ConstructorModel({
     required this.constructorId,
     required this.url,
@@ -20,7 +15,6 @@ class ConstructorModel {
   factory ConstructorModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$ConstructorModelFromJson(json);
-      // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       Error.throwWithStackTrace(
         ResponseParseException('ConstructorModel: $e'),
@@ -28,4 +22,8 @@ class ConstructorModel {
       );
     }
   }
+  final String constructorId;
+  final String url;
+  final String name;
+  final String nationality;
 }

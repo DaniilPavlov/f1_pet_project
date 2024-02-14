@@ -5,11 +5,11 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class TournamentDriversTable extends StatelessWidget {
-  final List<DriverStandingsModel> drivers;
   const TournamentDriversTable({
     required this.drivers,
     super.key,
   });
+  final List<DriverStandingsModel> drivers;
 
   @override
   Widget build(BuildContext context) {

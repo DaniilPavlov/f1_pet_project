@@ -4,11 +4,11 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class ConstructorsChampionsTable extends StatelessWidget {
-  final List<StandingsListsModel> constructors;
   const ConstructorsChampionsTable({
     required this.constructors,
     super.key,
   });
+  final List<StandingsListsModel> constructors;
 
   @override
   Widget build(BuildContext context) {

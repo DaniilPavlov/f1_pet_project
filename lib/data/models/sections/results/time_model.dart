@@ -5,9 +5,6 @@ part 'time_model.g.dart';
 
 @JsonSerializable()
 class TimeModel {
-  final String? millis;
-  final String time;
-
   TimeModel({
     required this.millis,
     required this.time,
@@ -16,7 +13,6 @@ class TimeModel {
   factory TimeModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$TimeModelFromJson(json);
-      // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       Error.throwWithStackTrace(
         ResponseParseException('TimeModel: $e'),
@@ -24,4 +20,6 @@ class TimeModel {
       );
     }
   }
+  final String? millis;
+  final String time;
 }

@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
+import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/domain/sections/results/race_info/race_info_screen_wm.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_info/widgets/pit_stops_table/pit_stops_table.dart';
@@ -19,16 +20,16 @@ import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 // TODO(pavlov): to do
-// 1) по нажатию на гонщика в первой таблице открывать полную его информацию по гонке
-// ??
+// 1) show full driver info by tapping his name
+// 2) add several russian/english languages
 
 @RoutePage()
 class RaceInfoScreen extends ElementaryWidget<IRaceInfoScreenWM> {
-  final RacesModel raceModel;
   RaceInfoScreen({
     required this.raceModel,
     super.key,
   }) : super((context) => createRaceInfoScreenWM(racesModel: raceModel));
+  final RacesModel raceModel;
 
   @override
   Widget build(IRaceInfoScreenWM wm) {
@@ -59,11 +60,8 @@ class RaceInfoScreen extends ElementaryWidget<IRaceInfoScreenWM> {
 }
 
 class _Body extends StatelessWidget {
+  const _Body({required this.wm});
   final IRaceInfoScreenWM wm;
-  const _Body({
-    required this.wm,
-    Key? key,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +148,7 @@ class _Body extends StatelessWidget {
             key: const Key('qualification_info_table'),
             onVisibilityChanged: wm.onQualificationTableVisibilityChanged,
             child: QualificationTable(
-              qualifyingResults: wm.qualifyingResults.value!.data!,
+              qualifyingResults: wm.qualifyingResults.value.data!,
             ),
           ),
         ),
@@ -174,7 +172,7 @@ class _Body extends StatelessWidget {
             key: const Key('pit_stops_info_table'),
             onVisibilityChanged: wm.onPitStopsTableVisibilityChanged,
             child: PitStopsTable(
-              pitStops: wm.pitStops.value!.data!,
+              pitStops: wm.pitStops.value.data!,
             ),
           ),
         ),

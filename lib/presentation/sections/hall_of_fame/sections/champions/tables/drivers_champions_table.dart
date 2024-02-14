@@ -4,11 +4,11 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class DriversChampionsTable extends StatelessWidget {
-  final List<StandingsListsModel> drivers;
   const DriversChampionsTable({
     required this.drivers,
     super.key,
   });
+  final List<StandingsListsModel> drivers;
 
   @override
   Widget build(BuildContext context) {

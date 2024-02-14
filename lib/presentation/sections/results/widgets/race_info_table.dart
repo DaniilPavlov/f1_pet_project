@@ -8,10 +8,6 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class RaceInfoTable extends StatelessWidget {
-  final RacesModel raceModel;
-  final int? rowsNumber;
-  final bool withPrimaryRow;
-  final String fastestLap;
   const RaceInfoTable({
     required this.raceModel,
     required this.fastestLap,
@@ -19,6 +15,10 @@ class RaceInfoTable extends StatelessWidget {
     this.withPrimaryRow = true,
     super.key,
   });
+  final RacesModel raceModel;
+  final int? rowsNumber;
+  final bool withPrimaryRow;
+  final String fastestLap;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class RaceInfoTable extends StatelessWidget {
           children: [
             if (withPrimaryRow) raceTablePrimaryRow(),
             ...List.generate(
-              rowsNumber ?? raceModel.Results!.length,
+              rowsNumber ?? raceModel.results!.length,
               (i) => TableRow(
                 decoration: BoxDecoration(
                   color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
@@ -41,7 +41,7 @@ class RaceInfoTable extends StatelessWidget {
                   ),
                 ),
                 children: raceTableDetailRowChildren(
-                  raceModel.Results![i],
+                  raceModel.results![i],
                   fastestLap,
                   i + 1,
                 ),

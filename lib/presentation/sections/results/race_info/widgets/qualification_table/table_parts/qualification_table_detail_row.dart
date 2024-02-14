@@ -1,7 +1,6 @@
 import 'package:f1_pet_project/data/models/sections/results/qualifying_results_model.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/material.dart';
-// ignore_for_file: avoid-returning-widgets
 
 //* Возвращает список детей ряда таблицы
 List<Widget> qualificationTableDetailRowChildren(
@@ -26,7 +25,7 @@ List<Widget> qualificationTableDetailRowChildren(
             const SizedBox(width: 4),
             Expanded(
               child: Text(
-                '${results.Driver.givenName}\n${results.Driver.familyName}',
+                '${results.driver.givenName}\n${results.driver.familyName}',
                 style: textStyle,
                 textAlign: TextAlign.center,
               ),
@@ -37,28 +36,28 @@ List<Widget> qualificationTableDetailRowChildren(
     ),
     Center(
       child: Text(
-        results.Constructor.name,
+        results.constructor.name,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        results.Q1,
+        results.q1,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        results.Q2 ?? (int.parse(results.position) < 16 ? '-' : ''),
+        results.q2 ?? (int.parse(results.position) < 16 ? '-' : ''),
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        results.Q3 ?? (int.parse(results.position) < 11 ? '-' : ''),
+        results.q3 ?? (int.parse(results.position) < 11 ? '-' : ''),
         style: textStyle,
         textAlign: TextAlign.center,
       ),

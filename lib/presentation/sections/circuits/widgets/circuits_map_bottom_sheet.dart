@@ -9,11 +9,11 @@ import 'package:flutter/cupertino.dart';
 // TODO(pavlov): opens on full screen (need fix)
 
 class CircuitsMapBottomSheet extends StatelessWidget {
-  final CircuitModel circuit;
   const CircuitsMapBottomSheet({
     required this.circuit,
     super.key,
   });
+  final CircuitModel circuit;
 
   @override
   Widget build(BuildContext context) {

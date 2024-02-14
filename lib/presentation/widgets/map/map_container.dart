@@ -1,5 +1,6 @@
 import 'package:elementary/elementary.dart';
-import 'package:f1_pet_project/domain/packages/xpage_map/custom_map.dart';
+import 'package:elementary_helper/elementary_helper.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/custom_map.dart';
 import 'package:f1_pet_project/domain/widgets/map_container/map_container_wm.dart';
 import 'package:f1_pet_project/presentation/widgets/map/map_controls_widget.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
@@ -38,8 +39,7 @@ class MapContainer extends ElementaryWidget<MapContainerWM> {
               mapController: wm.mapController,
               onPlacemarkPressed: onPlacemarkPressed,
               mapObjectIcon: 'assets/icons/pin_unselected.png',
-              selectedMapObjectIcon:
-                 'assets/icons/pin_red.png',
+              selectedMapObjectIcon: 'assets/icons/pin_red.png',
               userIcon: 'assets/icons/location_user.png',
               points: points ?? [],
               placemarkIconSize: 1,
@@ -62,5 +62,4 @@ class MapContainer extends ElementaryWidget<MapContainerWM> {
       ),
     );
   }
-
 }

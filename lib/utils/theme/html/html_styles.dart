@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -14,7 +12,6 @@ Map<String, Style> htmlStyles = {
     fontFamily: 'Inter-Regular',
   ),
   'p:first-child': Style(
-    // ignore: avoid_redundant_argument_values, use_named_constants
     margin: const EdgeInsets.only(top: 0),
   ),
   // 'body > *:not(:first-child)': Style(

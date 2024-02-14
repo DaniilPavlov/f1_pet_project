@@ -8,7 +8,7 @@ class HomeScreenModel extends ElementaryModel {
     final rawData = await CurrentDriversStandingsLoader.loadData();
 
     return StandingsModel.fromJson(
-      rawData.MRData as Map<String, dynamic>,
+      rawData.mrData as Map<String, dynamic>,
     );
   }
 
@@ -16,7 +16,7 @@ class HomeScreenModel extends ElementaryModel {
     final rawData = await CurrentConstructorsStandingsLoader.loadData();
 
     return StandingsModel.fromJson(
-      rawData.MRData as Map<String, dynamic>,
+      rawData.mrData as Map<String, dynamic>,
     );
   }
 }

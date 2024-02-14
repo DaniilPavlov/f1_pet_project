@@ -6,22 +6,24 @@ import 'package:f1_pet_project/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class ScheduleContainer extends StatelessWidget {
-  final String title;
-  final RaceDateModel date;
   const ScheduleContainer({
     required this.title,
     required this.date,
     super.key,
   });
+  final String title;
+  final RaceDateModel date;
 
   @override
   Widget build(BuildContext context) {
     // перевожу время из гринвича в локальное
     final parsedTime = date.time.split(':');
-    final greenwichDate = DateTime.parse(date.date).add(Duration(
-      hours: int.parse(parsedTime[0]),
-      minutes: int.parse(parsedTime[1]),
-    ));
+    final greenwichDate = DateTime.parse(date.date).add(
+      Duration(
+        hours: int.parse(parsedTime[0]),
+        minutes: int.parse(parsedTime[1]),
+      ),
+    );
 
     final deviceOffset = DateTime.now().timeZoneOffset.toString().split(':');
     final dateWithOffset =

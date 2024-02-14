@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
+import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/data/models/sections/circuits/circuit_model.dart';
 import 'package:f1_pet_project/domain/sections/circuits/circuits_screen_wm.dart';
 import 'package:f1_pet_project/presentation/sections/circuits/widgets/circuits_list.dart';
@@ -41,10 +42,10 @@ class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
                     controller: wm.pageController,
                     children: [
                       CircuitsMap(
-                        circuits: wm.circuits.value!.data ?? [],
+                        circuits: wm.circuits.value.data ?? [],
                         openCircuitInfo: wm.openCircuitInfo,
                       ),
-                      CircuitsList(circuits: wm.circuits.value!.data ?? []),
+                      CircuitsList(circuits: wm.circuits.value.data ?? []),
                     ],
                   ),
                 ),

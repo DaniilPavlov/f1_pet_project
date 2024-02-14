@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 
 @RoutePage()
 class CircuitScreen extends StatelessWidget {
-  final CircuitModel circuitModel;
   const CircuitScreen({required this.circuitModel, super.key});
+  final CircuitModel circuitModel;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class CircuitScreen extends StatelessWidget {
                     Text(circuitModel.circuitName, style: AppStyles.h1),
                     const SizedBox(height: 20),
                     GestureDetector(
-                      onTap: () => Utils.ULaunchUrl(rawUrl: circuitModel.url),
+                      onTap: () => Utils.openUrl(rawUrl: circuitModel.url),
                       child: Text(
                         'Прочитать информацию в википедии',
                         style: AppStyles.body
@@ -45,12 +45,12 @@ class CircuitScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Страна: ${circuitModel.Location.country}',
+                      'Страна: ${circuitModel.location.country}',
                       style: AppStyles.h3,
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'Город: ${circuitModel.Location.locality}',
+                      'Город: ${circuitModel.location.locality}',
                       style: AppStyles.h3,
                     ),
                   ],

@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
+import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/domain/sections/home/home_screen_wm.dart';
@@ -10,7 +11,7 @@ import 'package:f1_pet_project/presentation/widgets/error_body.dart';
 import 'package:f1_pet_project/utils/theme/anti_glow_behavior.dart';
 import 'package:flutter/material.dart';
 
-@RoutePage()  
+@RoutePage()
 class HomeScreen extends ElementaryWidget<IHomeScreenWM> {
   const HomeScreen({super.key}) : super(createHomeScreenWM);
 
@@ -40,11 +41,8 @@ class HomeScreen extends ElementaryWidget<IHomeScreenWM> {
 }
 
 class _Body extends StatelessWidget {
+  const _Body({required this.wm});
   final IHomeScreenWM wm;
-  const _Body({
-    required this.wm,
-    Key? key,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

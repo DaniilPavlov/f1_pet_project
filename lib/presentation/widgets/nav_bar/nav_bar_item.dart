@@ -4,13 +4,6 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class NavBarItem extends StatelessWidget {
-  final String imageAsset;
-  final String title;
-
-  final VoidCallback? onPressed;
-
-  final bool isSelected;
-
   const NavBarItem({
     required this.imageAsset,
     required this.title,
@@ -18,6 +11,12 @@ class NavBarItem extends StatelessWidget {
     this.onPressed,
     super.key,
   });
+  final String imageAsset;
+  final String title;
+
+  final VoidCallback? onPressed;
+
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {

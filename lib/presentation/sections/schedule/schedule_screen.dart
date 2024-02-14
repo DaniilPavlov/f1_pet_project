@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
+import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:f1_pet_project/domain/sections/schedule/schedule_screen_wm.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
@@ -42,11 +43,8 @@ class ScheduleScreen extends ElementaryWidget<IScheduleScreenWM> {
 }
 
 class _Body extends StatelessWidget {
+  const _Body({required this.wm});
   final IScheduleScreenWM wm;
-  const _Body({
-    required this.wm,
-    Key? key,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

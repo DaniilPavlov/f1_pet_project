@@ -8,14 +8,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ChampionsSection extends StatelessWidget {
-  final List<StandingsListsModel> driversChampions;
-  final List<StandingsListsModel> constructorsChampions;
-
   const ChampionsSection({
     required this.driversChampions,
     required this.constructorsChampions,
     super.key,
   });
+  final List<StandingsListsModel> driversChampions;
+  final List<StandingsListsModel> constructorsChampions;
 
   @override
   Widget build(BuildContext context) {

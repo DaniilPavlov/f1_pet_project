@@ -1,4 +1,3 @@
-// ignore_for_file: avoid-returning-widgets
 import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/material.dart';
@@ -22,21 +21,21 @@ List<Widget> driversChampionsTableDetailRowChildren(
     ),
     Center(
       child: Text(
-        '${driverStanding.DriverStandings![0].Driver.givenName}\n${driverStanding.DriverStandings![0].Driver.familyName}',
+        '${driverStanding.driverStandings![0].driver.givenName}\n${driverStanding.driverStandings![0].driver.familyName}',
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.DriverStandings![0].Driver.nationality,
+        driverStanding.driverStandings![0].driver.nationality,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.DriverStandings![0].points,
+        driverStanding.driverStandings![0].points,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
@@ -50,14 +49,14 @@ List<Widget> driversChampionsTableDetailRowChildren(
     ),
     Center(
       child: Text(
-        driverStanding.DriverStandings![0].wins,
+        driverStanding.driverStandings![0].wins,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        driverStanding.DriverStandings![0].Constructors[0].name,
+        driverStanding.driverStandings![0].constructors[0].name,
         style: textStyle,
         textAlign: TextAlign.center,
       ),

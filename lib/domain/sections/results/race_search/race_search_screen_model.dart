@@ -7,9 +7,8 @@ class RaceSearchScreenModel extends ElementaryModel {
     required String year,
     required String round,
   }) async {
-
     final rawData = await RaceResultsLoader.loadData(year: year, round: round);
 
-    return ScheduleModel.fromJson(rawData.MRData as Map<String, dynamic>);
+    return ScheduleModel.fromJson(rawData.mrData as Map<String, dynamic>);
   }
 }

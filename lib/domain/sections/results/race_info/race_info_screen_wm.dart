@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
+import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/sections/results/driver/driver_fetching_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/pit_stops_model.dart';
@@ -9,11 +10,18 @@ import 'package:f1_pet_project/data/models/sections/schedule/schedule_model.dart
 import 'package:f1_pet_project/domain/sections/results/race_info/race_info_screen_model.dart';
 import 'package:f1_pet_project/domain/services/executor.dart';
 import 'package:f1_pet_project/presentation/sections/results/race_info/race_info_screen.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:visibility_detector/visibility_detector.dart';
 
 class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
     implements IRaceInfoScreenWM {
+  RaceInfoScreenWM({
+    required RaceInfoScreenModel model,
+    required RacesModel racesModel,
+  }) : super(model) {
+    _raceModel = racesModel;
+  }
   final _raceAppBarPinned = StateNotifier<bool>(initValue: true);
 
   final _qualificationAppBarPinned = StateNotifier<bool>(initValue: false);
@@ -35,11 +43,11 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
   ListenableState<CustomException?> get screenError => _screenError;
 
   @override
-  ListenableState<EntityState<List<QualifyingResultsModel>>>
+  ValueListenable<EntityState<List<QualifyingResultsModel>>>
       get qualifyingResults => _qualifyingResults;
 
   @override
-  ListenableState<EntityState<List<PitStopsModel>>> get pitStops => _pitStops;
+  ValueListenable<EntityState<List<PitStopsModel>>> get pitStops => _pitStops;
 
   @override
   ListenableState<bool> get raceAppBarPinned => _raceAppBarPinned;
@@ -62,13 +70,6 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
 
   String _fastestLap = '999999';
 
-  RaceInfoScreenWM({
-    required RaceInfoScreenModel model,
-    required RacesModel racesModel,
-  }) : super(model) {
-    _raceModel = racesModel;
-  }
-
   @override
   void initWidgetModel() {
     loadAllData();
@@ -87,10 +88,10 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
     );
 
     if (_screenError.value == null) {
-      for (final element in raceModel.Results!) {
-        if (element.FastestLap != null &&
-            _fastestLap.compareTo(element.FastestLap!.Time.time) == 1) {
-          _fastestLap = element.FastestLap!.Time.time;
+      for (final element in raceModel.results!) {
+        if (element.fastestLap != null &&
+            _fastestLap.compareTo(element.fastestLap!.time.time) == 1) {
+          _fastestLap = element.fastestLap!.time.time;
         }
       }
     }
@@ -103,8 +104,10 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
 
   @override
   void onRaceTableVisibilityChanged(VisibilityInfo info) {
-    _raceAppBarPinned.accept(info.visibleBounds.top < info.size.height - 150 &&
-        info.visibleBounds.right != 0);
+    _raceAppBarPinned.accept(
+      info.visibleBounds.top < info.size.height - 150 &&
+          info.visibleBounds.right != 0,
+    );
   }
 
   @override
@@ -131,7 +134,7 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
       ),
       before: _qualifyingResults.loading,
       onSuccess: (data) {
-        _qualifyingResults.content(data!.RaceTable.Races[0].QualifyingResults!);
+        _qualifyingResults.content(data!.raceTable.races[0].qualifyingResults!);
       },
       onError: (value) {
         _screenError.accept(value);
@@ -149,21 +152,21 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
       ),
       before: _pitStops.loading,
       onSuccess: (data) {
-        stops = data!.RaceTable.Races[0].PitStops!;
+        stops = data!.raceTable.races[0].pitStops!;
       },
       onError: (value) {
         _screenError.accept(value);
         _pitStops.error(value);
       },
     );
-    if (_pitStops.value?.error == null) {
+    if (!_pitStops.value.isErrorState) {
       for (var i = 0; i < stops.length; i++) {
         await execute<DriverFetchingModel>(
           () => model.loadDriverInfo(driverId: stops[i].driverId),
           onSuccess: (data) {
             stops[i] = stops[i].copyWith(
               driverId:
-                  '${data!.DriverTable.Drivers[0].givenName} ${data.DriverTable.Drivers[0].familyName}',
+                  '${data!.driverTable.drivers[0].givenName} ${data.driverTable.drivers[0].familyName}',
             );
           },
           onError: (value) {
@@ -180,7 +183,7 @@ class RaceInfoScreenWM extends WidgetModel<RaceInfoScreen, RaceInfoScreenModel>
 RaceInfoScreenWM createRaceInfoScreenWM({required RacesModel racesModel}) =>
     RaceInfoScreenWM(model: RaceInfoScreenModel(), racesModel: racesModel);
 
-abstract class IRaceInfoScreenWM extends IWidgetModel {
+abstract interface class IRaceInfoScreenWM implements IWidgetModel {
   /// Returns is race app bar pinned.
   ListenableState<bool> get raceAppBarPinned;
 
@@ -194,11 +197,11 @@ abstract class IRaceInfoScreenWM extends IWidgetModel {
   RacesModel get raceModel;
 
   /// Returns qualification results.
-  ListenableState<EntityState<List<QualifyingResultsModel>>>
+  ValueListenable<EntityState<List<QualifyingResultsModel>>>
       get qualifyingResults;
 
   /// Returns pit stops info.
-  ListenableState<EntityState<List<PitStopsModel>>> get pitStops;
+  ValueListenable<EntityState<List<PitStopsModel>>> get pitStops;
 
   /// Returns error.
   ListenableState<CustomException?> get screenError;

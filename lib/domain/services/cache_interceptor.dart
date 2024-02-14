@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class CacheInterceptor extends Interceptor {
-  final _cache = <Uri, Response>{};
   CacheInterceptor();
+  final _cache = <Uri, Response>{};
 
   @override
   void onRequest(
@@ -28,11 +28,11 @@ class CacheInterceptor extends Interceptor {
 
 // TODO(info): now doesn't invoke because of the if/else condition in [onRequest]
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
+  void onError(DioException err, ErrorInterceptorHandler handler) {
     var dioError = err;
     debugPrint('onError: $err');
-    if (err.type == DioErrorType.connectionTimeout ||
-        err.type == DioErrorType.unknown) {
+    if (err.type == DioExceptionType.connectionTimeout ||
+        err.type == DioExceptionType.unknown) {
       final cachedResponse = _cache[err.requestOptions.uri];
       if (cachedResponse != null) {
         dioError = err.copyWith(response: cachedResponse);

@@ -8,7 +8,7 @@ class HallOfFameScreenModel extends ElementaryModel {
     final rawData = await DriversChampionsLoader.loadData();
 
     return StandingsModel.fromJson(
-      rawData.MRData as Map<String, dynamic>,
+      rawData.mrData as Map<String, dynamic>,
     );
   }
 
@@ -16,7 +16,7 @@ class HallOfFameScreenModel extends ElementaryModel {
     final rawData = await ConstructorsChampionsLoader.loadData();
 
     return StandingsModel.fromJson(
-      rawData.MRData as Map<String, dynamic>,
+      rawData.mrData as Map<String, dynamic>,
     );
   }
 }

@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -7,12 +5,6 @@ part 'pit_stops_model.g.dart';
 
 @JsonSerializable()
 class PitStopsModel {
-  final String driverId;
-  final String lap;
-  final String stop;
-  final String time;
-  final String duration;
-
   PitStopsModel({
     required this.driverId,
     required this.lap,
@@ -24,7 +16,6 @@ class PitStopsModel {
   factory PitStopsModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$PitStopsModelFromJson(json);
-      // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       Error.throwWithStackTrace(
         ResponseParseException('PitStopsModel: $e'),
@@ -32,6 +23,11 @@ class PitStopsModel {
       );
     }
   }
+  final String driverId;
+  final String lap;
+  final String stop;
+  final String time;
+  final String duration;
 
   PitStopsModel copyWith({
     String? driverId,

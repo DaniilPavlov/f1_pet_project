@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_catches_without_on_clauses, unnecessary_null_comparison
-
 import 'dart:async';
 import 'dart:developer';
 
@@ -50,7 +48,6 @@ Future<void> execute<T>(
   await before?.call();
 
   while (currentAttempt < maxAttempts) {
-    // ignore: unnecessary_statements
     (data, ex) = await _process<T>(
       processing,
       dioErrorText: dioErrorText,
@@ -103,8 +100,8 @@ Future<(T?, CustomException?)> _process<T>(
 
   try {
     data = await processing();
-  } on DioError catch (e) {
-    if (e.type == DioErrorType.unknown) {
+  } on DioException catch (e) {
+    if (e.type == DioExceptionType.unknown) {
       ex = CustomException(
         title: 'Соединение отсутствует',
         subtitle:

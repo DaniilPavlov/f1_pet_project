@@ -1,10 +1,8 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Utils {
-  static Future<bool> ULaunchUrl({
+  static Future<bool> openUrl({
     required String rawUrl,
     bool externalApplication = false,
     void Function(CustomException ex)? onError,

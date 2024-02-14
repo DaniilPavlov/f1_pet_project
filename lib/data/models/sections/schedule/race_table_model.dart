@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
 import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -8,12 +6,8 @@ part 'race_table_model.g.dart';
 
 @JsonSerializable()
 class RaceTableModel {
-  final String season;
-  final String? round;
-  final List<RacesModel> Races;
-
   RaceTableModel({
-    required this.Races,
+    required this.races,
     required this.season,
     required this.round,
   });
@@ -21,7 +15,6 @@ class RaceTableModel {
   factory RaceTableModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$RaceTableModelFromJson(json);
-      // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       Error.throwWithStackTrace(
         ResponseParseException('RaceTableModel: $e'),
@@ -29,8 +22,12 @@ class RaceTableModel {
       );
     }
   }
+  final String season;
+  final String? round;
+  @JsonKey(name: 'Races')
+  final List<RacesModel> races;
 
   @override
   String toString() =>
-      'RaceTableModel(season: $season, round: $round, Races: $Races)';
+      'RaceTableModel(season: $season, round: $round, Races: $races)';
 }

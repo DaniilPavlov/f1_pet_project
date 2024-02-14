@@ -1,19 +1,18 @@
-
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class CircleButton extends StatelessWidget {
-  final Widget child;
-  final VoidCallback? onPressed;
-  final Color? backgroundColor;
-  final double? size;
   const CircleButton({
     required this.child,
     this.onPressed,
     this.backgroundColor,
     this.size = 40,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+  final Widget child;
+  final VoidCallback? onPressed;
+  final Color? backgroundColor;
+  final double? size;
 
   @override
   Widget build(BuildContext context) {

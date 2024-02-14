@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 /// Service for calculating bounds of points.
-class BoundsService {
-  static BoundingBox getBounds(List<Point> points) {
+class GeometryService {
+  static Geometry getGeometry(List<Point> points) {
     final lngs = points.map<double>((m) => m.longitude).toList();
     final lats = points.map<double>((m) => m.latitude).toList();
 
@@ -20,11 +20,17 @@ class BoundsService {
       lowestLng,
     );
 
-    return BoundingBox(
-      northEast:
-          Point(latitude: highestLat + offset, longitude: highestLng + offset),
-      southWest:
-          Point(latitude: lowestLat - offset, longitude: lowestLng - offset),
+    return Geometry.fromBoundingBox(
+      BoundingBox(
+        northEast: Point(
+          latitude: highestLat + offset,
+          longitude: highestLng + offset,
+        ),
+        southWest: Point(
+          latitude: lowestLat - offset,
+          longitude: lowestLng - offset,
+        ),
+      ),
     );
   }
 
@@ -38,7 +44,6 @@ class BoundsService {
       pow(lowestLat - highestLat, 2) + pow(lowestLng - highestLng, 2),
     );
 
-    // От 0.001 до 1
     return max(
       min(distance / 10, 1),
       0.001,

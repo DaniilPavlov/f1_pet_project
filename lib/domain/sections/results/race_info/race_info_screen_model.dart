@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_annotating_with_dynamic
-
 import 'package:elementary/elementary.dart';
 import 'package:f1_pet_project/data/models/baseResponse/base_response_model.dart';
 import 'package:f1_pet_project/data/models/sections/results/driver/driver_fetching_model.dart';
@@ -19,7 +17,7 @@ class RaceInfoScreenModel extends ElementaryModel {
       () async => QualifyingResultsLoader.loadData(year: year, round: round),
     );
 
-    return ScheduleModel.fromJson(rawData!.MRData as Map<String, dynamic>);
+    return ScheduleModel.fromJson(rawData!.mrData as Map<String, dynamic>);
   }
 
   Future<ScheduleModel> loadPitStops({
@@ -33,7 +31,7 @@ class RaceInfoScreenModel extends ElementaryModel {
       () async => PitStopsLoader.loadData(year: year, round: round),
     );
 
-    return ScheduleModel.fromJson(rawData!.MRData as Map<String, dynamic>);
+    return ScheduleModel.fromJson(rawData!.mrData as Map<String, dynamic>);
   }
 
   Future<DriverFetchingModel> loadDriverInfo({required String driverId}) async {
@@ -42,7 +40,7 @@ class RaceInfoScreenModel extends ElementaryModel {
         await checkCache(() async => DriverLoader.loadData(driverId: driverId));
 
     return DriverFetchingModel.fromJson(
-      rawData!.MRData as Map<String, dynamic>,
+      rawData!.mrData as Map<String, dynamic>,
     );
   }
 }
