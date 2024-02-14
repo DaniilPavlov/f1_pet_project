@@ -13,7 +13,7 @@ ConstructorStandingsModel _$ConstructorStandingsModelFromJson(
       positionText: json['positionText'] as String,
       points: json['points'] as String,
       wins: json['wins'] as String,
-      Constructor: ConstructorModel.fromJson(
+      constructor: ConstructorModel.fromJson(
           json['Constructor'] as Map<String, dynamic>),
     );
 
@@ -24,5 +24,5 @@ Map<String, dynamic> _$ConstructorStandingsModelToJson(
       'positionText': instance.positionText,
       'points': instance.points,
       'wins': instance.wins,
-      'Constructor': instance.Constructor,
+      'Constructor': instance.constructor,
     };

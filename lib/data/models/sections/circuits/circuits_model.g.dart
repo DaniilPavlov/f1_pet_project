@@ -8,11 +8,11 @@ part of 'circuits_model.dart';
 
 CircuitsModel _$CircuitsModelFromJson(Map<String, dynamic> json) =>
     CircuitsModel(
-      CircuitTable: CircuitTableModel.fromJson(
+      circuitTable: CircuitTableModel.fromJson(
           json['CircuitTable'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CircuitsModelToJson(CircuitsModel instance) =>
     <String, dynamic>{
-      'CircuitTable': instance.CircuitTable,
+      'CircuitTable': instance.circuitTable,
     };
