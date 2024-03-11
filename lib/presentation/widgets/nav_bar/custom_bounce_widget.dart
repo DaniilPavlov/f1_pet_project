@@ -90,6 +90,12 @@ class _CustomBounceWidgetState extends State<CustomBounceWidget>
     onPressed();
   }
 
+  Future _onTap() async {
+    await _controller.forward();
+    _reverseAnimation();
+    onPressed();
+  }
+
   bool _isOutsideChildBox(Offset touchPosition) {
     final RenderBox? childRenderBox =
         _childKey.currentContext?.findRenderObject() as RenderBox?;
@@ -112,6 +118,7 @@ class _CustomBounceWidgetState extends State<CustomBounceWidget>
     return GestureDetector(
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
+      onTap: _onTap,
       onLongPressEnd: (details) => _onLongPressEnd(details, context),
       onHorizontalDragEnd: _onDragEnd,
       onVerticalDragEnd: _onDragEnd,
