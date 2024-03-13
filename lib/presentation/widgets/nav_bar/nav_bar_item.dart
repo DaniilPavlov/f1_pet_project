@@ -25,45 +25,52 @@ class NavBarItem extends StatelessWidget {
       onPressed: () {
         onPressed != null ? onPressed!() : null;
       },
-      child: Stack(
-        children: [
-          Container(
-            width: (MediaQuery.of(context).size.width -
-                    StaticData.defaultHorizontalPadding * 2) /
-                5,
-            height: (MediaQuery.of(context).size.width -
-                    StaticData.defaultHorizontalPadding * 2) /
-                5.5,
-            padding: const EdgeInsets.only(top: 12),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  imageAsset,
-                  scale: 19.5,
-                  color: isSelected ? AppTheme.red : AppTheme.white,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  title,
-                  style: AppStyles.navBar.copyWith(
+      isSelected: isSelected,
+      child: InkWell(
+        hoverColor: Colors.red,
+        splashColor: Colors.red,
+        focusColor: Colors.red,
+        // onTap: () {},
+        child: Stack(
+          children: [
+            Container(
+              width: (MediaQuery.of(context).size.width -
+                      StaticData.defaultHorizontalPadding * 2) /
+                  5,
+              height: (MediaQuery.of(context).size.width -
+                      StaticData.defaultHorizontalPadding * 2) /
+                  5.5,
+              padding: const EdgeInsets.only(top: 12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    imageAsset,
+                    scale: 19.5,
                     color: isSelected ? AppTheme.red : AppTheme.white,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Text(
+                    title,
+                    style: AppStyles.navBar.copyWith(
+                      color: isSelected ? AppTheme.red : AppTheme.white,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Container(
-            color: Colors.white.withOpacity(0),
-            height: (MediaQuery.of(context).size.width -
-                    StaticData.defaultHorizontalPadding * 2) /
-                5.5,
-            width: (MediaQuery.of(context).size.width -
-                    StaticData.defaultHorizontalPadding * 2) /
-                5,
-          ),
-        ],
+            Container(
+              color: Colors.white.withOpacity(0),
+              height: (MediaQuery.of(context).size.width -
+                      StaticData.defaultHorizontalPadding * 2) /
+                  5.5,
+              width: (MediaQuery.of(context).size.width -
+                      StaticData.defaultHorizontalPadding * 2) /
+                  5,
+            ),
+          ],
+        ),
       ),
     );
   }
