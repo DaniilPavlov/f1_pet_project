@@ -1,4 +1,4 @@
-import 'package:f1_pet_project/presentation/widgets/nav_bar/custom_bounce_widget.dart';
+import 'package:f1_pet_project/presentation/widgets/nav_bar/bounce_animation_widget.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
@@ -21,56 +21,50 @@ class NavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomBounceWidget(
+    return BounceAnimationWidget(
       onPressed: () {
         onPressed != null ? onPressed!() : null;
       },
       isSelected: isSelected,
-      child: InkWell(
-        hoverColor: Colors.red,
-        splashColor: Colors.red,
-        focusColor: Colors.red,
-        // onTap: () {},
-        child: Stack(
-          children: [
-            Container(
-              width: (MediaQuery.of(context).size.width -
-                      StaticData.defaultHorizontalPadding * 2) /
-                  5,
-              height: (MediaQuery.of(context).size.width -
-                      StaticData.defaultHorizontalPadding * 2) /
-                  5.5,
-              padding: const EdgeInsets.only(top: 12),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    imageAsset,
-                    scale: 19.5,
+      child: Stack(
+        children: [
+          Container(
+            width: (MediaQuery.of(context).size.width -
+                    StaticData.defaultHorizontalPadding * 2) /
+                5,
+            height: (MediaQuery.of(context).size.width -
+                    StaticData.defaultHorizontalPadding * 2) /
+                5.5,
+            padding: const EdgeInsets.only(top: 12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  imageAsset,
+                  scale: 19.5,
+                  color: isSelected ? AppTheme.red : AppTheme.white,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  title,
+                  style: AppStyles.navBar.copyWith(
                     color: isSelected ? AppTheme.red : AppTheme.white,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    title,
-                    style: AppStyles.navBar.copyWith(
-                      color: isSelected ? AppTheme.red : AppTheme.white,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Container(
-              color: Colors.white.withOpacity(0),
-              height: (MediaQuery.of(context).size.width -
-                      StaticData.defaultHorizontalPadding * 2) /
-                  5.5,
-              width: (MediaQuery.of(context).size.width -
-                      StaticData.defaultHorizontalPadding * 2) /
-                  5,
-            ),
-          ],
-        ),
+          ),
+          Container(
+            color: Colors.white.withOpacity(0),
+            height: (MediaQuery.of(context).size.width -
+                    StaticData.defaultHorizontalPadding * 2) /
+                5.5,
+            width: (MediaQuery.of(context).size.width -
+                    StaticData.defaultHorizontalPadding * 2) /
+                5,
+          ),
+        ],
       ),
     );
   }
