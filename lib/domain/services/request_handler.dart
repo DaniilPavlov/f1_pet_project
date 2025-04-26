@@ -7,7 +7,6 @@ import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart' as pp;
-import 'package:platform_device_id/platform_device_id.dart';
 
 class RequestHandler {
   factory RequestHandler() {
@@ -165,26 +164,22 @@ class RequestHandler {
 
   Future<Options> _getOptions(Options? options) async {
     final info = await PackageInfo.fromPlatform();
-    final system =
-        Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : 'another');
-    final deviceID = await PlatformDeviceId.getDeviceId;
+    final system = Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : 'another');
     return options != null
         ? options.copyWith(
             headers: options.headers != null
                 ? (options.headers!
                   ..addAll(
                     <String, dynamic>{
-                      'system': options.headers!.containsKey('system')
-                          ? options.headers!['system']
-                          : system,
+                      'system': options.headers!.containsKey('system') ? options.headers!['system'] : system,
                       'version': info.version,
-                      'device-id': deviceID,
+                      'device-id': 'deviceID',
                       'build-number': info.buildNumber,
                     },
                   ))
                 : <String, dynamic>{
                     'system': system,
-                    'device-id': deviceID,
+                    'device-id': 'deviceID',
                     'version': info.version,
                     'build-number': info.buildNumber,
                   },
@@ -193,7 +188,7 @@ class RequestHandler {
             headers: <String, dynamic>{
               'version': info.version,
               'build-number': info.buildNumber,
-              'device-id': deviceID,
+              'device-id': 'deviceID',
               'system': system,
             },
           );

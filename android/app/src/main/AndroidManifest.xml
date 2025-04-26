@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.f1_pet_project">
+    xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -15,7 +15,7 @@
     </queries>
     <application
         android:label="F1 App"
-        android:name="${applicationName}"
+        android:name=".RootApp"
         android:usesCleartextTraffic="true"
         android:extractNativeLibs="true"
         android:icon="@mipmap/ic_launcher">

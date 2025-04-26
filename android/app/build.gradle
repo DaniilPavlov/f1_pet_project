@@ -1,14 +1,17 @@
+import java.text.SimpleDateFormat
+
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
     localPropertiesFile.withReader('UTF-8') { reader ->
         localProperties.load(reader)
     }
-}
-
-def flutterRoot = localProperties.getProperty('flutter.sdk')
-if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -21,15 +24,31 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+
+boolean hasKeyStore = false
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    hasKeyStore = true
+} else {
+    println "____NOTE____"
+    println "No keystore defined. The app will not be signed."
+    println "Create a android/key.properties file with the following properties:"
+    println "storePassword"
+    println "keyPassword"
+    println "keyAlias"
+    println "storeFile"
+    println "____________"
+}
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    namespace 'com.example.f1_pet_project'
+    compileSdk 35
 
     compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -43,21 +62,56 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.f1_pet_project"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 23
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        minSdkVersion 24
+        targetSdk 35
+        setProperty("archivesBaseName", versionName + "(" + versionCode + ")")
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def branch = "unknown_branch"
+            def commitHash = "unknown_commit"
+            def buildDate = new SimpleDateFormat("yyyyMMdd").format(new Date())
+
+            try {
+                def procBranch = "git rev-parse --abbrev-ref HEAD".execute()
+                branch = procBranch.text.trim()
+
+                def procHash = "git rev-parse --short HEAD".execute()
+                commitHash = procHash.text.trim()
+            } catch (Exception e) {
+                println "Error occurred while getting Git info: ${e.message}"
+            }
+
+            def newApkName = "${variant.applicationId}_${buildDate}_${variant.buildType.name}_${branch}_${commitHash}.apk"
+
+            outputFileName = newApkName
+
+            println "Output APK: ${newApkName}"
+        }
+    }
+
+    if (hasKeyStore) {
+        signingConfigs {
+            release {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+                storePassword keystoreProperties['storePassword']
+            }
+        }
+    }
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            if (hasKeyStore) {
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
+            }
         }
     }
 }
@@ -67,6 +121,12 @@ flutter {
 }
 
 dependencies {
-    implementation 'com.yandex.android:maps.mobile:4.2.2-full'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.20"
+    implementation 'com.yandex.android:maps.mobile:4.3.2-full'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation "androidx.legacy:legacy-support-v4:1.0.0"
+    implementation "com.google.android.gms:play-services-base:17.5.0"
+    implementation "androidx.work:work-runtime:2.8.1"
+    implementation "androidx.work:work-runtime-ktx:2.8.1"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
 }

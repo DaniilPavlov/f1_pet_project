@@ -74,8 +74,6 @@ extension PlaceholderExtension on PlaceholderType {
         return '$_path/typ2.png';
       case PlaceholderType.type3:
         return '$_path/typ3.png';
-      default:
-        return '$_path/typ1.png';
-    }
+      }
   }
 }
