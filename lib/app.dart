@@ -4,9 +4,30 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-class App extends StatelessWidget {
-  App({super.key});
+class App extends StatefulWidget {
+  const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
   final _appRouter = AppRouter();
+  static const platform = MethodChannel('custom_notification_channel');
+
+  @override
+  void initState() {
+    super.initState();
+    showCustomNotification();
+  }
+
+  void showCustomNotification() async {
+    try {
+      await platform.invokeMethod('showCustomNotification');
+    } on PlatformException catch (e) {
+      debugPrint("Failed to show custom notification: '${e.message}'.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
