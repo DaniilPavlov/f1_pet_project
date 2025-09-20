@@ -34,7 +34,7 @@ class LastRaceTableSection extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  vertical: StaticData.defaultVerticallPadding,
+                  vertical: StaticData.defaultVerticalPadding,
                 ),
                 child: Text(
                   lastRace.raceName,

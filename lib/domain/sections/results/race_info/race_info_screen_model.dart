@@ -36,9 +36,7 @@ class RaceInfoScreenModel extends ElementaryModel {
 
   Future<DriverFetchingModel> loadDriverInfo({required String driverId}) async {
     BaseResponseModel? rawData;
-    rawData =
-        await checkCache(() async => DriverLoader.loadData(driverId: driverId));
-
+    rawData = await checkCache(() async => DriverLoader.loadData(driverId: driverId));
     return DriverFetchingModel.fromJson(
       rawData!.mrData as Map<String, dynamic>,
     );

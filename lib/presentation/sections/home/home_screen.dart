@@ -4,7 +4,7 @@ import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/domain/sections/home/home_screen_wm.dart';
-import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tournament_tables_section.dart';
+import 'package:f1_pet_project/presentation/sections/home/sections/home_tournament_tables_section.dart';
 import 'package:f1_pet_project/presentation/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/presentation/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/presentation/widgets/error_body.dart';
@@ -58,7 +58,7 @@ class _Body extends StatelessWidget {
               builder: (_, drivers) {
                 return drivers == null || constructors == null
                     ? const SizedBox()
-                    : TournamentTablesSection(
+                    : HomeTournamentTablesSection(
                         driversStandings: drivers,
                         constructorsStandings: constructors,
                         season: wm.currentSeason.value!,

@@ -29,6 +29,13 @@ List<Widget> tournamentTableConstructorsDetailRowChildren(
     ),
     Center(
       child: Text(
+        constructorStanding.constructor.nationality,
+        style: textStyle,
+        textAlign: TextAlign.center,
+      ),
+    ),
+    Center(
+      child: Text(
         constructorStanding.points,
         style: textStyle,
         textAlign: TextAlign.center,
@@ -37,13 +44,6 @@ List<Widget> tournamentTableConstructorsDetailRowChildren(
     Center(
       child: Text(
         constructorStanding.wins,
-        style: textStyle,
-        textAlign: TextAlign.center,
-      ),
-    ),
-    Center(
-      child: Text(
-        constructorStanding.constructor.nationality,
         style: textStyle,
         textAlign: TextAlign.center,
       ),

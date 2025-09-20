@@ -16,7 +16,7 @@ class SearchFieldsSection extends StatelessWidget {
       padding: const EdgeInsets.only(
         left: StaticData.defaultHorizontalPadding,
         right: StaticData.defaultHorizontalPadding,
-        bottom: StaticData.defaultVerticallPadding,
+        bottom: StaticData.defaultVerticalPadding,
       ),
       child: Row(
         children: [

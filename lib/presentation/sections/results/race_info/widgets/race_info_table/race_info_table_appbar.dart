@@ -35,7 +35,7 @@ class RaceInfoTableAppBar extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.zero,
                 child: Text(
-                  'Команда',
+                  'Конструктор',
                   style: textStyle,
                   textAlign: TextAlign.center,
                 ),

@@ -29,5 +29,5 @@ class FastestLapModel {
   @JsonKey(name: 'Time')
   final TimeModel time;
   @JsonKey(name: 'AverageSpeed')
-  final AverageSpeedModel averageSpeed;
+  final AverageSpeedModel? averageSpeed;
 }

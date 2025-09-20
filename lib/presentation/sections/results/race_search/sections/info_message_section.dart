@@ -11,11 +11,11 @@ class InfoMessageSection extends StatelessWidget {
     return  Padding(
       padding:const EdgeInsets.symmetric(
         horizontal: StaticData.defaultHorizontalPadding,
-        vertical: StaticData.defaultVerticallPadding,
+        vertical: StaticData.defaultVerticalPadding,
       ),
       child: RedBorderContainer(
         title:
-            'Здесь вы можете найти результаты определенной гонки, начиная с 1950 года.\nМинимальное количество раундов в сезоне - 7, максимальное - 22.\n(данные на момент 2022 года)',
+            'Здесь вы можете найти результаты определенной гонки, начиная с 1950 года.\nМинимальное количество раундов в сезоне - 7, максимальное - 24.\n(данные на момент 2025 года)',
         style: AppStyles.body.copyWith(fontWeight: FontWeight.bold),
       ),
     );

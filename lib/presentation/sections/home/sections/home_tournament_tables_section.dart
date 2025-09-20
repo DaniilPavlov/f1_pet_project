@@ -3,17 +3,16 @@ import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
 import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/domain/sections/home/tournament_tables/wm/tournament_tables_section_wm.dart';
-import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/switcher/tables_switcher.dart';
-import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/tournament_constructors_table.dart';
-import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/tournament_drivers_table.dart';
+import 'package:f1_pet_project/presentation/widgets/tables/tournament_constructors_table.dart';
+import 'package:f1_pet_project/presentation/widgets/tables/tournament_drivers_table.dart';
+import 'package:f1_pet_project/presentation/widgets/custom_switcher.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class TournamentTablesSection
-    extends ElementaryWidget<TournamentTablesSectionWM> {
-  const TournamentTablesSection({
+class HomeTournamentTablesSection extends ElementaryWidget<TournamentTablesSectionWM> {
+  const HomeTournamentTablesSection({
     required this.driversStandings,
     required this.constructorsStandings,
     required this.season,
@@ -39,7 +38,7 @@ class TournamentTablesSection
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: StaticData.defaultVerticallPadding),
+              const SizedBox(height: StaticData.defaultVerticalPadding),
               const Text(
                 'Турнирная таблица текущего сезона',
                 style: AppStyles.h1,
@@ -68,7 +67,12 @@ class TournamentTablesSection
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              TablesSwitcher(wm: wm),
+              CustomSwitcher(
+                firstTitle: 'Пилоты',
+                secondTitle: 'Конструкторы',
+                onChanged: wm.changeActiveTable,
+                activeValue: activePage!,
+              ),
               if (wm.activeTable.value == 0)
                 TournamentDriversTable(
                   drivers: driversStandings,

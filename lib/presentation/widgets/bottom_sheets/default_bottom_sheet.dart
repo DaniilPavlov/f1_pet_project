@@ -28,7 +28,12 @@ class DefaultBottomSheet extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 12 * 2 + 4),
-              Expanded(child: body),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: body,
+                ),
+              ),
             ],
           ),
           Positioned(

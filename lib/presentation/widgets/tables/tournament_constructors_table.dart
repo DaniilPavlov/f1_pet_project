@@ -1,6 +1,6 @@
 import 'package:f1_pet_project/data/models/sections/home/standings/constructor/constructor_standings_model.dart';
-import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/table_parts/tournament_table_constructors_detail_row.dart';
-import 'package:f1_pet_project/presentation/sections/home/sections/tournament_tables/tables/table_parts/tournament_table_constructors_primary_row.dart';
+import 'package:f1_pet_project/presentation/widgets/tables/table_parts/tournament_table_constructors_detail_row.dart';
+import 'package:f1_pet_project/presentation/widgets/tables/table_parts/tournament_table_constructors_primary_row.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -19,11 +19,11 @@ class TournamentConstructorsTable extends StatelessWidget {
         const SizedBox(height: 8),
         Table(
           columnWidths: const {
-            0: FractionColumnWidth(0.1),
+            0: FractionColumnWidth(0.05),
             1: FlexColumnWidth(0.3),
-            2: FlexColumnWidth(0.2),
-            3: FlexColumnWidth(0.15),
-            4: FlexColumnWidth(0.25),
+            2: FlexColumnWidth(0.3),
+            3: FlexColumnWidth(0.2),
+            4: FlexColumnWidth(0.15),
           },
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [

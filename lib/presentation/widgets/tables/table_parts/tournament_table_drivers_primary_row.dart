@@ -2,7 +2,7 @@ import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-TableRow constructorsPrimaryRow() {
+TableRow driversPrimaryRow() {
   final textStyle = AppStyles.caption.copyWith(
     color: Colors.white,
   );
@@ -30,7 +30,16 @@ TableRow constructorsPrimaryRow() {
         child: Padding(
           padding: EdgeInsets.zero,
           child: Text(
-            'Конструктор',
+            'Пилот',
+            style: textStyle,
+          ),
+        ),
+      ),
+      Center(
+        child: Padding(
+          padding: EdgeInsets.zero,
+          child: Text(
+            'Национальность',
             style: textStyle,
           ),
         ),
@@ -48,7 +57,7 @@ TableRow constructorsPrimaryRow() {
         child: Padding(
           padding: EdgeInsets.zero,
           child: Text(
-            'Победы',
+            'W',
             style: textStyle,
           ),
         ),
@@ -57,7 +66,7 @@ TableRow constructorsPrimaryRow() {
         child: Padding(
           padding: EdgeInsets.zero,
           child: Text(
-            'Страна',
+            'Конструктор',
             style: textStyle,
           ),
         ),

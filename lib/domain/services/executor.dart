@@ -123,8 +123,6 @@ Future<(T?, CustomException?)> _process<T>(
     );
   } on SuccessFalse catch (e) {
     if (e.toString() == 'Ошибка доступа') {
-      // UserSingleton.clearUserData();
-      // AuthorizationSingleton.setAuthorization(false);
     }
     ex = CustomException(
       title: e.toString(),

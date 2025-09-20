@@ -36,7 +36,7 @@ class NotificationService : FlutterActivity() {
 
         // Create a RemoteViews object to use a custom layout for the notification
         val remoteViews = RemoteViews(context.packageName, R.layout.custom_notification)
-        remoteViews.setTextViewText(R.id.title, "Working title") // Set text for the title TextView
+        remoteViews.setTextViewText(R.id.title, "F1 App Started") // Set text for the title TextView
         remoteViews.setTextViewText(R.id.button, "Test button")
 
         // Build the notification

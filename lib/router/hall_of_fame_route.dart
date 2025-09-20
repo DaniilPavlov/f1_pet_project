@@ -10,15 +10,5 @@ final AutoRoute hallOfFameRoute = AutoRoute(
       page: HallOfFameRoute.page,
       meta: const <String, bool>{'hideBottomNav': false},
     ),
-    AutoRoute(
-      path: 'drivers_champions',
-      page: DriversChampionsRoute.page,
-      meta: const <String, bool>{'hideBottomNav': false},
-    ),
-    AutoRoute(
-      path: 'constructors_champions',
-      page: ConstructorsChampionsRoute.page,
-      meta: const <String, bool>{'hideBottomNav': false},
-    ),
   ],
 );

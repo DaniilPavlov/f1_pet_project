@@ -5,7 +5,6 @@ import 'package:f1_pet_project/domain/sections/results/last_race_results_loader.
 class ResultsScreenModel extends ElementaryModel {
   Future<ScheduleModel> loadLastRaceResults() async {
     final rawData = await LastRaceResultsLoader.loadData();
-
     return ScheduleModel.fromJson(rawData.mrData as Map<String, dynamic>);
   }
 }

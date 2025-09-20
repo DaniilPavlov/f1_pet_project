@@ -23,7 +23,6 @@ class BaseResponseModel {
 
   const BaseResponseModel({
     required this.mrData,
-    // required this.success,
     this.code,
     this.message,
   });
@@ -31,9 +30,6 @@ class BaseResponseModel {
   /// Response's data.
   @JsonKey(name: 'MRData')
   final dynamic mrData;
-
-  /// Request's result.
-  // final bool success;
 
   final String? message;
 

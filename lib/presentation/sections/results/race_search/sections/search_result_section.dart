@@ -20,7 +20,7 @@ class SearchResultSection extends StatelessWidget {
             padding: const EdgeInsets.only(
               left: StaticData.defaultHorizontalPadding,
               right: StaticData.defaultHorizontalPadding,
-              top: StaticData.defaultVerticallPadding * 2,
+              top: StaticData.defaultVerticalPadding * 2,
             ),
             child: Text(
               wm.searchedRace.value.data!.raceName,
@@ -29,7 +29,7 @@ class SearchResultSection extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
-              vertical: StaticData.defaultVerticallPadding,
+              vertical: StaticData.defaultVerticalPadding,
             ),
             child: RaceInfoTable(
               fastestLap: wm.fastestLap,
@@ -43,7 +43,7 @@ class SearchResultSection extends StatelessWidget {
           builder: (_, errorMessage) => wm.errorMessage.value!.isNotEmpty
               ? Padding(
                   padding: const EdgeInsets.symmetric(
-                    vertical: StaticData.defaultVerticallPadding,
+                    vertical: StaticData.defaultVerticalPadding,
                     horizontal: StaticData.defaultHorizontalPadding,
                   ),
                   child: Text(

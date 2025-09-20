@@ -1,10 +1,11 @@
-import 'package:f1_pet_project/data/models/sections/home/standings/standings_lists_model.dart';
+import 'package:f1_pet_project/data/models/sections/home/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:flutter/material.dart';
 
-//* Возвращает список детей ряда таблицы
-List<Widget> constructorsChampionsTableDetailRowChildren(
-  StandingsListsModel constructorStanding,
+///* Возвращает список детей ряда таблицы
+List<Widget> tournamentTableDriversDetailRowChildren(
+  DriverStandingsModel driverStanding,
+  int place,
 ) {
   const textStyle = AppStyles.caption;
 
@@ -13,7 +14,7 @@ List<Widget> constructorsChampionsTableDetailRowChildren(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Text(
-          constructorStanding.season,
+          place.toString(),
           style: textStyle,
           textAlign: TextAlign.center,
         ),
@@ -21,35 +22,35 @@ List<Widget> constructorsChampionsTableDetailRowChildren(
     ),
     Center(
       child: Text(
-        constructorStanding.constructorStandings![0].constructor.name,
+        '${driverStanding.driver.givenName}\n${driverStanding.driver.familyName}',
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        constructorStanding.constructorStandings![0].constructor.nationality,
+        driverStanding.driver.nationality,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        constructorStanding.constructorStandings![0].points,
+        driverStanding.points,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        constructorStanding.round,
+        driverStanding.wins,
         style: textStyle,
         textAlign: TextAlign.center,
       ),
     ),
     Center(
       child: Text(
-        constructorStanding.constructorStandings![0].wins,
+        driverStanding.constructors[0].name,
         style: textStyle,
         textAlign: TextAlign.center,
       ),

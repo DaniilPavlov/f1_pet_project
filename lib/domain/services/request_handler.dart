@@ -42,7 +42,6 @@ class RequestHandler {
 
     try {
       res = await _dio!.get(
-        // path,
         // this api needs '.json?limit=100'
         '$path.json?limit=100',
         cancelToken: cancelToken,

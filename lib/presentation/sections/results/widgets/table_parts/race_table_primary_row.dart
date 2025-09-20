@@ -31,7 +31,7 @@ TableRow raceTablePrimaryRow() {
         child: Padding(
           padding: EdgeInsets.zero,
           child: Text(
-            'Команда',
+            'Конструктор',
             style: textStyle,
           ),
         ),

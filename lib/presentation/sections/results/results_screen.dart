@@ -59,7 +59,7 @@ class _Body extends StatelessWidget {
                   ? const SizedBox()
                   : Padding(
                       padding: const EdgeInsets.symmetric(
-                        vertical: StaticData.defaultVerticallPadding,
+                        vertical: StaticData.defaultVerticalPadding,
                       ),
                       child: LastRaceTableSection(
                         lastRace: lastRace,
@@ -73,7 +73,7 @@ class _Body extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: StaticData.defaultHorizontalPadding,
-              vertical: StaticData.defaultVerticallPadding,
+              vertical: StaticData.defaultVerticalPadding,
             ),
             child: RedBorderContainer(
               title: 'Выбрать конкретную гонку',

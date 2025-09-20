@@ -20,7 +20,7 @@ class ErrorBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        vertical: StaticData.defaultVerticallPadding,
+        vertical: StaticData.defaultVerticalPadding,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -40,7 +40,6 @@ class CacheInterceptor extends Interceptor {
         // return cachedResponse;
       }
     }
-    // return err;
     super.onError(dioError, handler);
   }
 }

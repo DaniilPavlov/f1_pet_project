@@ -67,7 +67,7 @@ class _Body extends StatelessWidget {
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.only(
-              top: StaticData.defaultVerticallPadding,
+              top: StaticData.defaultVerticalPadding,
               left: StaticData.defaultHorizontalPadding,
               right: StaticData.defaultHorizontalPadding,
             ),
@@ -81,7 +81,7 @@ class _Body extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    vertical: StaticData.defaultVerticallPadding,
+                    vertical: StaticData.defaultVerticalPadding,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -125,7 +125,7 @@ class _Body extends StatelessWidget {
           ),
         ),
         const SliverToBoxAdapter(
-          child: SizedBox(height: StaticData.defaultVerticallPadding),
+          child: SizedBox(height: StaticData.defaultVerticalPadding),
         ),
         StateNotifierBuilder<bool>(
           listenableState: wm.qualificationAppBarPinned,
@@ -149,7 +149,7 @@ class _Body extends StatelessWidget {
           ),
         ),
         const SliverToBoxAdapter(
-          child: SizedBox(height: StaticData.defaultVerticallPadding),
+          child: SizedBox(height: StaticData.defaultVerticalPadding),
         ),
         StateNotifierBuilder<bool>(
           listenableState: wm.pitStopsAppBarPinned,
@@ -168,7 +168,7 @@ class _Body extends StatelessWidget {
             key: const Key('pit_stops_info_table'),
             onVisibilityChanged: wm.onPitStopsTableVisibilityChanged,
             child: PitStopsTable(
-              pitStops: wm.pitStops.value.data!,
+              pitStops: wm.pitStops.value.data ?? [],
             ),
           ),
         ),

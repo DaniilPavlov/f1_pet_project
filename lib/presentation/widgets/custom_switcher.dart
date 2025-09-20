@@ -2,7 +2,6 @@ import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-// TODO(pavlov): add this to home screen
 class CustomSwitcher extends StatelessWidget {
   const CustomSwitcher({
     required this.firstTitle,
@@ -30,8 +29,8 @@ class CustomSwitcher extends StatelessWidget {
                   Text(
                     firstTitle,
                     style: activeValue == 0
-                        ? AppStyles.h2.copyWith(color: AppTheme.red)
-                        : AppStyles.h2.copyWith(color: AppTheme.pink),
+                        ? AppStyles.h3.copyWith(color: AppTheme.red)
+                        : AppStyles.h3.copyWith(color: AppTheme.pink),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15),
@@ -53,8 +52,8 @@ class CustomSwitcher extends StatelessWidget {
                   Text(
                     secondTitle,
                     style: activeValue == 1
-                        ? AppStyles.h2.copyWith(color: AppTheme.red)
-                        : AppStyles.h2.copyWith(color: AppTheme.pink),
+                        ? AppStyles.h3.copyWith(color: AppTheme.red)
+                        : AppStyles.h3.copyWith(color: AppTheme.pink),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15),

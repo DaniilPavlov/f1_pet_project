@@ -6,7 +6,6 @@ import 'package:f1_pet_project/presentation/widgets/containers/red_border_contai
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/cupertino.dart';
 
-// TODO(pavlov): opens on full screen (need fix)
 
 class CircuitsMapBottomSheet extends StatelessWidget {
   const CircuitsMapBottomSheet({

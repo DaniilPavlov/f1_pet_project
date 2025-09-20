@@ -17,8 +17,8 @@ class AppStyles {
 
   static const h3 = TextStyle(
     fontFamily: 'HelveticaNeueCyr-Bold',
-    fontSize: 20,
-    height: 22 / 20,
+    fontSize: 25,
+    height: 25 / 25,
     color: Colors.black,
     letterSpacing: -0.01,
   );
