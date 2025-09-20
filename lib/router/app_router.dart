@@ -7,7 +7,7 @@ import 'package:f1_pet_project/router/results_route.dart';
 import 'package:f1_pet_project/router/schedule_route.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
-class AppRouter extends $AppRouter {
+class AppRouter extends RootStackRouter  {
   @override
   final List<AutoRoute> routes = [
     AutoRoute(

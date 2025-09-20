@@ -56,7 +56,7 @@ class NavBarItem extends StatelessWidget {
             ),
           ),
           Container(
-            color: Colors.white.withOpacity(0),
+            color: Colors.white.withValues(alpha: 0),
             height: (MediaQuery.of(context).size.width -
                     StaticData.defaultHorizontalPadding * 2) /
                 5.5,

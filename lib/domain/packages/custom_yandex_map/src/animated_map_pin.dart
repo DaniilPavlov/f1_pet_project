@@ -13,8 +13,7 @@ class AnimatedMapPin extends StatefulWidget {
   State<AnimatedMapPin> createState() => _AnimatedMapPinState();
 }
 
-class _AnimatedMapPinState extends State<AnimatedMapPin>
-    with TickerProviderStateMixin {
+class _AnimatedMapPinState extends State<AnimatedMapPin> with TickerProviderStateMixin {
   late final AnimationController _controller;
 
   late final animation = Tween(
@@ -71,7 +70,7 @@ class _AnimatedMapPinState extends State<AnimatedMapPin>
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(180),
             // shape: BoxShape.circle,
-            color: AppTheme.black.withOpacity(.5),
+            color: AppTheme.black.withValues(alpha: 0.5),
           ),
         ),
       ],

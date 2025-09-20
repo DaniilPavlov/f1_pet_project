@@ -24,8 +24,8 @@ class TablesSwitcher extends StatelessWidget {
                     Text(
                       'Пилоты',
                       style: wm.activeTable.value == 0
-                          ? AppStyles.h2.copyWith(color: AppTheme.red)
-                          : AppStyles.h2.copyWith(color: AppTheme.pink),
+                          ? AppStyles.h3.copyWith(color: AppTheme.red)
+                          : AppStyles.h3.copyWith(color: AppTheme.pink),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 15),
@@ -49,8 +49,8 @@ class TablesSwitcher extends StatelessWidget {
                     Text(
                       'Конструкторы',
                       style: wm.activeTable.value == 1
-                          ? AppStyles.h2.copyWith(color: AppTheme.red)
-                          : AppStyles.h2.copyWith(color: AppTheme.pink),
+                          ? AppStyles.h3.copyWith(color: AppTheme.red)
+                          : AppStyles.h3.copyWith(color: AppTheme.pink),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 15),

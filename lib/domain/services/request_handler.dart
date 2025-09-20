@@ -143,24 +143,10 @@ class RequestHandler {
       );
     } on DioException catch (e) {
       final result = e.response;
-
       debugPrint('statusCode delete ($path): ${result?.statusCode}');
-
-      // if ((result?.statusCode == 401 || result?.statusCode == 403) &&
-      //     globalContext != null) {
-      //   Provider.of<AuthWM>(globalContext!, listen: false).logout();
-      // }
-
       Error.throwWithStackTrace(e, StackTrace.current);
     }
   }
-
-  // void _checkAccess(Response res) {
-  //   if (((res.data as Map<String, dynamic>)['code'] as int?) == 403 &&
-  //       _userWM?.userData != null) {
-  //     _userWM?.unauthorize();
-  //    }
-  // }
 
   Future<Options> _getOptions(Options? options) async {
     final info = await PackageInfo.fromPlatform();

@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+// TODO(pavlov): add localization
+
 class App extends StatefulWidget {
   const App({super.key});
 
@@ -56,9 +58,7 @@ class _AppState extends State<App> {
         final data = MediaQuery.of(context);
         return MediaQuery(
           data: data.copyWith(
-            textScaler: TextScaler.linear(
-              data.textScaleFactor > 1.2 ? 1.2 : data.textScaleFactor,
-            ),
+            textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
           ),
           child: ResponsiveBreakpoints.builder(
             child: child!,

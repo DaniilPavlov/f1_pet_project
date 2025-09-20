@@ -19,9 +19,7 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-// TODO(pavlov): to do
-// 1) show full driver info by tapping his name
-// 2) add several russian/english languages
+// TODO(pavlov): show full driver info by tapping his name
 
 @RoutePage()
 class RaceInfoScreen extends ElementaryWidget<IRaceInfoScreenWM> {
@@ -43,9 +41,7 @@ class RaceInfoScreen extends ElementaryWidget<IRaceInfoScreenWM> {
           listenableState: wm.allDataIsLoaded,
           builder: (_, dataIsLoaded) {
             if (wm.screenError.value == null) {
-              return dataIsLoaded!
-                  ? _Body(wm: wm)
-                  : const CustomLoadingIndicator();
+              return dataIsLoaded! ? _Body(wm: wm) : const CustomLoadingIndicator();
             }
             return ErrorBody(
               onTap: wm.loadAllData,

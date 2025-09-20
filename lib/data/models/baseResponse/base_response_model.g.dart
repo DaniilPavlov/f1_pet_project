@@ -9,7 +9,7 @@ part of 'base_response_model.dart';
 BaseResponseModel _$BaseResponseModelFromJson(Map<String, dynamic> json) =>
     BaseResponseModel(
       mrData: json['MRData'],
-      code: json['code'] as int?,
+      code: (json['code'] as num?)?.toInt(),
       message: json['message'] as String?,
     );
 
