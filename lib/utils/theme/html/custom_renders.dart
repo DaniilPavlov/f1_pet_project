@@ -14,8 +14,7 @@ Map<bool Function(RenderContext), CustomRender> customRenders = {
   }: CustomRender.widget(
     widget: (context, childrens) {
       return AppHtml(
-        data:
-            '<span class="bc-quotes">«</span> ${context.tree.element?.innerHtml} <span class="bc-quotes">»</span>',
+        data: '<span class="bc-quotes">«</span> ${context.tree.element?.innerHtml} <span class="bc-quotes">»</span>',
       );
     },
   ),
@@ -25,8 +24,7 @@ Map<bool Function(RenderContext), CustomRender> customRenders = {
     widget: (context, childrens) {
       // final List<String> images = [];
 
-      final dynamicList =
-          json.decode(context.tree.element?.text ?? '') as List<dynamic>;
+      final dynamicList = json.decode(context.tree.element?.text ?? '') as List<dynamic>;
 
       final imagesList = dynamicList.map((dynamic imageSrc) {
         return imageSrc as String;
@@ -36,21 +34,13 @@ Map<bool Function(RenderContext), CustomRender> customRenders = {
         physics: const BouncingScrollPhysics(),
         clipBehavior: Clip.none,
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(
-          horizontal: StaticData.defaultHorizontalPadding,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: StaticData.defaultHorizontalPadding),
         child: Row(
           children: imagesList.map((src) {
             return Container(
-              margin: const EdgeInsets.only(
-                right: StaticData.defaultHorizontalPadding,
-              ),
-              width: MediaQuery.of(context.buildContext).size.width -
-                  StaticData.defaultHorizontalPadding * 4,
-              child: ExtendedImage.network(
-                src,
-                loadStateChanged: loadStateChangedFunction,
-              ),
+              margin: const EdgeInsets.only(right: StaticData.defaultHorizontalPadding),
+              width: MediaQuery.of(context.buildContext).size.width - StaticData.defaultHorizontalPadding * 4,
+              child: ExtendedImage.network(src, loadStateChanged: loadStateChangedFunction),
             );
           }).toList(),
         ),
@@ -102,24 +92,18 @@ Map<bool Function(RenderContext), CustomRender> customRenders = {
                   color: AppTheme.red,
                 ),
                 const SizedBox(width: 16),
-                Flexible(
-                  child: AppHtml(data: element.outerHtml),
-                ),
+                Flexible(child: AppHtml(data: element.outerHtml)),
               ],
             ),
           ),
         );
       }
 
-      return Wrap(
-        runSpacing: 6,
-        children: listElements,
-      );
+      return Wrap(runSpacing: 6, children: listElements);
     },
   ),
   (ctx) {
-    if (ctx.tree.element?.localName == 'table' &&
-        !ctx.tree.element!.classes.contains('decorated-table')) {
+    if (ctx.tree.element?.localName == 'table' && !ctx.tree.element!.classes.contains('decorated-table')) {
       return true;
     }
 
@@ -127,8 +111,7 @@ Map<bool Function(RenderContext), CustomRender> customRenders = {
   }: CustomRender.widget(
     widget: (ctx, childrens) {
       return SizedBox(
-        width: MediaQuery.of(ctx.buildContext).size.width -
-            StaticData.defaultHorizontalPadding * 2,
+        width: MediaQuery.of(ctx.buildContext).size.width - StaticData.defaultHorizontalPadding * 2,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           clipBehavior: Clip.none,
@@ -143,8 +126,7 @@ Map<bool Function(RenderContext), CustomRender> customRenders = {
             ),
             child: AppHtml(
               shrinkWrap: true,
-              data:
-                  '<table class="decorated-table">${ctx.tree.element?.innerHtml}</table>',
+              data: '<table class="decorated-table">${ctx.tree.element?.innerHtml}</table>',
             ),
           ),
         ),
@@ -162,8 +144,7 @@ Map<bool Function(RenderContext), CustomRender> customRenders = {
 };
 
 class CustomRenders {
-  static final bool Function(RenderContext) ulDefaultPredicate =
-      (ctx) => ctx.tree.element?.localName == 'ul';
+  static final bool Function(RenderContext) ulDefaultPredicate = (ctx) => ctx.tree.element?.localName == 'ul';
 
   static Map<bool Function(RenderContext), CustomRender> ulDefault({
     Color? ulColor,
@@ -172,16 +153,15 @@ class CustomRenders {
     EdgeInsets Function(EdgeInsets oldMargin)? marginBuilder,
   }) {
     final size = circleSize ?? 4;
-    final margin = EdgeInsets.only(
-      top: size > 20 ? 0 : (20 - size) / 2,
-    );
+    final margin = EdgeInsets.only(top: size > 20 ? 0 : (20 - size) / 2);
 
     return {
       ulDefaultPredicate: CustomRender.widget(
         widget: (ctx, childrends) {
           return Wrap(
             runSpacing: 6,
-            children: ctx.tree.element?.children.map((child) {
+            children:
+                ctx.tree.element?.children.map((child) {
                   return SizedBox(
                     width: double.infinity,
                     child: Row(
@@ -190,15 +170,11 @@ class CustomRenders {
                         Container(
                           width: size,
                           height: size,
-                          margin: marginBuilder == null
-                              ? margin
-                              : marginBuilder(margin),
+                          margin: marginBuilder == null ? margin : marginBuilder(margin),
                           color: ulColor ?? AppTheme.red,
                         ),
                         SizedBox(width: horizontalSpace ?? 16),
-                        Flexible(
-                          child: AppHtml(data: child.outerHtml),
-                        ),
+                        Flexible(child: AppHtml(data: child.outerHtml)),
                       ],
                     ),
                   );

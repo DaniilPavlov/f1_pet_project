@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:f1_pet_project/domain/sections/results/race_search/race_search_screen_wm.dart';
 import 'package:f1_pet_project/presentation/widgets/text_fields/custom_text_field.dart';
 import 'package:f1_pet_project/utils/constants/static_data.dart';
@@ -28,11 +26,8 @@ class SearchFieldsSection extends StatelessWidget {
               ],
               keyboardType: TextInputType.number,
               onChanged: (_) => wm.checkFields(),
-              toolbarOptions: const ToolbarOptions(
-                copy: true,
-                selectAll: true,
-                cut: true,
-              ),
+              contextMenuBuilder: (_, editableTextState) =>
+                  AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
               label: 'Сезон',
               hintText: 'Год',
               controller: wm.yearController,
@@ -41,11 +36,8 @@ class SearchFieldsSection extends StatelessWidget {
           const SizedBox(width: 20),
           Expanded(
             child: CustomTextField(
-              toolbarOptions: const ToolbarOptions(
-                copy: true,
-                selectAll: true,
-                cut: true,
-              ),
+              contextMenuBuilder: (_, editableTextState) =>
+                  AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
                 FilteringTextInputFormatter.deny(RegExp('^0+')),

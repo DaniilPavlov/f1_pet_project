@@ -14,7 +14,5 @@ StandingsTableModel _$StandingsTableModelFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$StandingsTableModelToJson(
-        StandingsTableModel instance) =>
-    <String, dynamic>{
-      'StandingsLists': instance.standingsLists,
-    };
+  StandingsTableModel instance,
+) => <String, dynamic>{'StandingsLists': instance.standingsLists};

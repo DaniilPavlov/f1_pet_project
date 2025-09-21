@@ -16,7 +16,7 @@ class ScheduleContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // перевожу время из гринвича в локальное
+    // * перевожу время из гринвича в локальное
     final parsedTime = date.time.split(':');
     final greenwichDate = DateTime.parse(date.date).add(
       Duration(

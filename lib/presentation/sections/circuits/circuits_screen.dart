@@ -13,9 +13,7 @@ import 'package:flutter/material.dart';
 
 @RoutePage()
 class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
-  const CircuitsScreen({
-    super.key,
-  }) : super(createCircuitsScreenWM);
+  const CircuitsScreen({super.key}) : super(createCircuitsScreenWM);
 
   @override
   Widget build(ICircuitsScreenWM wm) {
@@ -24,7 +22,7 @@ class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
       body: SafeArea(
         child: EntityStateNotifierBuilder<List<CircuitModel>>(
           listenableEntityState: wm.circuits,
-          builder: (_, __) => StateNotifierBuilder<int>(
+          builder: (_, _) => StateNotifierBuilder<int>(
             listenableState: wm.activePage,
             builder: (_, activePage) => Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,10 +39,7 @@ class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
                     onPageChanged: wm.changeActivePage,
                     controller: wm.pageController,
                     children: [
-                      CircuitsMap(
-                        circuits: wm.circuits.value.data ?? [],
-                        openCircuitInfo: wm.openCircuitInfo,
-                      ),
+                      CircuitsMap(circuits: wm.circuits.value.data ?? [], openCircuitInfo: wm.openCircuitInfo),
                       CircuitsList(circuits: wm.circuits.value.data ?? []),
                     ],
                   ),
@@ -52,8 +47,8 @@ class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
               ],
             ),
           ),
-          loadingBuilder: (_, __) => const CustomLoadingIndicator(),
-          errorBuilder: (_, e, __) => ErrorBody(
+          loadingBuilder: (_, _) => const CustomLoadingIndicator(),
+          errorBuilder: (_, e, _) => ErrorBody(
             onTap: wm.loadAllData,
             title: wm.screenError.value!.title,
             subtitle: wm.screenError.value!.subtitle,
@@ -63,50 +58,3 @@ class CircuitsScreen extends ElementaryWidget<ICircuitsScreenWM> {
     );
   }
 }
-
-// class _Body extends StatelessWidget {
-//   final ICircuitsScreenWM wm;
-//   const _Body({
-//     required this.wm,
-//     Key? key,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return CustomScrollView(
-//       scrollBehavior: AntiGlowBehavior(),
-//       slivers: [
-//         //
-//         SliverToBoxAdapter(
-//           child: EntityStateNotifierBuilder<List<CircuitModel>>(
-//             listenableEntityState: wm.circuits,
-//             builder: (_, items) {
-//               return items == null
-//                   ? const SizedBox()
-//                   : Padding(
-//                       padding: const EdgeInsets.symmetric(
-//                         vertical: 20,
-//                         horizontal: StaticData.defaultHorizontalPadding,
-//                       ),
-//                       child: ListView.builder(
-//                         physics: const NeverScrollableScrollPhysics(),
-//                         itemCount: items.length,
-//                         shrinkWrap: true,
-//                         itemBuilder: (context, index) => Padding(
-//                           padding: const EdgeInsets.only(bottom: 20),
-//                           child: RedBorderContainer(
-//                             title: items[index].circuitName,
-//                             onTap: () async => context.router.navigate(
-//                               CircuitRoute(circuitModel: items[index]),
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     );
-//             },
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }

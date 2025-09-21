@@ -9,10 +9,9 @@ part of 'standings_model.dart';
 StandingsModel _$StandingsModelFromJson(Map<String, dynamic> json) =>
     StandingsModel(
       standingsTable: StandingsTableModel.fromJson(
-          json['StandingsTable'] as Map<String, dynamic>),
+        json['StandingsTable'] as Map<String, dynamic>,
+      ),
     );
 
 Map<String, dynamic> _$StandingsModelToJson(StandingsModel instance) =>
-    <String, dynamic>{
-      'StandingsTable': instance.standingsTable,
-    };
+    <String, dynamic>{'StandingsTable': instance.standingsTable};

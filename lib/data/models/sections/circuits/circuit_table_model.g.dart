@@ -14,6 +14,4 @@ CircuitTableModel _$CircuitTableModelFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$CircuitTableModelToJson(CircuitTableModel instance) =>
-    <String, dynamic>{
-      'Circuits': instance.circuits,
-    };
+    <String, dynamic>{'Circuits': instance.circuits};

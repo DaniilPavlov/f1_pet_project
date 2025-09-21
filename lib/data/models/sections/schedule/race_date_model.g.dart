@@ -7,13 +7,7 @@ part of 'race_date_model.dart';
 // **************************************************************************
 
 RaceDateModel _$RaceDateModelFromJson(Map<String, dynamic> json) =>
-    RaceDateModel(
-      date: json['date'] as String,
-      time: json['time'] as String,
-    );
+    RaceDateModel(date: json['date'] as String, time: json['time'] as String);
 
 Map<String, dynamic> _$RaceDateModelToJson(RaceDateModel instance) =>
-    <String, dynamic>{
-      'date': instance.date,
-      'time': instance.time,
-    };
+    <String, dynamic>{'date': instance.date, 'time': instance.time};

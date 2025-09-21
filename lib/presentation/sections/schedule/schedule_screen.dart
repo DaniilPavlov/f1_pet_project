@@ -69,7 +69,6 @@ class _Body extends StatelessWidget {
                           imagePathCallback: wm.getLogoPath,
                           onDaySelected: wm.onSelectDay,
                           selectedDay: selectedDate!,
-                          // focusedDay: wm.focusedDate,
                           onPageChanged: (_) {},
                         ),
                       ),

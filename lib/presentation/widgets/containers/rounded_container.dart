@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-/// Дефолтный закругленный контейнер.
+/// * Дефолтный закругленный контейнер
 class RoundedContainer extends StatelessWidget {
   const RoundedContainer({
     required this.child,
     this.borderRadius = 20,
     this.backgroundColor = Colors.white,
-    /// Default EdgeInsets.zero, because Container has it's own padding.
+    /// * Default EdgeInsets.zero, because Container has it's own padding.
     this.contentPadding = EdgeInsets.zero,
     this.margin = EdgeInsets.zero,
     this.width,

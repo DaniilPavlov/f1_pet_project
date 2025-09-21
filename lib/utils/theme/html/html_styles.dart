@@ -11,58 +11,25 @@ Map<String, Style> htmlStyles = {
     fontSize: const FontSize(16),
     fontFamily: 'Inter-Regular',
   ),
-  'p:first-child': Style(
-    margin: const EdgeInsets.only(top: 0),
-  ),
+  'p:first-child': Style(margin: const EdgeInsets.only(top: 0)),
   // 'body > *:not(:first-child)': Style(
   //   margin: const EdgeInsets.only(top: 30),
   // ),
   // '.bc-quotes': Style(
   //   color: AppTheme.red,
   // ),
-  'iframe': Style(
-    height: 200,
-  ),
+  'iframe': Style(height: 200),
   // 'a': Style(
   //   color: AppTheme.red,
   // ),
-  'h1': headingStyles.copyWith(
-    fontSize: const FontSize(34),
-    lineHeight: const LineHeight(1),
-  ),
-  'h2': headingStyles.copyWith(
-    fontSize: const FontSize(30),
-    lineHeight: const LineHeight(1),
-  ),
-  'h3': headingStyles.copyWith(
-    fontSize: const FontSize(20),
-    lineHeight: const LineHeight(22 / 20),
-  ),
+  'h1': headingStyles.copyWith(fontSize: const FontSize(34), lineHeight: const LineHeight(1)),
+  'h2': headingStyles.copyWith(fontSize: const FontSize(30), lineHeight: const LineHeight(1)),
+  'h3': headingStyles.copyWith(fontSize: const FontSize(20), lineHeight: const LineHeight(22 / 20)),
 };
 
 final headingStyles = Style(
   fontFamily: 'HelveticaNeueCyr-Bold',
   // fontWeight: FontWeight.bold,
   textTransform: TextTransform.uppercase,
-  margin: const EdgeInsets.only(
-    bottom: 24,
-    top: 24,
-  ),
+  margin: const EdgeInsets.only(bottom: 24, top: 24),
 );
-
-// final TD_TH_STYLES = Style(
-//   margin: const EdgeInsets.symmetric(vertical: 12),
-//   padding: const EdgeInsets.symmetric(
-//     vertical: 23,
-//     horizontal: 16,
-//   ),
-//   border: const Border(
-//     bottom: BorderSide(
-//       color: Colors.white,
-//     ),
-//     left: BorderSide(
-//       color: Colors.white,
-//     ),
-//   ),
-//   color: Colors.white,
-// );

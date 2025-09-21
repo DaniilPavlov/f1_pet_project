@@ -11,8 +11,10 @@ StandingsListsModel _$StandingsListsModelFromJson(Map<String, dynamic> json) =>
       season: json['season'] as String,
       round: json['round'] as String,
       constructorStandings: (json['ConstructorStandings'] as List<dynamic>?)
-          ?.map((e) =>
-              ConstructorStandingsModel.fromJson(e as Map<String, dynamic>))
+          ?.map(
+            (e) =>
+                ConstructorStandingsModel.fromJson(e as Map<String, dynamic>),
+          )
           .toList(),
       driverStandings: (json['DriverStandings'] as List<dynamic>?)
           ?.map((e) => DriverStandingsModel.fromJson(e as Map<String, dynamic>))
@@ -20,10 +22,10 @@ StandingsListsModel _$StandingsListsModelFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$StandingsListsModelToJson(
-        StandingsListsModel instance) =>
-    <String, dynamic>{
-      'season': instance.season,
-      'round': instance.round,
-      'ConstructorStandings': instance.constructorStandings,
-      'DriverStandings': instance.driverStandings,
-    };
+  StandingsListsModel instance,
+) => <String, dynamic>{
+  'season': instance.season,
+  'round': instance.round,
+  'ConstructorStandings': instance.constructorStandings,
+  'DriverStandings': instance.driverStandings,
+};

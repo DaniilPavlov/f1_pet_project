@@ -11,7 +11,8 @@ FastestLapModel _$FastestLapModelFromJson(Map<String, dynamic> json) =>
       averageSpeed: json['AverageSpeed'] == null
           ? null
           : AverageSpeedModel.fromJson(
-              json['AverageSpeed'] as Map<String, dynamic>),
+              json['AverageSpeed'] as Map<String, dynamic>,
+            ),
       time: TimeModel.fromJson(json['Time'] as Map<String, dynamic>),
       lap: json['lap'] as String,
       rank: json['rank'] as String,

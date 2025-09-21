@@ -43,10 +43,10 @@ class CircuitRoute extends _i11.PageRouteInfo<CircuitRouteArgs> {
     _i13.Key? key,
     List<_i11.PageRouteInfo>? children,
   }) : super(
-          CircuitRoute.name,
-          args: CircuitRouteArgs(circuitModel: circuitModel, key: key),
-          initialChildren: children,
-        );
+         CircuitRoute.name,
+         args: CircuitRouteArgs(circuitModel: circuitModel, key: key),
+         initialChildren: children,
+       );
 
   static const String name = 'CircuitRoute';
 
@@ -86,7 +86,7 @@ class CircuitRouteArgs {
 /// [_i2.CircuitsRouterScreen]
 class CircuitsRouter extends _i11.PageRouteInfo<void> {
   const CircuitsRouter({List<_i11.PageRouteInfo>? children})
-      : super(CircuitsRouter.name, initialChildren: children);
+    : super(CircuitsRouter.name, initialChildren: children);
 
   static const String name = 'CircuitsRouter';
 
@@ -102,7 +102,7 @@ class CircuitsRouter extends _i11.PageRouteInfo<void> {
 /// [_i3.CircuitsScreen]
 class CircuitsRoute extends _i11.PageRouteInfo<void> {
   const CircuitsRoute({List<_i11.PageRouteInfo>? children})
-      : super(CircuitsRoute.name, initialChildren: children);
+    : super(CircuitsRoute.name, initialChildren: children);
 
   static const String name = 'CircuitsRoute';
 
@@ -118,7 +118,7 @@ class CircuitsRoute extends _i11.PageRouteInfo<void> {
 /// [_i2.HallOfFameRouterScreen]
 class HallOfFameRouter extends _i11.PageRouteInfo<void> {
   const HallOfFameRouter({List<_i11.PageRouteInfo>? children})
-      : super(HallOfFameRouter.name, initialChildren: children);
+    : super(HallOfFameRouter.name, initialChildren: children);
 
   static const String name = 'HallOfFameRouter';
 
@@ -134,7 +134,7 @@ class HallOfFameRouter extends _i11.PageRouteInfo<void> {
 /// [_i4.HallOfFameScreen]
 class HallOfFameRoute extends _i11.PageRouteInfo<void> {
   const HallOfFameRoute({List<_i11.PageRouteInfo>? children})
-      : super(HallOfFameRoute.name, initialChildren: children);
+    : super(HallOfFameRoute.name, initialChildren: children);
 
   static const String name = 'HallOfFameRoute';
 
@@ -150,7 +150,7 @@ class HallOfFameRoute extends _i11.PageRouteInfo<void> {
 /// [_i2.HomeRouterScreen]
 class HomeRouter extends _i11.PageRouteInfo<void> {
   const HomeRouter({List<_i11.PageRouteInfo>? children})
-      : super(HomeRouter.name, initialChildren: children);
+    : super(HomeRouter.name, initialChildren: children);
 
   static const String name = 'HomeRouter';
 
@@ -166,7 +166,7 @@ class HomeRouter extends _i11.PageRouteInfo<void> {
 /// [_i5.HomeScreen]
 class HomeRoute extends _i11.PageRouteInfo<void> {
   const HomeRoute({List<_i11.PageRouteInfo>? children})
-      : super(HomeRoute.name, initialChildren: children);
+    : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
@@ -186,10 +186,10 @@ class RaceInfoRoute extends _i11.PageRouteInfo<RaceInfoRouteArgs> {
     _i13.Key? key,
     List<_i11.PageRouteInfo>? children,
   }) : super(
-          RaceInfoRoute.name,
-          args: RaceInfoRouteArgs(raceModel: raceModel, key: key),
-          initialChildren: children,
-        );
+         RaceInfoRoute.name,
+         args: RaceInfoRouteArgs(raceModel: raceModel, key: key),
+         initialChildren: children,
+       );
 
   static const String name = 'RaceInfoRoute';
 
@@ -229,7 +229,7 @@ class RaceInfoRouteArgs {
 /// [_i7.RaceSearchScreen]
 class RaceSearchRoute extends _i11.PageRouteInfo<void> {
   const RaceSearchRoute({List<_i11.PageRouteInfo>? children})
-      : super(RaceSearchRoute.name, initialChildren: children);
+    : super(RaceSearchRoute.name, initialChildren: children);
 
   static const String name = 'RaceSearchRoute';
 
@@ -245,7 +245,7 @@ class RaceSearchRoute extends _i11.PageRouteInfo<void> {
 /// [_i2.ResultsRouterScreen]
 class ResultsRouter extends _i11.PageRouteInfo<void> {
   const ResultsRouter({List<_i11.PageRouteInfo>? children})
-      : super(ResultsRouter.name, initialChildren: children);
+    : super(ResultsRouter.name, initialChildren: children);
 
   static const String name = 'ResultsRouter';
 
@@ -261,7 +261,7 @@ class ResultsRouter extends _i11.PageRouteInfo<void> {
 /// [_i8.ResultsScreen]
 class ResultsRoute extends _i11.PageRouteInfo<void> {
   const ResultsRoute({List<_i11.PageRouteInfo>? children})
-      : super(ResultsRoute.name, initialChildren: children);
+    : super(ResultsRoute.name, initialChildren: children);
 
   static const String name = 'ResultsRoute';
 
@@ -277,7 +277,7 @@ class ResultsRoute extends _i11.PageRouteInfo<void> {
 /// [_i9.ScaffoldWithNavBarScreen]
 class ScaffoldWithNavBarRoute extends _i11.PageRouteInfo<void> {
   const ScaffoldWithNavBarRoute({List<_i11.PageRouteInfo>? children})
-      : super(ScaffoldWithNavBarRoute.name, initialChildren: children);
+    : super(ScaffoldWithNavBarRoute.name, initialChildren: children);
 
   static const String name = 'ScaffoldWithNavBarRoute';
 
@@ -293,7 +293,7 @@ class ScaffoldWithNavBarRoute extends _i11.PageRouteInfo<void> {
 /// [_i2.ScheduleRouterScreen]
 class ScheduleRouter extends _i11.PageRouteInfo<void> {
   const ScheduleRouter({List<_i11.PageRouteInfo>? children})
-      : super(ScheduleRouter.name, initialChildren: children);
+    : super(ScheduleRouter.name, initialChildren: children);
 
   static const String name = 'ScheduleRouter';
 
@@ -309,7 +309,7 @@ class ScheduleRouter extends _i11.PageRouteInfo<void> {
 /// [_i10.ScheduleScreen]
 class ScheduleRoute extends _i11.PageRouteInfo<void> {
   const ScheduleRoute({List<_i11.PageRouteInfo>? children})
-      : super(ScheduleRoute.name, initialChildren: children);
+    : super(ScheduleRoute.name, initialChildren: children);
 
   static const String name = 'ScheduleRoute';
 

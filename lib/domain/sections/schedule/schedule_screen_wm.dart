@@ -16,8 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
-    implements IScheduleScreenWM {
+class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel> implements IScheduleScreenWM {
   ScheduleScreenWM(super._model);
   final _scrollController = ScrollController();
 
@@ -34,15 +33,13 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
   DateTime focusedDate = DateTime.now();
 
   @override
-  ValueListenable<EntityState<List<RacesModel>>> get racesElements =>
-      _racesElements;
+  ValueListenable<EntityState<List<RacesModel>>> get racesElements => _racesElements;
 
   @override
   ListenableState<DateTime> get selectedDate => _selectedDate;
 
   @override
-  ListenableState<List<Widget>> get scheduleOfSelectedDate =>
-      _scheduleOfSelectedDate;
+  ListenableState<List<Widget>> get scheduleOfSelectedDate => _scheduleOfSelectedDate;
 
   @override
   ListenableState<bool> get allDataIsLoaded => _allDataIsLoaded;
@@ -68,61 +65,35 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
 
   @override
   String? getLogoPath(DateTime day) {
-    if (_racesElements.value.data!
-        .any((race) => isSameDay(DateTime.parse(race.date), day))) {
+    if (_racesElements.value.data!.any((race) => isSameDay(DateTime.parse(race.date), day))) {
       return 'assets/calendar/finish.png';
     }
     if (_racesElements.value.data!.any(
-      (race) => race.firstPractice != null
-          ? isSameDay(
-              DateTime.parse(race.firstPractice!.date),
-              day,
-            )
-          : false,
+      (race) => race.firstPractice != null ? isSameDay(DateTime.parse(race.firstPractice!.date), day) : false,
     )) {
       return 'assets/calendar/car.png';
     }
 
     if (_racesElements.value.data!.any(
-      (race) => race.secondPractice != null
-          ? isSameDay(
-              DateTime.parse(race.secondPractice!.date),
-              day,
-            )
-          : false,
+      (race) => race.secondPractice != null ? isSameDay(DateTime.parse(race.secondPractice!.date), day) : false,
     )) {
       return 'assets/calendar/car.png';
     }
 
     if (_racesElements.value.data!.any(
-      (race) => race.qualifying != null
-          ? isSameDay(
-              DateTime.parse(race.qualifying!.date),
-              day,
-            )
-          : false,
+      (race) => race.qualifying != null ? isSameDay(DateTime.parse(race.qualifying!.date), day) : false,
     )) {
       return 'assets/calendar/car.png';
     }
 
     if (_racesElements.value.data!.any(
-      (race) => race.thirdPractice != null
-          ? isSameDay(
-              DateTime.parse(race.thirdPractice!.date),
-              day,
-            )
-          : false,
+      (race) => race.thirdPractice != null ? isSameDay(DateTime.parse(race.thirdPractice!.date), day) : false,
     )) {
       return 'assets/calendar/car.png';
     }
 
     if (_racesElements.value.data!.any(
-      (race) => race.sprint != null
-          ? isSameDay(
-              DateTime.parse(race.sprint!.date),
-              day,
-            )
-          : false,
+      (race) => race.sprint != null ? isSameDay(DateTime.parse(race.sprint!.date), day) : false,
     )) {
       return 'assets/calendar/car.png';
     }
@@ -134,11 +105,7 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
     _screenError.accept(null);
     _allDataIsLoaded.accept(false);
 
-    await Future.wait(
-      [
-        _loadSchedule(),
-      ],
-    );
+    await Future.wait([_loadSchedule()]);
 
     if (_screenError.value == null) {
       onSelectDay(DateTime.now(), DateTime.now());
@@ -156,68 +123,23 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
       final race = _racesElements.value.data![i];
       if (isSameDay(DateTime.parse(race.date), _selectedDate.value) ||
           DateTime.parse(race.date).isAfter(_selectedDate.value!)) {
-        if (race.firstPractice != null &&
-            isSameDay(
-              DateTime.parse(race.firstPractice!.date),
-              _selectedDate.value,
-            )) {
-          newSchedule.add(
-            ScheduleContainer(
-              title: 'Первая практика',
-              date: race.firstPractice!,
-            ),
-          );
+        if (race.firstPractice != null && isSameDay(DateTime.parse(race.firstPractice!.date), _selectedDate.value)) {
+          newSchedule.add(ScheduleContainer(title: 'Первая практика', date: race.firstPractice!));
         }
 
-        if (race.secondPractice != null &&
-            isSameDay(
-              DateTime.parse(race.secondPractice!.date),
-              _selectedDate.value,
-            )) {
-          newSchedule.add(
-            ScheduleContainer(
-              title: 'Вторая практика',
-              date: race.secondPractice!,
-            ),
-          );
+        if (race.secondPractice != null && isSameDay(DateTime.parse(race.secondPractice!.date), _selectedDate.value)) {
+          newSchedule.add(ScheduleContainer(title: 'Вторая практика', date: race.secondPractice!));
         }
 
-        if (race.thirdPractice != null &&
-            isSameDay(
-              DateTime.parse(race.thirdPractice!.date),
-              _selectedDate.value,
-            )) {
-          newSchedule.add(
-            ScheduleContainer(
-              title: 'Третья практика',
-              date: race.thirdPractice!,
-            ),
-          );
+        if (race.thirdPractice != null && isSameDay(DateTime.parse(race.thirdPractice!.date), _selectedDate.value)) {
+          newSchedule.add(ScheduleContainer(title: 'Третья практика', date: race.thirdPractice!));
         }
-        if (race.sprint != null &&
-            isSameDay(
-              DateTime.parse(race.sprint!.date),
-              _selectedDate.value,
-            )) {
-          newSchedule.add(
-            ScheduleContainer(
-              title: 'Спринт',
-              date: race.sprint!,
-            ),
-          );
+        if (race.sprint != null && isSameDay(DateTime.parse(race.sprint!.date), _selectedDate.value)) {
+          newSchedule.add(ScheduleContainer(title: 'Спринт', date: race.sprint!));
         }
 
-        if (race.qualifying != null &&
-            isSameDay(
-              DateTime.parse(race.qualifying!.date),
-              _selectedDate.value,
-            )) {
-          newSchedule.add(
-            ScheduleContainer(
-              title: 'Квалификация',
-              date: race.qualifying!,
-            ),
-          );
+        if (race.qualifying != null && isSameDay(DateTime.parse(race.qualifying!.date), _selectedDate.value)) {
+          newSchedule.add(ScheduleContainer(title: 'Квалификация', date: race.qualifying!));
         }
 
         if (isSameDay(DateTime.parse(race.date), _selectedDate.value)) {
@@ -232,25 +154,15 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
           newSchedule.insert(
             0,
             Padding(
-              padding: const EdgeInsets.only(
-                bottom: StaticData.defaultHorizontalPadding,
-              ),
-              child: Text(
-                race.raceName,
-                style: AppStyles.h3,
-              ),
+              padding: const EdgeInsets.only(bottom: StaticData.defaultHorizontalPadding),
+              child: Text(race.raceName, style: AppStyles.h3),
             ),
           );
         }
 
         _scheduleOfSelectedDate.accept(newSchedule);
         if (newSchedule.isNotEmpty) {
-          Future<void>.delayed(
-            const Duration(
-              milliseconds: 100,
-            ),
-            _animateToSchedule,
-          );
+          Future<void>.delayed(const Duration(milliseconds: 100), _animateToSchedule);
         }
         break;
       }
@@ -276,16 +188,13 @@ class ScheduleScreenWM extends WidgetModel<ScheduleScreen, ScheduleScreenModel>
   void _animateToSchedule() {
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
-      duration: const Duration(
-        milliseconds: 200,
-      ),
+      duration: const Duration(milliseconds: 200),
       curve: Curves.easeOutCubic,
     );
   }
 }
 
-ScheduleScreenWM createScheduleScreenWM(BuildContext _) =>
-    ScheduleScreenWM(ScheduleScreenModel());
+ScheduleScreenWM createScheduleScreenWM(BuildContext _) => ScheduleScreenWM(ScheduleScreenModel());
 
 abstract interface class IScheduleScreenWM implements IWidgetModel {
   /// Returns screen scroll controller.
@@ -307,7 +216,7 @@ abstract interface class IScheduleScreenWM implements IWidgetModel {
   ListenableState<CustomException?> get screenError;
 
   /// Invokes on day selection.
-  void onSelectDay(DateTime _, DateTime __);
+  void onSelectDay(DateTime _, DateTime _);
 
   /// Loads all data.
   void loadAllData();

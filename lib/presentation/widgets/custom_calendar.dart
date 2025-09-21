@@ -205,7 +205,6 @@ class ChevronButton extends StatelessWidget {
           child: Icon(
             icon,
             color: Colors.black,
-            // size: 15,
           ),
         ),
       ),

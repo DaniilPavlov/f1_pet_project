@@ -8,11 +8,10 @@ part of 'schedule_model.dart';
 
 ScheduleModel _$ScheduleModelFromJson(Map<String, dynamic> json) =>
     ScheduleModel(
-      raceTable:
-          RaceTableModel.fromJson(json['RaceTable'] as Map<String, dynamic>),
+      raceTable: RaceTableModel.fromJson(
+        json['RaceTable'] as Map<String, dynamic>,
+      ),
     );
 
 Map<String, dynamic> _$ScheduleModelToJson(ScheduleModel instance) =>
-    <String, dynamic>{
-      'RaceTable': instance.raceTable,
-    };
+    <String, dynamic>{'RaceTable': instance.raceTable};

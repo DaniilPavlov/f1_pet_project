@@ -27,6 +27,7 @@ class CustomTextField extends StatefulWidget {
     this.borderColor,
     this.cursorColor,
     this.textColor,
+    this.contextMenuBuilder,
     this.readOnly = false,
     TextAlign? textAlign,
     EdgeInsets? scrollPadding,
@@ -34,8 +35,8 @@ class CustomTextField extends StatefulWidget {
     this.toolbarOptions,
     this.borderRadius,
     super.key,
-  })  : scrollPadding = scrollPadding ?? const EdgeInsets.all(20.0),
-        textAlign = textAlign ?? TextAlign.start;
+  }) : scrollPadding = scrollPadding ?? const EdgeInsets.all(20.0),
+       textAlign = textAlign ?? TextAlign.start;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
@@ -59,6 +60,7 @@ class CustomTextField extends StatefulWidget {
   final Widget? suffix;
   final ToolbarOptions? toolbarOptions;
   final BorderRadius? borderRadius;
+  final Widget Function(BuildContext, EditableTextState)? contextMenuBuilder;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -87,36 +89,26 @@ class _CustomTextFieldState extends State<CustomTextField> {
       children: [
         if (widget.label != null && widget.label!.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(
-              bottom: 4,
-            ),
-            child: Text(
-              widget.label!,
-              style: AppStyles.caption.copyWith(
-                color: AppTheme.black,
-              ),
-            ),
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Text(widget.label!, style: AppStyles.caption.copyWith(color: AppTheme.black)),
           ),
         Container(
-          padding: Platform.isIOS
-              ? const EdgeInsets.symmetric(
-                  horizontal: 16,
-                )
-              : EdgeInsets.zero,
+          padding: Platform.isIOS ? const EdgeInsets.symmetric(horizontal: 16) : EdgeInsets.zero,
           decoration: BoxDecoration(
             border: Border.all(
               color: widget.disabled
                   ? AppTheme.strokeGray
                   : widget.errorText != null
-                      ? AppTheme.red
-                      : widget.readOnly
-                          ? widget.borderColor ?? AppTheme.strokeGray
-                          : focusNode.hasFocus
-                              ? AppTheme.black
-                              : widget.borderColor ?? AppTheme.strokeGray,
+                  ? AppTheme.red
+                  : widget.readOnly
+                  ? widget.borderColor ?? AppTheme.strokeGray
+                  : focusNode.hasFocus
+                  ? AppTheme.black
+                  : widget.borderColor ?? AppTheme.strokeGray,
             ),
             color: Colors.transparent,
-            borderRadius: widget.borderRadius ??
+            borderRadius:
+                widget.borderRadius ??
                 (widget.maxLines == null || widget.maxLines! > 1
                     ? const BorderRadius.all(Radius.circular(20.0))
                     : const BorderRadius.all(Radius.circular(100.0))),
@@ -142,37 +134,26 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       color: widget.disabled
                           ? AppTheme.textGray
                           : widget.errorText != null
-                              ? AppTheme.red
-                              : widget.textColor ?? AppTheme.black,
+                          ? AppTheme.red
+                          : widget.textColor ?? AppTheme.black,
                     ),
                     cursorColor: widget.cursorColor ?? AppTheme.black,
                     textAlign: widget.textAlign,
                     onSubmitted: widget.onSubmit,
                     focusNode: focusNode,
+                    contextMenuBuilder: widget.contextMenuBuilder,
                     toolbarOptions: widget.toolbarOptions,
-                    // readOnly: widget.readOnly,
-                    padding: const EdgeInsets.symmetric(
-                      // horizontal: widget.isOther ? 15 : 16,
-                      vertical: 12,
-                    ),
-
-                    // selectionColor: widget.whiteBackground
-                    //     ? AppTheme.three.withOpacity(0.5)
-                    //     : AppTheme.three,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     placeholder: widget.disabled ? null : widget.hintText,
                     enabled: !widget.disabled,
-                    placeholderStyle: AppStyles.caption.copyWith(
-                      color: AppTheme.strokeGray,
-                    ),
+                    placeholderStyle: AppStyles.caption.copyWith(color: AppTheme.strokeGray),
                     textCapitalization: widget.textCapitalization,
                   ),
                 )
               else
                 Expanded(
                   child: TextSelectionTheme(
-                    data: const TextSelectionThemeData(
-                      selectionColor: AppTheme.textGray,
-                    ),
+                    data: const TextSelectionThemeData(selectionColor: AppTheme.textGray),
                     child: TextFormField(
                       inputFormatters: widget.inputFormatters,
                       cursorRadius: Radius.zero,
@@ -190,8 +171,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         color: widget.disabled
                             ? AppTheme.strokeGray
                             : widget.errorText != null
-                                ? AppTheme.red
-                                : widget.textColor ?? AppTheme.black,
+                            ? AppTheme.red
+                            : widget.textColor ?? AppTheme.black,
                       ),
                       textAlign: widget.textAlign,
                       onFieldSubmitted: widget.onSubmit,
@@ -200,22 +181,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       enabled: !widget.disabled,
                       decoration: InputDecoration(
                         isDense: true,
-                        // filled: true,
                         suffix: widget.suffix,
                         hintText: widget.disabled ? null : widget.hintText,
-                        hintStyle: AppStyles.caption.copyWith(
-                          color: AppTheme.strokeGray,
-                        ),
+                        hintStyle: AppStyles.caption.copyWith(color: AppTheme.strokeGray),
                         border: InputBorder.none,
-                        // border: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         errorBorder: InputBorder.none,
                         disabledBorder: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
                       textCapitalization: widget.textCapitalization,
                     ),
@@ -228,12 +202,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         if (widget.errorText != null && widget.errorText!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 2, 16, 0),
-            child: Text(
-              widget.errorText!,
-              style: AppStyles.caption.copyWith(
-                color: AppTheme.red,
-              ),
-            ),
+            child: Text(widget.errorText!, style: AppStyles.caption.copyWith(color: AppTheme.red)),
           ),
       ],
     );

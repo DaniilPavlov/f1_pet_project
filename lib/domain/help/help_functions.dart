@@ -6,15 +6,11 @@ abstract class HelpFunctions {
       text: TextSpan(text: text, style: style),
       maxLines: 1,
       textDirection: TextDirection.ltr,
-    )..layout(
-        // minWidth: 0,
-        maxWidth: maxWidth ?? double.infinity,
-      );
+    )..layout(maxWidth: maxWidth ?? double.infinity);
     return textPainter.size.width;
   }
 
-  static double getTextHeight(String text, TextStyle style,
-      {double? maxWidth,}) {
+  static double getTextHeight(String text, TextStyle style, {double? maxWidth}) {
     final textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       maxLines: 1,

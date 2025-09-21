@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:auto_route/auto_route.dart';
 import 'package:elementary/elementary.dart';
 import 'package:elementary_helper/elementary_helper.dart';
@@ -19,9 +17,7 @@ import 'package:flutter/services.dart';
 
 @RoutePage()
 class HallOfFameScreen extends ElementaryWidget<IHallOfFameScreenWM> {
-  const HallOfFameScreen({
-    super.key,
-  }) : super(createHallOfFameScreenWM);
+  const HallOfFameScreen({super.key}) : super(createHallOfFameScreenWM);
 
   @override
   Widget build(IHallOfFameScreenWM wm) {
@@ -61,10 +57,7 @@ class _Body extends StatelessWidget {
               horizontal: StaticData.defaultHorizontalPadding,
               vertical: StaticData.defaultVerticalPadding,
             ),
-            child: const Text(
-              'Зал славы',
-              style: AppStyles.h1,
-            ),
+            child: const Text('Зал славы', style: AppStyles.h1),
           ),
         ),
         SliverToBoxAdapter(
@@ -85,11 +78,8 @@ class _Body extends StatelessWidget {
                       ],
                       keyboardType: TextInputType.number,
                       onChanged: (_) => wm.checkFields(),
-                      toolbarOptions: const ToolbarOptions(
-                        copy: true,
-                        selectAll: true,
-                        cut: true,
-                      ),
+                      contextMenuBuilder: (_, editableTextState) =>
+                          AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
                       label: 'Сезон',
                       hintText: 'Год',
                       controller: wm.yearController,
@@ -101,11 +91,7 @@ class _Body extends StatelessWidget {
                     listenableState: wm.fieldsInputted,
                     builder: (_, fieldsInputted) {
                       return wm.allDataIsLoaded.value!
-                          ? BlackButton(
-                              isDisabled: !fieldsInputted!,
-                              onTap: wm.loadAllData,
-                              text: 'Поиск',
-                            )
+                          ? BlackButton(isDisabled: !fieldsInputted!, onTap: wm.loadAllData, text: 'Поиск')
                           : const CustomLoadingIndicator();
                     },
                   ),

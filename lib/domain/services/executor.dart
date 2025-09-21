@@ -30,7 +30,6 @@ Future<void> execute<T>(
   Future<T> Function() processing, {
   String? dioErrorText,
   String? responseParseErrorText,
-  // String? successFalseErrorText,
   String? otherErrorText,
   FutureOr<void> Function()? before,
   FutureOr<void> Function()? after,
@@ -52,15 +51,13 @@ Future<void> execute<T>(
       processing,
       dioErrorText: dioErrorText,
       responseParseErrorText: responseParseErrorText,
-      // successFalseErrorText: successFalseErrorText,
       otherErrorText: otherErrorText,
     );
 
     currentAttempt += 1;
 
     if (currentAttempt == maxAttempts || ex == null) {
-      // Мы выходим после достижения последней попытки,
-      // либо если у нас запрос отработал без ошибок
+      // * Мы выходим после достижения последней попытки, либо если у нас запрос отработал без ошибок
       break;
     }
 
@@ -70,29 +67,21 @@ Future<void> execute<T>(
   await after?.call();
 
   if (ex != null) {
-    log(
-      '${ex.title}: ${ex.subtitle}',
-      stackTrace: ex.stackTrace,
-    );
+    log('${ex.title}: ${ex.subtitle}', stackTrace: ex.stackTrace);
     await onError?.call(ex);
   } else {
     return await onSuccess?.call(data);
   }
 }
 
-Duration Function(int attempt) _defaultAttemptsDelay =
-    (attempt) => const Duration(
-          milliseconds: 500,
-        );
+Duration Function(int attempt) _defaultAttemptsDelay = (attempt) => const Duration(milliseconds: 500);
 
-/// Функция, которая производит один вызов [processing]
-///
-/// Используется в [execute], чтобы выполнить некоторое заданное количество раз.
+///*  Функция, которая производит один вызов [processing]
+/// * Используется в [execute], чтобы выполнить некоторое заданное количество раз.
 Future<(T?, CustomException?)> _process<T>(
   Future<T> Function() processing, {
   String? dioErrorText,
   String? responseParseErrorText,
-  // String? successFalseErrorText,
   String? otherErrorText,
 }) async {
   CustomException? ex;
@@ -104,8 +93,7 @@ Future<(T?, CustomException?)> _process<T>(
     if (e.type == DioExceptionType.unknown) {
       ex = CustomException(
         title: 'Соединение отсутствует',
-        subtitle:
-            'Как только соединение восстановится, вы снова сможете пользоваться приложением',
+        subtitle: 'Как только соединение восстановится, вы снова сможете пользоваться приложением',
         stackTrace: e.stackTrace,
       );
     } else {
@@ -122,12 +110,8 @@ Future<(T?, CustomException?)> _process<T>(
       stackTrace: e.stackTrace,
     );
   } on SuccessFalse catch (e) {
-    if (e.toString() == 'Ошибка доступа') {
-    }
-    ex = CustomException(
-      title: e.toString(),
-      stackTrace: e.stackTrace,
-    );
+    if (e.toString() == 'Ошибка доступа') {}
+    ex = CustomException(title: e.toString(), stackTrace: e.stackTrace);
   } catch (e) {
     ex = CustomException(
       title: otherErrorText ?? 'Непредвиденная ошибка',

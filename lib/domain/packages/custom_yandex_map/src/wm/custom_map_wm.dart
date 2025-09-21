@@ -1,8 +1,6 @@
-// ignore_for_file: library_prefixes, avoid_dynamic_calls
-
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui' as UI;
+import 'dart:ui' as dart_ui;
 import 'package:elementary/elementary.dart';
 import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/custom_map.dart';
@@ -22,17 +20,11 @@ class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
 
   late final onMapCreated = widget.onMapCreated;
 
-  final MapObjectId userMapId = const MapObjectId(
-    'user',
-  );
+  final MapObjectId userMapId = const MapObjectId('user');
 
-  final MapObjectId clusterMapId = const MapObjectId(
-    'cluster',
-  );
+  final MapObjectId clusterMapId = const MapObjectId('cluster');
 
-  final animation = const MapAnimation(
-    duration: 0.3,
-  );
+  final animation = const MapAnimation(duration: 0.3);
 
   late final mapController = widget.mapController;
 
@@ -50,9 +42,7 @@ class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
 
   double userDirection = 0;
 
-  UI.Image? shopMarkerBase;
-
-  // late final points = widget.points;
+  dart_ui.Image? shopMarkerBase;
 
   StreamSubscription<Position>? userPositionStream;
 
@@ -64,8 +54,7 @@ class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
 
   BitmapDescriptor? selectedMapIcon;
 
-  ListenableState<List<MapObject>> get streamedMapObjects =>
-      model.streamedMapObjects;
+  ListenableState<List<MapObject>> get streamedMapObjects => model.streamedMapObjects;
 
   ListenableState<bool> get isDraggingListenable => _isDraggingState;
 
@@ -73,57 +62,37 @@ class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
   Future<void> initWidgetModel() async {
     super.initWidgetModel();
 
-    mapController.stream.listen(
-      (event) {
-        if (event.type == 'updateUserPosition') {
-          _enableListenUserPosition();
-          _listenUserDirection();
-        }
-        if (event.type == 'zoomIn') {
-          controller?.moveCamera(
-            CameraUpdate.zoomIn(),
-            animation: animation,
-          );
-        }
+    mapController.stream.listen((event) {
+      if (event.type == 'updateUserPosition') {
+        _enableListenUserPosition();
+        _listenUserDirection();
+      }
+      if (event.type == 'zoomIn') {
+        controller?.moveCamera(CameraUpdate.zoomIn(), animation: animation);
+      }
 
-        if (event.type == 'zoomOut') {
-          controller?.moveCamera(
-            CameraUpdate.zoomOut(),
-            animation: animation,
-          );
-        }
+      if (event.type == 'zoomOut') {
+        controller?.moveCamera(CameraUpdate.zoomOut(), animation: animation);
+      }
 
-        if (event.type == 'center') {
-          CameraServices.setCenterOn(
-            widget.points,
-            controller: controller,
-          );
-        }
+      if (event.type == 'center') {
+        CameraServices.setCenterOn(widget.points, controller: controller);
+      }
 
-        if (event.type == 'selectPlacemark') {
-          _updateClusterMapObject(
-            widget.points,
-            event.args as int,
-          );
-        }
+      if (event.type == 'selectPlacemark') {
+        _updateClusterMapObject(widget.points, event.args as int);
+      }
 
-        if (event.type == 'moveCameraTo') {
-          event.args as List<double>;
-          CameraServices.moveTo(
-            Point(
-              latitude: event.args[0] as double,
-              longitude: event.args[1] as double,
-            ),
-          );
-        }
-      },
-    );
+      if (event.type == 'moveCameraTo') {
+        event.args as List<double>;
+        // ignore: avoid_dynamic_calls
+        CameraServices.moveTo(Point(latitude: event.args[0] as double, longitude: event.args[1] as double));
+      }
+    });
   }
 
   @override
   void dispose() {
-    // model.streamedMapObjects.dispose();
-    // controller?.dispose();
     userPositionStream?.cancel();
 
     for (final subscription in _streamSubscriptions) {
@@ -136,7 +105,6 @@ class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
   @override
   void didUpdateWidget(CustomMap oldWidget) {
     _updateClusterMapObject(widget.points);
-    // _enableListenUserPosition();
     setCenterOn(widget.points);
     super.didUpdateWidget(oldWidget);
   }
@@ -147,290 +115,134 @@ class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
 
   Future<void> init() async {
     if (widget.mapObjectIcon != null) {
-      mapIcon ??= BitmapDescriptor.fromAssetImage(
-        widget.mapObjectIcon!,
-      );
+      mapIcon ??= BitmapDescriptor.fromAssetImage(widget.mapObjectIcon!);
     }
     if (widget.selectedMapObjectIcon != null) {
-      selectedMapIcon ??= BitmapDescriptor.fromAssetImage(
-        widget.selectedMapObjectIcon!,
-      );
+      selectedMapIcon ??= BitmapDescriptor.fromAssetImage(widget.selectedMapObjectIcon!);
     }
 
     await _updateClusterMapObject(widget.points);
     unawaited(setCenterOn(widget.points));
   }
 
-  Future<void> setCenterOn<T>(
-    List<T> newList, {
-    bool withUserPosition = true,
-  }) async {
+  Future<void> setCenterOn<T>(List<T> newList, {bool withUserPosition = true}) async {
     if (newList.isEmpty) return;
     final list = newList;
-    await Future<void>.delayed(
-      const Duration(
-        milliseconds: 100,
-      ),
-    );
+    await Future<void>.delayed(const Duration(milliseconds: 100));
 
     Geometry? geometry;
 
     geometry = GeometryService.getGeometry(list as List<Point>);
 
     await Future.delayed(
-      const Duration(
-        milliseconds: 100,
-      ),
-      () async => controller?.moveCamera(
-        CameraUpdate.newGeometry(geometry!),
-        animation: const MapAnimation(duration: 0.4),
-      ),
+      const Duration(milliseconds: 100),
+      () async =>
+          controller?.moveCamera(CameraUpdate.newGeometry(geometry!), animation: const MapAnimation(duration: 0.4)),
     );
   }
 
-  Future<void> _updateClusterMapObject(
-    List<Point> points, [
-    int? indexOfPressedItem,
-  ]) async {
-    model.streamedMapObjects.accept(
-      streamedMapObjects.value
-        ?..removeWhere(
-          (obj) => obj.mapId == clusterMapId,
-        ),
-    );
-
-    // final icon = await _rawPlacemarkImage(widget.mapObjectIcon!);
-
+  Future<void> _updateClusterMapObject(List<Point> points, [int? indexOfPressedItem]) async {
+    model.streamedMapObjects.accept(streamedMapObjects.value?..removeWhere((obj) => obj.mapId == clusterMapId));
     final placemarkCollection = await ClusterDrawer.getCluster(
       clusterMapId: clusterMapId,
       points: points,
       clusterTextStyle: widget.clusterTextStyle,
       selectedPointIndex: indexOfPressedItem,
       placemarkIcon: widget.mapObjectIcon != null
-          ? PlacemarkIcon.single(
-              PlacemarkIconStyle(
-                scale: widget.placemarkIconSize ?? 0.5,
-                image: mapIcon!,
-              ),
-            )
+          ? PlacemarkIcon.single(PlacemarkIconStyle(scale: widget.placemarkIconSize ?? 0.5, image: mapIcon!))
           : null,
       selectedPlacemarkIcon: widget.selectedMapObjectIcon != null
           ? PlacemarkIcon.single(
-              PlacemarkIconStyle(
-                scale: widget.selectedPlacemarkIconSize ?? 0.5,
-                image: selectedMapIcon!,
-              ),
+              PlacemarkIconStyle(scale: widget.selectedPlacemarkIconSize ?? 0.5, image: selectedMapIcon!),
             )
           : null,
       clusterColor: widget.clusterColor ?? Theme.of(context).primaryColor,
-      onClusterTap: (self, cluster) => CameraServices.setCenterOn(
-        cluster.placemarks,
-        controller: controller,
-      ),
+      onClusterTap: (self, cluster) => CameraServices.setCenterOn(cluster.placemarks, controller: controller),
       onPointTap: (point) async {
         await _updateClusterMapObject(points, point);
-        await CameraServices.moveTo(
-          points[point],
-          controller: controller,
-        );
+        await CameraServices.moveTo(points[point], controller: controller);
         onPlacemarkPressed?.call(point);
       },
     );
 
-    model.streamedMapObjects.accept(
-      [
-        ...model.streamedMapObjects.value ?? <MapObject>[],
-        placemarkCollection,
-      ],
-    );
+    model.streamedMapObjects.accept([...model.streamedMapObjects.value ?? <MapObject>[], placemarkCollection]);
   }
 
   void _listenUserDirection() {
     if (FlutterCompass.events == null) return;
 
     _streamSubscriptions.add(
-      FlutterCompass.events!.listen(
-        (event) {
-          if (userPosition == null) return;
-
-          userDirection = event.heading ?? 0;
-          final mapObj = [...model.streamedMapObjects.value ?? <MapObject>[]];
-
-          // model.streamedMapObjects.accept(
-          //   mapObj
-          //     ..removeWhere(
-          //       (element) => element.mapId == userMapId,
-          //     ),
-          // );
-
-          model.streamedMapObjects.accept(
-            mapObj
-              ..add(
-                PlacemarkMapObject(
-                  mapId: userMapId,
-                  point: userPosition!,
-                  opacity: 1,
-                  direction: userDirection,
-                  icon: PlacemarkIcon.single(
-                    PlacemarkIconStyle(
-                      scale: 2,
-                      rotationType: RotationType.rotate,
-                      image: BitmapDescriptor.fromAssetImage(
-                        widget.userIcon!,
-                      ),
-                    ),
-                  ),
+      FlutterCompass.events!.listen((event) {
+        if (userPosition == null) return;
+        userDirection = event.heading ?? 0;
+        final mapObj = [...model.streamedMapObjects.value ?? <MapObject>[]];
+        model.streamedMapObjects.accept(
+          mapObj..add(
+            PlacemarkMapObject(
+              mapId: userMapId,
+              point: userPosition!,
+              opacity: 1,
+              direction: userDirection,
+              icon: PlacemarkIcon.single(
+                PlacemarkIconStyle(
+                  scale: 2,
+                  rotationType: RotationType.rotate,
+                  image: BitmapDescriptor.fromAssetImage(widget.userIcon!),
                 ),
               ),
-          );
-        },
-      ),
+            ),
+          ),
+        );
+      }),
     );
   }
 
   Future<void> _enableListenUserPosition() async {
     LocationPermission permission;
-
-    // if (!serviceEnabled) {
-    //   // onError
-    //   onGetUserPositionError?.call(
-    //     Exception(
-    //       'Невозможно определить местоположение',
-    //     ),
-    //   );
-    // }
-
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // onError
-        onGetUserPositionError?.call(
-          Exception(
-            'Невозможно определить местоположение',
-          ),
-        );
+        // * onError
+        onGetUserPositionError?.call(Exception('Невозможно определить местоположение'));
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // onError
-      onGetUserPositionError?.call(
-        Exception(
-          'Невозможно определить местоположение',
-        ),
-      );
+      // * onError
+      onGetUserPositionError?.call(Exception('Невозможно определить местоположение'));
     }
 
     final position = await Geolocator.getCurrentPosition();
 
     unawaited(
       _updateUserPosition(
-        newUserPosition: Point(
-          latitude: position.latitude,
-          longitude: position.longitude,
-        ),
+        newUserPosition: Point(latitude: position.latitude, longitude: position.longitude),
       ),
     );
 
     await userPositionStream?.cancel();
 
-    userPositionStream = Geolocator.getPositionStream().listen(
-      (position) {
-        _updateUserPosition(
-          withMoveToUser: false,
-          newUserPosition: Point(
-            latitude: position.latitude,
-            longitude: position.longitude,
-          ),
-        );
-      },
-    );
+    userPositionStream = Geolocator.getPositionStream().listen((position) {
+      _updateUserPosition(
+        withMoveToUser: false,
+        newUserPosition: Point(latitude: position.latitude, longitude: position.longitude),
+      );
+    });
   }
 
-  Future<void> _updateUserPosition({
-    bool withMoveToUser = true,
-    Point? newUserPosition,
-  }) async {
+  Future<void> _updateUserPosition({bool withMoveToUser = true, Point? newUserPosition}) async {
     try {
-      // final mapObj = [...model.streamedMapObjects.value ?? <MapObject>[]];
-      // model.streamedMapObjects.accept(
-      //   mapObj
-      //     ..removeWhere(
-      //       (element) => element.mapId == userMapId,
-      //     ),
-      // );
-
-      userPosition = newUserPosition ??
-          await UserPositionGetter.getUserPosition(
-            onGetUserPositionError: onGetUserPositionError,
-          );
+      userPosition =
+          newUserPosition ?? await UserPositionGetter.getUserPosition(onGetUserPositionError: onGetUserPositionError);
 
       if (withMoveToUser) {
-        unawaited(
-          CameraServices.setCenterOn(
-            [userPosition!],
-            controller: controller,
-          ),
-        );
+        unawaited(CameraServices.setCenterOn([userPosition!], controller: controller));
       }
     } catch (e) {
-      // e as Exception;
-      // onGetUserPositionError?.call(e);
       onUserPositionStatusUpdate?.call(false);
     }
   }
-
-  // Future<Uint8List> _rawPlacemarkImage(
-  //   String img,
-  // ) async {
-  //   final recorder = PictureRecorder();
-  //   final canvas = Canvas(recorder);
-  //   const height = 100.0;
-  //   const imageRatio = 1;
-
-  //   const size = Size(height, height / imageRatio);
-
-  //   // final imageWidth = size.height * imageRatio;
-  //   shopMarkerBase ??= await _loadUiImage(
-  //     img,
-  //     size: size,
-  //   );
-
-  //   canvas.drawImage(
-  //     shopMarkerBase!,
-  //     Offset.zero,
-  //     Paint()..color = Colors.red,
-  //   );
-
-  //   final image = await recorder
-  //       .endRecording()
-  //       .toImage(size.width.toInt(), size.height.toInt());
-  //   final pngBytes = await image.toByteData(format: ImageByteFormat.png);
-
-  //   return pngBytes!.buffer.asUint8List();
-  // }
-
-  // Future<UI.Image> _loadUiImage(
-  //   String imageAssetPath, {
-  //   required Size size,
-  // }) async {
-  //   final data = await rootBundle.load(imageAssetPath);
-
-  //   final image = IMG.decodeImage(data.buffer.asUint8List())!;
-  //   final resized = IMG.copyResize(
-  //     image,
-  //     height: size.height.toInt(),
-  //   );
-  //   final resizedBytes = IMG.encodePng(resized);
-  //   final completer = Completer<UI.Image>();
-
-  //   UI.decodeImageFromList(
-  //     Uint8List.fromList(resizedBytes),
-  //     completer.complete,
-  //   );
-  //   return completer.future;
-  // }
 }
 
 CustomMapWM createMapWM(BuildContext _) => CustomMapWM(CustomMapModel());

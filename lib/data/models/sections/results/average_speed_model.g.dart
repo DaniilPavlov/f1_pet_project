@@ -13,7 +13,4 @@ AverageSpeedModel _$AverageSpeedModelFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$AverageSpeedModelToJson(AverageSpeedModel instance) =>
-    <String, dynamic>{
-      'units': instance.units,
-      'speed': instance.speed,
-    };
+    <String, dynamic>{'units': instance.units, 'speed': instance.speed};

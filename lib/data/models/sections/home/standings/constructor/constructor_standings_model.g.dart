@@ -7,22 +7,23 @@ part of 'constructor_standings_model.dart';
 // **************************************************************************
 
 ConstructorStandingsModel _$ConstructorStandingsModelFromJson(
-        Map<String, dynamic> json) =>
-    ConstructorStandingsModel(
-      position: json['position'] as String,
-      positionText: json['positionText'] as String,
-      points: json['points'] as String,
-      wins: json['wins'] as String,
-      constructor: ConstructorModel.fromJson(
-          json['Constructor'] as Map<String, dynamic>),
-    );
+  Map<String, dynamic> json,
+) => ConstructorStandingsModel(
+  position: json['position'] as String,
+  positionText: json['positionText'] as String,
+  points: json['points'] as String,
+  wins: json['wins'] as String,
+  constructor: ConstructorModel.fromJson(
+    json['Constructor'] as Map<String, dynamic>,
+  ),
+);
 
 Map<String, dynamic> _$ConstructorStandingsModelToJson(
-        ConstructorStandingsModel instance) =>
-    <String, dynamic>{
-      'position': instance.position,
-      'positionText': instance.positionText,
-      'points': instance.points,
-      'wins': instance.wins,
-      'Constructor': instance.constructor,
-    };
+  ConstructorStandingsModel instance,
+) => <String, dynamic>{
+  'position': instance.position,
+  'positionText': instance.positionText,
+  'points': instance.points,
+  'wins': instance.wins,
+  'Constructor': instance.constructor,
+};

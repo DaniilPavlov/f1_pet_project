@@ -5,10 +5,7 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class NavBar extends StatelessWidget {
-  const NavBar({
-    this.tabsRouter,
-    super.key,
-  });
+  const NavBar({this.tabsRouter, super.key});
   final TabsRouter? tabsRouter;
 
   @override
@@ -19,15 +16,7 @@ class NavBar extends StatelessWidget {
           height: 80,
           color: AppTheme.black,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              StaticData.defaultHorizontalPadding,
-              5,
-              StaticData.defaultHorizontalPadding,
-              // MediaQuery.of(context).viewPadding.bottom == 0
-              //     ? 12
-              //     : MediaQuery.of(context).viewPadding.bottom,
-              5,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: StaticData.defaultHorizontalPadding, vertical: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -75,10 +64,7 @@ class NavBar extends StatelessWidget {
             ),
           ),
         ),
-        Container(
-          height: 4,
-          color: AppTheme.red,
-        ),
+        Container(height: 4, color: AppTheme.red),
       ],
     );
   }

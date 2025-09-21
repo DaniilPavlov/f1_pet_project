@@ -8,7 +8,7 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
-/// Контейнер с закругленными краями с картой внутри.
+/// * Контейнер с закругленными краями с картой внутри.
 class MapContainer extends ElementaryWidget<MapContainerWM> {
   const MapContainer({
     required this.points,

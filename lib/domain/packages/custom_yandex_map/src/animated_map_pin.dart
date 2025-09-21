@@ -2,10 +2,7 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedMapPin extends StatefulWidget {
-  const AnimatedMapPin({
-    required this.isDragging,
-    super.key,
-  });
+  const AnimatedMapPin({required this.isDragging, super.key});
 
   final bool isDragging;
 
@@ -19,20 +16,12 @@ class _AnimatedMapPinState extends State<AnimatedMapPin> with TickerProviderStat
   late final animation = Tween(
     begin: 0.0,
     end: 1.0,
-  ).animate(
-    CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeIn,
-    ),
-  );
+  ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
 
     _controller.forward();
   }
@@ -57,10 +46,7 @@ class _AnimatedMapPinState extends State<AnimatedMapPin> with TickerProviderStat
           builder: (_, child) {
             return Transform.translate(
               offset: Offset(0, animation.value * -10),
-              child: const Icon(
-                Icons.location_on,
-                color: Colors.red,
-              ),
+              child: const Icon(Icons.location_on, color: Colors.red),
             );
           },
         ),
@@ -69,7 +55,7 @@ class _AnimatedMapPinState extends State<AnimatedMapPin> with TickerProviderStat
           height: 5,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(180),
-            // shape: BoxShape.circle,
+
             color: AppTheme.black.withValues(alpha: 0.5),
           ),
         ),

@@ -13,7 +13,6 @@ class PointsDrawer {
     PlacemarkIcon? icon,
     PlacemarkIcon? selectedIcon,
     int? selectedIndex,
-    // int? indexOfPressedItem,
   }) {
     debugPrint('qweQEQWEQWEQWEQWE ${points.length}');
     return List<PlacemarkMapObject>.generate(
@@ -21,10 +20,6 @@ class PointsDrawer {
       (i) {
         final rnd = rng.nextInt(200);
         final placemarkId = 'p_${i}_${rnd}_${points[i]}';
-
-        // final itemIsSelected =
-        //     indexOfPressedItem != null && i == indexOfPressedItem;
-
         return PlacemarkMapObject(
           onTap: (mapObject, point) {
             onTap?.call(i);

@@ -3,7 +3,7 @@ import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-//* Возвращает список детей ряда таблицы
+///* Возвращает список детей ряда таблицы
 List<Widget> raceTableDetailRowChildren(
   ResultsModel results,
   String fastestLap,

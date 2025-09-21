@@ -42,7 +42,7 @@ class RequestHandler {
 
     try {
       res = await _dio!.get(
-        // this api needs '.json?limit=100'
+        // ! this api needs '.json?limit=100'
         '$path.json?limit=100',
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
@@ -54,13 +54,6 @@ class RequestHandler {
       debugPrint('statusCode get ($path): ${result?.statusCode}');
       Error.throwWithStackTrace(e, StackTrace.current);
     }
-
-    // res.requestOptions.headers.forEach((key, dynamic value) {
-    //   debugPrint('cookie: $key = $value');
-    // });
-
-    // _checkAccess(res);
-
     return res;
   }
 
@@ -77,7 +70,6 @@ class RequestHandler {
 
     try {
       res = await _dio!.post(
-        // path,
         '$path.json',
         data: data,
         queryParameters: queryParameters,
@@ -91,8 +83,6 @@ class RequestHandler {
       debugPrint('statusCode post ($path): ${result?.statusCode}');
       Error.throwWithStackTrace(e, StackTrace.current);
     }
-    // _checkAccess(res);
-
     return res;
   }
 
