@@ -76,8 +76,7 @@ class _Body extends StatelessWidget {
                       ],
                       keyboardType: TextInputType.number,
                       onChanged: (_) => wm.checkFields(),
-                      contextMenuBuilder: (_, editableTextState) =>
-                          AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
+
                       label: 'Сезон',
                       hintText: 'Год',
                       controller: wm.yearController,

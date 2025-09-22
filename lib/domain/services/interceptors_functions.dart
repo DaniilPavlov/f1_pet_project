@@ -7,34 +7,20 @@ import 'package:fluttertoast/fluttertoast.dart';
 /// * Checks if response was already cached.
 /// * If yes, returns cached response.
 
-Future<BaseResponseModel?> checkCache(
-  Future<BaseResponseModel> Function() checkFunc,
-) async {
+Future<BaseResponseModel?> checkCache(Future<BaseResponseModel> Function() checkFunc) async {
   BaseResponseModel? rawData;
   try {
     rawData = await checkFunc();
   } on DioException catch (e) {
     if (e.response?.data != null) {
-      rawData =
-          BaseResponseModel.fromJson(e.response!.data as Map<String, dynamic>);
-      // TODO: decide do or not to do permanent showing
-      unawaited(
-        Fluttertoast.showToast(
-          msg: 'Соединение отсутствует',
-          backgroundColor: AppTheme.red,
-        ),
-      );
+      rawData = BaseResponseModel.fromJson(e.response!.data as Map<String, dynamic>);
+      // TODO(think): decide do or not to do permanent showing
+      unawaited(Fluttertoast.showToast(msg: 'Соединение отсутствует', backgroundColor: AppTheme.red));
     } else {
-      Error.throwWithStackTrace(
-        e,
-        StackTrace.current,
-      );
+      Error.throwWithStackTrace(e, StackTrace.current);
     }
   } catch (e) {
-    Error.throwWithStackTrace(
-      e,
-      StackTrace.current,
-    );
+    Error.throwWithStackTrace(e, StackTrace.current);
   }
 
   return rawData;

@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-// TODO: add localization
-// TODO: add push notifications
+// TODO(feature): add localization
+// TODO(feature): add local push notifications
 
 class App extends StatefulWidget {
   const App({super.key});

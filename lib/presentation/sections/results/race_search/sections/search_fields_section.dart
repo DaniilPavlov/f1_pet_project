@@ -26,8 +26,7 @@ class SearchFieldsSection extends StatelessWidget {
               ],
               keyboardType: TextInputType.number,
               onChanged: (_) => wm.checkFields(),
-              contextMenuBuilder: (_, editableTextState) =>
-                  AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
+
               label: 'Сезон',
               hintText: 'Год',
               controller: wm.yearController,
@@ -36,8 +35,6 @@ class SearchFieldsSection extends StatelessWidget {
           const SizedBox(width: 20),
           Expanded(
             child: CustomTextField(
-              contextMenuBuilder: (_, editableTextState) =>
-                  AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
                 FilteringTextInputFormatter.deny(RegExp('^0+')),

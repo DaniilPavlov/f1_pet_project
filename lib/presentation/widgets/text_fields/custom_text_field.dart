@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:f1_pet_project/presentation/widgets/text_fields/custom_context_menu_builder.dart';
 import 'package:f1_pet_project/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,12 +28,11 @@ class CustomTextField extends StatefulWidget {
     this.borderColor,
     this.cursorColor,
     this.textColor,
-    this.contextMenuBuilder,
+
     this.readOnly = false,
     TextAlign? textAlign,
     EdgeInsets? scrollPadding,
     this.suffix,
-    this.toolbarOptions,
     this.borderRadius,
     super.key,
   }) : scrollPadding = scrollPadding ?? const EdgeInsets.all(20),
@@ -58,9 +58,7 @@ class CustomTextField extends StatefulWidget {
   final EdgeInsets scrollPadding;
   final bool readOnly;
   final Widget? suffix;
-  final ToolbarOptions? toolbarOptions;
   final BorderRadius? borderRadius;
-  final Widget Function(BuildContext, EditableTextState)? contextMenuBuilder;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -141,8 +139,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     textAlign: widget.textAlign,
                     onSubmitted: widget.onSubmit,
                     focusNode: focusNode,
-                    contextMenuBuilder: widget.contextMenuBuilder,
-                    toolbarOptions: widget.toolbarOptions,
+                    contextMenuBuilder: (context, editableTextState) {
+                      return CustomContextMenuBuilder(editableTextState);
+                    },
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     placeholder: widget.disabled ? null : widget.hintText,
                     enabled: !widget.disabled,
@@ -165,7 +164,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       keyboardType: widget.keyboardType,
                       textInputAction: widget.textInputAction,
                       onChanged: widget.onChanged,
-                      toolbarOptions: widget.toolbarOptions,
+                      contextMenuBuilder: (context, editableTextState) {
+                        return CustomContextMenuBuilder(editableTextState);
+                      },
                       style: AppStyles.caption.copyWith(
                         decorationThickness: 0,
                         color: widget.disabled

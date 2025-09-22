@@ -6,7 +6,7 @@ import 'package:f1_pet_project/presentation/sections/home/sections/home_tourname
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-// TODO: add more tests
+// TODO(feature): add more tests
 
 /// Tests for [TournamentTablesSectionWM].
 void main() {
