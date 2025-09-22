@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as dart_ui;
+
 import 'package:elementary/elementary.dart';
 import 'package:elementary_helper/elementary_helper.dart';
 import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/custom_map.dart';
 import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/custom_map_model.dart';
-import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/services/geometry_service.dart';
 import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/services/camera_services.dart';
 import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/services/cluster_drawer.dart';
+import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/services/geometry_service.dart';
 import 'package:f1_pet_project/domain/packages/custom_yandex_map/src/wm/services/user_position_getter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
@@ -15,7 +16,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class CustomMapWM extends WidgetModel<CustomMap, CustomMapModel> {
-  CustomMapWM(super.model);
+  CustomMapWM(super._model);
   final mapKey = GlobalKey();
 
   late final onMapCreated = widget.onMapCreated;

@@ -64,8 +64,6 @@ class _Body extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: StaticData.defaultHorizontalPadding),
             child: Row(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 20,
               children: [
                 Expanded(

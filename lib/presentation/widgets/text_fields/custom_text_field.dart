@@ -35,7 +35,7 @@ class CustomTextField extends StatefulWidget {
     this.toolbarOptions,
     this.borderRadius,
     super.key,
-  }) : scrollPadding = scrollPadding ?? const EdgeInsets.all(20.0),
+  }) : scrollPadding = scrollPadding ?? const EdgeInsets.all(20),
        textAlign = textAlign ?? TextAlign.start;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
@@ -110,8 +110,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
             borderRadius:
                 widget.borderRadius ??
                 (widget.maxLines == null || widget.maxLines! > 1
-                    ? const BorderRadius.all(Radius.circular(20.0))
-                    : const BorderRadius.all(Radius.circular(100.0))),
+                    ? const BorderRadius.all(Radius.circular(20))
+                    : const BorderRadius.all(Radius.circular(100))),
           ),
           child: Row(
             children: [

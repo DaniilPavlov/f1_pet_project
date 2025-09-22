@@ -32,30 +32,17 @@ class BlackButton extends StatelessWidget {
           color: isDisabled ? AppTheme.black.withValues(alpha: 0.3) : AppTheme.black,
           borderRadius: BorderRadius.circular(50),
           boxShadow: haveShadow && !isDisabled
-              ? [
-                  const BoxShadow(
-                    offset: Offset(0, 1),
-                    color: AppTheme.black,
-                    blurRadius: 5.0,
-                  ),
-                ]
+              ? [const BoxShadow(offset: Offset(0, 1), color: AppTheme.black, blurRadius: 5)]
               : [],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (leadIcon != null)
-              Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: leadIcon,
-              ),
+            if (leadIcon != null) Padding(padding: const EdgeInsets.only(right: 8), child: leadIcon),
             if (leadIcon != null)
               Text(
                 text,
-                style: AppStyles.h3.copyWith(
-                  color:
-                      isDisabled ? AppTheme.red.withValues(alpha: 0.3) : AppTheme.red,
-                ),
+                style: AppStyles.h3.copyWith(color: isDisabled ? AppTheme.red.withValues(alpha: 0.3) : AppTheme.red),
               )
             else
               Expanded(
@@ -64,9 +51,7 @@ class BlackButton extends StatelessWidget {
                     : Text(
                         text,
                         textAlign: TextAlign.center,
-                        style: AppStyles.h3.copyWith(
-                          color: AppTheme.red,
-                        ),
+                        style: AppStyles.h3.copyWith(color: AppTheme.red),
                       ),
               ),
           ],

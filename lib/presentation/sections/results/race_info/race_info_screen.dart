@@ -19,7 +19,7 @@ import 'package:f1_pet_project/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-// TODO(pavlov): show full driver info by tapping his name
+// TODO: show full driver info by tapping his name
 
 @RoutePage()
 class RaceInfoScreen extends ElementaryWidget<IRaceInfoScreenWM> {

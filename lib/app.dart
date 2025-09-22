@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-// TODO(pavlov): add localization
-// TODO(pavlov): add push notifications
+// TODO: add localization
+// TODO: add push notifications
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -24,7 +24,7 @@ class _AppState extends State<App> {
     showCustomNotification();
   }
 
-  void showCustomNotification() async {
+  Future<void> showCustomNotification() async {
     try {
       await platform.invokeMethod('showCustomNotification');
     } on PlatformException catch (e) {
@@ -45,9 +45,7 @@ class _AppState extends State<App> {
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      supportedLocales: const [
-        Locale('ru', ''),
-      ],
+      supportedLocales: const [Locale('ru', '')],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -58,9 +56,7 @@ class _AppState extends State<App> {
       builder: (context, child) {
         final data = MediaQuery.of(context);
         return MediaQuery(
-          data: data.copyWith(
-            textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2),
-          ),
+          data: data.copyWith(textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2)),
           child: ResponsiveBreakpoints.builder(
             child: child!,
             breakpoints: [

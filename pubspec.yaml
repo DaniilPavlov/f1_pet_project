@@ -36,10 +36,11 @@ dependencies:
     sdk: flutter
   flutter_compass: ^0.8.1
   flutter_html: 3.0.0-alpha.5
+  flutter_local_notifications: ^19.4.2
   flutter_localizations:
     sdk: flutter
-  flutter_local_notifications: ^19.4.2
-  fluttertoast: ^8.2.14
+  fluttertoast: ^9.0.0
+  # ! Can't update because of package_info_plus: ^9.0.0
   geolocator: ^14.0.1
   horizontal_data_table: ^4.3.3
   image: ^4.5.4
@@ -60,21 +61,22 @@ dependencies:
   yandex_mapkit:
     git:
       url: https://github.com/DaniilPavlov/yandex_mapkit.git
-      ref: 434784ed3a2aa70d656c8b2d9924ddc31b18ce15
+      ref: 58f90eea9178da01d3540be9622fc00bdd74b499
 
 dev_dependencies:
   auto_route_generator: ^10.2.4
+  # ! Can't update because of auto_route_generator: ^10.2.4
   build_runner: ^2.7.1
   elementary_test: ^2.1.1
   # flutter_native_splash: ^2.2.17
   # flutter_launcher_icons: ^0.9.2
   flutter_test:
     sdk: flutter
-  mocktail: ^1.0.4
   meykuless_lint_rules:
     git:
       url: https://github.com/DaniilPavlov/meykuless_lint_rules.git
-      ref: 3a306a7d92684ba4402de5df59f30c5e49f1fff8
+      ref: 3ba5652f8a54126678b8e96232d1a89f110875e9
+  mocktail: ^1.0.4
 
 # flutter_icons:
 #   android: "ic_launcher"

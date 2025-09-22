@@ -17,7 +17,7 @@ Future<BaseResponseModel?> checkCache(
     if (e.response?.data != null) {
       rawData =
           BaseResponseModel.fromJson(e.response!.data as Map<String, dynamic>);
-      // TODO(pavlov): decide do or not to do permanent showing
+      // TODO: decide do or not to do permanent showing
       unawaited(
         Fluttertoast.showToast(
           msg: 'Соединение отсутствует',

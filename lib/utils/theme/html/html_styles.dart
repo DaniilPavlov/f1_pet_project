@@ -11,7 +11,7 @@ Map<String, Style> htmlStyles = {
     fontSize: const FontSize(16),
     fontFamily: 'Inter-Regular',
   ),
-  'p:first-child': Style(margin: const EdgeInsets.only(top: 0)),
+  'p:first-child': Style(margin: EdgeInsets.zero),
   // 'body > *:not(:first-child)': Style(
   //   margin: const EdgeInsets.only(top: 30),
   // ),

@@ -13,10 +13,7 @@ class AnimatedMapPin extends StatefulWidget {
 class _AnimatedMapPinState extends State<AnimatedMapPin> with TickerProviderStateMixin {
   late final AnimationController _controller;
 
-  late final animation = Tween(
-    begin: 0.0,
-    end: 1.0,
-  ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+  late final animation = Tween(begin: 0, end: 1).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
   @override
   void initState() {

@@ -6,7 +6,7 @@ import 'package:f1_pet_project/presentation/sections/home/sections/home_tourname
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-// TODO(pavlov): add more tests
+// TODO: add more tests
 
 /// Tests for [TournamentTablesSectionWM].
 void main() {
@@ -18,17 +18,17 @@ void main() {
     return TournamentTablesSectionWM(model);
   }
 
-  testWidgetModel<TournamentTablesSectionWM, HomeTournamentTablesSection>(
-    'check that tables changes',
-    setUpWm,
-    (wm, tester, context) async {
-      tester.init();
-      wm.changeActiveTable( 1);
-      Future.delayed(const Duration(milliseconds: 30), () {});
-      final value = wm.activeTable.value;
-      expect(value, 1);
-    },
-  );
+  testWidgetModel<TournamentTablesSectionWM, HomeTournamentTablesSection>('check that tables changes', setUpWm, (
+    wm,
+    tester,
+    context,
+  ) async {
+    tester.init();
+    wm.changeActiveTable(1);
+    Future.delayed(const Duration(milliseconds: 30), () {});
+    final value = wm.activeTable.value;
+    expect(value, 1);
+  });
 }
 
 class TournamentTableSectionModelMock extends Mock
