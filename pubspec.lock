@@ -721,8 +721,8 @@ packages:
     dependency: "direct dev"
     description:
       path: "."
-      ref: "3a306a7d92684ba4402de5df59f30c5e49f1fff8"
-      resolved-ref: "3a306a7d92684ba4402de5df59f30c5e49f1fff8"
+      ref: "3ba5652f8a54126678b8e96232d1a89f110875e9"
+      resolved-ref: "3ba5652f8a54126678b8e96232d1a89f110875e9"
       url: "https://github.com/DaniilPavlov/meykuless_lint_rules.git"
     source: git
     version: "6.0.0"

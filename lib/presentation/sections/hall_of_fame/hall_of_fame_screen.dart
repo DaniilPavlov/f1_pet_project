@@ -64,8 +64,6 @@ class _Body extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: StaticData.defaultHorizontalPadding),
             child: Row(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 20,
               children: [
                 Expanded(
@@ -78,8 +76,7 @@ class _Body extends StatelessWidget {
                       ],
                       keyboardType: TextInputType.number,
                       onChanged: (_) => wm.checkFields(),
-                      contextMenuBuilder: (_, editableTextState) =>
-                          AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState),
+
                       label: 'Сезон',
                       hintText: 'Год',
                       controller: wm.yearController,

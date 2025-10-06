@@ -26,11 +26,7 @@ class CustomCalendar extends StatefulWidget {
 }
 
 class _CustomCalendarState extends State<CustomCalendar> {
-  Widget? _makeLogoWidget(
-    DateTime date, {
-    bool isSelected = false,
-    bool isToday = false,
-  }) {
+  Widget? _makeLogoWidget(DateTime date, {bool isSelected = false, bool isToday = false}) {
     final imageAsset = widget.imagePathCallback(date);
 
     if (imageAsset != null) {
@@ -40,41 +36,27 @@ class _CustomCalendarState extends State<CustomCalendar> {
           backgroundColor: isToday
               ? AppTheme.red
               : isSelected
-                  ? AppTheme.white
-                  : Colors.transparent,
+              ? AppTheme.white
+              : Colors.transparent,
           child: imageAsset.isEmpty
-              ? const SizedBox(
-                  height: 24,
-                  child: Icon(Icons.home),
-                )
-              : SizedBox(
-                  height: 24,
-                  child: Image.asset(imageAsset),
-                ),
+              ? const SizedBox(height: 24, child: Icon(Icons.home))
+              : SizedBox(height: 24, child: Image.asset(imageAsset)),
         ),
       );
     }
     return null;
   }
 
-  Widget _makeTextWidget(
-    DateTime date, {
-    required TextStyle textStyle,
-    bool isSelected = false,
-    bool isToday = false,
-  }) {
+  Widget _makeTextWidget(DateTime date, {required TextStyle textStyle, bool isSelected = false, bool isToday = false}) {
     return Center(
       child: CircleAvatar(
         radius: 16,
         backgroundColor: isToday
             ? AppTheme.red
             : isSelected
-                ? AppTheme.white
-                : Colors.transparent,
-        child: Text(
-          date.day.toString(),
-          style: textStyle,
-        ),
+            ? AppTheme.white
+            : Colors.transparent,
+        child: Text(date.day.toString(), style: textStyle),
       ),
     );
   }
@@ -84,15 +66,12 @@ class _CustomCalendarState extends State<CustomCalendar> {
     const textStyle = AppStyles.body;
 
     return DecoratedBox(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(18)),
-        color: AppTheme.shadowColor,
-      ),
+      decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(18)), color: AppTheme.shadowColor),
       child: TableCalendar<dynamic>(
         locale: 'ru_RU',
         availableGestures: AvailableGestures.horizontalSwipe,
-        firstDay: DateTime.utc(DateTime.now().year - 1, 1, 1),
-        lastDay: DateTime.utc(DateTime.now().year + 1, 1, 1),
+        firstDay: DateTime.utc(DateTime.now().year - 1),
+        lastDay: DateTime.utc(DateTime.now().year + 1),
         focusedDay: widget.focusedDay,
         rowHeight: 48,
         daysOfWeekHeight: 40,
@@ -110,23 +89,15 @@ class _CustomCalendarState extends State<CustomCalendar> {
           cellMargin: EdgeInsets.zero,
           markerMargin: EdgeInsets.zero,
         ),
-        daysOfWeekStyle: const DaysOfWeekStyle(
-          weekdayStyle: textStyle,
-          weekendStyle: textStyle,
-        ),
+        daysOfWeekStyle: const DaysOfWeekStyle(weekdayStyle: textStyle, weekendStyle: textStyle),
         headerStyle: HeaderStyle(
           titleTextStyle: textStyle,
           formatButtonVisible: false,
           titleCentered: true,
           rightChevronPadding: EdgeInsets.zero,
           leftChevronPadding: EdgeInsets.zero,
-          leftChevronIcon: const ChevronButton(
-            icon: Icons.arrow_left,
-          ),
-          rightChevronIcon: const ChevronButton(
-            icon: Icons.arrow_right,
-            alignment: Alignment.centerRight,
-          ),
+          leftChevronIcon: const ChevronButton(icon: Icons.arrow_left),
+          rightChevronIcon: const ChevronButton(icon: Icons.arrow_right, alignment: Alignment.centerRight),
           titleTextFormatter: (date, dynamic f) {
             final text = DateFormat.yMMMM('ru_RU').format(date);
 
@@ -135,44 +106,20 @@ class _CustomCalendarState extends State<CustomCalendar> {
         ),
         calendarBuilders: CalendarBuilders<dynamic>(
           selectedBuilder: (context, day, focusedDay) {
-            return _makeLogoWidget(
-                  day,
-                  isSelected: true,
-                ) ??
-                _makeTextWidget(
-                  day,
-                  textStyle: textStyle,
-                  isSelected: true,
-                );
+            return _makeLogoWidget(day, isSelected: true) ??
+                _makeTextWidget(day, textStyle: textStyle, isSelected: true);
           },
           outsideBuilder: (context, day, focusedDay) {
             return day.month == focusedDay.month
-                ? _makeLogoWidget(day) ??
-                    _makeTextWidget(
-                      day,
-                      textStyle: textStyle.copyWith(
-                        color: AppTheme.white,
-                      ),
-                    )
-                : _makeTextWidget(
-                    day,
-                    textStyle: textStyle.copyWith(
-                      color: AppTheme.white,
-                    ),
-                  );
+                ? _makeLogoWidget(day) ?? _makeTextWidget(day, textStyle: textStyle.copyWith(color: AppTheme.white))
+                : _makeTextWidget(day, textStyle: textStyle.copyWith(color: AppTheme.white));
           },
           todayBuilder: (context, day, focusedDay) {
-            return _makeLogoWidget(
-                  day,
-                  isToday: true,
-                ) ??
+            return _makeLogoWidget(day, isToday: true) ??
                 _makeTextWidget(
                   day,
                   isToday: true,
-                  textStyle: textStyle.copyWith(
-                    color:
-                        day.month == focusedDay.month ? null : AppTheme.white,
-                  ),
+                  textStyle: textStyle.copyWith(color: day.month == focusedDay.month ? null : AppTheme.white),
                 );
           },
           defaultBuilder: (context, day, focusedDay) {
@@ -185,11 +132,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
 }
 
 class ChevronButton extends StatelessWidget {
-  const ChevronButton({
-    required this.icon,
-    this.alignment = Alignment.centerLeft,
-    super.key,
-  });
+  const ChevronButton({required this.icon, this.alignment = Alignment.centerLeft, super.key});
   final IconData icon;
   final AlignmentGeometry alignment;
 
@@ -202,10 +145,7 @@ class ChevronButton extends StatelessWidget {
         alignment: alignment,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Icon(
-            icon,
-            color: Colors.black,
-          ),
+          child: Icon(icon, color: Colors.black),
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Сам виджет, в котором происходим вся магия
 class BounceAnimationWidget extends StatefulWidget {
-  const BounceAnimationWidget({super.key, this.isSelected = false, required this.onPressed, required this.child});
+  const BounceAnimationWidget({required this.onPressed, required this.child, super.key, this.isSelected = false});
 
   final bool isSelected;
   final VoidCallback onPressed;
@@ -26,6 +26,7 @@ class _BounceAnimationWidgetState extends State<BounceAnimationWidget> with Tick
   @override
   void initState() {
     _tapDownAnimationController = AnimationController(vsync: this, duration: _tapDuration);
+    // ignore: prefer_int_literals
     _scaleAnimation = Tween(begin: 1.0, end: 0.7).animate(_tapDownAnimationController);
 
     _jumpAnimationController = AnimationController(vsync: this, duration: _offsetDuration);
@@ -78,7 +79,7 @@ class _BounceAnimationWidgetState extends State<BounceAnimationWidget> with Tick
             child: AnimatedBuilder(
               animation: _jumpAnimation,
               builder: (_, child) {
-                return Transform.translate(offset: _jumpAnimation.value, child: child!);
+                return Transform.translate(offset: _jumpAnimation.value, child: child);
               },
               child: ScaleTransition(scale: _scaleAnimation, child: widget.child),
             ),

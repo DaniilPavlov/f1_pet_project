@@ -15,7 +15,7 @@ import 'package:yandex_mapkit/yandex_mapkit.dart' as ym;
 
 class MapContainerWM extends WidgetModel<MapContainer, MapContainerModel>
     with WidgetsBindingObserver, AutomaticKeepAliveWidgetModelMixin {
-  MapContainerWM(super.model);
+  MapContainerWM(super._model);
   final mapController = MapController();
 
   List<ym.Point> listPoint = <ym.Point>[];
@@ -46,7 +46,7 @@ class MapContainerWM extends WidgetModel<MapContainer, MapContainerModel>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && isRequestPermission == true) {
+    if (state == AppLifecycleState.resumed && isRequestPermission) {
       // * Проверяем разрешение, если приложение продолжило работать и если можно проверить разрешения
       requestPermission();
       isRequestPermission = false;
@@ -59,7 +59,6 @@ class MapContainerWM extends WidgetModel<MapContainer, MapContainerModel>
 
   Future<void> requestPermission() async {
     final geolocationPermission = await Geolocator.requestPermission();
-
     if (geolocationPermission == LocationPermission.denied ||
         geolocationPermission == LocationPermission.deniedForever) {
       unawaited(openBottomSheetPermissionsLocation());
@@ -93,7 +92,7 @@ class MapContainerWM extends WidgetModel<MapContainer, MapContainerModel>
       builder: (context) {
         return BottomSheetPermissions(
           onTapSettings: () async {
-            if (await openAppSettings() == true && context.mounted) {
+            if (await openAppSettings() && context.mounted) {
               Navigator.of(context).pop();
             }
           },
