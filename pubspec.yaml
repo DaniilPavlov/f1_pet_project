@@ -15,7 +15,7 @@ publish_to: "none"
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+2
+version: 1.0.1
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -39,7 +39,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_local_notifications: ^19.4.2
-  fluttertoast: ^8.2.14
+  fluttertoast: ^9.0.0
+  # ! can't update because of package_info_plus: ^9.0.0
   geolocator: ^14.0.1
   horizontal_data_table: ^4.3.3
   image: ^4.5.4
@@ -60,10 +61,11 @@ dependencies:
   yandex_mapkit:
     git:
       url: https://github.com/DaniilPavlov/yandex_mapkit.git
-      ref: 66e539deac6cf1e2d9467c771431703c926cd9c9
+      ref: 03e2620f1b7b776f26c3897c657b6243a82096d5
 
 dev_dependencies:
   auto_route_generator: ^10.2.4
+  # ! can't update because of auto_route_generator: ^10.2.4
   build_runner: ^2.7.1
   elementary_test: ^2.1.1
   # flutter_native_splash: ^2.2.17
