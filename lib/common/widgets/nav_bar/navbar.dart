@@ -10,13 +10,20 @@ class NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
+
     return Stack(
       children: [
         Container(
-          height: 80,
+          height: 80 + bottomInset,
           color: AppTheme.black,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: StaticData.defaultHorizontalPadding, vertical: 5),
+            padding: EdgeInsets.fromLTRB(
+              StaticData.defaultHorizontalPadding,
+              5,
+              StaticData.defaultHorizontalPadding,
+              bottomInset,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
