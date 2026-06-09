@@ -10,28 +10,24 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i11;
-import 'package:f1_pet_project/data/models/sections/circuits/circuit_model.dart'
-    as _i12;
-import 'package:f1_pet_project/data/models/sections/schedule/races_model.dart'
-    as _i14;
-import 'package:f1_pet_project/presentation/sections/circuits/circuit/circuit_screen.dart'
-    as _i1;
-import 'package:f1_pet_project/presentation/sections/circuits/circuits_screen.dart'
-    as _i3;
-import 'package:f1_pet_project/presentation/sections/hall_of_fame/hall_of_fame_screen.dart'
-    as _i4;
-import 'package:f1_pet_project/presentation/sections/home/home_screen.dart'
-    as _i5;
-import 'package:f1_pet_project/presentation/sections/results/race_info/race_info_screen.dart'
-    as _i6;
-import 'package:f1_pet_project/presentation/sections/results/race_search/race_search_screen.dart'
-    as _i7;
-import 'package:f1_pet_project/presentation/sections/results/results_screen.dart'
-    as _i8;
-import 'package:f1_pet_project/presentation/sections/schedule/schedule_screen.dart'
-    as _i10;
-import 'package:f1_pet_project/presentation/widgets/scaffold_with_navbar_screen.dart'
+import 'package:f1_pet_project/common/widgets/scaffold_with_navbar_screen.dart'
     as _i9;
+import 'package:f1_pet_project/core/circuits/models/circuit_model.dart' as _i12;
+import 'package:f1_pet_project/core/circuits/screens/circuit_screen.dart'
+    as _i1;
+import 'package:f1_pet_project/core/circuits/screens/circuits_screen.dart'
+    as _i3;
+import 'package:f1_pet_project/core/hall_of_fame/screens/hall_of_fame_screen.dart'
+    as _i4;
+import 'package:f1_pet_project/core/home/screens/home_screen.dart' as _i5;
+import 'package:f1_pet_project/core/results/race_info/screens/race_info_screen.dart'
+    as _i6;
+import 'package:f1_pet_project/core/results/race_search/screens/race_search_screen.dart'
+    as _i7;
+import 'package:f1_pet_project/core/results/screens/results_screen.dart' as _i8;
+import 'package:f1_pet_project/core/schedule/models/races_model.dart' as _i14;
+import 'package:f1_pet_project/core/schedule/screens/schedule_screen.dart'
+    as _i10;
 import 'package:f1_pet_project/router/empty_route_screens.dart' as _i2;
 import 'package:flutter/material.dart' as _i13;
 
