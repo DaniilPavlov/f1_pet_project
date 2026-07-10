@@ -10,7 +10,7 @@ Flutter-приложение про Formula 1.
 
 - Flutter **3.35.3+**
 - Dart **3.8+**
-- Java **17** (для Android)
+- Java **21** (для Android)
 
 ## Локальный запуск
 
