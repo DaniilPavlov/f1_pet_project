@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/widgets/tables/tappable_driver_row.dart';
 import 'package:f1_pet_project/core/results/components/race_table_detail_row.dart';
 import 'package:f1_pet_project/core/results/components/race_table_primary_row.dart';
 import 'package:f1_pet_project/core/results/models/results_model.dart';
@@ -34,17 +35,30 @@ class RaceInfoTable extends StatelessWidget {
       children: [
         Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          columnWidths: const {
+            0: FlexColumnWidth(1.15),
+            1: FlexColumnWidth(1.35),
+            2: FlexColumnWidth(1.1),
+            3: FlexColumnWidth(0.55),
+          },
           children: [
             if (withPrimaryRow) raceTablePrimaryRow(),
             ...List.generate(
               rowsNumber ?? rows.length,
-              (i) => TableRow(
-                decoration: BoxDecoration(
-                  color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
-                  border: const Border(bottom: BorderSide(color: AppTheme.strokeGray)),
-                ),
-                children: raceTableDetailRowChildren(rows[i], fastest, i + 1),
-              ),
+              (i) {
+                final result = rows[i];
+                return TableRow(
+                  decoration: BoxDecoration(
+                    color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
+                    border: const Border(bottom: BorderSide(color: AppTheme.strokeGray)),
+                  ),
+                  children: tappableDriverRowCells(
+                    context: context,
+                    driver: result.driver,
+                    children: raceTableDetailRowChildren(result, fastest, i + 1),
+                  ),
+                );
+              },
             ),
           ],
         ),

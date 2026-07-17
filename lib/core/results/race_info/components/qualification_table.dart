@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/widgets/tables/tappable_driver_row.dart';
 import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
 import 'package:f1_pet_project/core/results/race_info/components/qualification_table_detail_row.dart';
 import 'package:flutter/material.dart';
@@ -18,13 +19,20 @@ class QualificationTable extends StatelessWidget {
           children: [
             ...List.generate(
               qualifyingResults.length,
-              (i) => TableRow(
-                decoration: BoxDecoration(
-                  color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
-                  border: const Border(bottom: BorderSide(color: AppTheme.strokeGray)),
-                ),
-                children: qualificationTableDetailRowChildren(qualifyingResults[i], i + 1),
-              ),
+              (i) {
+                final result = qualifyingResults[i];
+                return TableRow(
+                  decoration: BoxDecoration(
+                    color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
+                    border: const Border(bottom: BorderSide(color: AppTheme.strokeGray)),
+                  ),
+                  children: tappableDriverRowCells(
+                    context: context,
+                    driver: result.driver,
+                    children: qualificationTableDetailRowChildren(result, i + 1),
+                  ),
+                );
+              },
             ),
           ],
         ),

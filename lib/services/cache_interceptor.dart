@@ -1,47 +1,36 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 /// Интерцептор Dio для кэширования ответов в памяти.
 class CacheInterceptor extends Interceptor {
   /// Создаёт интерцептор с пустым in-memory кэшем.
   CacheInterceptor();
-  final _cache = <Uri, Response>{};
+  final _cache = <Uri, Response<dynamic>>{};
 
   /// Возвращает закэшированный ответ или передаёт запрос дальше.
   @override
-  void onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-  ) {
-    // TODO(info): change this condition if will be needed
-    if (_cache[options.uri] != null) {
-      debugPrint(options.uri.path);
-      handler.resolve(_cache[options.uri]!);
-    } else {
-      handler.next(options);
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    final cached = _cache[options.uri];
+    if (cached != null) {
+      handler.resolve(cached);
+      return;
     }
-    // super.onRequest(options, handler);
+    handler.next(options);
   }
 
   /// Сохраняет успешный ответ в кэш.
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
+  void onResponse(Response<dynamic> response, ResponseInterceptorHandler handler) {
     _cache[response.requestOptions.uri] = response;
-    super.onResponse(response, handler);
+    handler.next(response);
   }
 
-  /// Подставляет закэшированный ответ при сетевых ошибках.
+  /// Логирует ошибку. Кэш при ошибке не отдаём — его уже отдаёт [onRequest].
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    var dioError = err;
-    final status = err.response?.statusCode;
-    debugPrint('onError: ${status ?? err.type.name} ${err.requestOptions.path}');
-    if (err.type == DioExceptionType.connectionTimeout || err.type == DioExceptionType.unknown) {
-      final cachedResponse = _cache[err.requestOptions.uri];
-      if (cachedResponse != null) {
-        dioError = err.copyWith(response: cachedResponse);
-      }
+    if (kDebugMode) {
+      debugPrint('onError: ${err.response?.statusCode ?? err.type.name} ${err.requestOptions.path}');
     }
-    super.onError(dioError, handler);
+    handler.next(err);
   }
 }

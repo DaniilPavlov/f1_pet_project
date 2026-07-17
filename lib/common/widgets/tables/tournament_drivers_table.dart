@@ -1,6 +1,7 @@
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/tables/table_parts/tournament_table_drivers_detail_row.dart';
 import 'package:f1_pet_project/common/widgets/tables/table_parts/tournament_table_drivers_primary_row.dart';
+import 'package:f1_pet_project/common/widgets/tables/tappable_driver_row.dart';
 import 'package:f1_pet_project/core/home/models/standings/driver/driver_standings_model.dart';
 import 'package:flutter/material.dart';
 
@@ -32,20 +33,24 @@ class TournamentDriversTable extends StatelessWidget {
             driversPrimaryRow(),
             ...List.generate(
               drivers.length,
-              (i) => TableRow(
-                decoration: BoxDecoration(
-                  color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
-                  border: const Border(
-                    bottom: BorderSide(
-                      color: AppTheme.strokeGray,
+              (i) {
+                final standing = drivers[i];
+                return TableRow(
+                  decoration: BoxDecoration(
+                    color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
+                    border: const Border(
+                      bottom: BorderSide(
+                        color: AppTheme.strokeGray,
+                      ),
                     ),
                   ),
-                ),
-                children: tournamentTableDriversDetailRowChildren(
-                  drivers[i],
-                  i + 1,
-                ),
-              ),
+                  children: tappableDriverRowCells(
+                    context: context,
+                    driver: standing.driver,
+                    children: tournamentTableDriversDetailRowChildren(standing, i + 1),
+                  ),
+                );
+              },
             ),
           ],
         ),

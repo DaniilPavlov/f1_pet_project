@@ -128,7 +128,6 @@ abstract final class ControllerFixtures {
     secondPractice: null,
     thirdPractice: null,
     qualifying: null,
-    sprintQualifying: null,
     sprint: null,
     results: [raceResult],
     qualifyingResults: [

@@ -19,8 +19,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-// TODO(feature): show full driver info by tapping his name
-
 /// Детальный экран гонки: результаты, спринт, квалификация и пит-стопы.
 @RoutePage()
 class RaceInfoScreen extends StatelessWidget {
