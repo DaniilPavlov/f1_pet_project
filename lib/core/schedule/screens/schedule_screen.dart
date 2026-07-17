@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
+/// Экран календаря гонок и расписания сессий сезона.
 @RoutePage()
 class ScheduleScreen extends StatelessWidget {
   const ScheduleScreen({super.key});

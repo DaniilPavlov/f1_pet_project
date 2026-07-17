@@ -4,6 +4,7 @@ import 'package:f1_pet_project/common/widgets/tables/table_parts/tournament_tabl
 import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_standings_model.dart';
 import 'package:flutter/material.dart';
 
+/// Таблица зачёта конструкторов текущего сезона.
 class TournamentConstructorsTable extends StatelessWidget {
   const TournamentConstructorsTable({
     required this.constructors,

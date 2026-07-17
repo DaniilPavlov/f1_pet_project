@@ -9,6 +9,7 @@ import 'package:f1_pet_project/core/results/race_search/controllers/race_search_
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Экран поиска результатов гонки по сезону и раунду.
 @RoutePage()
 class RaceSearchScreen extends StatelessWidget {
   const RaceSearchScreen({super.key});

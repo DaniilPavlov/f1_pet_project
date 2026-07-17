@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
+/// Экран списка трасс с переключением между картой и списком.
 @RoutePage()
 class CircuitsScreen extends StatelessWidget {
   const CircuitsScreen({super.key});

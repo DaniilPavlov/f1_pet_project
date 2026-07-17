@@ -5,9 +5,7 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/data/models/baseResponse/base_response_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-/// * Checks if response was already cached.
-/// * If yes, returns cached response.
-
+/// Загружает данные из кэша при сетевой ошибке и показывает toast.
 Future<BaseResponseModel?> checkCache(Future<BaseResponseModel> Function() checkFunc) async {
   BaseResponseModel? rawData;
   try {

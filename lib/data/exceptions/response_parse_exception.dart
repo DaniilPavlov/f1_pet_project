@@ -1,3 +1,4 @@
+/// Исключение при ошибке разбора ответа сервера.
 class ResponseParseException implements Exception {
   ResponseParseException([this._message, StackTrace? stackTrace])
       : stackTrace = stackTrace ?? StackTrace.current;
@@ -5,6 +6,7 @@ class ResponseParseException implements Exception {
 
   late final String? _message;
 
+  /// Возвращает текст ошибки парсинга.
   @override
   String toString() => _message ?? 'ResponseParseExeption';
 }

@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'pit_stops_model.g.dart';
 
+/// Данные одного пит-стопа пилота в гонке.
 @JsonSerializable()
 class PitStopsModel {
   PitStopsModel({
@@ -13,6 +14,7 @@ class PitStopsModel {
     required this.duration,
   });
 
+  /// Создаёт модель из JSON ответа API.
   factory PitStopsModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$PitStopsModelFromJson(json);

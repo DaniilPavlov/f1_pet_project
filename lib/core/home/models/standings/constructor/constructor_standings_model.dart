@@ -4,6 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'constructor_standings_model.g.dart';
 
+/// Позиция команды в турнирной таблице конструкторов.
 @JsonSerializable()
 class ConstructorStandingsModel {
   ConstructorStandingsModel({
@@ -14,6 +15,7 @@ class ConstructorStandingsModel {
     required this.constructor,
   });
 
+  /// Парсит JSON-ответ в [ConstructorStandingsModel].
   factory ConstructorStandingsModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$ConstructorStandingsModelFromJson(json);

@@ -21,6 +21,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 // TODO(feature): show full driver info by tapping his name
 
+/// Детальный экран гонки: результаты, квалификация и пит-стопы.
 @RoutePage()
 class RaceInfoScreen extends StatelessWidget {
   const RaceInfoScreen({required this.raceModel, super.key});

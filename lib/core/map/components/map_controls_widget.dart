@@ -4,6 +4,7 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/buttons/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 
+/// Панель управления картой: зум и переход к геопозиции.
 class MapControlsWidget extends StatelessWidget {
   const MapControlsWidget({this.onPlusPressed, this.onMinusPressed, this.onUserLocationPressed, super.key});
 

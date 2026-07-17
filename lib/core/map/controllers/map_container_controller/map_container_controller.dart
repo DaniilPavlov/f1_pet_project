@@ -5,8 +5,10 @@ import 'package:yandex_mapkit/yandex_mapkit.dart' as ym;
 
 part 'map_container_controller.g.dart';
 
+/// MobX-контроллер контейнера карты.
 class MapContainerController = MapContainerControllerBase with _$MapContainerController;
 
+/// Управляет точками на карте и действиями пользователя.
 abstract class MapContainerControllerBase with Store {
   MapContainerControllerBase({required List<ym.Point> points}) : _points = List.of(points);
 
@@ -18,11 +20,13 @@ abstract class MapContainerControllerBase with Store {
   @observable
   ObservableList<ym.Point> listPoints = ObservableList<ym.Point>();
 
+  /// Инициализирует список точек на карте.
   @action
   void init() {
     listPoints.replaceRange(0, listPoints.length, _points);
   }
 
+  /// Обновляет точки на карте при изменении входных данных.
   @action
   void updatePoints(List<ym.Point> points) {
     if (!_deepEq(_points, points)) {
@@ -31,6 +35,7 @@ abstract class MapContainerControllerBase with Store {
     }
   }
 
+  /// Запрашивает обновление позиции пользователя на карте.
   void onUserLocationPressed() {
     mapController.updateUserPosition();
   }

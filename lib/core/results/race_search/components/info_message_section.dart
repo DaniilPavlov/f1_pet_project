@@ -3,6 +3,7 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/widgets/containers/red_border_container.dart';
 import 'package:flutter/material.dart';
 
+/// Информационный блок с правилами поиска гонок.
 class InfoMessageSection extends StatelessWidget {
   const InfoMessageSection({super.key});
 

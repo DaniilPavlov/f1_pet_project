@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'time_model.g.dart';
 
+/// Время финиша или круга в миллисекундах и строковом виде.
 @JsonSerializable()
 class TimeModel {
   TimeModel({
@@ -10,6 +11,7 @@ class TimeModel {
     required this.time,
   });
 
+  /// Создаёт модель из JSON ответа API.
   factory TimeModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$TimeModelFromJson(json);

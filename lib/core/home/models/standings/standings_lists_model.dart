@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'standings_lists_model.g.dart';
 
+/// Standings пилотов и конструкторов за конкретный сезон и этап.
 @JsonSerializable()
 class StandingsListsModel {
   StandingsListsModel({
@@ -14,6 +15,7 @@ class StandingsListsModel {
     required this.driverStandings,
   });
 
+  /// Парсит JSON-ответ в [StandingsListsModel].
   factory StandingsListsModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$StandingsListsModelFromJson(json);

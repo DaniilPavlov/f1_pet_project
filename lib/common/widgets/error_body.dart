@@ -3,6 +3,7 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:flutter/material.dart';
 
+/// Экран ошибки с изображением и кнопкой повторной попытки.
 class ErrorBody extends StatelessWidget {
   const ErrorBody({required this.onTap, required this.title, required this.subtitle, this.withImage = true, super.key});
   final VoidCallback onTap;

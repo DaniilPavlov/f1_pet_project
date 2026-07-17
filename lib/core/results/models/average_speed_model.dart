@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'average_speed_model.g.dart';
 
+/// Средняя скорость на круге с единицами измерения.
 @JsonSerializable()
 class AverageSpeedModel {
   AverageSpeedModel({
@@ -10,6 +11,7 @@ class AverageSpeedModel {
     required this.speed,
   });
 
+  /// Создаёт модель из JSON ответа API.
   factory AverageSpeedModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$AverageSpeedModelFromJson(json);

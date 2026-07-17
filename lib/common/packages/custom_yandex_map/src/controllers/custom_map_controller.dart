@@ -13,8 +13,10 @@ import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 part 'custom_map_controller.g.dart';
 
+/// MobX-контроллер кастомной Яндекс.Карты.
 class CustomMapController = CustomMapControllerBase with _$CustomMapController;
 
+/// Управляет метками, кластерами и геопозицией на карте.
 abstract class CustomMapControllerBase with Store {
   CustomMapControllerBase({
     required this.mapController,
@@ -64,6 +66,7 @@ abstract class CustomMapControllerBase with Store {
   @observable
   bool isDragging = false;
 
+  /// Отменяет подписки на потоки геопозиции и компаса.
   void dispose() {
     userPositionStream?.cancel();
     for (final subscription in _streamSubscriptions) {
@@ -71,11 +74,13 @@ abstract class CustomMapControllerBase with Store {
     }
   }
 
+  /// Обновляет состояние перетаскивания карты для анимации метки.
   @action
   void changeIsDraggingState(bool value) {
     isDragging = value;
   }
 
+  /// Обновляет точки и перестраивает кластеры на карте.
   @action
   void updatePoints(List<Point> newPoints) {
     points = newPoints;
@@ -108,6 +113,7 @@ abstract class CustomMapControllerBase with Store {
     });
   }
 
+  /// Загружает иконки и отображает начальные метки на карте.
   @action
   Future<void> init() async {
     if (mapObjectIcon != null) {
@@ -121,6 +127,7 @@ abstract class CustomMapControllerBase with Store {
     unawaited(setCenterOn(points));
   }
 
+  /// Центрирует камеру по ограничивающей рамке точек.
   Future<void> setCenterOn<T>(List<T> newList, {bool withUserPosition = true}) async {
     if (newList.isEmpty) return;
     await Future<void>.delayed(const Duration(milliseconds: 100));

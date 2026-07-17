@@ -13,18 +13,18 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
-/// * Контейнер с закругленными краями с картой внутри.
+/// Контейнер с закруглёнными краями и картой внутри.
 class MapContainer extends StatefulWidget {
   const MapContainer({
     required this.points,
-    this.onAndressChanged,
+    this.onAddressChanged,
     this.onPlacemarkPressed,
     this.onCameraPositionChanged,
     super.key,
   });
 
   final List<Point> points;
-  final Function(String)? onAndressChanged;
+  final Function(String)? onAddressChanged;
   final Function(int)? onPlacemarkPressed;
   final Function(double, double)? onCameraPositionChanged;
 
@@ -32,6 +32,7 @@ class MapContainer extends StatefulWidget {
   State<MapContainer> createState() => _MapContainerState();
 }
 
+/// Состояние карты: разрешения геолокации и жизненный цикл.
 class _MapContainerState extends State<MapContainer> with WidgetsBindingObserver {
   late final MapContainerController _controller;
   bool _isRequestPermission = false;
@@ -42,7 +43,7 @@ class _MapContainerState extends State<MapContainer> with WidgetsBindingObserver
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _controller = MapContainerController(points: widget.points)..init();
-    if (widget.onAndressChanged != null) {
+    if (widget.onAddressChanged != null) {
       _controller.mapController.updateUserPosition();
     }
   }
@@ -124,7 +125,7 @@ class _MapContainerState extends State<MapContainer> with WidgetsBindingObserver
             clusterColor: AppTheme.red,
             clusterTextStyle: AppStyles.caption.copyWith(color: Colors.white),
             onGetUserPositionError: _onGetUserPositionError,
-            onCameraPositionChanged: widget.onAndressChanged != null
+            onCameraPositionChanged: widget.onAddressChanged != null
                 ? (pos, _, _) => widget.onCameraPositionChanged!(pos.target.latitude, pos.target.longitude)
                 : null,
             userInterface: MapControlsWidget(

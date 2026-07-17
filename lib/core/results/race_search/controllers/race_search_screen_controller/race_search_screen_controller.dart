@@ -11,8 +11,10 @@ import 'package:mobx/mobx.dart';
 
 part 'race_search_screen_controller.g.dart';
 
+/// MobX-контроллер экрана поиска гонки.
 class RaceSearchScreenController = RaceSearchScreenControllerBase with _$RaceSearchScreenController;
 
+/// Управляет полями поиска и загрузкой результатов гонки.
 abstract class RaceSearchScreenControllerBase with Store {
   RaceSearchScreenControllerBase({
     Future<ScheduleModel> Function({required String year, required String round})? fetchRaceResults,
@@ -39,17 +41,20 @@ abstract class RaceSearchScreenControllerBase with Store {
   @observable
   String errorMessage = '';
 
+  /// Освобождает контроллеры ввода и прокрутки.
   void dispose() {
     yearController.dispose();
     roundController.dispose();
     scrollController.dispose();
   }
 
+  /// Проверяет заполненность полей сезона и раунда.
   @action
   void checkFields() {
     fieldsInputted = yearController.isValidYear && roundController.text.isNotEmpty;
   }
 
+  /// Ищет гонку по введённым сезону и раунду.
   @action
   Future<void> loadRaceResults() async {
     dataIsLoaded = false;

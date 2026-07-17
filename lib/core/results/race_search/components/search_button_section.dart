@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
+/// Кнопка запуска поиска с индикатором загрузки.
 class SearchButtonSection extends StatelessWidget {
   const SearchButtonSection({super.key});
 

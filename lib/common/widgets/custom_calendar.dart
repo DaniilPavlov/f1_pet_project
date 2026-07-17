@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+/// Календарь с кастомными ячейками и логотипами гонок.
 class CustomCalendar extends StatefulWidget {
   const CustomCalendar({
     required this.selectedDay,
@@ -25,6 +26,7 @@ class CustomCalendar extends StatefulWidget {
   State<CustomCalendar> createState() => _CustomCalendarState();
 }
 
+/// Состояние календаря: ячейки дней и логотипы гонок.
 class _CustomCalendarState extends State<CustomCalendar> {
   Widget? _makeLogoWidget(DateTime date, {bool isSelected = false, bool isToday = false}) {
     final imageAsset = widget.imagePathCallback(date);
@@ -131,6 +133,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
   }
 }
 
+/// Кнопка-шеврон для переключения месяцев в календаре.
 class ChevronButton extends StatelessWidget {
   const ChevronButton({required this.icon, this.alignment = Alignment.centerLeft, super.key});
   final IconData icon;

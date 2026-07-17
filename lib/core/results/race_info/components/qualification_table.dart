@@ -3,6 +3,7 @@ import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart
 import 'package:f1_pet_project/core/results/race_info/components/qualification_table_detail_row.dart';
 import 'package:flutter/material.dart';
 
+/// Таблица результатов квалификации.
 // TODO(check): check what sprints show
 class QualificationTable extends StatelessWidget {
   const QualificationTable({required this.qualifyingResults, super.key});

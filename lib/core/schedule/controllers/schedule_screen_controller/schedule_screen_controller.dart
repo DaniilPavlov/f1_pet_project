@@ -18,8 +18,10 @@ import 'package:table_calendar/table_calendar.dart';
 
 part 'schedule_screen_controller.g.dart';
 
+/// MobX-контроллер экрана расписания.
 class ScheduleScreenController = ScheduleScreenControllerBase with _$ScheduleScreenController;
 
+/// Управляет загрузкой расписания, календарём и списком сессий выбранного дня.
 abstract class ScheduleScreenControllerBase with Store {
   ScheduleScreenControllerBase({Future<ScheduleModel> Function()? fetchSchedule})
     : _fetchScheduleOverride = fetchSchedule;
@@ -43,10 +45,12 @@ abstract class ScheduleScreenControllerBase with Store {
   @computed
   CustomException? get screenError => racesElements.exception;
 
+  /// Освобождает [scrollController] при уничтожении контроллера.
   void dispose() {
     scrollController.dispose();
   }
 
+  /// Загружает расписание сезона и выбирает текущий день.
   @action
   Future<void> loadAllData() async {
     allDataIsLoaded = false;
@@ -59,12 +63,14 @@ abstract class ScheduleScreenControllerBase with Store {
     allDataIsLoaded = screenError == null;
   }
 
+  /// Обрабатывает выбор даты в календаре и обновляет список сессий.
   @action
   void onSelectDay(DateTime newSelectedDate, DateTime focusedDay) {
     selectedDate = newSelectedDate;
     _showScheduleOfSelectedDate();
   }
 
+  /// Возвращает иконку для дня с гонкой или сессией, иначе null.
   String? getLogoPath(DateTime day) {
     final races = racesElements.value;
     if (races == null) return null;

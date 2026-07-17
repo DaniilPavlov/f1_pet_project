@@ -10,6 +10,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
+/// Виджет Яндекс.Карты с метками, кластерами и геопозицией.
 class CustomMap extends StatefulWidget {
   const CustomMap({
     required this.mapController,
@@ -52,6 +53,7 @@ class CustomMap extends StatefulWidget {
   State<CustomMap> createState() => _CustomMapState();
 }
 
+/// Состояние виджета карты: создание контроллера и обработка жестов.
 class _CustomMapState extends State<CustomMap> {
   late final CustomMapController _controller;
 

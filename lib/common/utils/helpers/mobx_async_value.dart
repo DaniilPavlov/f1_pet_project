@@ -1,6 +1,7 @@
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:flutter/foundation.dart';
 
+/// Обёртка над асинхронным значением с состояниями загрузки, данных и ошибки.
 @immutable
 class AsyncValue<T> {
   const AsyncValue({
@@ -52,12 +53,14 @@ class AsyncValue<T> {
   }
 }
 
+/// Статус асинхронного значения.
 enum AsyncStatus {
   loading,
   error,
   value,
 }
 
+/// Описание ошибки асинхронной операции.
 @immutable
 class AsyncError {
   const AsyncError({
@@ -85,13 +88,18 @@ class AsyncError {
   }
 }
 
+/// Методы преобразования [AsyncValue] между состояниями.
 extension AsyncValueX<T> on AsyncValue<T> {
+  /// Переводит значение в состояние загрузки.
   AsyncValue<T> toLoading() => AsyncValue.loading(value: value);
 
+  /// Переводит значение в состояние успеха с данными.
   AsyncValue<T> toValue(T newValue) => AsyncValue.value(value: newValue);
 
+  /// Переводит значение в состояние ошибки с сообщением.
   AsyncValue<T> toError(String message) => AsyncValue.error(error: AsyncError(errorMessage: message));
 
+  /// Переводит значение в состояние ошибки из [CustomException].
   AsyncValue<T> toErrorFrom(CustomException exception) => AsyncValue.error(
     error: AsyncError(errorMessage: exception.title, errorObject: exception),
   );

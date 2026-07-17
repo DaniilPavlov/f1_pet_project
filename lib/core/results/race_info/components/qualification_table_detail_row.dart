@@ -2,7 +2,7 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
 import 'package:flutter/material.dart';
 
-///* Возвращает список детей ряда таблицы
+/// Формирует ячейки строки с результатом пилота в квалификации.
 List<Widget> qualificationTableDetailRowChildren(QualifyingResultsModel results, int place) {
   const textStyle = AppStyles.caption;
 

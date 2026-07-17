@@ -3,8 +3,10 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'circuit_location_model.g.dart';
 
+/// Модель географического расположения трассы.
 @JsonSerializable()
 class CircuitLocationModel {
+  /// Создаёт модель из JSON-ответа API.
   factory CircuitLocationModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$CircuitLocationModelFromJson(json);

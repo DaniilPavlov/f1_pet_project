@@ -4,10 +4,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'standings_table_model.g.dart';
 
+/// Контейнер списков standings по сезонам и этапам.
 @JsonSerializable()
 class StandingsTableModel {
   StandingsTableModel({required this.standingsLists});
 
+  /// Парсит JSON-ответ в [StandingsTableModel].
   factory StandingsTableModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$StandingsTableModelFromJson(json);

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Custom context menu builder for text fields.
-/// Mandatory use in all text fields.
-/// Designed to disable the built-in text scanning feature.
+/// Контекстное меню текстового поля без Live Text.
+/// Обязательно использовать во всех текстовых полях.
 class CustomContextMenuBuilder extends StatelessWidget {
   const CustomContextMenuBuilder(this.editableTextState, {super.key});
   final EditableTextState editableTextState;

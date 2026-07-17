@@ -1,9 +1,9 @@
 import 'package:f1_pet_project/common/packages/custom_yandex_map/src/services/geometry_service.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
-/// Camera service.
+/// Сервис управления камерой Яндекс.Карты.
 class CameraServices {
-  /// Center on list of points.
+  /// Центрирует камеру по списку точек или меток.
   static Future<void> setCenterOn<V>(List<V> list, {YandexMapController? controller}) async {
     if (list.isEmpty) return;
 
@@ -25,7 +25,7 @@ class CameraServices {
     );
   }
 
-  /// Navigate to point.
+  /// Перемещает камеру к указанной точке с анимацией.
   static Future<void> moveTo(Point point, {YandexMapController? controller}) async {
     await controller?.moveCamera(
       CameraUpdate.newCameraPosition(

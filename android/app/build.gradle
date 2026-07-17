@@ -24,6 +24,14 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def yandexMapKitApiKey = localProperties.getProperty('yandex.mapkit.apiKey') ?: ''
+if (yandexMapKitApiKey.isEmpty()) {
+    println "____NOTE____"
+    println "Yandex MapKit API key is missing."
+    println "Add yandex.mapkit.apiKey=YOUR_KEY to android/local.properties"
+    println "____________"
+}
+
 
 boolean hasKeyStore = false
 def keystoreProperties = new Properties()
@@ -57,6 +65,10 @@ android {
         jvmTarget = '21'
     }
 
+    buildFeatures {
+        buildConfig true
+    }
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -69,6 +81,7 @@ android {
         minSdkVersion 26
         targetSdk 35
         setProperty("archivesBaseName", versionName + "(" + versionCode + ")")
+        buildConfigField "String", "YANDEX_MAPKIT_API_KEY", "\"${yandexMapKitApiKey}\""
     }
 
     applicationVariants.all { variant ->

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Текстовые стили приложения: заголовки, body и подписи.
 class AppStyles {
   static const h1 = TextStyle(
     fontFamily: 'HelveticaNeueCyr-Bold',

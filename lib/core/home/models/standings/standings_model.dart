@@ -4,10 +4,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'standings_model.g.dart';
 
+/// Модель ответа API с турнирной таблицей.
 @JsonSerializable()
 class StandingsModel {
   StandingsModel({required this.standingsTable});
 
+  /// Парсит JSON-ответ в [StandingsModel].
   factory StandingsModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$StandingsModelFromJson(json);

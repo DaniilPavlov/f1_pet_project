@@ -4,10 +4,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'schedule_model.g.dart';
 
+/// Модель ответа API с таблицей гонок сезона.
 @JsonSerializable()
 class ScheduleModel {
   ScheduleModel({required this.raceTable});
 
+  /// Парсит JSON-ответ в [ScheduleModel].
   factory ScheduleModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$ScheduleModelFromJson(json);

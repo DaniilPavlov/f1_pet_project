@@ -6,6 +6,7 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/buttons/circle_button.dart';
 import 'package:flutter/material.dart';
 
+/// Кастомный AppBar с логотипом или заголовком и кнопкой «назад».
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({this.title, this.onPop, super.key});
   final String? title;

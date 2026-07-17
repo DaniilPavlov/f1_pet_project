@@ -1,6 +1,7 @@
 import 'package:f1_pet_project/common/widgets/bottom_sheets/bottom_sheet_track.dart';
 import 'package:flutter/material.dart';
 
+/// Базовый нижний лист с ручкой и телом контента.
 class DefaultBottomSheet extends StatelessWidget {
   const DefaultBottomSheet({
     required this.body,

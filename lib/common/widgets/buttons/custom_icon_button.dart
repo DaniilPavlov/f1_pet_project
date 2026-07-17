@@ -1,6 +1,7 @@
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
+/// Кнопка с иконкой из ассета и настраиваемым фоном.
 class CustomIconButton extends StatelessWidget {
   const CustomIconButton({
     required this.image,

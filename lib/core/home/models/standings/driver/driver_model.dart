@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'driver_model.g.dart';
 
+/// Данные пилота F1.
 @JsonSerializable()
 class DriverModel {
   DriverModel({
@@ -19,6 +20,7 @@ class DriverModel {
     permanentNumber ??= 'none';
   }
 
+  /// Парсит JSON-ответ в [DriverModel].
   factory DriverModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$DriverModelFromJson(json);

@@ -5,6 +5,7 @@ import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/// Блок с заголовком и сокращённой таблицей последней гонки.
 class LastRaceTableSection extends StatelessWidget {
   const LastRaceTableSection({required this.lastRace, super.key});
   final RacesModel lastRace;

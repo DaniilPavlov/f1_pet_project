@@ -6,8 +6,9 @@ import 'package:f1_pet_project/common/packages/custom_yandex_map/src/services/po
 import 'package:flutter/material.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
-/// Cluster drawer service.
+/// Сервис кластеризации меток на карте.
 class ClusterDrawer {
+  /// Создаёт кластеризованную коллекцию меток с кастомным видом.
   static Future<ClusterizedPlacemarkCollection> getCluster({
     required MapObjectId clusterMapId,
     required List<Point> points,
@@ -55,6 +56,7 @@ class ClusterDrawer {
     );
   }
 
+  /// Рисует иконку кластера с числом меток внутри.
   static Future<Uint8List> buildClusterAppearance(
     Cluster cluster, {
     required Color clusterColor,

@@ -22,10 +22,13 @@ const _appBarPinOffset = 150.0;
 bool _isAppBarPinned(VisibilityInfo info) =>
     info.visibleBounds.top < info.size.height - _appBarPinOffset && info.visibleBounds.right != 0;
 
+/// Секции экрана для управления закреплением шапок таблиц.
 enum _RaceInfoSection { race, qualification, pitStops }
 
+/// MobX-контроллер детального экрана гонки.
 class RaceInfoScreenController = RaceInfoScreenControllerBase with _$RaceInfoScreenController;
 
+/// Управляет данными гонки, квалификации, пит-стопов и закреплением шапок таблиц.
 abstract class RaceInfoScreenControllerBase with Store {
   RaceInfoScreenControllerBase({
     required this.raceModel,
@@ -62,6 +65,7 @@ abstract class RaceInfoScreenControllerBase with Store {
   @computed
   CustomException? get screenError => firstException([qualifyingResults, pitStops]);
 
+  /// Загружает квалификацию и пит-стопы выбранной гонки.
   @action
   Future<void> loadAllData() async {
     allDataIsLoaded = false;
@@ -69,13 +73,16 @@ abstract class RaceInfoScreenControllerBase with Store {
     allDataIsLoaded = screenError == null;
   }
 
+  /// Обновляет закрепление шапки таблицы результатов при прокрутке.
   @action
   void onRaceTableVisibilityChanged(VisibilityInfo info) => _setAppBarPinned(_RaceInfoSection.race, info);
 
+  /// Обновляет закрепление шапки таблицы квалификации при прокрутке.
   @action
   void onQualificationTableVisibilityChanged(VisibilityInfo info) =>
       _setAppBarPinned(_RaceInfoSection.qualification, info);
 
+  /// Обновляет закрепление шапки таблицы пит-стопов при прокрутке.
   @action
   void onPitStopsTableVisibilityChanged(VisibilityInfo info) => _setAppBarPinned(_RaceInfoSection.pitStops, info);
 
@@ -91,6 +98,7 @@ abstract class RaceInfoScreenControllerBase with Store {
     }
   }
 
+  /// Загружает результаты квалификации для текущей гонки.
   @action
   Future<void> loadQualifyingResults() async {
     await runAsyncLoad<ScheduleModel, List<QualifyingResultsModel>>(
@@ -107,6 +115,7 @@ abstract class RaceInfoScreenControllerBase with Store {
     );
   }
 
+  /// Загружает пит-стопы и подставляет имена пилотов.
   @action
   Future<void> loadPitStops() async {
     var stops = <PitStopsModel>[];

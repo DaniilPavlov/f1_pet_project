@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Сам виджет, в котором происходим вся магия
+/// Обёртка с анимацией нажатия и прыжка при выборе пункта навбара.
 class BounceAnimationWidget extends StatefulWidget {
   const BounceAnimationWidget({required this.onPressed, required this.child, super.key, this.isSelected = false});
 
@@ -12,6 +12,7 @@ class BounceAnimationWidget extends StatefulWidget {
   State<BounceAnimationWidget> createState() => _BounceAnimationWidgetState();
 }
 
+/// Состояние анимаций нажатия и прыжка [BounceAnimationWidget].
 class _BounceAnimationWidgetState extends State<BounceAnimationWidget> with TickerProviderStateMixin {
   final _isHover = ValueNotifier(false);
   final _offsetDuration = const Duration(milliseconds: 600);

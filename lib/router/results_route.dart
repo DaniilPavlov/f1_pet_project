@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 
+/// Маршрут вкладки «Результаты» с экранами гонки и поиска.
 final AutoRoute resultsRoute = AutoRoute(
   path: 'results',
   page: ResultsRouter.page,

@@ -4,44 +4,69 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/nav_bar/bounce_animation_widget.dart';
 import 'package:flutter/material.dart';
 
+/// Элемент нижней навигации с иконкой и подписью.
 class NavBarItem extends StatelessWidget {
-  const NavBarItem({required this.imageAsset, required this.title, this.isSelected = false, this.onPressed, super.key});
+  const NavBarItem({
+    required this.imageAsset,
+    required this.title,
+    this.isSelected = false,
+    this.onPressed,
+    super.key,
+  });
+
   final String imageAsset;
   final String title;
-
   final VoidCallback? onPressed;
-
   final bool isSelected;
+
+  static const _iconSize = 28.0;
+  /// Масштаб обрезки краевого мата PNG, который иначе даёт квадратную обводку после tint.
+  static const _edgeCropScale = 1.12;
 
   @override
   Widget build(BuildContext context) {
+    final color = isSelected ? AppTheme.red : AppTheme.white;
+    final itemWidth = (MediaQuery.sizeOf(context).width - StaticData.defaultHorizontalPadding * 2) / 5;
+
     return BounceAnimationWidget(
-      onPressed: () {
-        onPressed?.call();
-      },
+      onPressed: () => onPressed?.call(),
       isSelected: isSelected,
-      child: Stack(
-        children: [
-          Container(
-            width: (MediaQuery.of(context).size.width - StaticData.defaultHorizontalPadding * 2) / 5,
-            height: (MediaQuery.of(context).size.width - StaticData.defaultHorizontalPadding * 2) / 5.5,
-            padding: const EdgeInsets.only(top: 12),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(imageAsset, scale: 19.5, color: isSelected ? AppTheme.red : AppTheme.white),
-                const SizedBox(height: 8),
-                Text(title, style: AppStyles.navBar.copyWith(color: isSelected ? AppTheme.red : AppTheme.white)),
-              ],
-            ),
+      child: SizedBox(
+        width: itemWidth,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: _iconSize,
+                height: _iconSize,
+                child: ClipRect(
+                  child: Transform.scale(
+                    scale: _edgeCropScale,
+                    child: Image.asset(
+                      imageAsset,
+                      width: _iconSize,
+                      height: _iconSize,
+                      fit: BoxFit.contain,
+                      color: color,
+                      colorBlendMode: BlendMode.srcIn,
+                      gaplessPlayback: true,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                title,
+                style: AppStyles.navBar.copyWith(color: color),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
-          Container(
-            color: Colors.white.withValues(alpha: 0),
-            height: (MediaQuery.of(context).size.width - StaticData.defaultHorizontalPadding * 2) / 5.5,
-            width: (MediaQuery.of(context).size.width - StaticData.defaultHorizontalPadding * 2) / 5,
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
+/// Круглая кнопка с настраиваемым содержимым и цветом фона.
 class CircleButton extends StatelessWidget {
   const CircleButton({
     required this.child,

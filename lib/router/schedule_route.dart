@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 
+/// Маршрут вкладки «Расписание».
 final AutoRoute scheduleRoute = AutoRoute(
   path: 'schedule',
   page: ScheduleRouter.page,

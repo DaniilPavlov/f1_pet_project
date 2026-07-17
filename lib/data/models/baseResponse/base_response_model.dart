@@ -6,8 +6,9 @@ part 'base_response_model.g.dart';
 
 @JsonSerializable()
 
-/// Api response model.
+/// Базовая модель ответа API с полем MRData.
 class BaseResponseModel {
+  /// Создаёт модель из JSON; при ошибке бросает [ResponseParseException].
   factory BaseResponseModel.fromJson(Map<String, dynamic> json) {
     try {
       final res = _$BaseResponseModelFromJson(json);
@@ -27,7 +28,7 @@ class BaseResponseModel {
     this.message,
   });
 
-  /// Response's data.
+  /// Полезная нагрузка ответа (MRData).
   @JsonKey(name: 'MRData')
   final dynamic mrData;
 
@@ -35,5 +36,6 @@ class BaseResponseModel {
 
   final int? code;
 
+  /// Преобразует модель в JSON.
   Map<String, dynamic> toJson() => _$BaseResponseModelToJson(this);
 }

@@ -1,5 +1,6 @@
 import 'package:f1_pet_project/data/models/baseResponse/base_response_model.dart';
 
+/// Загружает и парсит данные через лоадер с опциональным override и кешем.
 Future<T> fetchFromLoader<T>({
   required Future<T> Function()? override,
   required Future<BaseResponseModel> Function() load,

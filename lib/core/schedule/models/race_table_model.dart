@@ -4,10 +4,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'race_table_model.g.dart';
 
+/// Таблица гонок текущего сезона.
 @JsonSerializable()
 class RaceTableModel {
   RaceTableModel({required this.races, required this.season, required this.round});
 
+  /// Парсит JSON-ответ в [RaceTableModel].
   factory RaceTableModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$RaceTableModelFromJson(json);

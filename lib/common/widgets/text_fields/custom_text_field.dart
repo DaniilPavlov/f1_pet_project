@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// Кастомное текстовое поле с поддержкой iOS и Android.
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
     this.controller,
@@ -62,6 +63,7 @@ class CustomTextField extends StatefulWidget {
   State<CustomTextField> createState() => _CustomTextFieldState();
 }
 
+/// Состояние текстового поля: фокус и платформенная отрисовка.
 class _CustomTextFieldState extends State<CustomTextField> {
   late final FocusNode focusNode;
 

@@ -12,8 +12,10 @@ import 'package:mobx/mobx.dart';
 
 part 'hall_of_fame_screen_controller.g.dart';
 
+/// MobX-контроллер экрана «Зал славы».
 class HallOfFameScreenController = HallOfFameScreenControllerBase with _$HallOfFameScreenController;
 
+/// Управляет зачётами пилотов/конструкторов за выбранный сезон.
 abstract class HallOfFameScreenControllerBase with Store {
   HallOfFameScreenControllerBase({
     Future<StandingsModel> Function(String year)? fetchDriversStandings,
@@ -40,15 +42,18 @@ abstract class HallOfFameScreenControllerBase with Store {
   @computed
   CustomException? get screenError => firstException([driversStandings, constructorsStandings]);
 
+  /// Освобождает контроллер поля сезона.
   void dispose() {
     yearController.dispose();
   }
 
+  /// Проверяет корректность введённого года сезона.
   @action
   void checkFields() {
     fieldsInputted = yearController.isValidYear;
   }
 
+  /// Загружает зачёты пилотов и конструкторов за выбранный сезон.
   @action
   Future<void> loadAllData() async {
     final year = yearController.text;
@@ -58,6 +63,7 @@ abstract class HallOfFameScreenControllerBase with Store {
     ]);
   }
 
+  /// Загружает зачёт пилотов за указанный сезон.
   @action
   Future<void> loadDriversStandings({required String year}) async {
     await runAsyncLoad<StandingsModel, List<StandingsListsModel>>(
@@ -68,6 +74,7 @@ abstract class HallOfFameScreenControllerBase with Store {
     );
   }
 
+  /// Загружает зачёт конструкторов за указанный сезон.
   @action
   Future<void> loadConstructorsStandings({required String year}) async {
     await runAsyncLoad<StandingsModel, List<StandingsListsModel>>(

@@ -1,6 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
+/// Цветовая палитра, тени и радиусы приложения.
 class AppTheme {
   static const defaultRadius = Radius.circular(12);
 
@@ -32,6 +33,7 @@ class AppTheme {
   static final defaultBorderRadius = BorderRadius.circular(12);
 }
 
+/// Отображает плейсхолдер при загрузке или ошибке [ExtendedImage].
 Widget? loadStateChangedFunction(
   ExtendedImageState state, {
   double height = 24,
@@ -57,12 +59,14 @@ Widget? loadStateChangedFunction(
   return null;
 }
 
+/// Типы плейсхолдеров для изображений.
 enum PlaceholderType {
   type1,
   type2,
   type3,
 }
 
+/// Путь к ассету плейсхолдера по типу.
 extension PlaceholderExtension on PlaceholderType {
   static const _path = 'assets/';
 

@@ -5,6 +5,7 @@ import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/core/schedule/models/race_date_model.dart';
 import 'package:flutter/material.dart';
 
+/// Карточка сессии с названием и временем в локальном часовом поясе.
 class ScheduleContainer extends StatelessWidget {
   const ScheduleContainer({required this.title, required this.date, super.key});
   final String title;

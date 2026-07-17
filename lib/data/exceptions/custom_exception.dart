@@ -1,3 +1,4 @@
+/// Пользовательское исключение с заголовком и описанием ошибки.
 class CustomException implements Exception {
   const CustomException({
     required this.title,

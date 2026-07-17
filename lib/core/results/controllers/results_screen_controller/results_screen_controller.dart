@@ -9,8 +9,10 @@ import 'package:mobx/mobx.dart';
 
 part 'results_screen_controller.g.dart';
 
+/// MobX-контроллер экрана результатов.
 class ResultsScreenController = ResultsScreenControllerBase with _$ResultsScreenController;
 
+/// Управляет загрузкой результатов последней гонки.
 abstract class ResultsScreenControllerBase with Store {
   ResultsScreenControllerBase({
     Future<ScheduleModel> Function()? fetchLastRaceResults,
@@ -24,11 +26,13 @@ abstract class ResultsScreenControllerBase with Store {
   @computed
   CustomException? get screenError => lastRace.exception;
 
+  /// Загружает все данные экрана.
   @action
   Future<void> loadAllData() async {
     await loadLastRaceResults();
   }
 
+  /// Запрашивает результаты последней завершённой гонки.
   @action
   Future<void> loadLastRaceResults() async {
     await runAsyncLoad<ScheduleModel, RacesModel>(

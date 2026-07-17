@@ -4,6 +4,7 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/nav_bar/nav_bar_item.dart';
 import 'package:flutter/material.dart';
 
+/// Нижняя панель навигации приложения.
 class NavBar extends StatelessWidget {
   const NavBar({this.tabsRouter, super.key});
   final TabsRouter? tabsRouter;

@@ -6,14 +6,15 @@ import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
+import 'package:f1_pet_project/common/widgets/tables/tournament_tables_section.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart';
-import 'package:f1_pet_project/core/hall_of_fame/components/hof_tournament_tables_section.dart';
 import 'package:f1_pet_project/core/hall_of_fame/controllers/hall_of_fame_screen_controller/hall_of_fame_screen_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
+/// Экран «Зал славы» с турнирными таблицами за выбранный сезон.
 @RoutePage()
 class HallOfFameScreen extends StatelessWidget {
   const HallOfFameScreen({super.key});
@@ -90,7 +91,7 @@ class HallOfFameScreen extends StatelessWidget {
                   ),
                   if (constructors != null && drivers != null)
                     SliverToBoxAdapter(
-                      child: HofTournamentTablesSection(
+                      child: TournamentTablesSection(
                         driversStandings: drivers[0].driverStandings!,
                         constructorsStandings: constructors[0].constructorStandings!,
                       ),

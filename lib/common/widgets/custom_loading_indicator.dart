@@ -2,6 +2,7 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+/// Индикатор загрузки с анимацией вращающихся точек.
 class CustomLoadingIndicator extends StatelessWidget {
   const CustomLoadingIndicator({super.key});
 

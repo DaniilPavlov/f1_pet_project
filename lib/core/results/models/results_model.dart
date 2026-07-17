@@ -7,6 +7,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'results_model.g.dart';
 
+/// Результат одного пилота в финишной таблице гонки.
 @JsonSerializable()
 class ResultsModel {
   ResultsModel({
@@ -23,6 +24,7 @@ class ResultsModel {
     required this.fastestLap,
   });
 
+  /// Создаёт модель из JSON ответа API.
   factory ResultsModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$ResultsModelFromJson(json);

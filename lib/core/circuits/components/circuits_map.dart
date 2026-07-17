@@ -5,6 +5,7 @@ import 'package:f1_pet_project/core/map/components/map_container.dart';
 import 'package:flutter/material.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
+/// Карта с метками всех трасс и нижним листом по нажатию.
 class CircuitsMap extends StatefulWidget {
   const CircuitsMap({required this.circuits, super.key});
 
@@ -14,6 +15,7 @@ class CircuitsMap extends StatefulWidget {
   State<CircuitsMap> createState() => _CircuitsMapState();
 }
 
+/// Состояние карты трасс с сохранением вкладки при переключении.
 class _CircuitsMapState extends State<CircuitsMap> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;

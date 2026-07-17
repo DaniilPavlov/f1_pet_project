@@ -5,10 +5,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'fastest_lap_model.g.dart';
 
+/// Информация о лучшем круге пилота в гонке.
 @JsonSerializable()
 class FastestLapModel {
   FastestLapModel({required this.averageSpeed, required this.time, required this.lap, required this.rank});
 
+  /// Создаёт модель из JSON ответа API.
   factory FastestLapModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$FastestLapModelFromJson(json);

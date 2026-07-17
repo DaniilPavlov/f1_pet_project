@@ -3,14 +3,14 @@ import 'package:f1_pet_project/common/widgets/bottom_sheets/bottom_sheet_track.d
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:flutter/material.dart';
 
+/// Нижний лист с объяснением, зачем нужно разрешение, и кнопкой настроек.
 class BottomSheetPermissions extends StatelessWidget {
-  /// * Виджет для того, чтобы объяснить пользователю зачем нам нужно разрешение.
   const BottomSheetPermissions({required this.text, required this.onTapSettings, super.key});
 
-  /// * Текст описания для чего нужно разрешение.
+  /// Текст с описанием, зачем нужно разрешение.
   final String text;
 
-  /// * Колбек если пользователь хочет перейти в настройки.
+  /// Открывает системные настройки приложения.
   final VoidCallback onTapSettings;
 
   @override

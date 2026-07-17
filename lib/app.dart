@@ -5,8 +5,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 // TODO(feature): add localization
-// TODO(feature): add local push notifications
 
+/// Корневой виджет приложения с роутингом и адаптивной вёрсткой.
 class App extends StatefulWidget {
   const App({super.key});
 
@@ -14,26 +14,14 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
+/// Состояние приложения: ориентация экрана и системный UI.
 class _AppState extends State<App> {
   final _appRouter = AppRouter();
-  static const platform = MethodChannel('custom_notification_channel');
 
+  /// Фиксирует портретную ориентацию и стиль статус-бара.
   @override
   void initState() {
     super.initState();
-    showCustomNotification();
-  }
-
-  Future<void> showCustomNotification() async {
-    try {
-      await platform.invokeMethod('showCustomNotification');
-    } on PlatformException catch (e) {
-      debugPrint("Failed to show custom notification: '${e.message}'.");
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
@@ -42,7 +30,11 @@ class _AppState extends State<App> {
         statusBarIconBrightness: Brightness.dark,
       ),
     );
+  }
 
+  /// Собирает MaterialApp с auto_route и responsive_framework.
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       supportedLocales: const [Locale('ru', '')],

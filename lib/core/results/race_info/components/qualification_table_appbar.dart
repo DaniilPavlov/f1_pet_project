@@ -2,6 +2,7 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
+/// Закрепляемая шапка таблицы квалификации.
 class QualificationTableAppBar extends StatelessWidget {
   const QualificationTableAppBar({super.key});
 

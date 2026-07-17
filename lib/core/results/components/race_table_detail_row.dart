@@ -3,7 +3,7 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/core/results/models/results_model.dart';
 import 'package:flutter/material.dart';
 
-///* Возвращает список детей ряда таблицы
+/// Формирует ячейки строки с результатом пилота в гонке.
 List<Widget> raceTableDetailRowChildren(ResultsModel results, String fastestLap, int place) {
   const textStyle = AppStyles.caption;
 

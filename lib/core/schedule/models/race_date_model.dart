@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'race_date_model.g.dart';
 
+/// Дата и время сессии или гонки.
 @JsonSerializable()
 class RaceDateModel {
   RaceDateModel({
@@ -10,6 +11,7 @@ class RaceDateModel {
     required this.time,
   });
 
+  /// Парсит JSON-ответ в [RaceDateModel].
   factory RaceDateModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$RaceDateModelFromJson(json);

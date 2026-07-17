@@ -7,6 +7,7 @@ import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
 import 'package:flutter/material.dart';
 
+/// Экран с подробной информацией о выбранной трассе.
 @RoutePage()
 class CircuitScreen extends StatelessWidget {
   const CircuitScreen({required this.circuitModel, super.key});

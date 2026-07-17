@@ -10,8 +10,10 @@ import 'package:mobx/mobx.dart';
 
 part 'circuits_screen_controller.g.dart';
 
+/// MobX-контроллер экрана трасс.
 class CircuitsScreenController = CircuitsScreenControllerBase with _$CircuitsScreenController;
 
+/// Управляет загрузкой трасс и переключением вкладок списка/карты.
 abstract class CircuitsScreenControllerBase with Store {
   CircuitsScreenControllerBase({Future<CircuitsModel> Function()? fetchCircuits})
     : _fetchCircuitsOverride = fetchCircuits;
@@ -29,10 +31,12 @@ abstract class CircuitsScreenControllerBase with Store {
   @computed
   CustomException? get screenError => circuits.exception;
 
+  /// Освобождает ресурсы контроллера страниц.
   void dispose() {
     pageController.dispose();
   }
 
+  /// Загружает список трасс с сервера.
   @action
   Future<void> loadCircuits() async {
     await runAsyncLoad<CircuitsModel, List<CircuitModel>>(
@@ -43,6 +47,7 @@ abstract class CircuitsScreenControllerBase with Store {
     );
   }
 
+  /// Переключает активную вкладку (карта или список).
   @action
   void changeActivePage(int value) {
     activePage = value;

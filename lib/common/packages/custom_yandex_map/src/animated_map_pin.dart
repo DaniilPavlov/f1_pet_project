@@ -1,6 +1,7 @@
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
+/// Анимированная метка в центре карты при перетаскивании.
 class AnimatedMapPin extends StatefulWidget {
   const AnimatedMapPin({required this.isDragging, super.key});
 
@@ -10,6 +11,7 @@ class AnimatedMapPin extends StatefulWidget {
   State<AnimatedMapPin> createState() => _AnimatedMapPinState();
 }
 
+/// Состояние анимации подъёма/опускания метки.
 class _AnimatedMapPinState extends State<AnimatedMapPin> with TickerProviderStateMixin {
   late final AnimationController _controller;
 

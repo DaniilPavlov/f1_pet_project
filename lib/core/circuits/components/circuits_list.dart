@@ -4,6 +4,7 @@ import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
 
+/// Прокручиваемый список трасс с переходом к деталям.
 class CircuitsList extends StatefulWidget {
   const CircuitsList({
     required this.circuits,
@@ -15,6 +16,7 @@ class CircuitsList extends StatefulWidget {
   State<CircuitsList> createState() => _CircuitsListState();
 }
 
+/// Состояние списка трасс с сохранением вкладки при переключении.
 class _CircuitsListState extends State<CircuitsList>
     with AutomaticKeepAliveClientMixin {
   @override

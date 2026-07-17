@@ -11,8 +11,10 @@ import 'package:mobx/mobx.dart';
 
 part 'home_screen_controller.g.dart';
 
+/// MobX-контроллер главного экрана.
 class HomeScreenController = HomeScreenControllerBase with _$HomeScreenController;
 
+/// Управляет загрузкой и состоянием турнирных таблиц пилотов и конструкторов.
 abstract class HomeScreenControllerBase with Store {
   HomeScreenControllerBase({
     Future<StandingsModel> Function()? fetchCurrentDriversStandings,
@@ -38,11 +40,13 @@ abstract class HomeScreenControllerBase with Store {
   @computed
   CustomException? get screenError => firstException([currentDrivers, currentConstructors]);
 
+  /// Параллельно загружает таблицы пилотов и конструкторов.
   @action
   Future<void> loadAllData() async {
     await Future.wait([loadCurrentDriversStandings(), loadCurrentConstructorsStandings()]);
   }
 
+  /// Загружает турнирную таблицу пилотов текущего сезона.
   @action
   Future<void> loadCurrentDriversStandings() async {
     await runAsyncLoad<StandingsModel, List<DriverStandingsModel>>(
@@ -58,6 +62,7 @@ abstract class HomeScreenControllerBase with Store {
     );
   }
 
+  /// Загружает турнирную таблицу конструкторов текущего сезона.
   @action
   Future<void> loadCurrentConstructorsStandings() async {
     await runAsyncLoad<StandingsModel, List<ConstructorStandingsModel>>(

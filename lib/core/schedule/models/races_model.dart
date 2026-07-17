@@ -8,6 +8,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'races_model.g.dart';
 
+/// Данные гонки с сессиями, результатами и пит-стопами.
 @JsonSerializable()
 class RacesModel {
   RacesModel({
@@ -28,6 +29,7 @@ class RacesModel {
     required this.pitStops,
   });
 
+  /// Парсит JSON-ответ в [RacesModel].
   factory RacesModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$RacesModelFromJson(json);
@@ -60,6 +62,7 @@ class RacesModel {
   @JsonKey(name: 'PitStops')
   final List<PitStopsModel>? pitStops;
 
+  /// Находит лучший круг гонки среди результатов.
   String get fastestLapTime {
     var fastest = '999999';
     for (final result in results ?? const <ResultsModel>[]) {

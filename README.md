@@ -1,18 +1,61 @@
-# f1_pet_project
+# F1 Pet Project
 
-Flutter-приложение про Formula 1.
+Flutter-приложение со статистикой Formula 1  
+(турнирные таблицы, результаты, календарь, зал славы, трассы).
 
-- **State management:** MobX
-- **Navigation:** Auto Route
-- **API:** [jolpica-f1](http://api.jolpi.ca/ergast/f1/)
+Данные — [Jolpica F1 API](https://github.com/jolpica/jolpica-f1) (совместим с Ergast).
+
+## Стек
+
+| Слой | Технологии |
+|------|------------|
+| UI | Flutter, Material |
+| State | MobX + Provider |
+| Навигация | Auto Route |
+| Сеть | Dio |
+| Codegen | json_serializable, mobx_codegen, auto_route_generator |
+| Карта | Yandex MapKit |
+
+## Структура
+
+```
+f1_pet_project/
+├── lib/
+│   ├── common/      # виджеты, тема, helpers, map package
+│   ├── core/        # фичи: home, results, schedule, hall_of_fame, circuits, map
+│   ├── data/        # модели ответа, exceptions
+│   ├── services/    # Dio, executor, cache
+│   └── router/      # Auto Route
+├── test/
+├── android/
+├── ios/
+└── .github/workflows/
+```
 
 ## Требования
 
 - Flutter **3.35.3+**
 - Dart **3.8+**
-- Java **21** (для Android)
+- Java **21** (Android / Yandex MapKit)
+- Yandex MapKit API key (см. ниже)
 
-## Локальный запуск
+## Yandex MapKit
+
+Ключ **не хранится в git**.
+
+**Android** — в `android/local.properties`:
+
+```properties
+yandex.mapkit.apiKey=YOUR_KEY
+```
+
+**iOS** — скопируй example и подставь ключ:
+
+```bash
+cp ios/Flutter/Secrets.xcconfig.example ios/Flutter/Secrets.xcconfig
+```
+
+## Запуск
 
 ```bash
 flutter pub get
@@ -29,49 +72,19 @@ flutter test
 
 ## CI / CD
 
-Репозиторий: [DaniilPavlov/f1_pet_project](https://github.com/DaniilPavlov/f1_pet_project)
-
 [![CI](https://github.com/DaniilPavlov/f1_pet_project/actions/workflows/ci.yml/badge.svg)](https://github.com/DaniilPavlov/f1_pet_project/actions/workflows/ci.yml)
 
-### CI (`ci.yml`)
+| Workflow | Когда | Что делает |
+|----------|-------|------------|
+| `ci.yml` | push / PR в `master` | codegen check, analyze, test |
+| `release.yml` | тег `v*` или вручную | Android APK (+ GitHub Release) |
 
-Запускается на push и pull request в `master`:
-
-1. `flutter pub get`
-2. проверка, что codegen актуален (`build_runner`)
-3. `flutter analyze`
-4. `flutter test`
-
-### CD (`release.yml`)
-
-Сборка артефактов:
-
-- **Автоматически** — при push тега `v*` (например `v1.0.2`)
-- **Вручную** — Actions → Release → Run workflow
-
-Собирается:
-
-- **Android APK** — автоматически по тегу `v*` или вручную
-- **Web** — только вручную (Actions → Release), т.к. проект завязан на Yandex MapKit
-
-Артефакты загружаются в GitHub Actions. При релизе по тегу создаётся GitHub Release с APK.
-
-#### Подпись Android (опционально)
-
-Без секретов APK собирается с debug-подписью (как в локальном `build.gradle` без `key.properties`).
-
-Для release-подписи добавь secrets в GitHub → Settings → Secrets and variables → Actions:
-
-| Secret | Описание |
-|--------|----------|
-| `ANDROID_KEYSTORE_BASE64` | Keystore в base64: `base64 -i upload-keystore.jks` |
-| `ANDROID_KEYSTORE_PASSWORD` | Пароль keystore |
-| `ANDROID_KEY_ALIAS` | Alias ключа |
-| `ANDROID_KEY_PASSWORD` | Пароль ключа |
-
-#### Создание релиза
+Релиз:
 
 ```bash
+# версия в pubspec.yaml должна совпадать с тегом
 git tag v1.0.2
 git push origin v1.0.2
 ```
+
+Для release-подписи APK (опционально) — secrets `ANDROID_KEYSTORE_*` в GitHub Actions.

@@ -1,7 +1,9 @@
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// Утилиты общего назначения: ссылки, даты и форматирование.
 class Utils {
+  /// Открывает URL во внешнем или системном браузере.
   static Future<bool> openUrl({
     required String rawUrl,
     bool externalApplication = false,
@@ -25,6 +27,7 @@ class Utils {
     }
   }
 
+  /// Возвращает название месяца по номеру в родительном или именительном падеже.
   static String getMonthNameByNumber({required int month, bool parent = true}) {
     switch (month) {
       case 2:
@@ -56,6 +59,7 @@ class Utils {
     }
   }
 
+  /// Форматирует время в строку вида «ЧЧ:ММ».
   static String formatHourMinute(DateTime date) {
     final hour = date.hour >= 10 ? date.hour : '0${date.hour}';
     final minute = date.minute >= 10 ? date.minute : '0${date.minute}';

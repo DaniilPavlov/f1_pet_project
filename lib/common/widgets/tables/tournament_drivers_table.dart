@@ -4,6 +4,7 @@ import 'package:f1_pet_project/common/widgets/tables/table_parts/tournament_tabl
 import 'package:f1_pet_project/core/home/models/standings/driver/driver_standings_model.dart';
 import 'package:flutter/material.dart';
 
+/// Таблица зачёта пилотов текущего сезона.
 class TournamentDriversTable extends StatelessWidget {
   const TournamentDriversTable({
     required this.drivers,

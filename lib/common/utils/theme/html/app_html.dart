@@ -4,6 +4,7 @@ import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
+/// Виджет для отображения HTML-контента с кастомными стилями.
 class AppHtml extends StatelessWidget {
   const AppHtml({
     required this.data,

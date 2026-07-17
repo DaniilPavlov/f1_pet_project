@@ -2,8 +2,9 @@ import 'dart:math';
 
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
-/// Service for calculating bounds of points.
+/// Сервис расчёта ограничивающей рамки для набора точек.
 class GeometryService {
+  /// Возвращает геометрию, охватывающую все переданные точки.
   static Geometry getGeometry(List<Point> points) {
     final lngs = points.map<double>((m) => m.longitude).toList();
     final lats = points.map<double>((m) => m.latitude).toList();

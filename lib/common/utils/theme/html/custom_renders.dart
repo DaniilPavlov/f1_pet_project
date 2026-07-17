@@ -95,7 +95,9 @@ List<HtmlExtension> htmlExtensions = [
   ),
 ];
 
+/// Кастомные HTML-рендеры для blockquote, слайдера, списков и таблиц.
 class CustomRenders {
+  /// Рендер маркированного списка с красными маркерами.
   static HtmlExtension ulDefault({
     Color? ulColor,
     double? circleSize,

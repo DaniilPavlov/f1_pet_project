@@ -2,6 +2,7 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
+/// Переключатель между двумя вкладками с подчёркиванием.
 class CustomSwitcher extends StatelessWidget {
   const CustomSwitcher({
     required this.firstTitle,

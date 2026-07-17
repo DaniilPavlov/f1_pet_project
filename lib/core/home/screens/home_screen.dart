@@ -3,12 +3,13 @@ import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
-import 'package:f1_pet_project/core/home/components/home_tournament_tables_section.dart';
+import 'package:f1_pet_project/common/widgets/tables/tournament_tables_section.dart';
 import 'package:f1_pet_project/core/home/controllers/home_screen_controller/home_screen_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
+/// Главный экран с турнирными таблицами текущего сезона.
 @RoutePage()
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -38,9 +39,10 @@ class HomeScreen extends StatelessWidget {
                 scrollBehavior: AntiGlowBehavior(),
                 slivers: [
                   SliverToBoxAdapter(
-                    child: HomeTournamentTablesSection(
+                    child: TournamentTablesSection(
                       driversStandings: controller.currentDrivers.value!,
                       constructorsStandings: controller.currentConstructors.value!,
+                      title: 'Турнирная таблица текущего сезона',
                       season: controller.currentSeason,
                       round: controller.currentRound,
                     ),

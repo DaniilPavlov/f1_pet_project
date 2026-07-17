@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart' as pp;
 
+/// Синглтон для HTTP-запросов к API через Dio.
 class RequestHandler {
+  /// Возвращает единственный экземпляр обработчика запросов.
   factory RequestHandler() {
     final handler = _singleton;
     return handler;
@@ -24,6 +26,7 @@ class RequestHandler {
   CookieManager? _cookieManager;
   late Dio? _dio;
 
+  /// Подключает интерцепторы кэширования к клиенту Dio.
   Interceptor addInterceptors() {
     return InterceptorsWrapper(
       onRequest: _cacheInterceptor.onRequest,
@@ -32,6 +35,7 @@ class RequestHandler {
     );
   }
 
+  /// Выполняет GET-запрос к API с суффиксом `.json?limit=100`.
   Future<Response<T>> get<T>(
     String path, {
     Map<String, dynamic>? queryParameters,
@@ -58,6 +62,7 @@ class RequestHandler {
     return res;
   }
 
+  /// Выполняет POST-запрос к API с суффиксом `.json`.
   Future<Response<T>> post<T>(
     String path, {
     dynamic data,
@@ -87,6 +92,7 @@ class RequestHandler {
     return res;
   }
 
+  /// Выполняет PUT-запрос к указанному пути.
   Future<Response<T>> put<T>(
     String path, {
     dynamic data,
@@ -116,6 +122,7 @@ class RequestHandler {
     return res;
   }
 
+  /// Выполняет DELETE-запрос к указанному пути.
   Future<Response<T>> delete<T>(
     String path, {
     dynamic data,

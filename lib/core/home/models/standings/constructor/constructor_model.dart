@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'constructor_model.g.dart';
 
+/// Данные команды F1.
 @JsonSerializable()
 class ConstructorModel {
   ConstructorModel({
@@ -12,6 +13,7 @@ class ConstructorModel {
     required this.name,
   });
 
+  /// Парсит JSON-ответ в [ConstructorModel].
   factory ConstructorModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$ConstructorModelFromJson(json);

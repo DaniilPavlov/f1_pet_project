@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'qualifying_results_model.g.dart';
 
+/// Результат пилота в квалификации (Q1–Q3).
 @JsonSerializable()
 class QualifyingResultsModel {
   QualifyingResultsModel({
@@ -17,6 +18,7 @@ class QualifyingResultsModel {
     required this.q3,
   });
 
+  /// Создаёт модель из JSON ответа API.
   factory QualifyingResultsModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$QualifyingResultsModelFromJson(json);

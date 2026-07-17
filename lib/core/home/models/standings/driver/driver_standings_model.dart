@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'driver_standings_model.g.dart';
 
+/// Позиция пилота в турнирной таблице.
 @JsonSerializable()
 class DriverStandingsModel {
   DriverStandingsModel({
@@ -16,6 +17,7 @@ class DriverStandingsModel {
     required this.position,
   });
 
+  /// Парсит JSON-ответ в [DriverStandingsModel].
   factory DriverStandingsModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$DriverStandingsModelFromJson(json);

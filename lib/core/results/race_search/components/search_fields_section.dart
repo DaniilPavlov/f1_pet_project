@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+/// Поля ввода сезона и номера раунда.
 class SearchFieldsSection extends StatelessWidget {
   const SearchFieldsSection({super.key});
 

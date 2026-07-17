@@ -2,10 +2,11 @@ import 'dart:math';
 
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
-/// Points drawer service.
+/// Сервис создания меток на карте.
 class PointsDrawer {
   static final rng = Random();
 
+  /// Формирует список меток с обработчиком нажатия.
   static List<PlacemarkMapObject> getPoints({
     required List<Point> points,
     Function(int)? onTap,

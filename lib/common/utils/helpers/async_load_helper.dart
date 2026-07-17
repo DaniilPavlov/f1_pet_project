@@ -4,6 +4,7 @@ import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/services/executor.dart';
 
+/// Выполняет асинхронную загрузку с обновлением [AsyncValue] через MobX.
 Future<void> runAsyncLoad<T, R>({
   required Future<T> Function() fetch,
   required AsyncValue<R> Function() getField,
@@ -18,6 +19,7 @@ Future<void> runAsyncLoad<T, R>({
   );
 }
 
+/// Возвращает первую ошибку из набора [AsyncValue].
 CustomException? firstException(Iterable<AsyncValue<dynamic>> values) {
   for (final value in values) {
     final exception = value.exception;

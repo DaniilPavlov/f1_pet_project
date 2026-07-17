@@ -6,6 +6,7 @@ import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/cupertino.dart';
 
+/// Нижний лист с краткой информацией о трассе на карте.
 class CircuitsMapBottomSheet extends StatelessWidget {
   const CircuitsMapBottomSheet({required this.circuit, super.key});
   final CircuitModel circuit;

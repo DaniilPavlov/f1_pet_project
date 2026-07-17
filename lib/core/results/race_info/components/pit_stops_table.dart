@@ -3,6 +3,7 @@ import 'package:f1_pet_project/core/results/models/pit_stops_model.dart';
 import 'package:f1_pet_project/core/results/race_info/components/pit_stops_table_detail_row.dart';
 import 'package:flutter/material.dart';
 
+/// Таблица пит-стопов гонки.
 class PitStopsTable extends StatelessWidget {
   const PitStopsTable({required this.pitStops, super.key});
   final List<PitStopsModel> pitStops;

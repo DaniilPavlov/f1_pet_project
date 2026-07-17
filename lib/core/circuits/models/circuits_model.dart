@@ -4,10 +4,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'circuits_model.g.dart';
 
+/// Корневая модель ответа API со списком трасс.
 @JsonSerializable()
 class CircuitsModel {
   CircuitsModel({required this.circuitTable});
 
+  /// Создаёт модель из JSON-ответа API.
   factory CircuitsModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$CircuitsModelFromJson(json);

@@ -2,8 +2,9 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
-/// User position service.
+/// Сервис получения текущей геопозиции пользователя.
 class UserPositionGetter {
+  /// Возвращает координаты пользователя, запрашивая разрешения при необходимости.
   static Future<Point> getUserPosition({
     Function(Exception)? onGetUserPositionError,
   }) async {

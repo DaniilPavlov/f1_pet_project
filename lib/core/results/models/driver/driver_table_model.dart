@@ -4,10 +4,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'driver_table_model.g.dart';
 
+/// Таблица пилотов из ответа API по идентификатору.
 @JsonSerializable()
 class DriverTableModel {
   DriverTableModel({required this.drivers, required this.driverId});
 
+  /// Создаёт модель из JSON ответа API.
   factory DriverTableModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$DriverTableModelFromJson(json);
