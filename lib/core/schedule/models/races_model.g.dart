@@ -38,6 +38,14 @@ RacesModel _$RacesModelFromJson(Map<String, dynamic> json) => RacesModel(
   pitStops: (json['PitStops'] as List<dynamic>?)
       ?.map((e) => PitStopsModel.fromJson(e as Map<String, dynamic>))
       .toList(),
+  sprintQualifying: json['SprintQualifying'] == null
+      ? null
+      : RaceDateModel.fromJson(
+          json['SprintQualifying'] as Map<String, dynamic>,
+        ),
+  sprintResults: (json['SprintResults'] as List<dynamic>?)
+      ?.map((e) => ResultsModel.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$RacesModelToJson(RacesModel instance) =>
@@ -53,8 +61,10 @@ Map<String, dynamic> _$RacesModelToJson(RacesModel instance) =>
       'SecondPractice': instance.secondPractice,
       'ThirdPractice': instance.thirdPractice,
       'Qualifying': instance.qualifying,
+      'SprintQualifying': instance.sprintQualifying,
       'Sprint': instance.sprint,
       'Results': instance.results,
+      'SprintResults': instance.sprintResults,
       'QualifyingResults': instance.qualifyingResults,
       'PitStops': instance.pitStops,
     };

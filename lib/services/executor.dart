@@ -22,10 +22,7 @@ import 'package:f1_pet_project/data/exceptions/success_false.dart';
 ///
 /// [maxAttempts] - количество попыток. По-дефолту: 1.
 ///
-/// [attemptsDelayCallback] - коллбекс с задержкой между попытками.
-/// При вызове прокидывает текущую попытку и на основании ее можно уменьшать.
-/// или увеличивать количество времени на попытку.
-/// По-дефолту: const Duration(milliseconds: 250).
+/// [attemptsDelayCallback] - коллбек с задержкой между попытками.
 Future<void> execute<T>(
   Future<T> Function() processing, {
   String? dioErrorText,
@@ -56,8 +53,7 @@ Future<void> execute<T>(
 
     currentAttempt += 1;
 
-    if (currentAttempt == maxAttempts || ex == null) {
-      // * Мы выходим после достижения последней попытки, либо если у нас запрос отработал без ошибок
+    if (ex == null || currentAttempt >= maxAttempts || !_shouldRetry(ex)) {
       break;
     }
 
@@ -67,7 +63,7 @@ Future<void> execute<T>(
   await after?.call();
 
   if (ex != null) {
-    log('${ex.title}: ${ex.subtitle}', stackTrace: ex.stackTrace);
+    _logException(ex);
     await onError?.call(ex);
   } else {
     return await onSuccess?.call(data);
@@ -76,8 +72,51 @@ Future<void> execute<T>(
 
 Duration Function(int attempt) _defaultAttemptsDelay = (attempt) => const Duration(milliseconds: 500);
 
-///*  Функция, которая производит один вызов [processing]
-/// * Используется в [execute], чтобы выполнить некоторое заданное количество раз.
+String? _lastLoggedErrorKey;
+int _duplicateErrorCount = 0;
+
+/// Пишет ошибку в лог один раз; повторы той же ошибки схлопывает.
+void _logException(CustomException ex) {
+  final key = '${ex.title}|${ex.subtitle}';
+  if (key == _lastLoggedErrorKey) {
+    _duplicateErrorCount++;
+    return;
+  }
+
+  if (_duplicateErrorCount > 0) {
+    log('(повторов предыдущей ошибки: $_duplicateErrorCount)');
+  }
+  _lastLoggedErrorKey = key;
+  _duplicateErrorCount = 0;
+
+  final skipStack = ex.parentException is DioException;
+  if (skipStack) {
+    log('${ex.title}: ${ex.subtitle}');
+  } else {
+    log('${ex.title}: ${ex.subtitle}', stackTrace: ex.stackTrace);
+  }
+}
+
+/// Клиентские 4xx (включая 429) не ретраим — повтор только усугубляет лимит.
+bool _shouldRetry(CustomException ex) {
+  final parent = ex.parentException;
+  if (parent is! DioException) {
+    return true;
+  }
+
+  final status = parent.response?.statusCode;
+  if (status == null) {
+    return true;
+  }
+
+  if (status == 408 || status == 425) {
+    return true;
+  }
+
+  return status < 400 || status >= 500;
+}
+
+/// Функция, которая производит один вызов [processing].
 Future<(T?, CustomException?)> _process<T>(
   Future<T> Function() processing, {
   String? dioErrorText,
@@ -90,16 +129,26 @@ Future<(T?, CustomException?)> _process<T>(
   try {
     data = await processing();
   } on DioException catch (e) {
+    final status = e.response?.statusCode;
     if (e.type == DioExceptionType.unknown) {
       ex = CustomException(
         title: 'Соединение отсутствует',
         subtitle: 'Как только соединение восстановится, вы снова сможете пользоваться приложением',
+        parentException: e,
+        stackTrace: e.stackTrace,
+      );
+    } else if (status == 429) {
+      ex = CustomException(
+        title: 'Слишком много запросов',
+        subtitle: 'API временно ограничивает частоту. Подождите немного и попробуйте снова.',
+        parentException: e,
         stackTrace: e.stackTrace,
       );
     } else {
       ex = CustomException(
         title: dioErrorText ?? 'Ошибка при отправке запроса',
         subtitle: e.message,
+        parentException: e,
         stackTrace: e.stackTrace,
       );
     }

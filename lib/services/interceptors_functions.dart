@@ -11,9 +11,10 @@ Future<BaseResponseModel?> checkCache(Future<BaseResponseModel> Function() check
   try {
     rawData = await checkFunc();
   } on DioException catch (e) {
-    if (e.response?.data != null) {
-      rawData = BaseResponseModel.fromJson(e.response!.data as Map<String, dynamic>);
-      // TODO(think): decide do or not to do permanent showing
+    final data = e.response?.data;
+    // 429 и прочие ответы часто приходят строкой, а не JSON
+    if (data is Map<String, dynamic>) {
+      rawData = BaseResponseModel.fromJson(data);
       unawaited(Fluttertoast.showToast(msg: 'Соединение отсутствует', backgroundColor: AppTheme.red));
     } else {
       Error.throwWithStackTrace(e, StackTrace.current);

@@ -2,9 +2,11 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-/// Закрепляемая шапка таблицы результатов гонки.
+/// Закрепляемая шапка таблицы результатов гонки или спринта.
 class RaceInfoTableAppBar extends StatelessWidget {
-  const RaceInfoTableAppBar({super.key});
+  const RaceInfoTableAppBar({this.title = 'Гонка', super.key});
+
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class RaceInfoTableAppBar extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Гонка',
+          title,
           style: AppStyles.h2.copyWith(color: AppTheme.white),
           textAlign: TextAlign.center,
         ),

@@ -21,7 +21,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 // TODO(feature): show full driver info by tapping his name
 
-/// Детальный экран гонки: результаты, квалификация и пит-стопы.
+/// Детальный экран гонки: результаты, спринт, квалификация и пит-стопы.
 @RoutePage()
 class RaceInfoScreen extends StatelessWidget {
   const RaceInfoScreen({required this.raceModel, super.key});
@@ -48,6 +48,8 @@ class RaceInfoScreen extends StatelessWidget {
               if (!controller.allDataIsLoaded) {
                 return const CustomLoadingIndicator();
               }
+
+              final sprintResults = controller.sprintResults.value ?? const [];
 
               return CustomScrollView(
                 scrollBehavior: AntiGlowBehavior(),
@@ -95,6 +97,27 @@ class RaceInfoScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (sprintResults.isNotEmpty) ...[
+                    const SliverToBoxAdapter(child: SizedBox(height: StaticData.defaultVerticalPadding)),
+                    SliverAppBar(
+                      backgroundColor: AppTheme.red,
+                      pinned: controller.sprintAppBarPinned,
+                      automaticallyImplyLeading: false,
+                      titleSpacing: 0,
+                      title: const RaceInfoTableAppBar(title: 'Спринт'),
+                    ),
+                    SliverToBoxAdapter(
+                      child: VisibilityDetector(
+                        key: const Key('sprint_info_table'),
+                        onVisibilityChanged: controller.onSprintTableVisibilityChanged,
+                        child: RaceInfoTable(
+                          raceModel: controller.raceModel,
+                          results: sprintResults,
+                          withPrimaryRow: false,
+                        ),
+                      ),
+                    ),
+                  ],
                   const SliverToBoxAdapter(child: SizedBox(height: StaticData.defaultVerticalPadding)),
                   SliverAppBar(
                     backgroundColor: AppTheme.red,

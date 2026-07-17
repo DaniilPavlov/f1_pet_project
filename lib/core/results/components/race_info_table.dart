@@ -3,24 +3,32 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/core/results/components/race_table_detail_row.dart';
 import 'package:f1_pet_project/core/results/components/race_table_primary_row.dart';
+import 'package:f1_pet_project/core/results/models/results_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
 
-/// Таблица результатов гонки с опциональным ограничением числа строк.
+/// Таблица результатов гонки/спринта с опциональным ограничением числа строк.
 class RaceInfoTable extends StatelessWidget {
   const RaceInfoTable({
     required this.raceModel,
+    this.results,
+    this.fastestLapTime,
     this.rowsNumber,
     this.withPrimaryRow = true,
     super.key,
   });
   final RacesModel raceModel;
+  final List<ResultsModel>? results;
+  final String? fastestLapTime;
   final int? rowsNumber;
   final bool withPrimaryRow;
 
   @override
   Widget build(BuildContext context) {
+    final rows = results ?? raceModel.results ?? const <ResultsModel>[];
+    final fastest = fastestLapTime ?? RacesModel.fastestLapAmong(rows);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -29,13 +37,13 @@ class RaceInfoTable extends StatelessWidget {
           children: [
             if (withPrimaryRow) raceTablePrimaryRow(),
             ...List.generate(
-              rowsNumber ?? raceModel.results!.length,
+              rowsNumber ?? rows.length,
               (i) => TableRow(
                 decoration: BoxDecoration(
                   color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
                   border: const Border(bottom: BorderSide(color: AppTheme.strokeGray)),
                 ),
-                children: raceTableDetailRowChildren(raceModel.results![i], raceModel.fastestLapTime, i + 1),
+                children: raceTableDetailRowChildren(rows[i], fastest, i + 1),
               ),
             ),
           ],

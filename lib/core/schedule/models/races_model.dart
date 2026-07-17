@@ -27,6 +27,8 @@ class RacesModel {
     required this.results,
     required this.qualifyingResults,
     required this.pitStops,
+    this.sprintQualifying,
+    this.sprintResults,
   });
 
   /// Парсит JSON-ответ в [RacesModel].
@@ -53,19 +55,30 @@ class RacesModel {
   final RaceDateModel? thirdPractice;
   @JsonKey(name: 'Qualifying')
   final RaceDateModel? qualifying;
+  /// Дата и время спринт-квалификации (сетка на спринт).
+  @JsonKey(name: 'SprintQualifying')
+  final RaceDateModel? sprintQualifying;
   @JsonKey(name: 'Sprint')
   final RaceDateModel? sprint;
   @JsonKey(name: 'Results')
   final List<ResultsModel>? results;
+  @JsonKey(name: 'SprintResults')
+  final List<ResultsModel>? sprintResults;
   @JsonKey(name: 'QualifyingResults')
   final List<QualifyingResultsModel>? qualifyingResults;
   @JsonKey(name: 'PitStops')
   final List<PitStopsModel>? pitStops;
 
-  /// Находит лучший круг гонки среди результатов.
-  String get fastestLapTime {
+  /// Находит лучший круг среди результатов гонки.
+  String get fastestLapTime => fastestLapAmong(results);
+
+  /// Находит лучший круг среди результатов спринта.
+  String get fastestSprintLapTime => fastestLapAmong(sprintResults);
+
+  /// Находит лучший круг в переданном списке результатов.
+  static String fastestLapAmong(List<ResultsModel>? list) {
     var fastest = '999999';
-    for (final result in results ?? const <ResultsModel>[]) {
+    for (final result in list ?? const <ResultsModel>[]) {
       final lap = result.fastestLap?.time.time;
       if (lap != null && fastest.compareTo(lap) > 0) {
         fastest = lap;

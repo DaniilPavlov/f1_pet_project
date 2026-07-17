@@ -94,8 +94,9 @@ abstract class ScheduleScreenControllerBase with Store {
     race.firstPractice,
     race.secondPractice,
     race.thirdPractice,
-    race.qualifying,
+    race.sprintQualifying,
     race.sprint,
+    race.qualifying,
   ];
 
   void _addSessionsForDay(RacesModel race, DateTime day, List<Widget> schedule) {
@@ -103,6 +104,7 @@ abstract class ScheduleScreenControllerBase with Store {
       (race.firstPractice, 'Первая практика'),
       (race.secondPractice, 'Вторая практика'),
       (race.thirdPractice, 'Третья практика'),
+      (race.sprintQualifying, 'Спринт-квалификация'),
       (race.sprint, 'Спринт'),
       (race.qualifying, 'Квалификация'),
     ];

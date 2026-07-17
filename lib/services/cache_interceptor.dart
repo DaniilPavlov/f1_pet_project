@@ -30,19 +30,16 @@ class CacheInterceptor extends Interceptor {
     super.onResponse(response, handler);
   }
 
-// TODO(info): now doesn't invoke because of the if/else condition in [onRequest]
   /// Подставляет закэшированный ответ при сетевых ошибках.
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     var dioError = err;
-    debugPrint('onError: $err');
-    if (err.type == DioExceptionType.connectionTimeout ||
-        err.type == DioExceptionType.unknown) {
+    final status = err.response?.statusCode;
+    debugPrint('onError: ${status ?? err.type.name} ${err.requestOptions.path}');
+    if (err.type == DioExceptionType.connectionTimeout || err.type == DioExceptionType.unknown) {
       final cachedResponse = _cache[err.requestOptions.uri];
       if (cachedResponse != null) {
         dioError = err.copyWith(response: cachedResponse);
-        // handler.resolve(cachedResponse);
-        // return cachedResponse;
       }
     }
     super.onError(dioError, handler);

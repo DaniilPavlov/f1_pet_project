@@ -9,7 +9,9 @@ import 'package:f1_pet_project/core/home/models/standings/driver/driver_standing
 import 'package:f1_pet_project/core/home/models/standings/standings_lists_model.dart';
 import 'package:f1_pet_project/core/home/models/standings/standings_model.dart';
 import 'package:f1_pet_project/core/home/models/standings/standings_table_model.dart';
+import 'package:f1_pet_project/core/results/models/pit_stops_model.dart';
 import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
+import 'package:f1_pet_project/core/results/models/results_model.dart';
 import 'package:f1_pet_project/core/schedule/models/race_table_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
@@ -92,6 +94,28 @@ abstract final class ControllerFixtures {
     ),
   );
 
+  static ResultsModel get raceResult => ResultsModel(
+    number: '1',
+    position: '1',
+    positionText: '1',
+    points: '25',
+    driver: driver,
+    constructor: constructor,
+    grid: '1',
+    laps: '78',
+    status: 'Finished',
+    time: null,
+    fastestLap: null,
+  );
+
+  static PitStopsModel get pitStop => PitStopsModel(
+    driverId: 'max_verstappen',
+    lap: '20',
+    stop: '1',
+    time: '14:30:00',
+    duration: '2.5',
+  );
+
   static RacesModel get race => RacesModel(
     season: '2024',
     round: '5',
@@ -104,8 +128,9 @@ abstract final class ControllerFixtures {
     secondPractice: null,
     thirdPractice: null,
     qualifying: null,
+    sprintQualifying: null,
     sprint: null,
-    results: const [],
+    results: [raceResult],
     qualifyingResults: [
       QualifyingResultsModel(
         number: '1',
@@ -117,7 +142,7 @@ abstract final class ControllerFixtures {
         q3: '1:08.000',
       ),
     ],
-    pitStops: const [],
+    pitStops: [pitStop],
   );
 
   static ScheduleModel get scheduleModel => ScheduleModel(

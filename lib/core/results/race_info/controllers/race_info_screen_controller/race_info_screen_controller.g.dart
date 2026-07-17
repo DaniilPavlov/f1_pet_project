@@ -36,6 +36,24 @@ mixin _$RaceInfoScreenController on RaceInfoScreenControllerBase, Store {
     });
   }
 
+  late final _$sprintAppBarPinnedAtom = Atom(
+    name: 'RaceInfoScreenControllerBase.sprintAppBarPinned',
+    context: context,
+  );
+
+  @override
+  bool get sprintAppBarPinned {
+    _$sprintAppBarPinnedAtom.reportRead();
+    return super.sprintAppBarPinned;
+  }
+
+  @override
+  set sprintAppBarPinned(bool value) {
+    _$sprintAppBarPinnedAtom.reportWrite(value, super.sprintAppBarPinned, () {
+      super.sprintAppBarPinned = value;
+    });
+  }
+
   late final _$qualificationAppBarPinnedAtom = Atom(
     name: 'RaceInfoScreenControllerBase.qualificationAppBarPinned',
     context: context,
@@ -98,6 +116,24 @@ mixin _$RaceInfoScreenController on RaceInfoScreenControllerBase, Store {
     });
   }
 
+  late final _$sprintResultsAtom = Atom(
+    name: 'RaceInfoScreenControllerBase.sprintResults',
+    context: context,
+  );
+
+  @override
+  AsyncValue<List<ResultsModel>> get sprintResults {
+    _$sprintResultsAtom.reportRead();
+    return super.sprintResults;
+  }
+
+  @override
+  set sprintResults(AsyncValue<List<ResultsModel>> value) {
+    _$sprintResultsAtom.reportWrite(value, super.sprintResults, () {
+      super.sprintResults = value;
+    });
+  }
+
   late final _$qualifyingResultsAtom = Atom(
     name: 'RaceInfoScreenControllerBase.qualifyingResults',
     context: context,
@@ -144,6 +180,16 @@ mixin _$RaceInfoScreenController on RaceInfoScreenControllerBase, Store {
     return _$loadAllDataAsyncAction.run(() => super.loadAllData());
   }
 
+  late final _$loadSprintResultsAsyncAction = AsyncAction(
+    'RaceInfoScreenControllerBase.loadSprintResults',
+    context: context,
+  );
+
+  @override
+  Future<void> loadSprintResults() {
+    return _$loadSprintResultsAsyncAction.run(() => super.loadSprintResults());
+  }
+
   late final _$loadQualifyingResultsAsyncAction = AsyncAction(
     'RaceInfoScreenControllerBase.loadQualifyingResults',
     context: context,
@@ -185,6 +231,19 @@ mixin _$RaceInfoScreenController on RaceInfoScreenControllerBase, Store {
   }
 
   @override
+  void onSprintTableVisibilityChanged(VisibilityInfo info) {
+    final _$actionInfo = _$RaceInfoScreenControllerBaseActionController
+        .startAction(
+          name: 'RaceInfoScreenControllerBase.onSprintTableVisibilityChanged',
+        );
+    try {
+      return super.onSprintTableVisibilityChanged(info);
+    } finally {
+      _$RaceInfoScreenControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void onQualificationTableVisibilityChanged(VisibilityInfo info) {
     final _$actionInfo = _$RaceInfoScreenControllerBaseActionController
         .startAction(
@@ -215,9 +274,11 @@ mixin _$RaceInfoScreenController on RaceInfoScreenControllerBase, Store {
   String toString() {
     return '''
 raceAppBarPinned: ${raceAppBarPinned},
+sprintAppBarPinned: ${sprintAppBarPinned},
 qualificationAppBarPinned: ${qualificationAppBarPinned},
 pitStopsAppBarPinned: ${pitStopsAppBarPinned},
 allDataIsLoaded: ${allDataIsLoaded},
+sprintResults: ${sprintResults},
 qualifyingResults: ${qualifyingResults},
 pitStops: ${pitStops},
 screenError: ${screenError}

@@ -1,5 +1,7 @@
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/core/results/models/pit_stops_model.dart';
 import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
+import 'package:f1_pet_project/core/results/models/results_model.dart';
 import 'package:f1_pet_project/core/results/race_info/controllers/race_info_screen_controller/race_info_screen_controller.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
 import 'package:flutter/material.dart';
@@ -92,6 +94,28 @@ void main() {
       );
     });
 
+    group('loadPitStops', () {
+      mobxTest(
+        'resolves driver names from race results without extra API calls',
+        build: () => RaceInfoScreenController(
+          raceModel: ControllerFixtures.race,
+          fetchPitStops: ({required year, required round}) async => ControllerFixtures.scheduleModel,
+        ),
+        value: (store) => store.pitStops,
+        act: (store) => store.loadPitStops(),
+        expect: () => [
+          isA<AsyncValue<List<PitStopsModel>>>().having(
+            (e) => e.status,
+            'status',
+            AsyncStatus.loading,
+          ),
+          isA<AsyncValue<List<PitStopsModel>>>()
+              .having((e) => e.status, 'status', AsyncStatus.value)
+              .having((e) => e.value?.single.driverId, 'driverId', 'Max Verstappen'),
+        ],
+      );
+    });
+
     group('loadAllData', () {
       mobxTest(
         'marks data as loaded',
@@ -99,10 +123,33 @@ void main() {
           raceModel: ControllerFixtures.race,
           fetchQualifyingResults: ({required year, required round}) async => ControllerFixtures.scheduleModel,
           fetchPitStops: ({required year, required round}) async => ControllerFixtures.scheduleModel,
+          fetchSprintResults: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
         ),
         value: (store) => store.allDataIsLoaded,
         act: (store) => store.loadAllData(),
         expect: () => [false, true],
+      );
+    });
+
+    group('loadSprintResults', () {
+      mobxTest(
+        'sets empty list when weekend has no sprint',
+        build: () => RaceInfoScreenController(
+          raceModel: ControllerFixtures.race,
+          fetchSprintResults: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
+        ),
+        value: (store) => store.sprintResults,
+        act: (store) => store.loadSprintResults(),
+        expect: () => [
+          isA<AsyncValue<List<ResultsModel>>>().having(
+            (e) => e.status,
+            'status',
+            AsyncStatus.loading,
+          ),
+          isA<AsyncValue<List<ResultsModel>>>()
+              .having((e) => e.status, 'status', AsyncStatus.value)
+              .having((e) => e.value, 'value', isEmpty),
+        ],
       );
     });
   });
