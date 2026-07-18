@@ -4,5 +4,5 @@ class StaticData {
   static const defaultVerticalPadding = 20.0;
 
   /// Repository of this API: https://github.com/jolpica/jolpica-f1
-  static const apiUrl = 'http://api.jolpi.ca/ergast/f1/';
+  static const apiUrl = 'https://api.jolpi.ca/ergast/f1/';
 }
