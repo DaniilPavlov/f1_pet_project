@@ -8,6 +8,7 @@ import 'package:f1_pet_project/common/widgets/custom_calendar.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/core/schedule/controllers/schedule_screen_controller/schedule_screen_controller.dart';
+import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,10 @@ class ScheduleScreen extends StatelessWidget {
 
         return Provider<ScheduleScreenController>(
           key: ValueKey('schedule_$localeCode'),
-          create: (_) => ScheduleScreenController(l10n: context.l10n)..loadAllData(),
+          create: (_) => ScheduleScreenController(
+            l10n: context.l10n,
+            scheduleRepository: context.read<ScheduleRepository>(),
+          )..loadAllData(),
           dispose: (_, controller) => controller.dispose(),
           child: Scaffold(
             appBar: const CustomAppBar(),

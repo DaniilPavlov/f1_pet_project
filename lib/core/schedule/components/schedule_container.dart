@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
+import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
@@ -14,14 +15,7 @@ class ScheduleContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // * перевожу время из гринвича в локальное
-    final parsedTime = date.time.split(':');
-    final greenwichDate = DateTime.parse(
-      date.date,
-    ).add(Duration(hours: int.parse(parsedTime[0]), minutes: int.parse(parsedTime[1])));
-
-    final deviceOffset = DateTime.now().timeZoneOffset.toString().split(':');
-    final dateWithOffset = greenwichDate.add(Duration(hours: int.parse(deviceOffset[0])));
+    final localDate = RaceDateTimeHelper.toLocal(date);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: StaticData.defaultHorizontalPadding),
@@ -47,10 +41,10 @@ class ScheduleContainer extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          DateFormat.yMMMMd(Localizations.localeOf(context).toLanguageTag()).format(dateWithOffset),
+                          DateFormat.yMMMMd(Localizations.localeOf(context).toLanguageTag()).format(localDate),
                           style: AppStyles.body,
                         ),
-                        Text(Utils.formatHourMinute(dateWithOffset), style: AppStyles.body),
+                        Text(Utils.formatHourMinute(localDate), style: AppStyles.body),
                         const SizedBox.shrink(),
                       ],
                     ),

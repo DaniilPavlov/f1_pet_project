@@ -1,13 +1,10 @@
 import 'dart:io';
 
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/services/cache_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:path_provider/path_provider.dart' as pp;
 
 /// Синглтон для HTTP-запросов к API через Dio.
 class RequestHandler {
@@ -23,7 +20,6 @@ class RequestHandler {
   }
   static final RequestHandler _singleton = RequestHandler._init();
   final _cacheInterceptor = CacheInterceptor();
-  CookieManager? _cookieManager;
   late Dio? _dio;
 
   /// Подключает интерцепторы кэширования к клиенту Dio.
@@ -175,24 +171,12 @@ class RequestHandler {
   }
 
   Dio _createDio() {
-    final dio = Dio(
+    return Dio(
       BaseOptions(
         baseUrl: StaticData.apiUrl,
         connectTimeout: const Duration(milliseconds: 20000),
         receiveTimeout: const Duration(milliseconds: 40000),
       ),
     );
-
-    if (_cookieManager == null) {
-      try {
-        pp.getApplicationDocumentsDirectory().then((dir) {
-          _cookieManager = CookieManager(PersistCookieJar(storage: FileStorage('${dir.path}/.cookie/')));
-          dio.interceptors.add(_cookieManager!);
-        });
-      } catch (e) {
-        debugPrint(e.toString());
-      }
-    }
-    return dio;
   }
 }

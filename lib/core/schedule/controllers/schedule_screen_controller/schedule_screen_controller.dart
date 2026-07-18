@@ -2,15 +2,14 @@
 
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/fetch_from_loader.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/utils/helpers/scroll_controller_extension.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/core/schedule/components/schedule_container.dart';
-import 'package:f1_pet_project/core/schedule/loaders/schedule_loader.dart';
 import 'package:f1_pet_project/core/schedule/models/race_date_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
+import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -24,10 +23,15 @@ class ScheduleScreenController = ScheduleScreenControllerBase with _$ScheduleScr
 
 /// Управляет загрузкой расписания, календарём и списком сессий выбранного дня.
 abstract class ScheduleScreenControllerBase with Store {
-  ScheduleScreenControllerBase({required this.l10n, Future<ScheduleModel> Function()? fetchSchedule})
-    : _fetchScheduleOverride = fetchSchedule;
+  ScheduleScreenControllerBase({
+    required this.l10n,
+    ScheduleRepository? scheduleRepository,
+    Future<ScheduleModel> Function()? fetchSchedule,
+  }) : _scheduleRepository = scheduleRepository,
+       _fetchScheduleOverride = fetchSchedule;
 
   final AppLocalizations l10n;
+  final ScheduleRepository? _scheduleRepository;
   final Future<ScheduleModel> Function()? _fetchScheduleOverride;
 
   final scrollController = ScrollController();
@@ -165,6 +169,13 @@ abstract class ScheduleScreenControllerBase with Store {
     );
   }
 
-  Future<ScheduleModel> _fetchSchedule() =>
-      fetchFromLoader(override: _fetchScheduleOverride, load: ScheduleLoader.loadData, parse: ScheduleModel.fromJson);
+  Future<ScheduleModel> _fetchSchedule() async {
+    final override = _fetchScheduleOverride;
+    if (override != null) {
+      return override();
+    }
+    final repository = _scheduleRepository ?? ScheduleRepository();
+    final result = await repository.getSchedule();
+    return result.schedule;
+  }
 }

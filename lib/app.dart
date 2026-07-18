@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:f1_pet_project/common/localization/locale_controller.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/router/app_router.dart';
+import 'package:f1_pet_project/services/notifications/race_reminder_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,13 +20,14 @@ class App extends StatefulWidget {
 }
 
 /// Состояние приложения: ориентация экрана и системный UI.
-class _AppState extends State<App> {
+class _AppState extends State<App> with WidgetsBindingObserver {
   final _appRouter = AppRouter();
 
   /// Фиксирует портретную ориентацию и стиль статус-бара.
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
@@ -32,6 +36,21 @@ class _AppState extends State<App> {
         statusBarIconBrightness: Brightness.dark,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed || !mounted) {
+      return;
+    }
+    final locale = context.read<LocaleController>().locale;
+    unawaited(context.read<RaceReminderService>().sync(locale: locale));
   }
 
   /// Собирает MaterialApp с auto_route и responsive_framework.

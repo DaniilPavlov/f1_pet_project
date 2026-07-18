@@ -1,6 +1,7 @@
 import UIKit
 import Flutter
 import YandexMapsMobile
+import flutter_local_notifications
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -8,6 +9,16 @@ import YandexMapsMobile
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    // Нужно, чтобы плагин мог показывать уведомления, когда приложение на переднем плане,
+    // и корректно обрабатывать действия из background isolate.
+    FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { registry in
+      GeneratedPluginRegistrant.register(with: registry)
+    }
+
+    if #available(iOS 10.0, *) {
+      UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
+    }
+
     YMKMapKit.setLocale("ru_RU")
 
     if let apiKey = Bundle.main.object(forInfoDictionaryKey: "YandexMapKitApiKey") as? String,

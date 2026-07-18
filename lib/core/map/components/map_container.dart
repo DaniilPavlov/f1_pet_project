@@ -124,7 +124,12 @@ class _MapContainerState extends State<MapContainer> with WidgetsBindingObserver
             placemarkIconSize: 1,
             selectedPlacemarkIconSize: 1.2,
             clusterColor: AppTheme.red,
-            clusterTextStyle: AppStyles.body.copyWith(fontSize: 24, height: 1, color: Colors.black,fontWeight: FontWeight.w700),
+            clusterTextStyle: AppStyles.body.copyWith(
+              fontSize: 24,
+              height: 1,
+              color: Colors.black,
+              fontWeight: FontWeight.w700,
+            ),
             onGetUserPositionError: _onGetUserPositionError,
             onCameraPositionChanged: widget.onAddressChanged != null
                 ? (pos, _, _) => widget.onCameraPositionChanged!(pos.target.latitude, pos.target.longitude)
