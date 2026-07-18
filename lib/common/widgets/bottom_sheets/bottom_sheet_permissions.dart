@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/widgets/bottom_sheets/bottom_sheet_track.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
@@ -43,7 +44,7 @@ class BottomSheetPermissions extends StatelessWidget {
                               child: ColoredBox(
                                 color: Colors.transparent,
                                 child: Text(
-                                  'не сейчас'.toUpperCase(),
+                                  context.l10n.notNow.toUpperCase(),
                                   style: AppStyles.body,
                                   textAlign: TextAlign.center,
                                 ),
@@ -51,7 +52,7 @@ class BottomSheetPermissions extends StatelessWidget {
                             ),
                           ),
                           Expanded(
-                            child: BlackButton(isDisabled: false, onTap: onTapSettings, text: 'Настройки'),
+                            child: BlackButton(isDisabled: false, onTap: onTapSettings, text: context.l10n.settings),
                           ),
                         ],
                       ),

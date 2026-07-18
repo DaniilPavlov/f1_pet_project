@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/widgets/custom_switcher.dart';
@@ -52,8 +53,8 @@ class TournamentTablesSection extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            if (season != null) Text('Сезон: $season', style: AppStyles.h2),
-                            if (round != null) Text('Раунд: $round', style: AppStyles.h2),
+                            if (season != null) Text(context.l10n.seasonLabel(season!), style: AppStyles.h2),
+                            if (round != null) Text(context.l10n.roundLabel(round!), style: AppStyles.h2),
                           ],
                         ),
                       ],
@@ -62,8 +63,8 @@ class TournamentTablesSection extends StatelessWidget {
                   ),
                 ),
               CustomSwitcher(
-                firstTitle: 'Пилоты',
-                secondTitle: 'Конструкторы',
+                firstTitle: context.l10n.drivers,
+                secondTitle: context.l10n.constructors,
                 onChanged: controller.changeActiveTable,
                 activeValue: controller.activeTable,
               ),

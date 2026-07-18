@@ -2,6 +2,7 @@ import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/core/results/race_search/controllers/race_search_screen_controller/race_search_screen_controller.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
+import 'package:f1_pet_project/l10n/app_localizations_ru.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/controller_fixtures.dart';
@@ -14,7 +15,7 @@ void main() {
     group('checkFields', () {
       mobxTest(
         'marks fields as invalid when empty',
-        build: RaceSearchScreenController.new,
+        build: () => RaceSearchScreenController(l10n: AppLocalizationsRu()),
         value: (store) => store.fieldsInputted,
         act: (store) => store.checkFields(),
         expect: () => [false],
@@ -22,7 +23,7 @@ void main() {
 
       mobxTest(
         'marks fields as valid when year and round are filled',
-        build: RaceSearchScreenController.new,
+        build: () => RaceSearchScreenController(l10n: AppLocalizationsRu()),
         value: (store) => store.fieldsInputted,
         act: (store) {
           store.yearController.text = '2024';
@@ -37,6 +38,7 @@ void main() {
       mobxTest(
         'sets value on success',
         build: () => RaceSearchScreenController(
+          l10n: AppLocalizationsRu(),
           fetchRaceResults: ({required year, required round}) async => ControllerFixtures.scheduleModel,
         ),
         value: (store) => store.searchedRace,
@@ -49,11 +51,7 @@ void main() {
           isA<AsyncValue<RacesModel?>>()
               .having((e) => e.status, 'status', AsyncStatus.value)
               .having((e) => e.value, 'value', isNull),
-          isA<AsyncValue<RacesModel?>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.loading,
-          ),
+          isA<AsyncValue<RacesModel?>>().having((e) => e.status, 'status', AsyncStatus.loading),
           isA<AsyncValue<RacesModel?>>()
               .having((e) => e.status, 'status', AsyncStatus.value)
               .having((e) => e.value?.raceName, 'raceName', 'Monaco Grand Prix'),
@@ -67,6 +65,7 @@ void main() {
       mobxTest(
         'sets message when race is not found',
         build: () => RaceSearchScreenController(
+          l10n: AppLocalizationsRu(),
           fetchRaceResults: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
         ),
         value: (store) => store.errorMessage,
@@ -75,15 +74,13 @@ void main() {
           store.roundController.text = '99';
           await store.loadRaceResults();
         },
-        expect: () => [
-          '',
-          'По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.',
-        ],
+        expect: () => ['', 'По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.'],
       );
 
       mobxTest(
         'sets error on failure',
         build: () => RaceSearchScreenController(
+          l10n: AppLocalizationsRu(),
           fetchRaceResults: ({required year, required round}) async => throw ResponseParseException('parse error'),
         ),
         value: (store) => store.searchedRace,
@@ -96,16 +93,8 @@ void main() {
           isA<AsyncValue<RacesModel?>>()
               .having((e) => e.status, 'status', AsyncStatus.value)
               .having((e) => e.value, 'value', isNull),
-          isA<AsyncValue<RacesModel?>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.loading,
-          ),
-          isA<AsyncValue<RacesModel?>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.error,
-          ),
+          isA<AsyncValue<RacesModel?>>().having((e) => e.status, 'status', AsyncStatus.loading),
+          isA<AsyncValue<RacesModel?>>().having((e) => e.status, 'status', AsyncStatus.error),
         ],
       );
     });

@@ -23,11 +23,7 @@ void main() {
         value: (store) => store.qualifyingResults,
         act: (store) => store.loadQualifyingResults(),
         expect: () => [
-          isA<AsyncValue<List<QualifyingResultsModel>>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.loading,
-          ),
+          isA<AsyncValue<List<QualifyingResultsModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
           isA<AsyncValue<List<QualifyingResultsModel>>>()
               .having((e) => e.status, 'status', AsyncStatus.value)
               .having((e) => e.value?.length, 'length', 1),
@@ -38,21 +34,14 @@ void main() {
         'sets error on failure',
         build: () => RaceInfoScreenController(
           raceModel: ControllerFixtures.race,
-          fetchQualifyingResults: ({required year, required round}) async => throw ResponseParseException('parse error'),
+          fetchQualifyingResults: ({required year, required round}) async =>
+              throw ResponseParseException('parse error'),
         ),
         value: (store) => store.qualifyingResults,
         act: (store) => store.loadQualifyingResults(),
         expect: () => [
-          isA<AsyncValue<List<QualifyingResultsModel>>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.loading,
-          ),
-          isA<AsyncValue<List<QualifyingResultsModel>>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.error,
-          ),
+          isA<AsyncValue<List<QualifyingResultsModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
+          isA<AsyncValue<List<QualifyingResultsModel>>>().having((e) => e.status, 'status', AsyncStatus.error),
         ],
         verify: (store) {
           expect(store.screenError, isNotNull);
@@ -104,11 +93,7 @@ void main() {
         value: (store) => store.pitStops,
         act: (store) => store.loadPitStops(),
         expect: () => [
-          isA<AsyncValue<List<PitStopsModel>>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.loading,
-          ),
+          isA<AsyncValue<List<PitStopsModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
           isA<AsyncValue<List<PitStopsModel>>>()
               .having((e) => e.status, 'status', AsyncStatus.value)
               .having((e) => e.value?.single.driverId, 'driverId', 'Max Verstappen'),
@@ -141,11 +126,7 @@ void main() {
         value: (store) => store.sprintResults,
         act: (store) => store.loadSprintResults(),
         expect: () => [
-          isA<AsyncValue<List<ResultsModel>>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.loading,
-          ),
+          isA<AsyncValue<List<ResultsModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
           isA<AsyncValue<List<ResultsModel>>>()
               .having((e) => e.status, 'status', AsyncStatus.value)
               .having((e) => e.value, 'value', isEmpty),

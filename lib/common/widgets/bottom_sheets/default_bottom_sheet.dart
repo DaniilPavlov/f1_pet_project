@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 
 /// Базовый нижний лист с ручкой и телом контента.
 class DefaultBottomSheet extends StatelessWidget {
-  const DefaultBottomSheet({
-    required this.body,
-    this.title,
-    super.key,
-  });
+  const DefaultBottomSheet({required this.body, this.title, super.key});
 
   final String? title;
 
@@ -19,9 +15,7 @@ class DefaultBottomSheet extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(10),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
       ),
       child: Stack(
         children: [
@@ -30,10 +24,7 @@ class DefaultBottomSheet extends StatelessWidget {
             children: [
               const SizedBox(height: 12 * 2 + 4),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: body,
-                ),
+                child: Padding(padding: const EdgeInsets.all(20), child: body),
               ),
             ],
           ),
@@ -44,9 +35,7 @@ class DefaultBottomSheet extends StatelessWidget {
             child: Container(
               color: Colors.transparent,
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: const Center(
-                child: BottomSheetTrack(),
-              ),
+              child: const Center(child: BottomSheetTrack()),
             ),
           ),
         ],

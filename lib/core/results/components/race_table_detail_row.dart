@@ -1,10 +1,11 @@
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/core/results/models/results_model.dart';
+import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 /// Формирует ячейки строки с результатом пилота в гонке.
-List<Widget> raceTableDetailRowChildren(ResultsModel results, String fastestLap, int place) {
+List<Widget> raceTableDetailRowChildren(ResultsModel results, String fastestLap, int place, AppLocalizations l10n) {
   const textStyle = AppStyles.caption;
 
   return [
@@ -40,9 +41,9 @@ List<Widget> raceTableDetailRowChildren(ResultsModel results, String fastestLap,
     Center(
       child: Text(
         results.fastestLap == null
-            ? 'нет'
+            ? l10n.none
             : fastestLap.compareTo(results.fastestLap!.time.time) == 0
-            ? '${results.fastestLap!.time.time}\nсамый\nбыстрый'
+            ? l10n.fastestLapLabel(results.fastestLap!.time.time)
             : results.fastestLap!.time.time,
         style: results.fastestLap != null && fastestLap.compareTo(results.fastestLap!.time.time) == 0
             ? textStyle.copyWith(color: AppTheme.red)

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/nav_bar/nav_bar_item.dart';
@@ -30,7 +31,7 @@ class NavBar extends StatelessWidget {
               children: [
                 NavBarItem(
                   imageAsset: 'assets/nav_bar/home.png',
-                  title: 'Главная',
+                  title: context.l10n.navHome,
                   isSelected: tabsRouter?.activeIndex == 0,
                   onPressed: () {
                     tabsRouter?.setActiveIndex(0);
@@ -38,7 +39,7 @@ class NavBar extends StatelessWidget {
                 ),
                 NavBarItem(
                   imageAsset: 'assets/nav_bar/racing-car.png',
-                  title: 'Результаты',
+                  title: context.l10n.navResults,
                   isSelected: tabsRouter?.activeIndex == 1,
                   onPressed: () {
                     tabsRouter?.setActiveIndex(1);
@@ -46,7 +47,7 @@ class NavBar extends StatelessWidget {
                 ),
                 NavBarItem(
                   imageAsset: 'assets/nav_bar/lights.png',
-                  title: 'Календарь',
+                  title: context.l10n.navCalendar,
                   isSelected: tabsRouter?.activeIndex == 2,
                   onPressed: () {
                     tabsRouter?.setActiveIndex(2);
@@ -54,7 +55,7 @@ class NavBar extends StatelessWidget {
                 ),
                 NavBarItem(
                   imageAsset: 'assets/nav_bar/trophy.png',
-                  title: 'Зал славы',
+                  title: context.l10n.navHallOfFame,
                   isSelected: tabsRouter?.activeIndex == 3,
                   onPressed: () {
                     tabsRouter?.setActiveIndex(3);
@@ -62,7 +63,7 @@ class NavBar extends StatelessWidget {
                 ),
                 NavBarItem(
                   imageAsset: 'assets/nav_bar/circuit.png',
-                  title: 'Трассы',
+                  title: context.l10n.navCircuits,
                   isSelected: tabsRouter?.activeIndex == 4,
                   onPressed: () {
                     tabsRouter?.setActiveIndex(4);

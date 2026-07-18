@@ -20,8 +20,8 @@ abstract class HallOfFameScreenControllerBase with Store {
   HallOfFameScreenControllerBase({
     Future<StandingsModel> Function(String year)? fetchDriversStandings,
     Future<StandingsModel> Function(String year)? fetchConstructorsStandings,
-  })  : _fetchDriversStandingsOverride = fetchDriversStandings,
-        _fetchConstructorsStandingsOverride = fetchConstructorsStandings {
+  }) : _fetchDriversStandingsOverride = fetchDriversStandings,
+       _fetchConstructorsStandingsOverride = fetchConstructorsStandings {
     yearController = TextEditingController(text: '2026');
   }
 
@@ -57,10 +57,7 @@ abstract class HallOfFameScreenControllerBase with Store {
   @action
   Future<void> loadAllData() async {
     final year = yearController.text;
-    await Future.wait([
-      loadConstructorsStandings(year: year),
-      loadDriversStandings(year: year),
-    ]);
+    await Future.wait([loadConstructorsStandings(year: year), loadDriversStandings(year: year)]);
   }
 
   /// Загружает зачёт пилотов за указанный сезон.

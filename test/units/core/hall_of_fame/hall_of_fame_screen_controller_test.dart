@@ -34,17 +34,12 @@ void main() {
     group('loadDriversStandings', () {
       mobxTest(
         'sets value on success',
-        build: () => HallOfFameScreenController(
-          fetchDriversStandings: (_) async => ControllerFixtures.driversStandingsModel,
-        ),
+        build: () =>
+            HallOfFameScreenController(fetchDriversStandings: (_) async => ControllerFixtures.driversStandingsModel),
         value: (store) => store.driversStandings,
         act: (store) => store.loadDriversStandings(year: '2024'),
         expect: () => [
-          isA<AsyncValue<List<StandingsListsModel>>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.loading,
-          ),
+          isA<AsyncValue<List<StandingsListsModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
           isA<AsyncValue<List<StandingsListsModel>>>()
               .having((e) => e.status, 'status', AsyncStatus.value)
               .having((e) => e.value?.length, 'length', 1),

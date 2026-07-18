@@ -1,0 +1,102 @@
+{
+  "@@locale": "ru",
+  "navHome": "Главная",
+  "navResults": "Результаты",
+  "navCalendar": "Календарь",
+  "navHallOfFame": "Зал славы",
+  "navCircuits": "Трассы",
+  "homeStandingsTitle": "Турнирная таблица текущего сезона",
+  "seasonLabel": "Сезон: {season}",
+  "@seasonLabel": {
+    "placeholders": {
+      "season": { "type": "String" }
+    }
+  },
+  "roundLabel": "Раунд: {round}",
+  "@roundLabel": {
+    "placeholders": {
+      "round": { "type": "String" }
+    }
+  },
+  "drivers": "Пилоты",
+  "constructors": "Конструкторы",
+  "driver": "Пилот",
+  "constructor": "Конструктор",
+  "nationality": "Национальность",
+  "points": "Очки",
+  "wins": "Победы",
+  "winsShort": "W",
+  "country": "Страна",
+  "time": "Время",
+  "bestLap": "Лучший\nкруг",
+  "none": "нет",
+  "fastestLapLabel": "{time}\nсамый\nбыстрый",
+  "@fastestLapLabel": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "detailedInfo": "Подробная информация",
+  "race": "Гонка",
+  "sprint": "Спринт",
+  "qualifying": "Квалификация",
+  "pitStops": "Пит-стопы",
+  "lap": "Круг",
+  "stopNumber": "Номер\nостановки",
+  "stopTime": "Время\nстопа",
+  "raceTime": "Время\nгонки",
+  "lastRace": "Последняя гонка: ",
+  "chooseSpecificRace": "Выбрать конкретную гонку",
+  "raceSearchTitle": "Поиск гонки",
+  "season": "Сезон",
+  "yearHint": "Год",
+  "round": "Раунд",
+  "numberHint": "Номер",
+  "search": "Поиск",
+  "raceSearchInfo": "Здесь вы можете найти результаты определенной гонки, начиная с 1950 года.\nМинимальное количество раундов в сезоне - 7, максимальное - 24.\n(данные на момент 2026 года)",
+  "raceNotFound": "По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.",
+  "hallOfFameTitle": "Зал славы",
+  "onMap": "На карте",
+  "asList": "Списком",
+  "circuitDetails": "Подробнее о трассе",
+  "circuitInfoTitle": "Информация о трассе",
+  "readOnWikipedia": "Прочитать информацию в википедии",
+  "countryLabel": "Страна: {country}",
+  "@countryLabel": {
+    "placeholders": {
+      "country": { "type": "String" }
+    }
+  },
+  "cityLabel": "Город: {city}",
+  "@cityLabel": {
+    "placeholders": {
+      "city": { "type": "String" }
+    }
+  },
+  "firstPractice": "Первая практика",
+  "secondPractice": "Вторая практика",
+  "thirdPractice": "Третья практика",
+  "sprintQualifying": "Спринт-квалификация",
+  "driverCode": "Код",
+  "driverNumber": "Номер",
+  "dateOfBirth": "Дата рождения",
+  "openInWikipedia": "Открыть в Wikipedia",
+  "noConnection": "Соединение отсутствует",
+  "noConnectionSubtitle": "Как только соединение восстановится, вы снова сможете пользоваться приложением",
+  "refresh": "Обновить",
+  "notNow": "не сейчас",
+  "settings": "Настройки",
+  "locationPermissionNeeded": "Приложению требуется доступ к геопозиции.",
+  "tooManyRequests": "Слишком много запросов",
+  "requestError": "Ошибка при отправке запроса",
+  "responseParseError": "Ошибка при обработке ответа от сервера",
+  "unexpectedError": "Непредвиденная ошибка",
+  "openUrlFailed": "Не удалось перейти по ссылке {url}",
+  "@openUrlFailed": {
+    "placeholders": {
+      "url": { "type": "String" }
+    }
+  },
+  "localeCodeRu": "RU",
+  "localeCodeEn": "EN"
+}

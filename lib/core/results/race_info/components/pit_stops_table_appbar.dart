@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -8,15 +9,13 @@ class PitStopsTableAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = AppStyles.caption.copyWith(
-      color: Colors.white,
-    );
+    final textStyle = AppStyles.caption.copyWith(color: Colors.white);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Пит-стопы',
+          context.l10n.pitStops,
           style: AppStyles.h2.copyWith(color: AppTheme.white),
           textAlign: TextAlign.center,
         ),
@@ -25,51 +24,31 @@ class PitStopsTableAppBar extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: Text(
-                  'Пилот',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
+                child: Text(context.l10n.driver, style: textStyle, textAlign: TextAlign.center),
               ),
             ),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.zero,
-                child: Text(
-                  'Круг',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
+                child: Text(context.l10n.lap, style: textStyle, textAlign: TextAlign.center),
               ),
             ),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.zero,
-                child: Text(
-                  'Номер\nостановки',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
+                child: Text(context.l10n.stopNumber, style: textStyle, textAlign: TextAlign.center),
               ),
             ),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.zero,
-                child: Text(
-                  'Время\nстопа',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
+                child: Text(context.l10n.stopTime, style: textStyle, textAlign: TextAlign.center),
               ),
             ),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.zero,
-                child: Text(
-                  'Время\nгонки',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
+                child: Text(context.l10n.raceTime, style: textStyle, textAlign: TextAlign.center),
               ),
             ),
           ],

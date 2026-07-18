@@ -3,13 +3,7 @@ import 'package:flutter/material.dart';
 
 /// Круглая кнопка с настраиваемым содержимым и цветом фона.
 class CircleButton extends StatelessWidget {
-  const CircleButton({
-    required this.child,
-    this.onPressed,
-    this.backgroundColor,
-    this.size = 40,
-    super.key,
-  });
+  const CircleButton({required this.child, this.onPressed, this.backgroundColor, this.size = 40, super.key});
   final Widget child;
   final VoidCallback? onPressed;
   final Color? backgroundColor;
@@ -26,9 +20,7 @@ class CircleButton extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(100),
           onTap: onPressed,
-          child: Center(
-            child: child,
-          ),
+          child: Center(child: child),
         ),
       ),
     );

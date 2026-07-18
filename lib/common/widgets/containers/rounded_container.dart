@@ -6,6 +6,7 @@ class RoundedContainer extends StatelessWidget {
     required this.child,
     this.borderRadius = 20,
     this.backgroundColor = Colors.white,
+
     /// * Default EdgeInsets.zero, because Container has it's own padding.
     this.contentPadding = EdgeInsets.zero,
     this.margin = EdgeInsets.zero,

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/widgets/bottom_sheets/default_bottom_sheet.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/common/widgets/containers/red_border_container.dart';
@@ -23,7 +24,7 @@ class CircuitsMapBottomSheet extends StatelessWidget {
           const SizedBox(height: 16),
           BlackButton(
             onTap: () async => context.router.navigate(CircuitRoute(circuitModel: circuit)),
-            text: 'Подробнее о трассе',
+            text: context.l10n.circuitDetails,
             isDisabled: false,
           ),
         ],

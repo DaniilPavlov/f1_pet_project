@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
-import 'package:f1_pet_project/common/widgets/buttons/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 
 /// Панель управления картой: зум и переход к геопозиции.
@@ -38,13 +37,20 @@ class MapControlsWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Transform.rotate(
-              angle: math.pi / 4,
-              child: CustomIconButton(
-                image: 'assets/icons/location_user.png',
-                onPressed: onUserLocationPressed,
-                backgroundColor: AppTheme.red.withValues(alpha: 0.75),
-                iconColor: Colors.white,
+            Material(
+              color: AppTheme.red.withValues(alpha: 0.75),
+              shape: const CircleBorder(),
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: onUserLocationPressed,
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Transform.rotate(
+                    angle: math.pi / 4,
+                    child: const Icon(Icons.navigation, color: Colors.white, size: 22),
+                  ),
+                ),
               ),
             ),
           ],

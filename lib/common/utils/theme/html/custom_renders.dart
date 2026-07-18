@@ -11,9 +11,7 @@ List<HtmlExtension> htmlExtensions = [
   TagExtension(
     tagsToExtend: {'blockquote'},
     builder: (context) {
-      return AppHtml(
-        data: '<span class="bc-quotes">«</span> ${context.innerHtml} <span class="bc-quotes">»</span>',
-      );
+      return AppHtml(data: '<span class="bc-quotes">«</span> ${context.innerHtml} <span class="bc-quotes">»</span>');
     },
   ),
   TagExtension(
@@ -55,11 +53,7 @@ List<HtmlExtension> htmlExtensions = [
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 4,
-                  height: 4,
-                  color: AppTheme.red,
-                ),
+                Container(width: 4, height: 4, color: AppTheme.red),
                 const SizedBox(width: 16),
                 Flexible(child: AppHtml(data: element.outerHtml)),
               ],
@@ -81,13 +75,8 @@ List<HtmlExtension> htmlExtensions = [
           clipBehavior: Clip.none,
           scrollDirection: Axis.horizontal,
           child: DecoratedBox(
-            decoration: const BoxDecoration(
-              color: Colors.black,
-            ),
-            child: AppHtml(
-              shrinkWrap: true,
-              data: '<table class="decorated-table">${ctx.innerHtml}</table>',
-            ),
+            decoration: const BoxDecoration(color: Colors.black),
+            child: AppHtml(shrinkWrap: true, data: '<table class="decorated-table">${ctx.innerHtml}</table>'),
           ),
         ),
       );

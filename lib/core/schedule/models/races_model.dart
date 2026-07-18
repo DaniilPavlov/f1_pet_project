@@ -55,6 +55,7 @@ class RacesModel {
   final RaceDateModel? thirdPractice;
   @JsonKey(name: 'Qualifying')
   final RaceDateModel? qualifying;
+
   /// Дата и время спринт-квалификации (сетка на спринт).
   @JsonKey(name: 'SprintQualifying')
   final RaceDateModel? sprintQualifying;

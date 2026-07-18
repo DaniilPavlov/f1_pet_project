@@ -5,20 +5,14 @@ import 'package:yandex_mapkit/yandex_mapkit.dart';
 /// Сервис получения текущей геопозиции пользователя.
 class UserPositionGetter {
   /// Возвращает координаты пользователя, запрашивая разрешения при необходимости.
-  static Future<Point> getUserPosition({
-    Function(Exception)? onGetUserPositionError,
-  }) async {
+  static Future<Point> getUserPosition({Function(Exception)? onGetUserPositionError}) async {
     bool serviceEnabled;
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       // onError
-      onGetUserPositionError?.call(
-        Exception(
-          'Нет разрешения на получение местоположения',
-        ),
-      );
+      onGetUserPositionError?.call(Exception('Нет разрешения на получение местоположения'));
     }
 
     permission = await Geolocator.checkPermission();
@@ -26,35 +20,21 @@ class UserPositionGetter {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         // onError
-        onGetUserPositionError?.call(
-          Exception(
-            'Нет разрешения на получение местоположения',
-          ),
-        );
+        onGetUserPositionError?.call(Exception('Нет разрешения на получение местоположения'));
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       // onError
-      onGetUserPositionError?.call(
-        Exception(
-          'Нет разрешения на получение местоположения',
-        ),
-      );
+      onGetUserPositionError?.call(Exception('Нет разрешения на получение местоположения'));
     }
 
     try {
       final position = await Geolocator.getCurrentPosition();
 
-      return Point(
-        latitude: position.latitude,
-        longitude: position.longitude,
-      );
+      return Point(latitude: position.latitude, longitude: position.longitude);
     } catch (e) {
-      Error.throwWithStackTrace(
-        e,
-        StackTrace.current,
-      );
+      Error.throwWithStackTrace(e, StackTrace.current);
     }
   }
 }

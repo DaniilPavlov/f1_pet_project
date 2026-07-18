@@ -6,10 +6,6 @@ final AutoRoute scheduleRoute = AutoRoute(
   path: 'schedule',
   page: ScheduleRouter.page,
   children: [
-    AutoRoute(
-      path: '',
-      page: ScheduleRoute.page,
-      meta: const <String, bool>{'hideBottomNav': false},
-    ),
+    AutoRoute(path: '', page: ScheduleRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
   ],
 );

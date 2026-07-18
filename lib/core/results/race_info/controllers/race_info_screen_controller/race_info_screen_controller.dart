@@ -181,9 +181,7 @@ abstract class RaceInfoScreenControllerBase with Store {
       names.putIfAbsent(driver.driverId, () => '${driver.givenName} ${driver.familyName}');
     }
 
-    return [
-      for (final stop in stops) stop.copyWith(driverId: names[stop.driverId] ?? stop.driverId),
-    ];
+    return [for (final stop in stops) stop.copyWith(driverId: names[stop.driverId] ?? stop.driverId)];
   }
 
   Future<ScheduleModel> _fetchSprintResults({required String year, required String round}) {

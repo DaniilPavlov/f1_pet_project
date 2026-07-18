@@ -35,10 +35,7 @@ class CustomSwitcher extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15),
-                    child: Container(
-                      height: 1,
-                      color: activeValue == 0 ? AppTheme.red : AppTheme.pink,
-                    ),
+                    child: Container(height: 1, color: activeValue == 0 ? AppTheme.red : AppTheme.pink),
                   ),
                 ],
               ),
@@ -58,10 +55,7 @@ class CustomSwitcher extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15),
-                    child: Container(
-                      height: 1,
-                      color: activeValue == 1 ? AppTheme.red : AppTheme.pink,
-                    ),
+                    child: Container(height: 1, color: activeValue == 1 ? AppTheme.red : AppTheme.pink),
                   ),
                 ],
               ),

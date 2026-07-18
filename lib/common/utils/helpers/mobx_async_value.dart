@@ -4,26 +4,13 @@ import 'package:flutter/foundation.dart';
 /// Обёртка над асинхронным значением с состояниями загрузки, данных и ошибки.
 @immutable
 class AsyncValue<T> {
-  const AsyncValue({
-    required this.status,
-    this.value,
-    this.error,
-  });
+  const AsyncValue({required this.status, this.value, this.error});
 
-  const AsyncValue.loading({
-    this.value,
-    this.error,
-  }) : status = AsyncStatus.loading;
+  const AsyncValue.loading({this.value, this.error}) : status = AsyncStatus.loading;
 
-  const AsyncValue.value({
-    this.value,
-    this.error,
-  }) : status = AsyncStatus.value;
+  const AsyncValue.value({this.value, this.error}) : status = AsyncStatus.value;
 
-  const AsyncValue.error({
-    this.value,
-    this.error,
-  }) : status = AsyncStatus.error;
+  const AsyncValue.error({this.value, this.error}) : status = AsyncStatus.error;
 
   final AsyncStatus status;
   final T? value;
@@ -54,19 +41,12 @@ class AsyncValue<T> {
 }
 
 /// Статус асинхронного значения.
-enum AsyncStatus {
-  loading,
-  error,
-  value,
-}
+enum AsyncStatus { loading, error, value }
 
 /// Описание ошибки асинхронной операции.
 @immutable
 class AsyncError {
-  const AsyncError({
-    required this.errorMessage,
-    this.errorObject,
-  });
+  const AsyncError({required this.errorMessage, this.errorObject});
 
   final String errorMessage;
   final Object? errorObject;

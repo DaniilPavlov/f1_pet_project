@@ -12,6 +12,7 @@ import 'package:f1_pet_project/core/schedule/models/race_date_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
+import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -23,9 +24,10 @@ class ScheduleScreenController = ScheduleScreenControllerBase with _$ScheduleScr
 
 /// Управляет загрузкой расписания, календарём и списком сессий выбранного дня.
 abstract class ScheduleScreenControllerBase with Store {
-  ScheduleScreenControllerBase({Future<ScheduleModel> Function()? fetchSchedule})
+  ScheduleScreenControllerBase({required this.l10n, Future<ScheduleModel> Function()? fetchSchedule})
     : _fetchScheduleOverride = fetchSchedule;
 
+  final AppLocalizations l10n;
   final Future<ScheduleModel> Function()? _fetchScheduleOverride;
 
   final scrollController = ScrollController();
@@ -85,9 +87,7 @@ abstract class ScheduleScreenControllerBase with Store {
   }
 
   bool _hasSessionOnDay(RacesModel race, DateTime day) {
-    return _raceSessions(race).any(
-      (session) => session != null && isSameDay(DateTime.parse(session.date), day),
-    );
+    return _raceSessions(race).any((session) => session != null && isSameDay(DateTime.parse(session.date), day));
   }
 
   List<RaceDateModel?> _raceSessions(RacesModel race) => [
@@ -101,12 +101,12 @@ abstract class ScheduleScreenControllerBase with Store {
 
   void _addSessionsForDay(RacesModel race, DateTime day, List<Widget> schedule) {
     final sessions = [
-      (race.firstPractice, 'Первая практика'),
-      (race.secondPractice, 'Вторая практика'),
-      (race.thirdPractice, 'Третья практика'),
-      (race.sprintQualifying, 'Спринт-квалификация'),
-      (race.sprint, 'Спринт'),
-      (race.qualifying, 'Квалификация'),
+      (race.firstPractice, l10n.firstPractice),
+      (race.secondPractice, l10n.secondPractice),
+      (race.thirdPractice, l10n.thirdPractice),
+      (race.sprintQualifying, l10n.sprintQualifying),
+      (race.sprint, l10n.sprint),
+      (race.qualifying, l10n.qualifying),
     ];
 
     for (final (session, title) in sessions) {
@@ -131,7 +131,7 @@ abstract class ScheduleScreenControllerBase with Store {
         if (isSameDay(DateTime.parse(race.date), selectedDate)) {
           newSchedule.add(
             ScheduleContainer(
-              title: 'Гонка',
+              title: l10n.race,
               date: RaceDateModel(date: race.date, time: race.time ?? ''),
             ),
           );
@@ -165,9 +165,6 @@ abstract class ScheduleScreenControllerBase with Store {
     );
   }
 
-  Future<ScheduleModel> _fetchSchedule() => fetchFromLoader(
-    override: _fetchScheduleOverride,
-    load: ScheduleLoader.loadData,
-    parse: ScheduleModel.fromJson,
-  );
+  Future<ScheduleModel> _fetchSchedule() =>
+      fetchFromLoader(override: _fetchScheduleOverride, load: ScheduleLoader.loadData, parse: ScheduleModel.fromJson);
 }

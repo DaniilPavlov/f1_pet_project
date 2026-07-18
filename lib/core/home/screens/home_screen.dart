@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
@@ -42,7 +43,7 @@ class HomeScreen extends StatelessWidget {
                     child: TournamentTablesSection(
                       driversStandings: controller.currentDrivers.value!,
                       constructorsStandings: controller.currentConstructors.value!,
-                      title: 'Турнирная таблица текущего сезона',
+                      title: context.l10n.homeStandingsTitle,
                       season: controller.currentSeason,
                       round: controller.currentRound,
                     ),

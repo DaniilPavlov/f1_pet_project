@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
@@ -16,7 +17,7 @@ class CircuitScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Информация о трассе', onPop: context.router.removeLast),
+      appBar: CustomAppBar(title: context.l10n.circuitInfoTitle, onPop: context.router.removeLast),
       body: SafeArea(
         child: CustomScrollView(
           scrollBehavior: AntiGlowBehavior(),
@@ -34,14 +35,14 @@ class CircuitScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () => Utils.openUrl(rawUrl: circuitModel.url),
                       child: Text(
-                        'Прочитать информацию в википедии',
+                        context.l10n.readOnWikipedia,
                         style: AppStyles.body.copyWith(decoration: TextDecoration.underline),
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Text('Страна: ${circuitModel.location.country}', style: AppStyles.h3),
+                    Text(context.l10n.countryLabel(circuitModel.location.country), style: AppStyles.h3),
                     const SizedBox(height: 10),
-                    Text('Город: ${circuitModel.location.locality}', style: AppStyles.h3),
+                    Text(context.l10n.cityLabel(circuitModel.location.locality), style: AppStyles.h3),
                   ],
                 ),
               ),

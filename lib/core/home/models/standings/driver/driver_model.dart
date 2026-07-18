@@ -25,10 +25,7 @@ class DriverModel {
     try {
       return _$DriverModelFromJson(json);
     } catch (e) {
-      Error.throwWithStackTrace(
-        ResponseParseException('DriverModel: $e'),
-        StackTrace.current,
-      );
+      Error.throwWithStackTrace(ResponseParseException('DriverModel: $e'), StackTrace.current);
     }
   }
   final String driverId;

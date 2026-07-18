@@ -6,13 +6,7 @@ import 'package:flutter/material.dart';
 
 /// Элемент нижней навигации с иконкой и подписью.
 class NavBarItem extends StatelessWidget {
-  const NavBarItem({
-    required this.imageAsset,
-    required this.title,
-    this.isSelected = false,
-    this.onPressed,
-    super.key,
-  });
+  const NavBarItem({required this.imageAsset, required this.title, this.isSelected = false, this.onPressed, super.key});
 
   final String imageAsset;
   final String title;
@@ -20,6 +14,7 @@ class NavBarItem extends StatelessWidget {
   final bool isSelected;
 
   static const _iconSize = 28.0;
+
   /// Масштаб обрезки краевого мата PNG, который иначе даёт квадратную обводку после tint.
   static const _edgeCropScale = 1.12;
 

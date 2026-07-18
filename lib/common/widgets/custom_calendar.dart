@@ -70,7 +70,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
     return DecoratedBox(
       decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(18)), color: AppTheme.shadowColor),
       child: TableCalendar<dynamic>(
-        locale: 'ru_RU',
+        locale: Localizations.localeOf(context).toLanguageTag(),
         availableGestures: AvailableGestures.horizontalSwipe,
         firstDay: DateTime.utc(DateTime.now().year - 1),
         lastDay: DateTime.utc(DateTime.now().year + 1),

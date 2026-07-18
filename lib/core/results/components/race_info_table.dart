@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/tables/tappable_driver_row.dart';
@@ -42,37 +43,34 @@ class RaceInfoTable extends StatelessWidget {
             3: FlexColumnWidth(0.55),
           },
           children: [
-            if (withPrimaryRow) raceTablePrimaryRow(),
-            ...List.generate(
-              rowsNumber ?? rows.length,
-              (i) {
-                final result = rows[i];
-                return TableRow(
-                  decoration: BoxDecoration(
-                    color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
-                    border: const Border(bottom: BorderSide(color: AppTheme.strokeGray)),
-                  ),
-                  children: tappableDriverRowCells(
-                    context: context,
-                    driver: result.driver,
-                    children: raceTableDetailRowChildren(result, fastest, i + 1),
-                  ),
-                );
-              },
-            ),
+            if (withPrimaryRow) raceTablePrimaryRow(context.l10n),
+            ...List.generate(rowsNumber ?? rows.length, (i) {
+              final result = rows[i];
+              return TableRow(
+                decoration: BoxDecoration(
+                  color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
+                  border: const Border(bottom: BorderSide(color: AppTheme.strokeGray)),
+                ),
+                children: tappableDriverRowCells(
+                  context: context,
+                  driver: result.driver,
+                  children: raceTableDetailRowChildren(result, fastest, i + 1, context.l10n),
+                ),
+              );
+            }),
           ],
         ),
         if (rowsNumber != null)
           GestureDetector(
             onTap: () async => context.router.navigate(RaceInfoRoute(raceModel: raceModel)),
-            child: const ColoredBox(
+            child: ColoredBox(
               color: AppTheme.grayBG,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Text('Подробная информация', style: AppStyles.caption),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Text(context.l10n.detailedInfo, style: AppStyles.caption),
                   ),
                   Icon(Icons.arrow_right_alt),
                 ],

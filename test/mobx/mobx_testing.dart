@@ -26,11 +26,7 @@ void mobxTest<S extends Store, T>(
     setUp?.call();
     store = build();
 
-    disposer = reaction(
-      (_) => value(store),
-      changes.add,
-      fireImmediately: fireInitialState,
-    );
+    disposer = reaction((_) => value(store), changes.add, fireImmediately: fireInitialState);
 
     await act?.call(store);
     await Future<void>.delayed(Duration.zero);

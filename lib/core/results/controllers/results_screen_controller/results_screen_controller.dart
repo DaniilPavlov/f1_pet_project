@@ -14,9 +14,8 @@ class ResultsScreenController = ResultsScreenControllerBase with _$ResultsScreen
 
 /// Управляет загрузкой результатов последней гонки.
 abstract class ResultsScreenControllerBase with Store {
-  ResultsScreenControllerBase({
-    Future<ScheduleModel> Function()? fetchLastRaceResults,
-  }) : _fetchLastRaceResultsOverride = fetchLastRaceResults;
+  ResultsScreenControllerBase({Future<ScheduleModel> Function()? fetchLastRaceResults})
+    : _fetchLastRaceResultsOverride = fetchLastRaceResults;
 
   final Future<ScheduleModel> Function()? _fetchLastRaceResultsOverride;
 

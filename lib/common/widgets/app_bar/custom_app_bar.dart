@@ -1,10 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
+import 'package:f1_pet_project/common/localization/locale_controller.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/buttons/circle_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
 /// Кастомный AppBar с логотипом или заголовком и кнопкой «назад».
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -18,6 +21,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localeController = context.read<LocaleController>();
+
     return ColorfulSafeArea(
       color: AppTheme.black,
       child: Container(
@@ -60,6 +65,27 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: title != null
                     ? Text(title!, style: AppStyles.body.copyWith(color: AppTheme.white))
                     : Image.asset('assets/app_logo.png'),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Observer(
+                  builder: (context) {
+                    return GestureDetector(
+                      onTap: localeController.toggle,
+                      behavior: HitTestBehavior.opaque,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                        child: Text(
+                          localeController.localeCodeLabel,
+                          style: AppStyles.body.copyWith(
+                            color: AppTheme.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),

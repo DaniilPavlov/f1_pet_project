@@ -8,20 +8,14 @@ import 'package:f1_pet_project/router/schedule_route.dart';
 
 /// Конфигурация маршрутов приложения (auto_route).
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
-class AppRouter extends RootStackRouter  {
+class AppRouter extends RootStackRouter {
   @override
   final List<AutoRoute> routes = [
     AutoRoute(
       path: '/',
       page: ScaffoldWithNavBarRoute.page,
       initial: true,
-      children: [
-        homeRoute,
-        resultsRoute,
-        scheduleRoute,
-        hallOfFameRoute,
-        circuitsRoute,
-      ],
+      children: [homeRoute, resultsRoute, scheduleRoute, hallOfFameRoute, circuitsRoute],
     ),
   ];
 

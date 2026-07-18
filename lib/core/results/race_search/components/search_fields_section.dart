@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart';
 import 'package:f1_pet_project/core/results/race_search/controllers/race_search_screen_controller/race_search_screen_controller.dart';
@@ -28,8 +29,8 @@ class SearchFieldsSection extends StatelessWidget {
               ],
               keyboardType: TextInputType.number,
               onChanged: (_) => controller.checkFields(),
-              label: 'Сезон',
-              hintText: 'Год',
+              label: context.l10n.season,
+              hintText: context.l10n.yearHint,
               controller: controller.yearController,
             ),
           ),
@@ -42,8 +43,8 @@ class SearchFieldsSection extends StatelessWidget {
               ],
               onChanged: (_) => controller.checkFields(),
               keyboardType: TextInputType.number,
-              label: 'Раунд',
-              hintText: 'Номер',
+              label: context.l10n.round,
+              hintText: context.l10n.numberHint,
               controller: controller.roundController,
             ),
           ),

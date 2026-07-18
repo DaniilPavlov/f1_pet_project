@@ -6,6 +6,7 @@ import 'package:f1_pet_project/common/utils/helpers/text_editing_controller_exte
 import 'package:f1_pet_project/core/results/race_search/loaders/race_results_loader.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
+import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
@@ -17,12 +18,14 @@ class RaceSearchScreenController = RaceSearchScreenControllerBase with _$RaceSea
 /// Управляет полями поиска и загрузкой результатов гонки.
 abstract class RaceSearchScreenControllerBase with Store {
   RaceSearchScreenControllerBase({
+    required this.l10n,
     Future<ScheduleModel> Function({required String year, required String round})? fetchRaceResults,
   }) : _fetchRaceResultsOverride = fetchRaceResults {
     yearController = TextEditingController();
     roundController = TextEditingController();
   }
 
+  final AppLocalizations l10n;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchRaceResultsOverride;
 
   late final TextEditingController yearController;
@@ -71,7 +74,7 @@ abstract class RaceSearchScreenControllerBase with Store {
           Future<void>.delayed(const Duration(milliseconds: 100), scrollController.animateToBottom);
         } else {
           searchedRace = const AsyncValue.value();
-          errorMessage = 'По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.';
+          errorMessage = l10n.raceNotFound;
         }
       },
     );

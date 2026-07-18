@@ -14,21 +14,18 @@ class PointsDrawer {
     PlacemarkIcon? selectedIcon,
     int? selectedIndex,
   }) {
-    return List<PlacemarkMapObject>.generate(
-      points.length,
-      (i) {
-        final rnd = rng.nextInt(200);
-        final placemarkId = 'p_${i}_${rnd}_${points[i]}';
-        return PlacemarkMapObject(
-          onTap: (mapObject, point) {
-            onTap?.call(i);
-          },
-          opacity: 1,
-          mapId: MapObjectId(placemarkId),
-          point: points[i],
-          icon: i == selectedIndex ? selectedIcon : icon,
-        );
-      },
-    );
+    return List<PlacemarkMapObject>.generate(points.length, (i) {
+      final rnd = rng.nextInt(200);
+      final placemarkId = 'p_${i}_${rnd}_${points[i]}';
+      return PlacemarkMapObject(
+        onTap: (mapObject, point) {
+          onTap?.call(i);
+        },
+        opacity: 1,
+        mapId: MapObjectId(placemarkId),
+        point: points[i],
+        icon: i == selectedIndex ? selectedIcon : icon,
+      );
+    });
   }
 }

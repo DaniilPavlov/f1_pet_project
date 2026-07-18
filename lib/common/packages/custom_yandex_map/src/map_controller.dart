@@ -28,22 +28,12 @@ class MapController {
 
   /// Перемещает камеру к указанным координатам.
   void moveCameraTo(List<double> point) {
-    _controller.add(
-      MapEvent(
-        'moveCameraTo',
-        point,
-      ),
-    );
+    _controller.add(MapEvent('moveCameraTo', point));
   }
 
   /// Выделяет метку по индексу.
   void selectPlacemark(int point) {
-    _controller.add(
-      MapEvent(
-        'selectPlacemark',
-        point,
-      ),
-    );
+    _controller.add(MapEvent('selectPlacemark', point));
   }
 }
 

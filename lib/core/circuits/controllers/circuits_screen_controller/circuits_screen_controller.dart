@@ -56,9 +56,6 @@ abstract class CircuitsScreenControllerBase with Store {
     }
   }
 
-  Future<CircuitsModel> _fetchCircuits() => fetchFromLoader(
-    override: _fetchCircuitsOverride,
-    load: CircuitsLoader.loadData,
-    parse: CircuitsModel.fromJson,
-  );
+  Future<CircuitsModel> _fetchCircuits() =>
+      fetchFromLoader(override: _fetchCircuitsOverride, load: CircuitsLoader.loadData, parse: CircuitsModel.fromJson);
 }

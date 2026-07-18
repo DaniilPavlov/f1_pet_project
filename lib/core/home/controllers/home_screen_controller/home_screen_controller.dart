@@ -19,8 +19,8 @@ abstract class HomeScreenControllerBase with Store {
   HomeScreenControllerBase({
     Future<StandingsModel> Function()? fetchCurrentDriversStandings,
     Future<StandingsModel> Function()? fetchCurrentConstructorsStandings,
-  })  : _fetchCurrentDriversStandingsOverride = fetchCurrentDriversStandings,
-        _fetchCurrentConstructorsStandingsOverride = fetchCurrentConstructorsStandings;
+  }) : _fetchCurrentDriversStandingsOverride = fetchCurrentDriversStandings,
+       _fetchCurrentConstructorsStandingsOverride = fetchCurrentConstructorsStandings;
 
   final Future<StandingsModel> Function()? _fetchCurrentDriversStandingsOverride;
   final Future<StandingsModel> Function()? _fetchCurrentConstructorsStandingsOverride;

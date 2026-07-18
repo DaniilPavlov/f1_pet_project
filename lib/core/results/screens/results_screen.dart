@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
@@ -54,7 +55,7 @@ class ResultsScreen extends StatelessWidget {
                         vertical: StaticData.defaultVerticalPadding,
                       ),
                       child: RedBorderContainer(
-                        title: 'Выбрать конкретную гонку',
+                        title: context.l10n.chooseSpecificRace,
                         onTap: () async => context.router.navigate(const RaceSearchRoute()),
                       ),
                     ),

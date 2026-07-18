@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
@@ -31,7 +32,7 @@ class RaceInfoScreen extends StatelessWidget {
     return Provider<RaceInfoScreenController>(
       create: (_) => RaceInfoScreenController(raceModel: raceModel)..loadAllData(),
       child: Scaffold(
-        appBar: CustomAppBar(title: 'Подробная информация', onPop: () => context.router.removeLast()),
+        appBar: CustomAppBar(title: context.l10n.detailedInfo, onPop: () => context.router.removeLast()),
         body: SafeArea(
           child: Observer(
             builder: (context) {
@@ -69,8 +70,8 @@ class RaceInfoScreen extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Сезон: ${controller.raceModel.season}', style: AppStyles.h2),
-                                Text('Раунд: ${controller.raceModel.round}', style: AppStyles.h2),
+                                Text(context.l10n.seasonLabel(controller.raceModel.season), style: AppStyles.h2),
+                                Text(context.l10n.roundLabel(controller.raceModel.round), style: AppStyles.h2),
                               ],
                             ),
                           ),
@@ -89,10 +90,7 @@ class RaceInfoScreen extends StatelessWidget {
                     child: VisibilityDetector(
                       key: const Key('race_info_table'),
                       onVisibilityChanged: controller.onRaceTableVisibilityChanged,
-                      child: RaceInfoTable(
-                        raceModel: controller.raceModel,
-                        withPrimaryRow: false,
-                      ),
+                      child: RaceInfoTable(raceModel: controller.raceModel, withPrimaryRow: false),
                     ),
                   ),
                   if (sprintResults.isNotEmpty) ...[
@@ -102,7 +100,7 @@ class RaceInfoScreen extends StatelessWidget {
                       pinned: controller.sprintAppBarPinned,
                       automaticallyImplyLeading: false,
                       titleSpacing: 0,
-                      title: const RaceInfoTableAppBar(title: 'Спринт'),
+                      title: RaceInfoTableAppBar(title: context.l10n.sprint),
                     ),
                     SliverToBoxAdapter(
                       child: VisibilityDetector(

@@ -6,10 +6,6 @@ final AutoRoute homeRoute = AutoRoute(
   path: 'home',
   page: HomeRouter.page,
   children: [
-    AutoRoute(
-      path: '',
-      page: HomeRoute.page,
-      meta: const <String, bool>{'hideBottomNav': false},
-    ),
+    AutoRoute(path: '', page: HomeRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
   ],
 );

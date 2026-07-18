@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/core/results/components/race_info_table.dart';
@@ -22,7 +23,7 @@ class LastRaceTableSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Последняя гонка: ', style: AppStyles.h2),
+              Text(context.l10n.lastRace, style: AppStyles.h2),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: StaticData.defaultVerticalPadding),
                 child: Text(lastRace.raceName, style: AppStyles.h2),
@@ -30,8 +31,8 @@ class LastRaceTableSection extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Сезон: ${lastRace.season}', style: AppStyles.h2),
-                  Text('Раунд: ${lastRace.round}', style: AppStyles.h2),
+                  Text(context.l10n.seasonLabel(lastRace.season), style: AppStyles.h2),
+                  Text(context.l10n.roundLabel(lastRace.round), style: AppStyles.h2),
                 ],
               ),
             ],

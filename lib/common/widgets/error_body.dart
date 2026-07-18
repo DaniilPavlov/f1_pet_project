@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
@@ -34,7 +35,7 @@ class ErrorBody extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              title ?? 'Соединение отсутствует',
+              title ?? context.l10n.noConnection,
               maxLines: 3,
               style: AppStyles.h2,
               textAlign: TextAlign.center,
@@ -44,7 +45,7 @@ class ErrorBody extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 12, bottom: 20, left: 20, right: 20),
             child: Text(
-              subtitle ?? 'Как только соединение восстановится, вы снова сможете пользоваться приложением',
+              subtitle ?? context.l10n.noConnectionSubtitle,
               style: AppStyles.h3,
               textAlign: TextAlign.center,
               maxLines: 3,
@@ -53,7 +54,7 @@ class ErrorBody extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 50, right: 50),
-            child: BlackButton(haveShadow: true, onTap: onTap, text: 'Обновить', isDisabled: false),
+            child: BlackButton(haveShadow: true, onTap: onTap, text: context.l10n.refresh, isDisabled: false),
           ),
         ],
       ),

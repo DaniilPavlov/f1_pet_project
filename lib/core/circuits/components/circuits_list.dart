@@ -6,10 +6,7 @@ import 'package:flutter/material.dart';
 
 /// Прокручиваемый список трасс с переходом к деталям.
 class CircuitsList extends StatefulWidget {
-  const CircuitsList({
-    required this.circuits,
-    super.key,
-  });
+  const CircuitsList({required this.circuits, super.key});
   final List<CircuitModel> circuits;
 
   @override
@@ -17,8 +14,7 @@ class CircuitsList extends StatefulWidget {
 }
 
 /// Состояние списка трасс с сохранением вкладки при переключении.
-class _CircuitsListState extends State<CircuitsList>
-    with AutomaticKeepAliveClientMixin {
+class _CircuitsListState extends State<CircuitsList> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -28,29 +24,17 @@ class _CircuitsListState extends State<CircuitsList>
     return CustomScrollView(
       cacheExtent: double.maxFinite,
       slivers: [
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 12),
-        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 12)),
         SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  12,
-                  0,
-                  12,
-                  24,
-                ),
-                child: RedBorderContainer(
-                  title: widget.circuits[index].circuitName,
-                  onTap: () async => context.router.navigate(
-                    CircuitRoute(circuitModel: widget.circuits[index]),
-                  ),
-                ),
-              );
-            },
-            childCount: widget.circuits.length,
-          ),
+          delegate: SliverChildBuilderDelegate((context, index) {
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 24),
+              child: RedBorderContainer(
+                title: widget.circuits[index].circuitName,
+                onTap: () async => context.router.navigate(CircuitRoute(circuitModel: widget.circuits[index])),
+              ),
+            );
+          }, childCount: widget.circuits.length),
         ),
       ],
     );

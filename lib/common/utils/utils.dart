@@ -1,4 +1,6 @@
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Утилиты общего назначения: ссылки, даты и форматирование.
@@ -14,49 +16,18 @@ class Utils {
     if (await canLaunchUrl(finalUrl)) {
       return launchUrl(
         finalUrl,
-        mode: externalApplication
-            ? LaunchMode.externalApplication
-            : LaunchMode.platformDefault,
+        mode: externalApplication ? LaunchMode.externalApplication : LaunchMode.platformDefault,
       );
     } else {
-      onError?.call(
-        CustomException(title: 'Не удалось перейти по ссылке $rawUrl'),
-      );
+      onError?.call(CustomException(title: 'Could not open link $rawUrl'));
 
       return false;
     }
   }
 
-  /// Возвращает название месяца по номеру в родительном или именительном падеже.
-  static String getMonthNameByNumber({required int month, bool parent = true}) {
-    switch (month) {
-      case 2:
-        return parent ? 'февраля' : 'февраль';
-      case 3:
-        return parent ? 'марта' : 'март';
-      case 4:
-        return parent ? 'апреля' : 'апрель';
-      case 5:
-        return parent ? 'мая' : 'май';
-      case 6:
-        return parent ? 'июня' : 'июнь';
-      case 7:
-        return parent ? 'июля' : 'июль';
-      case 8:
-        return parent ? 'августа' : 'август';
-      case 9:
-        return parent ? 'сентября' : 'сентябрь';
-      case 10:
-        return parent ? 'октября' : 'октябрь';
-      case 11:
-        return parent ? 'ноября' : 'ноябрь';
-      case 12:
-        return parent ? 'декабря' : 'декабрь';
-
-      case 1:
-      default:
-        return parent ? 'января' : 'январь';
-    }
+  /// Возвращает название месяца по номеру для [locale].
+  static String getMonthNameByNumber({required int month, required Locale locale}) {
+    return DateFormat.MMMM(locale.toLanguageTag()).format(DateTime(2000, month));
   }
 
   /// Форматирует время в строку вида «ЧЧ:ММ».

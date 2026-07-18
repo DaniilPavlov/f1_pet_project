@@ -17,23 +17,20 @@ class QualificationTable extends StatelessWidget {
         Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [
-            ...List.generate(
-              qualifyingResults.length,
-              (i) {
-                final result = qualifyingResults[i];
-                return TableRow(
-                  decoration: BoxDecoration(
-                    color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
-                    border: const Border(bottom: BorderSide(color: AppTheme.strokeGray)),
-                  ),
-                  children: tappableDriverRowCells(
-                    context: context,
-                    driver: result.driver,
-                    children: qualificationTableDetailRowChildren(result, i + 1),
-                  ),
-                );
-              },
-            ),
+            ...List.generate(qualifyingResults.length, (i) {
+              final result = qualifyingResults[i];
+              return TableRow(
+                decoration: BoxDecoration(
+                  color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
+                  border: const Border(bottom: BorderSide(color: AppTheme.strokeGray)),
+                ),
+                children: tappableDriverRowCells(
+                  context: context,
+                  driver: result.driver,
+                  children: qualificationTableDetailRowChildren(result, i + 1),
+                ),
+              );
+            }),
           ],
         ),
         const Divider(height: 2, thickness: 1, color: AppTheme.strokeGray),

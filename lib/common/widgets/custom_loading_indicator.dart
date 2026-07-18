@@ -9,11 +9,7 @@ class CustomLoadingIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: LoadingAnimationWidget.twistingDots(
-        leftDotColor: AppTheme.black,
-        rightDotColor: AppTheme.red,
-        size: 100,
-      ),
+      child: LoadingAnimationWidget.twistingDots(leftDotColor: AppTheme.black, rightDotColor: AppTheme.red, size: 100),
     );
   }
 }

@@ -104,11 +104,7 @@ class _CustomMapState extends State<CustomMap> {
                   mapObjects: List<MapObject>.from(controller.streamedMapObjects),
                   key: controller.mapKey,
                   onCameraPositionChanged: widget.onCameraPositionChanged,
-                  gestureRecognizers: {}..add(
-                      const Factory<EagerGestureRecognizer>(
-                        EagerGestureRecognizer.new,
-                      ),
-                    ),
+                  gestureRecognizers: {}..add(const Factory<EagerGestureRecognizer>(EagerGestureRecognizer.new)),
                   onMapCreated: (yandexMapController) async {
                     controller
                       ..controller = yandexMapController
@@ -127,11 +123,7 @@ class _CustomMapState extends State<CustomMap> {
               if (widget.userInterface != null) widget.userInterface!,
               if (widget.onCameraPositionChanged != null)
                 IgnorePointer(
-                  child: Center(
-                    child: AnimatedMapPin(
-                      isDragging: controller.isDragging,
-                    ),
-                  ),
+                  child: Center(child: AnimatedMapPin(isDragging: controller.isDragging)),
                 ),
             ],
           );

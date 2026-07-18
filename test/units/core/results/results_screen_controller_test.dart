@@ -12,17 +12,11 @@ void main() {
     group('loadLastRaceResults', () {
       mobxTest(
         'sets value on success',
-        build: () => ResultsScreenController(
-          fetchLastRaceResults: () async => ControllerFixtures.scheduleModel,
-        ),
+        build: () => ResultsScreenController(fetchLastRaceResults: () async => ControllerFixtures.scheduleModel),
         value: (store) => store.lastRace,
         act: (store) => store.loadLastRaceResults(),
         expect: () => [
-          isA<AsyncValue<RacesModel>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.loading,
-          ),
+          isA<AsyncValue<RacesModel>>().having((e) => e.status, 'status', AsyncStatus.loading),
           isA<AsyncValue<RacesModel>>()
               .having((e) => e.status, 'status', AsyncStatus.value)
               .having((e) => e.value?.raceName, 'raceName', 'Monaco Grand Prix'),
@@ -31,31 +25,20 @@ void main() {
 
       mobxTest(
         'sets error on failure',
-        build: () => ResultsScreenController(
-          fetchLastRaceResults: () async => throw ResponseParseException('parse error'),
-        ),
+        build: () =>
+            ResultsScreenController(fetchLastRaceResults: () async => throw ResponseParseException('parse error')),
         value: (store) => store.lastRace,
         act: (store) => store.loadLastRaceResults(),
         expect: () => [
-          isA<AsyncValue<RacesModel>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.loading,
-          ),
-          isA<AsyncValue<RacesModel>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.error,
-          ),
+          isA<AsyncValue<RacesModel>>().having((e) => e.status, 'status', AsyncStatus.loading),
+          isA<AsyncValue<RacesModel>>().having((e) => e.status, 'status', AsyncStatus.error),
         ],
       );
     });
 
     group('loadAllData', () {
       test('loads last race', () async {
-        final controller = ResultsScreenController(
-          fetchLastRaceResults: () async => ControllerFixtures.scheduleModel,
-        );
+        final controller = ResultsScreenController(fetchLastRaceResults: () async => ControllerFixtures.scheduleModel);
 
         await controller.loadAllData();
 

@@ -11,19 +11,11 @@ class CircuitLocationModel {
     try {
       return _$CircuitLocationModelFromJson(json);
     } catch (e) {
-      Error.throwWithStackTrace(
-        ResponseParseException('CircuitLocationModel: $e'),
-        StackTrace.current,
-      );
+      Error.throwWithStackTrace(ResponseParseException('CircuitLocationModel: $e'), StackTrace.current);
     }
   }
 
-  CircuitLocationModel({
-    required this.lat,
-    required this.long,
-    required this.locality,
-    required this.country,
-  });
+  CircuitLocationModel({required this.lat, required this.long, required this.locality, required this.country});
   final String lat;
   final String long;
   final String locality;

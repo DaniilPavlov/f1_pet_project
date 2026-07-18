@@ -30,10 +30,7 @@ class SearchResultSection extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: StaticData.defaultVerticalPadding),
-                child: RaceInfoTable(
-                  rowsNumber: 3,
-                  raceModel: controller.searchedRace.value!,
-                ),
+                child: RaceInfoTable(rowsNumber: 3, raceModel: controller.searchedRace.value!),
               ),
             ],
             if (controller.errorMessage.isNotEmpty)

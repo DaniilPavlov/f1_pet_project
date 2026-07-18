@@ -6,20 +6,14 @@ part 'race_date_model.g.dart';
 /// Дата и время сессии или гонки.
 @JsonSerializable()
 class RaceDateModel {
-  RaceDateModel({
-    required this.date,
-    required this.time,
-  });
+  RaceDateModel({required this.date, required this.time});
 
   /// Парсит JSON-ответ в [RaceDateModel].
   factory RaceDateModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$RaceDateModelFromJson(json);
     } catch (e) {
-      Error.throwWithStackTrace(
-        ResponseParseException('RaceDateModel: $e'),
-        StackTrace.current,
-      );
+      Error.throwWithStackTrace(ResponseParseException('RaceDateModel: $e'), StackTrace.current);
     }
   }
   final String date;

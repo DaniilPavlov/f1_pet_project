@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
@@ -18,7 +19,11 @@ class SearchButtonSection extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: StaticData.defaultHorizontalPadding),
           child: controller.dataIsLoaded
-              ? BlackButton(isDisabled: !controller.fieldsInputted, onTap: controller.loadRaceResults, text: 'Поиск')
+              ? BlackButton(
+                  isDisabled: !controller.fieldsInputted,
+                  onTap: controller.loadRaceResults,
+                  text: context.l10n.search,
+                )
               : const CustomLoadingIndicator(),
         );
       },

@@ -4,12 +4,7 @@ import 'package:flutter/material.dart';
 
 /// Контейнер с красной рамкой для кликабельных элементов списка.
 class RedBorderContainer extends StatelessWidget {
-  const RedBorderContainer({
-    required this.title,
-    this.style = AppStyles.h3,
-    this.onTap,
-    super.key,
-  });
+  const RedBorderContainer({required this.title, this.style = AppStyles.h3, this.onTap, super.key});
   final String title;
   final TextStyle style;
   final VoidCallback? onTap;
@@ -29,10 +24,7 @@ class RedBorderContainer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(child: Text(title, style: style)),
-            if (onTap == null)
-              const SizedBox.shrink()
-            else
-              const Icon(Icons.arrow_right_alt),
+            if (onTap == null) const SizedBox.shrink() else const Icon(Icons.arrow_right_alt),
           ],
         ),
       ),

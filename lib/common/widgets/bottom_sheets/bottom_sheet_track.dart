@@ -10,10 +10,7 @@ class BottomSheetTrack extends StatelessWidget {
     return Container(
       height: 4,
       width: 80,
-      decoration: BoxDecoration(
-        color: AppTheme.textGray,
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: BoxDecoration(color: AppTheme.textGray, borderRadius: BorderRadius.circular(8)),
     );
   }
 }

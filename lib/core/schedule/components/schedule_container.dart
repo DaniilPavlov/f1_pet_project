@@ -4,6 +4,7 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/core/schedule/models/race_date_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 /// Карточка сессии с названием и временем в локальном часовом поясе.
 class ScheduleContainer extends StatelessWidget {
@@ -46,7 +47,7 @@ class ScheduleContainer extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${dateWithOffset.day} ${Utils.getMonthNameByNumber(month: dateWithOffset.month)} ${dateWithOffset.year}',
+                          DateFormat.yMMMMd(Localizations.localeOf(context).toLanguageTag()).format(dateWithOffset),
                           style: AppStyles.body,
                         ),
                         Text(Utils.formatHourMinute(dateWithOffset), style: AppStyles.body),

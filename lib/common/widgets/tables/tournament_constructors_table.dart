@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/tables/table_parts/tournament_table_constructors_detail_row.dart';
 import 'package:f1_pet_project/common/widgets/tables/table_parts/tournament_table_constructors_primary_row.dart';
@@ -6,10 +7,7 @@ import 'package:flutter/material.dart';
 
 /// Таблица зачёта конструкторов текущего сезона.
 class TournamentConstructorsTable extends StatelessWidget {
-  const TournamentConstructorsTable({
-    required this.constructors,
-    super.key,
-  });
+  const TournamentConstructorsTable({required this.constructors, super.key});
   final List<ConstructorStandingsModel> constructors;
 
   @override
@@ -28,22 +26,15 @@ class TournamentConstructorsTable extends StatelessWidget {
           },
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           children: [
-            constructorsPrimaryRow(),
+            constructorsPrimaryRow(context.l10n),
             ...List.generate(
               constructors.length,
               (i) => TableRow(
                 decoration: BoxDecoration(
                   color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
-                  border: const Border(
-                    bottom: BorderSide(
-                      color: AppTheme.strokeGray,
-                    ),
-                  ),
+                  border: const Border(bottom: BorderSide(color: AppTheme.strokeGray)),
                 ),
-                children: tournamentTableConstructorsDetailRowChildren(
-                  constructors[i],
-                  i + 1,
-                ),
+                children: tournamentTableConstructorsDetailRowChildren(constructors[i], i + 1),
               ),
             ),
           ],

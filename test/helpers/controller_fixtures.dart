@@ -39,17 +39,10 @@ abstract final class ControllerFixtures {
     circuitId: 'monaco',
     url: 'http://example.com/monaco',
     circuitName: 'Monaco',
-    location: CircuitLocationModel(
-      lat: '43.7347',
-      long: '7.4206',
-      locality: 'Monte Carlo',
-      country: 'Monaco',
-    ),
+    location: CircuitLocationModel(lat: '43.7347', long: '7.4206', locality: 'Monte Carlo', country: 'Monaco'),
   );
 
-  static CircuitsModel get circuitsModel => CircuitsModel(
-    circuitTable: CircuitTableModel(circuits: [circuit]),
-  );
+  static CircuitsModel get circuitsModel => CircuitsModel(circuitTable: CircuitTableModel(circuits: [circuit]));
 
   static StandingsModel get driversStandingsModel => StandingsModel(
     standingsTable: StandingsTableModel(
@@ -108,13 +101,8 @@ abstract final class ControllerFixtures {
     fastestLap: null,
   );
 
-  static PitStopsModel get pitStop => PitStopsModel(
-    driverId: 'max_verstappen',
-    lap: '20',
-    stop: '1',
-    time: '14:30:00',
-    duration: '2.5',
-  );
+  static PitStopsModel get pitStop =>
+      PitStopsModel(driverId: 'max_verstappen', lap: '20', stop: '1', time: '14:30:00', duration: '2.5');
 
   static RacesModel get race => RacesModel(
     season: '2024',
@@ -145,18 +133,10 @@ abstract final class ControllerFixtures {
   );
 
   static ScheduleModel get scheduleModel => ScheduleModel(
-    raceTable: RaceTableModel(
-      season: '2024',
-      round: '5',
-      races: [race],
-    ),
+    raceTable: RaceTableModel(season: '2024', round: '5', races: [race]),
   );
 
   static ScheduleModel get emptyScheduleModel => ScheduleModel(
-    raceTable: RaceTableModel(
-      season: '2024',
-      round: '5',
-      races: const [],
-    ),
+    raceTable: RaceTableModel(season: '2024', round: '5', races: const []),
   );
 }

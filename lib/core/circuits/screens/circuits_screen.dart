@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/custom_switcher.dart';
@@ -43,8 +44,8 @@ class CircuitsScreen extends StatelessWidget {
                 children: [
                   const SizedBox(height: 12),
                   CustomSwitcher(
-                    firstTitle: 'На карте',
-                    secondTitle: 'Списком',
+                    firstTitle: context.l10n.onMap,
+                    secondTitle: context.l10n.asList,
                     onChanged: controller.changeActivePage,
                     activeValue: controller.activePage,
                   ),

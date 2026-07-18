@@ -19,10 +19,7 @@ class PitStopsModel {
     try {
       return _$PitStopsModelFromJson(json);
     } catch (e) {
-      Error.throwWithStackTrace(
-        ResponseParseException('PitStopsModel: $e'),
-        StackTrace.current,
-      );
+      Error.throwWithStackTrace(ResponseParseException('PitStopsModel: $e'), StackTrace.current);
     }
   }
   final String driverId;
@@ -31,13 +28,7 @@ class PitStopsModel {
   final String time;
   final String duration;
 
-  PitStopsModel copyWith({
-    String? driverId,
-    String? lap,
-    String? stop,
-    String? time,
-    String? duration,
-  }) {
+  PitStopsModel copyWith({String? driverId, String? lap, String? stop, String? time, String? duration}) {
     return PitStopsModel(
       driverId: driverId ?? this.driverId,
       lap: lap ?? this.lap,

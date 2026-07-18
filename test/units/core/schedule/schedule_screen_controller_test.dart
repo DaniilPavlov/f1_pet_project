@@ -2,6 +2,7 @@ import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/core/schedule/controllers/schedule_screen_controller/schedule_screen_controller.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
+import 'package:f1_pet_project/l10n/app_localizations_ru.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/controller_fixtures.dart';
@@ -15,16 +16,13 @@ void main() {
       mobxTest(
         'loads races and marks data as loaded',
         build: () => ScheduleScreenController(
+          l10n: AppLocalizationsRu(),
           fetchSchedule: () async => ControllerFixtures.scheduleModel,
         ),
         value: (store) => store.racesElements,
         act: (store) => store.loadAllData(),
         expect: () => [
-          isA<AsyncValue<List<RacesModel>>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.loading,
-          ),
+          isA<AsyncValue<List<RacesModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
           isA<AsyncValue<List<RacesModel>>>()
               .having((e) => e.status, 'status', AsyncStatus.value)
               .having((e) => e.value?.length, 'length', 1),
@@ -37,21 +35,14 @@ void main() {
       mobxTest(
         'sets error on failure',
         build: () => ScheduleScreenController(
+          l10n: AppLocalizationsRu(),
           fetchSchedule: () async => throw ResponseParseException('parse error'),
         ),
         value: (store) => store.racesElements,
         act: (store) => store.loadAllData(),
         expect: () => [
-          isA<AsyncValue<List<RacesModel>>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.loading,
-          ),
-          isA<AsyncValue<List<RacesModel>>>().having(
-            (e) => e.status,
-            'status',
-            AsyncStatus.error,
-          ),
+          isA<AsyncValue<List<RacesModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
+          isA<AsyncValue<List<RacesModel>>>().having((e) => e.status, 'status', AsyncStatus.error),
         ],
         verify: (store) {
           expect(store.screenError, isNotNull);
@@ -62,6 +53,7 @@ void main() {
     group('onSelectDay', () {
       test('updates selected date', () async {
         final controller = ScheduleScreenController(
+          l10n: AppLocalizationsRu(),
           fetchSchedule: () async => ControllerFixtures.scheduleModel,
         );
 
@@ -75,15 +67,13 @@ void main() {
     group('getLogoPath', () {
       test('returns finish icon for race day', () async {
         final controller = ScheduleScreenController(
+          l10n: AppLocalizationsRu(),
           fetchSchedule: () async => ControllerFixtures.scheduleModel,
         );
 
         await controller.loadAllData();
 
-        expect(
-          controller.getLogoPath(DateTime.parse('2024-05-26')),
-          'assets/calendar/finish.png',
-        );
+        expect(controller.getLogoPath(DateTime.parse('2024-05-26')), 'assets/calendar/finish.png');
       });
     });
   });

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/packages/custom_yandex_map/custom_map.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
@@ -99,7 +100,7 @@ class _MapContainerState extends State<MapContainer> with WidgetsBindingObserver
               Navigator.of(sheetContext).pop();
             }
           },
-          text: 'Приложению требуется доступ к геопозиции.',
+          text: context.l10n.locationPermissionNeeded,
         );
       },
     );
@@ -123,7 +124,7 @@ class _MapContainerState extends State<MapContainer> with WidgetsBindingObserver
             placemarkIconSize: 1,
             selectedPlacemarkIconSize: 1.2,
             clusterColor: AppTheme.red,
-            clusterTextStyle: AppStyles.caption.copyWith(color: Colors.white),
+            clusterTextStyle: AppStyles.body.copyWith(fontSize: 24, height: 1, color: Colors.black,fontWeight: FontWeight.w700),
             onGetUserPositionError: _onGetUserPositionError,
             onCameraPositionChanged: widget.onAddressChanged != null
                 ? (pos, _, _) => widget.onCameraPositionChanged!(pos.target.latitude, pos.target.longitude)

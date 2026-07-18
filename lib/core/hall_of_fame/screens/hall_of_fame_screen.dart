@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
@@ -53,7 +54,7 @@ class HallOfFameScreen extends StatelessWidget {
                         horizontal: StaticData.defaultHorizontalPadding,
                         vertical: StaticData.defaultVerticalPadding,
                       ),
-                      child: const Text('Зал славы', style: AppStyles.h1),
+                      child: Text(context.l10n.hallOfFameTitle, style: AppStyles.h1),
                     ),
                   ),
                   SliverToBoxAdapter(
@@ -72,8 +73,8 @@ class HallOfFameScreen extends StatelessWidget {
                                 ],
                                 keyboardType: TextInputType.number,
                                 onChanged: (_) => controller.checkFields(),
-                                label: 'Сезон',
-                                hintText: 'Год',
+                                label: context.l10n.season,
+                                hintText: context.l10n.yearHint,
                                 controller: controller.yearController,
                               ),
                             ),
@@ -82,7 +83,7 @@ class HallOfFameScreen extends StatelessWidget {
                             child: BlackButton(
                               isDisabled: !controller.fieldsInputted,
                               onTap: controller.loadAllData,
-                              text: 'Поиск',
+                              text: context.l10n.search,
                             ),
                           ),
                         ],

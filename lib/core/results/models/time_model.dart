@@ -6,20 +6,14 @@ part 'time_model.g.dart';
 /// Время финиша или круга в миллисекундах и строковом виде.
 @JsonSerializable()
 class TimeModel {
-  TimeModel({
-    required this.millis,
-    required this.time,
-  });
+  TimeModel({required this.millis, required this.time});
 
   /// Создаёт модель из JSON ответа API.
   factory TimeModel.fromJson(Map<String, dynamic> json) {
     try {
       return _$TimeModelFromJson(json);
     } catch (e) {
-      Error.throwWithStackTrace(
-        ResponseParseException('TimeModel: $e'),
-        StackTrace.current,
-      );
+      Error.throwWithStackTrace(ResponseParseException('TimeModel: $e'), StackTrace.current);
     }
   }
   final String? millis;
