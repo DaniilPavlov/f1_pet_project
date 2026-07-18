@@ -19,11 +19,11 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
-/// Состояние приложения: ориентация экрана и системный UI.
+/// Состояние приложения: ориентация, системный UI, старт напоминаний.
 class _AppState extends State<App> with WidgetsBindingObserver {
   final _appRouter = AppRouter();
+  var _remindersReady = false;
 
-  /// Фиксирует портретную ориентацию и стиль статус-бара.
   @override
   void initState() {
     super.initState();
@@ -36,6 +36,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         statusBarIconBrightness: Brightness.dark,
       ),
     );
+    // Permissions/init после первого кадра — иначе в release возможен вечный splash.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(_bootstrapReminders());
+    });
   }
 
   @override
@@ -44,16 +48,34 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     super.dispose();
   }
 
+  Future<void> _bootstrapReminders() async {
+    if (!mounted) {
+      return;
+    }
+
+    final localeController = context.read<LocaleController>();
+    final reminders = context.read<RaceReminderService>();
+
+    try {
+      await localeController.load();
+      await reminders.init();
+      await reminders.requestPermissions();
+      await reminders.sync(locale: localeController.locale);
+      _remindersReady = true;
+    } on Object catch (error, stackTrace) {
+      debugPrint('App bootstrap failed: $error\n$stackTrace');
+    }
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state != AppLifecycleState.resumed || !mounted) {
+    if (state != AppLifecycleState.resumed || !mounted || !_remindersReady) {
       return;
     }
     final locale = context.read<LocaleController>().locale;
     unawaited(context.read<RaceReminderService>().sync(locale: locale));
   }
 
-  /// Собирает MaterialApp с auto_route и responsive_framework.
   @override
   Widget build(BuildContext context) {
     final localeController = context.read<LocaleController>();

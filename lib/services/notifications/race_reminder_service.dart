@@ -13,23 +13,17 @@ import 'package:timezone/timezone.dart' as tz;
 
 /// Локальные напоминания о гоночных сессиях за 30 минут до старта.
 ///
-/// Расписание берёт из общего [ScheduleRepository] (кэш не чаще раза в сутки).
-/// В ОС ставится только окно из [maxScheduledReminders] ближайших сессий;
-/// при старте / resume / смене TZ или локали окно пересобирается.
+/// Расписание из [ScheduleRepository]. В ОС — окно из [_maxScheduledReminders]
+/// ближайших сессий; при старте / resume / смене локали пересобирается.
 class RaceReminderService {
-  RaceReminderService({required ScheduleRepository scheduleRepository})
-    : _scheduleRepository = scheduleRepository;
+  RaceReminderService({required ScheduleRepository scheduleRepository}) : _scheduleRepository = scheduleRepository;
 
-  static const reminderLead = Duration(minutes: 30);
-
-  /// Сколько ближайших напоминаний держим в AlarmManager (rolling window).
-  static const maxScheduledReminders = 10;
+  static const _reminderLead = Duration(minutes: 30);
+  static const _maxScheduledReminders = 10;
 
   static const _channelId = 'race_reminders';
   static const _channelName = 'Race reminders';
-
-  /// Small icon: белый силуэт. Цветной mipmap Android в status bar не рисует.
-  static const _androidIcon = '@drawable/ic_notification';
+  static const _androidIcon = 'ic_notification';
 
   static const _androidDetails = AndroidNotificationDetails(
     _channelId,
@@ -41,15 +35,12 @@ class RaceReminderService {
     color: Color(0xFFE10600),
   );
 
-  static const _notificationDetails = NotificationDetails(
-    android: _androidDetails,
-    iOS: DarwinNotificationDetails(),
-  );
+  static const _notificationDetails = NotificationDetails(android: _androidDetails, iOS: DarwinNotificationDetails());
 
   final ScheduleRepository _scheduleRepository;
   final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
 
-  /// Инициализирует плагин, таймзону и запрашивает разрешения.
+  /// Инициализирует плагин и таймзону (без запроса permissions).
   Future<void> init() async {
     tz_data.initializeTimeZones();
     await _configureLocalTimezone();
@@ -64,11 +55,20 @@ class RaceReminderService {
       settings: const InitializationSettings(android: androidSettings, iOS: iosSettings),
     );
 
-    await _requestPermissions();
     await _ensureAndroidChannel();
   }
 
-  /// Подтягивает расписание из общего кэша и планирует ближайшие уведомления.
+  /// Запрос разрешений уведомлений / exact alarms.
+  Future<void> requestPermissions() async {
+    final android = _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    await android?.requestNotificationsPermission();
+    await android?.requestExactAlarmsPermission();
+
+    final ios = _plugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+    await ios?.requestPermissions(alert: true, badge: true, sound: true);
+  }
+
+  /// Подтягивает расписание и планирует ближайшие уведомления.
   Future<void> sync({required Locale locale}) async {
     try {
       await _configureLocalTimezone();
@@ -76,9 +76,8 @@ class RaceReminderService {
       final loadResult = await _scheduleRepository.getSchedule();
       final l10n = await AppLocalizations.delegate.load(locale);
       final upcoming = _buildPlannedReminders(loadResult.schedule.raceTable.races, l10n);
-      final toSchedule = upcoming.take(maxScheduledReminders).toList();
+      final toSchedule = upcoming.take(_maxScheduledReminders).toList();
 
-      // Всегда перепланируем: ОС могла сбросить алармы после перезагрузки / отзыва прав.
       await _plugin.cancelAll();
       await _scheduleAll(toSchedule);
 
@@ -102,15 +101,6 @@ class RaceReminderService {
       debugPrint('RaceReminderService: timezone fallback to UTC ($error)');
       tz.setLocalLocation(tz.UTC);
     }
-  }
-
-  Future<void> _requestPermissions() async {
-    final android = _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-    await android?.requestNotificationsPermission();
-    await android?.requestExactAlarmsPermission();
-
-    final ios = _plugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
-    await ios?.requestPermissions(alert: true, badge: true, sound: true);
   }
 
   Future<void> _ensureAndroidChannel() async {
@@ -143,7 +133,7 @@ class RaceReminderService {
 
       for (final (typeKey, activityTitle, date) in sessions) {
         final localStart = RaceDateTimeHelper.toLocal(date);
-        final notifyAt = localStart.subtract(reminderLead);
+        final notifyAt = localStart.subtract(_reminderLead);
         if (!notifyAt.isAfter(now)) {
           continue;
         }
@@ -192,9 +182,7 @@ class RaceReminderService {
             payload: item.grandPrixName,
           );
         } on Object catch (alarmClockError) {
-          debugPrint(
-            'RaceReminderService: alarmClock failed for ${item.id}, fallback inexact: $alarmClockError',
-          );
+          debugPrint('RaceReminderService: alarmClock failed for ${item.id}, fallback inexact: $alarmClockError');
           await _plugin.zonedSchedule(
             id: item.id,
             title: item.activityTitle,

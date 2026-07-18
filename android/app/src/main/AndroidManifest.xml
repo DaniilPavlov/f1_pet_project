@@ -13,7 +13,6 @@
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
-            <!-- <category android:name="android.intent.category.BROWSABLE" /> -->
             <data android:scheme="https" />
         </intent>
     </queries>
@@ -50,6 +49,10 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Ссылка на drawable, чтобы resource shrinker не выкинул иконку уведомлений. -->
+        <meta-data
+            android:name="com.example.f1_pet_project.NOTIFICATION_ICON"
+            android:resource="@drawable/ic_notification" />
 
         <!-- Нужны, чтобы AlarmManager реально показал отложенное уведомление. -->
         <receiver

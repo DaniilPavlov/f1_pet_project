@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:f1_pet_project/app.dart';
 import 'package:f1_pet_project/common/localization/locale_controller.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
@@ -13,21 +11,16 @@ Future<void> main() async {
 
   AndroidYandexMap.useAndroidViewSurface = false;
 
-  final localeController = LocaleController();
-  await localeController.load();
-
   final scheduleRepository = ScheduleRepository();
-  final raceReminderService = RaceReminderService(scheduleRepository: scheduleRepository);
-  await raceReminderService.init();
-  // Не блокируем старт UI ожиданием сети: sync сам ловит ошибки и падает на кэш.
-  unawaited(raceReminderService.sync(locale: localeController.locale));
 
   runApp(
     MultiProvider(
       providers: [
-        Provider<LocaleController>.value(value: localeController),
+        Provider(create: (_) => LocaleController()),
         Provider<ScheduleRepository>.value(value: scheduleRepository),
-        Provider<RaceReminderService>.value(value: raceReminderService),
+        Provider(
+          create: (_) => RaceReminderService(scheduleRepository: scheduleRepository),
+        ),
       ],
       child: const App(),
     ),
