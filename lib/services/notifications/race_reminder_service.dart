@@ -28,8 +28,8 @@ class RaceReminderService {
   static const _channelId = 'race_reminders';
   static const _channelName = 'Race reminders';
 
-  /// Small icon слева: только белый силуэт (Android не рисует цветной mipmap там).
-  static const _androidIcon = '@drawable/ic_stat_race';
+  /// Small icon: белый силуэт. Цветной mipmap Android в status bar не рисует.
+  static const _androidIcon = '@drawable/ic_notification';
 
   static const _androidDetails = AndroidNotificationDetails(
     _channelId,
