@@ -1,12 +1,12 @@
-import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
-import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart';
+import 'package:f1_pet_project/common/widgets/text_fields/race_picker_field.dart';
+import 'package:f1_pet_project/common/widgets/text_fields/season_picker_field.dart';
 import 'package:f1_pet_project/core/results/race_search/controllers/race_search_screen_controller/race_search_screen_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-/// Поля ввода сезона и номера раунда.
+/// Поля выбора сезона и гонки.
 class SearchFieldsSection extends StatelessWidget {
   const SearchFieldsSection({super.key});
 
@@ -19,36 +19,24 @@ class SearchFieldsSection extends StatelessWidget {
         right: StaticData.defaultHorizontalPadding,
         bottom: StaticData.defaultVerticalPadding,
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: CustomTextField(
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                FilteringTextInputFormatter.deny(RegExp('^0+')),
-              ],
-              keyboardType: TextInputType.number,
-              onChanged: (_) => controller.checkFields(),
-              label: context.l10n.season,
-              hintText: context.l10n.yearHint,
-              controller: controller.yearController,
-            ),
-          ),
-          const SizedBox(width: 20),
-          Expanded(
-            child: CustomTextField(
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                FilteringTextInputFormatter.deny(RegExp('^0+')),
-              ],
-              onChanged: (_) => controller.checkFields(),
-              keyboardType: TextInputType.number,
-              label: context.l10n.round,
-              hintText: context.l10n.numberHint,
-              controller: controller.roundController,
-            ),
-          ),
-        ],
+      child: Observer(
+        builder: (context) {
+          final seasonYear = controller.selectedSeason;
+          return Column(
+            children: [
+              SeasonPickerField(
+                controller: controller.yearController,
+                onChanged: controller.onSeasonSelected,
+              ),
+              const SizedBox(height: 16),
+              RacePickerField(
+                displayController: controller.raceDisplayController,
+                seasonYear: seasonYear,
+                onPicked: controller.onRacePicked,
+              ),
+            ],
+          );
+        },
       ),
     );
   }

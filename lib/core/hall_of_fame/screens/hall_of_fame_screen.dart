@@ -4,14 +4,13 @@ import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
-import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/tables/tournament_tables_section.dart';
-import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart';
+import 'package:f1_pet_project/common/widgets/text_fields/season_picker_field.dart';
 import 'package:f1_pet_project/core/hall_of_fame/controllers/hall_of_fame_screen_controller/hall_of_fame_screen_controller.dart';
+import 'package:f1_pet_project/core/seasons/repositories/seasons_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +22,9 @@ class HallOfFameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<HallOfFameScreenController>(
-      create: (_) => HallOfFameScreenController()..loadAllData(),
+      create: (_) => HallOfFameScreenController(
+        seasonsRepository: context.read<SeasonsRepository>(),
+      )..bootstrap(),
       dispose: (_, controller) => controller.dispose(),
       child: Scaffold(
         appBar: const CustomAppBar(),
@@ -59,34 +60,20 @@ class HallOfFameScreen extends StatelessWidget {
                   ),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: StaticData.defaultHorizontalPadding),
-                      child: Row(
-                        spacing: 20,
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 15),
-                              child: CustomTextField(
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                  FilteringTextInputFormatter.deny(RegExp('^0+')),
-                                ],
-                                keyboardType: TextInputType.number,
-                                onChanged: (_) => controller.checkFields(),
-                                label: context.l10n.season,
-                                hintText: context.l10n.yearHint,
-                                controller: controller.yearController,
-                              ),
-                            ),
+                      padding: const EdgeInsets.only(
+                        left: StaticData.defaultHorizontalPadding,
+                        right: StaticData.defaultHorizontalPadding,
+                        bottom: StaticData.defaultVerticalPadding,
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: SizedBox(
+                          width: MediaQuery.sizeOf(context).width * 0.5,
+                          child: SeasonPickerField(
+                            controller: controller.yearController,
+                            onChanged: controller.loadAllData,
                           ),
-                          Expanded(
-                            child: BlackButton(
-                              isDisabled: !controller.fieldsInputted,
-                              onTap: controller.loadAllData,
-                              text: context.l10n.search,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),

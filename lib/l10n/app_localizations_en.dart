@@ -120,6 +120,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yearHint => 'Year';
 
   @override
+  String get selectSeason => 'Select season';
+
+  @override
+  String get selectRace => 'Select race';
+
+  @override
+  String get selectSeasonFirst => 'Select a season first';
+
+  @override
+  String get seasonsLoadError => 'Could not load seasons';
+
+  @override
+  String get racesLoadError => 'Could not load races';
+
+  @override
   String get round => 'Round';
 
   @override
@@ -129,8 +144,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search => 'Search';
 
   @override
-  String get raceSearchInfo =>
-      'Here you can find results of a specific race starting from 1950.\nMinimum rounds per season — 7, maximum — 24.\n(data as of 2026)';
+  String get raceSearchInfo => 'Pick a season, then a race from the list.';
 
   @override
   String get raceNotFound =>

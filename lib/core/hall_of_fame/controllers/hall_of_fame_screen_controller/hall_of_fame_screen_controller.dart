@@ -6,6 +6,7 @@ import 'package:f1_pet_project/core/hall_of_fame/loaders/constructors_standings_
 import 'package:f1_pet_project/core/hall_of_fame/loaders/drivers_standings_loader.dart';
 import 'package:f1_pet_project/core/home/models/standings/standings_lists_model.dart';
 import 'package:f1_pet_project/core/home/models/standings/standings_model.dart';
+import 'package:f1_pet_project/core/seasons/repositories/seasons_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
@@ -18,6 +19,7 @@ class HallOfFameScreenController = HallOfFameScreenControllerBase with _$HallOfF
 /// Управляет зачётами пилотов/конструкторов за выбранный сезон.
 abstract class HallOfFameScreenControllerBase with Store {
   HallOfFameScreenControllerBase({
+    this.seasonsRepository,
     Future<StandingsModel> Function(String year)? fetchDriversStandings,
     Future<StandingsModel> Function(String year)? fetchConstructorsStandings,
   }) : _fetchDriversStandingsOverride = fetchDriversStandings,
@@ -25,6 +27,7 @@ abstract class HallOfFameScreenControllerBase with Store {
     yearController = TextEditingController(text: '2026');
   }
 
+  final SeasonsRepository? seasonsRepository;
   final Future<StandingsModel> Function(String year)? _fetchDriversStandingsOverride;
   final Future<StandingsModel> Function(String year)? _fetchConstructorsStandingsOverride;
 
@@ -47,10 +50,28 @@ abstract class HallOfFameScreenControllerBase with Store {
     yearController.dispose();
   }
 
-  /// Проверяет корректность введённого года сезона.
+  /// Проверяет корректность выбранного года сезона.
   @action
   void checkFields() {
     fieldsInputted = yearController.isValidYear;
+  }
+
+  /// Подставляет актуальный сезон из API (если доступен) и грузит таблицы.
+  @action
+  Future<void> bootstrap() async {
+    final repository = seasonsRepository;
+    if (repository != null) {
+      try {
+        final years = await repository.getSeasonYears();
+        if (years.isNotEmpty) {
+          yearController.text = years.first;
+          fieldsInputted = true;
+        }
+      } on Object {
+        // Оставляем fallback-год в контроллере.
+      }
+    }
+    await loadAllData();
   }
 
   /// Загружает зачёты пилотов и конструкторов за выбранный сезон.

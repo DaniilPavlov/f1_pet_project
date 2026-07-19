@@ -112,6 +112,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     : const BorderRadius.all(Radius.circular(100))),
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (Platform.isIOS)
                 Expanded(

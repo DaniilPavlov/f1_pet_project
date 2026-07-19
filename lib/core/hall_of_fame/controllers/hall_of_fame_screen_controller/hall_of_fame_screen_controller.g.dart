@@ -76,6 +76,16 @@ mixin _$HallOfFameScreenController on HallOfFameScreenControllerBase, Store {
     });
   }
 
+  late final _$bootstrapAsyncAction = AsyncAction(
+    'HallOfFameScreenControllerBase.bootstrap',
+    context: context,
+  );
+
+  @override
+  Future<void> bootstrap() {
+    return _$bootstrapAsyncAction.run(() => super.bootstrap());
+  }
+
   late final _$loadAllDataAsyncAction = AsyncAction(
     'HallOfFameScreenControllerBase.loadAllData',
     context: context,

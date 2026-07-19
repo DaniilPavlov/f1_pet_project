@@ -308,6 +308,36 @@ abstract class AppLocalizations {
   /// **'Год'**
   String get yearHint;
 
+  /// No description provided for @selectSeason.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите сезон'**
+  String get selectSeason;
+
+  /// No description provided for @selectRace.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите гонку'**
+  String get selectRace;
+
+  /// No description provided for @selectSeasonFirst.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сначала выберите сезон'**
+  String get selectSeasonFirst;
+
+  /// No description provided for @seasonsLoadError.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить сезоны'**
+  String get seasonsLoadError;
+
+  /// No description provided for @racesLoadError.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить гонки'**
+  String get racesLoadError;
+
   /// No description provided for @round.
   ///
   /// In ru, this message translates to:
@@ -329,7 +359,7 @@ abstract class AppLocalizations {
   /// No description provided for @raceSearchInfo.
   ///
   /// In ru, this message translates to:
-  /// **'Здесь вы можете найти результаты определенной гонки, начиная с 1950 года.\nМинимальное количество раундов в сезоне - 7, максимальное - 24.\n(данные на момент 2026 года)'**
+  /// **'Выберите сезон, затем гонку из списка.'**
   String get raceSearchInfo;
 
   /// No description provided for @raceNotFound.

@@ -81,6 +81,24 @@ mixin _$RaceSearchScreenController on RaceSearchScreenControllerBase, Store {
     });
   }
 
+  late final _$selectedSeasonAtom = Atom(
+    name: 'RaceSearchScreenControllerBase.selectedSeason',
+    context: context,
+  );
+
+  @override
+  String get selectedSeason {
+    _$selectedSeasonAtom.reportRead();
+    return super.selectedSeason;
+  }
+
+  @override
+  set selectedSeason(String value) {
+    _$selectedSeasonAtom.reportWrite(value, super.selectedSeason, () {
+      super.selectedSeason = value;
+    });
+  }
+
   late final _$loadRaceResultsAsyncAction = AsyncAction(
     'RaceSearchScreenControllerBase.loadRaceResults',
     context: context,
@@ -109,12 +127,35 @@ mixin _$RaceSearchScreenController on RaceSearchScreenControllerBase, Store {
   }
 
   @override
+  void onSeasonSelected() {
+    final _$actionInfo = _$RaceSearchScreenControllerBaseActionController
+        .startAction(name: 'RaceSearchScreenControllerBase.onSeasonSelected');
+    try {
+      return super.onSeasonSelected();
+    } finally {
+      _$RaceSearchScreenControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void onRacePicked(RacePick pick) {
+    final _$actionInfo = _$RaceSearchScreenControllerBaseActionController
+        .startAction(name: 'RaceSearchScreenControllerBase.onRacePicked');
+    try {
+      return super.onRacePicked(pick);
+    } finally {
+      _$RaceSearchScreenControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 searchedRace: ${searchedRace},
 dataIsLoaded: ${dataIsLoaded},
 fieldsInputted: ${fieldsInputted},
-errorMessage: ${errorMessage}
+errorMessage: ${errorMessage},
+selectedSeason: ${selectedSeason}
     ''';
   }
 }

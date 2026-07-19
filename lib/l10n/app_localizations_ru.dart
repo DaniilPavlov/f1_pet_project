@@ -120,6 +120,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get yearHint => 'Год';
 
   @override
+  String get selectSeason => 'Выберите сезон';
+
+  @override
+  String get selectRace => 'Выберите гонку';
+
+  @override
+  String get selectSeasonFirst => 'Сначала выберите сезон';
+
+  @override
+  String get seasonsLoadError => 'Не удалось загрузить сезоны';
+
+  @override
+  String get racesLoadError => 'Не удалось загрузить гонки';
+
+  @override
   String get round => 'Раунд';
 
   @override
@@ -129,8 +144,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get search => 'Поиск';
 
   @override
-  String get raceSearchInfo =>
-      'Здесь вы можете найти результаты определенной гонки, начиная с 1950 года.\nМинимальное количество раундов в сезоне - 7, максимальное - 24.\n(данные на момент 2026 года)';
+  String get raceSearchInfo => 'Выберите сезон, затем гонку из списка.';
 
   @override
   String get raceNotFound =>
