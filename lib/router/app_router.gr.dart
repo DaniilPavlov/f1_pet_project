@@ -9,35 +9,38 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i11;
+import 'package:auto_route/auto_route.dart' as _i12;
 import 'package:f1_pet_project/common/widgets/scaffold_with_navbar_screen.dart'
-    as _i9;
-import 'package:f1_pet_project/core/circuits/models/circuit_model.dart' as _i12;
+    as _i10;
+import 'package:f1_pet_project/core/circuits/models/circuit_model.dart' as _i13;
 import 'package:f1_pet_project/core/circuits/screens/circuit_screen.dart'
     as _i1;
 import 'package:f1_pet_project/core/circuits/screens/circuits_screen.dart'
     as _i3;
+import 'package:f1_pet_project/core/driver/screens/driver_screen.dart' as _i4;
 import 'package:f1_pet_project/core/hall_of_fame/screens/hall_of_fame_screen.dart'
-    as _i4;
-import 'package:f1_pet_project/core/home/screens/home_screen.dart' as _i5;
+    as _i5;
+import 'package:f1_pet_project/core/home/models/standings/driver/driver_model.dart'
+    as _i15;
+import 'package:f1_pet_project/core/home/screens/home_screen.dart' as _i6;
 import 'package:f1_pet_project/core/results/race_info/screens/race_info_screen.dart'
-    as _i6;
-import 'package:f1_pet_project/core/results/race_search/screens/race_search_screen.dart'
     as _i7;
-import 'package:f1_pet_project/core/results/screens/results_screen.dart' as _i8;
-import 'package:f1_pet_project/core/schedule/models/races_model.dart' as _i14;
+import 'package:f1_pet_project/core/results/race_search/screens/race_search_screen.dart'
+    as _i8;
+import 'package:f1_pet_project/core/results/screens/results_screen.dart' as _i9;
+import 'package:f1_pet_project/core/schedule/models/races_model.dart' as _i16;
 import 'package:f1_pet_project/core/schedule/screens/schedule_screen.dart'
-    as _i10;
+    as _i11;
 import 'package:f1_pet_project/router/empty_route_screens.dart' as _i2;
-import 'package:flutter/material.dart' as _i13;
+import 'package:flutter/material.dart' as _i14;
 
 /// generated route for
 /// [_i1.CircuitScreen]
-class CircuitRoute extends _i11.PageRouteInfo<CircuitRouteArgs> {
+class CircuitRoute extends _i12.PageRouteInfo<CircuitRouteArgs> {
   CircuitRoute({
-    required _i12.CircuitModel circuitModel,
-    _i13.Key? key,
-    List<_i11.PageRouteInfo>? children,
+    required _i13.CircuitModel circuitModel,
+    _i14.Key? key,
+    List<_i12.PageRouteInfo>? children,
   }) : super(
          CircuitRoute.name,
          args: CircuitRouteArgs(circuitModel: circuitModel, key: key),
@@ -46,7 +49,7 @@ class CircuitRoute extends _i11.PageRouteInfo<CircuitRouteArgs> {
 
   static const String name = 'CircuitRoute';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<CircuitRouteArgs>();
@@ -58,9 +61,9 @@ class CircuitRoute extends _i11.PageRouteInfo<CircuitRouteArgs> {
 class CircuitRouteArgs {
   const CircuitRouteArgs({required this.circuitModel, this.key});
 
-  final _i12.CircuitModel circuitModel;
+  final _i13.CircuitModel circuitModel;
 
-  final _i13.Key? key;
+  final _i14.Key? key;
 
   @override
   String toString() {
@@ -80,13 +83,13 @@ class CircuitRouteArgs {
 
 /// generated route for
 /// [_i2.CircuitsRouterScreen]
-class CircuitsRouter extends _i11.PageRouteInfo<void> {
-  const CircuitsRouter({List<_i11.PageRouteInfo>? children})
+class CircuitsRouter extends _i12.PageRouteInfo<void> {
+  const CircuitsRouter({List<_i12.PageRouteInfo>? children})
     : super(CircuitsRouter.name, initialChildren: children);
 
   static const String name = 'CircuitsRouter';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
       return const _i2.CircuitsRouterScreen();
@@ -96,13 +99,13 @@ class CircuitsRouter extends _i11.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.CircuitsScreen]
-class CircuitsRoute extends _i11.PageRouteInfo<void> {
-  const CircuitsRoute({List<_i11.PageRouteInfo>? children})
+class CircuitsRoute extends _i12.PageRouteInfo<void> {
+  const CircuitsRoute({List<_i12.PageRouteInfo>? children})
     : super(CircuitsRoute.name, initialChildren: children);
 
   static const String name = 'CircuitsRoute';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
       return const _i3.CircuitsScreen();
@@ -111,14 +114,61 @@ class CircuitsRoute extends _i11.PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [_i4.DriverScreen]
+class DriverRoute extends _i12.PageRouteInfo<DriverRouteArgs> {
+  DriverRoute({
+    required _i15.DriverModel driver,
+    _i14.Key? key,
+    List<_i12.PageRouteInfo>? children,
+  }) : super(
+         DriverRoute.name,
+         args: DriverRouteArgs(driver: driver, key: key),
+         initialChildren: children,
+       );
+
+  static const String name = 'DriverRoute';
+
+  static _i12.PageInfo page = _i12.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<DriverRouteArgs>();
+      return _i4.DriverScreen(driver: args.driver, key: args.key);
+    },
+  );
+}
+
+class DriverRouteArgs {
+  const DriverRouteArgs({required this.driver, this.key});
+
+  final _i15.DriverModel driver;
+
+  final _i14.Key? key;
+
+  @override
+  String toString() {
+    return 'DriverRouteArgs{driver: $driver, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! DriverRouteArgs) return false;
+    return driver == other.driver && key == other.key;
+  }
+
+  @override
+  int get hashCode => driver.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [_i2.HallOfFameRouterScreen]
-class HallOfFameRouter extends _i11.PageRouteInfo<void> {
-  const HallOfFameRouter({List<_i11.PageRouteInfo>? children})
+class HallOfFameRouter extends _i12.PageRouteInfo<void> {
+  const HallOfFameRouter({List<_i12.PageRouteInfo>? children})
     : super(HallOfFameRouter.name, initialChildren: children);
 
   static const String name = 'HallOfFameRouter';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
       return const _i2.HallOfFameRouterScreen();
@@ -127,30 +177,30 @@ class HallOfFameRouter extends _i11.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i4.HallOfFameScreen]
-class HallOfFameRoute extends _i11.PageRouteInfo<void> {
-  const HallOfFameRoute({List<_i11.PageRouteInfo>? children})
+/// [_i5.HallOfFameScreen]
+class HallOfFameRoute extends _i12.PageRouteInfo<void> {
+  const HallOfFameRoute({List<_i12.PageRouteInfo>? children})
     : super(HallOfFameRoute.name, initialChildren: children);
 
   static const String name = 'HallOfFameRoute';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
-      return const _i4.HallOfFameScreen();
+      return const _i5.HallOfFameScreen();
     },
   );
 }
 
 /// generated route for
 /// [_i2.HomeRouterScreen]
-class HomeRouter extends _i11.PageRouteInfo<void> {
-  const HomeRouter({List<_i11.PageRouteInfo>? children})
+class HomeRouter extends _i12.PageRouteInfo<void> {
+  const HomeRouter({List<_i12.PageRouteInfo>? children})
     : super(HomeRouter.name, initialChildren: children);
 
   static const String name = 'HomeRouter';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
       return const _i2.HomeRouterScreen();
@@ -159,28 +209,28 @@ class HomeRouter extends _i11.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i5.HomeScreen]
-class HomeRoute extends _i11.PageRouteInfo<void> {
-  const HomeRoute({List<_i11.PageRouteInfo>? children})
+/// [_i6.HomeScreen]
+class HomeRoute extends _i12.PageRouteInfo<void> {
+  const HomeRoute({List<_i12.PageRouteInfo>? children})
     : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
-      return const _i5.HomeScreen();
+      return const _i6.HomeScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i6.RaceInfoScreen]
-class RaceInfoRoute extends _i11.PageRouteInfo<RaceInfoRouteArgs> {
+/// [_i7.RaceInfoScreen]
+class RaceInfoRoute extends _i12.PageRouteInfo<RaceInfoRouteArgs> {
   RaceInfoRoute({
-    required _i14.RacesModel raceModel,
-    _i13.Key? key,
-    List<_i11.PageRouteInfo>? children,
+    required _i16.RacesModel raceModel,
+    _i14.Key? key,
+    List<_i12.PageRouteInfo>? children,
   }) : super(
          RaceInfoRoute.name,
          args: RaceInfoRouteArgs(raceModel: raceModel, key: key),
@@ -189,11 +239,11 @@ class RaceInfoRoute extends _i11.PageRouteInfo<RaceInfoRouteArgs> {
 
   static const String name = 'RaceInfoRoute';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<RaceInfoRouteArgs>();
-      return _i6.RaceInfoScreen(raceModel: args.raceModel, key: args.key);
+      return _i7.RaceInfoScreen(raceModel: args.raceModel, key: args.key);
     },
   );
 }
@@ -201,9 +251,9 @@ class RaceInfoRoute extends _i11.PageRouteInfo<RaceInfoRouteArgs> {
 class RaceInfoRouteArgs {
   const RaceInfoRouteArgs({required this.raceModel, this.key});
 
-  final _i14.RacesModel raceModel;
+  final _i16.RacesModel raceModel;
 
-  final _i13.Key? key;
+  final _i14.Key? key;
 
   @override
   String toString() {
@@ -222,30 +272,30 @@ class RaceInfoRouteArgs {
 }
 
 /// generated route for
-/// [_i7.RaceSearchScreen]
-class RaceSearchRoute extends _i11.PageRouteInfo<void> {
-  const RaceSearchRoute({List<_i11.PageRouteInfo>? children})
+/// [_i8.RaceSearchScreen]
+class RaceSearchRoute extends _i12.PageRouteInfo<void> {
+  const RaceSearchRoute({List<_i12.PageRouteInfo>? children})
     : super(RaceSearchRoute.name, initialChildren: children);
 
   static const String name = 'RaceSearchRoute';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
-      return const _i7.RaceSearchScreen();
+      return const _i8.RaceSearchScreen();
     },
   );
 }
 
 /// generated route for
 /// [_i2.ResultsRouterScreen]
-class ResultsRouter extends _i11.PageRouteInfo<void> {
-  const ResultsRouter({List<_i11.PageRouteInfo>? children})
+class ResultsRouter extends _i12.PageRouteInfo<void> {
+  const ResultsRouter({List<_i12.PageRouteInfo>? children})
     : super(ResultsRouter.name, initialChildren: children);
 
   static const String name = 'ResultsRouter';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
       return const _i2.ResultsRouterScreen();
@@ -254,46 +304,46 @@ class ResultsRouter extends _i11.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i8.ResultsScreen]
-class ResultsRoute extends _i11.PageRouteInfo<void> {
-  const ResultsRoute({List<_i11.PageRouteInfo>? children})
+/// [_i9.ResultsScreen]
+class ResultsRoute extends _i12.PageRouteInfo<void> {
+  const ResultsRoute({List<_i12.PageRouteInfo>? children})
     : super(ResultsRoute.name, initialChildren: children);
 
   static const String name = 'ResultsRoute';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
-      return const _i8.ResultsScreen();
+      return const _i9.ResultsScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i9.ScaffoldWithNavBarScreen]
-class ScaffoldWithNavBarRoute extends _i11.PageRouteInfo<void> {
-  const ScaffoldWithNavBarRoute({List<_i11.PageRouteInfo>? children})
+/// [_i10.ScaffoldWithNavBarScreen]
+class ScaffoldWithNavBarRoute extends _i12.PageRouteInfo<void> {
+  const ScaffoldWithNavBarRoute({List<_i12.PageRouteInfo>? children})
     : super(ScaffoldWithNavBarRoute.name, initialChildren: children);
 
   static const String name = 'ScaffoldWithNavBarRoute';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
-      return const _i9.ScaffoldWithNavBarScreen();
+      return const _i10.ScaffoldWithNavBarScreen();
     },
   );
 }
 
 /// generated route for
 /// [_i2.ScheduleRouterScreen]
-class ScheduleRouter extends _i11.PageRouteInfo<void> {
-  const ScheduleRouter({List<_i11.PageRouteInfo>? children})
+class ScheduleRouter extends _i12.PageRouteInfo<void> {
+  const ScheduleRouter({List<_i12.PageRouteInfo>? children})
     : super(ScheduleRouter.name, initialChildren: children);
 
   static const String name = 'ScheduleRouter';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
       return const _i2.ScheduleRouterScreen();
@@ -302,17 +352,17 @@ class ScheduleRouter extends _i11.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i10.ScheduleScreen]
-class ScheduleRoute extends _i11.PageRouteInfo<void> {
-  const ScheduleRoute({List<_i11.PageRouteInfo>? children})
+/// [_i11.ScheduleScreen]
+class ScheduleRoute extends _i12.PageRouteInfo<void> {
+  const ScheduleRoute({List<_i12.PageRouteInfo>? children})
     : super(ScheduleRoute.name, initialChildren: children);
 
   static const String name = 'ScheduleRoute';
 
-  static _i11.PageInfo page = _i11.PageInfo(
+  static _i12.PageInfo page = _i12.PageInfo(
     name,
     builder: (data) {
-      return const _i10.ScheduleScreen();
+      return const _i11.ScheduleScreen();
     },
   );
 }

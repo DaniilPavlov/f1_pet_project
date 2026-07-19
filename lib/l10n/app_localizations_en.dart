@@ -189,6 +189,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openInWikipedia => 'Open on Wikipedia';
 
   @override
+  String get driverCareerTitle => 'Career';
+
+  @override
+  String get driverTeamsTitle => 'Teams';
+
+  @override
+  String get driverStatRaces => 'Races';
+
+  @override
+  String get driverStatPodiums => 'Podiums';
+
+  @override
+  String get driverStatPoles => 'Poles';
+
+  @override
   String get noConnection => 'No connection';
 
   @override

@@ -7,5 +7,6 @@ final AutoRoute homeRoute = AutoRoute(
   page: HomeRouter.page,
   children: [
     AutoRoute(path: '', page: HomeRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
+    AutoRoute(path: 'driver', page: DriverRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
   ],
 );

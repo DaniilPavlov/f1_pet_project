@@ -434,6 +434,36 @@ abstract class AppLocalizations {
   /// **'Открыть в Wikipedia'**
   String get openInWikipedia;
 
+  /// No description provided for @driverCareerTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Карьера'**
+  String get driverCareerTitle;
+
+  /// No description provided for @driverTeamsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Команды'**
+  String get driverTeamsTitle;
+
+  /// No description provided for @driverStatRaces.
+  ///
+  /// In ru, this message translates to:
+  /// **'Гонки'**
+  String get driverStatRaces;
+
+  /// No description provided for @driverStatPodiums.
+  ///
+  /// In ru, this message translates to:
+  /// **'Подиумы'**
+  String get driverStatPodiums;
+
+  /// No description provided for @driverStatPoles.
+  ///
+  /// In ru, this message translates to:
+  /// **'Поулы'**
+  String get driverStatPoles;
+
   /// No description provided for @noConnection.
   ///
   /// In ru, this message translates to:

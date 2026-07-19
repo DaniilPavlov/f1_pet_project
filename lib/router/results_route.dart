@@ -9,5 +9,6 @@ final AutoRoute resultsRoute = AutoRoute(
     AutoRoute(path: '', page: ResultsRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
     AutoRoute(path: 'race_info', page: RaceInfoRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
     AutoRoute(path: 'race_search', page: RaceSearchRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
+    AutoRoute(path: 'driver', page: DriverRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
   ],
 );

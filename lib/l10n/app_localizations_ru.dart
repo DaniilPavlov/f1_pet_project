@@ -189,6 +189,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get openInWikipedia => 'Открыть в Wikipedia';
 
   @override
+  String get driverCareerTitle => 'Карьера';
+
+  @override
+  String get driverTeamsTitle => 'Команды';
+
+  @override
+  String get driverStatRaces => 'Гонки';
+
+  @override
+  String get driverStatPodiums => 'Подиумы';
+
+  @override
+  String get driverStatPoles => 'Поулы';
+
+  @override
   String get noConnection => 'Соединение отсутствует';
 
   @override
