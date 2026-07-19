@@ -3,11 +3,18 @@ import 'package:flutter/material.dart';
 
 /// Базовый нижний лист с ручкой и телом контента.
 class DefaultBottomSheet extends StatelessWidget {
-  const DefaultBottomSheet({required this.body, this.title, super.key});
+  const DefaultBottomSheet({
+    required this.body,
+    this.title,
+    this.padding = const EdgeInsets.all(20),
+    super.key,
+  });
 
   final String? title;
 
   final Widget body;
+
+  final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +31,7 @@ class DefaultBottomSheet extends StatelessWidget {
             children: [
               const SizedBox(height: 12 * 2 + 4),
               Expanded(
-                child: Padding(padding: const EdgeInsets.all(20), child: body),
+                child: Padding(padding: padding, child: body),
               ),
             ],
           ),

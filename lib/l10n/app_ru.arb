@@ -65,7 +65,10 @@
   "asList": "Списком",
   "circuitDetails": "Подробнее о трассе",
   "circuitInfoTitle": "Информация о трассе",
+  "circuitWinnersTitle": "Победители",
+  "circuitWinnersEmpty": "Побед на этой трассе пока нет",
   "readOnWikipedia": "Прочитать информацию в википедии",
+  "wikipedia": "Википедия",
   "countryLabel": "Страна: {country}",
   "@countryLabel": {
     "placeholders": {

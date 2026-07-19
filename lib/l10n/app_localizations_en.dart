@@ -166,7 +166,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get circuitInfoTitle => 'Circuit information';
 
   @override
+  String get circuitWinnersTitle => 'Winners';
+
+  @override
+  String get circuitWinnersEmpty => 'No race winners for this circuit yet';
+
+  @override
   String get readOnWikipedia => 'Read on Wikipedia';
+
+  @override
+  String get wikipedia => 'Wikipedia';
 
   @override
   String countryLabel(String country) {

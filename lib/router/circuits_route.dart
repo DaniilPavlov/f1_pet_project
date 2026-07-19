@@ -8,5 +8,7 @@ final AutoRoute circuitsRoute = AutoRoute(
   children: [
     AutoRoute(path: '', page: CircuitsRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
     AutoRoute(path: 'circuit', page: CircuitRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
+    AutoRoute(path: 'driver', page: DriverRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
+    AutoRoute(path: 'constructor', page: ConstructorRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
   ],
 );

@@ -398,11 +398,29 @@ abstract class AppLocalizations {
   /// **'Информация о трассе'**
   String get circuitInfoTitle;
 
+  /// No description provided for @circuitWinnersTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Победители'**
+  String get circuitWinnersTitle;
+
+  /// No description provided for @circuitWinnersEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Побед на этой трассе пока нет'**
+  String get circuitWinnersEmpty;
+
   /// No description provided for @readOnWikipedia.
   ///
   /// In ru, this message translates to:
   /// **'Прочитать информацию в википедии'**
   String get readOnWikipedia;
+
+  /// No description provided for @wikipedia.
+  ///
+  /// In ru, this message translates to:
+  /// **'Википедия'**
+  String get wikipedia;
 
   /// No description provided for @countryLabel.
   ///

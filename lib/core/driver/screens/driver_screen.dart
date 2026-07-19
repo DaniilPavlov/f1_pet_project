@@ -19,14 +19,10 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-/// Экран пилота: паспортные данные и карьерная статистика.
+/// Экран пилота: информация о пилоте и карьерная статистика.
 @RoutePage()
 class DriverScreen extends StatelessWidget {
-  const DriverScreen({
-    required this.driver,
-    this.currentConstructors = const [],
-    super.key,
-  });
+  const DriverScreen({required this.driver, this.currentConstructors = const [], super.key});
 
   final DriverModel driver;
   final List<ConstructorModel> currentConstructors;
@@ -36,10 +32,8 @@ class DriverScreen extends StatelessWidget {
     final fullName = '${driver.givenName} ${driver.familyName}';
 
     return Provider(
-      create: (_) => DriverScreenController(
-        driver: driver,
-        currentConstructors: currentConstructors,
-      )..loadCareerStats(),
+      create: (_) =>
+          DriverScreenController(driver: driver, currentConstructors: currentConstructors)..loadCareerStats(),
       child: Scaffold(
         appBar: CustomAppBar(title: fullName, onPop: context.router.removeLast),
         body: SafeArea(
@@ -48,11 +42,7 @@ class DriverScreen extends StatelessWidget {
               final controller = context.read<DriverScreenController>();
               final error = controller.screenError;
               if (error != null) {
-                return ErrorBody(
-                  onTap: controller.loadCareerStats,
-                  title: error.title,
-                  subtitle: error.subtitle,
-                );
+                return ErrorBody(onTap: controller.loadCareerStats, title: error.title, subtitle: error.subtitle);
               }
               if (!controller.isLoaded) {
                 return const CustomLoadingIndicator();
@@ -74,10 +64,7 @@ class DriverScreen extends StatelessWidget {
                         children: [
                           Text(fullName, style: AppStyles.h1),
                           const SizedBox(height: 16),
-                          CareerInfoRow(
-                            label: context.l10n.driverCode,
-                            value: _displayValue(context, driver.code),
-                          ),
+                          CareerInfoRow(label: context.l10n.driverCode, value: _displayValue(context, driver.code)),
                           CareerInfoRow(
                             label: context.l10n.driverNumber,
                             value: _displayValue(context, driver.permanentNumber),

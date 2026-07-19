@@ -18,14 +18,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-/// Экран конструктора: паспортные данные и карьерная статистика.
+/// Экран конструктора: информация о конструкторе и карьерная статистика.
 @RoutePage()
 class ConstructorScreen extends StatelessWidget {
-  const ConstructorScreen({
-    required this.constructor,
-    this.currentDrivers = const [],
-    super.key,
-  });
+  const ConstructorScreen({required this.constructor, this.currentDrivers = const [], super.key});
 
   final ConstructorModel constructor;
   final List<DriverModel> currentDrivers;
@@ -33,10 +29,8 @@ class ConstructorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      create: (_) => ConstructorScreenController(
-        constructor: constructor,
-        currentDrivers: currentDrivers,
-      )..loadCareerStats(),
+      create: (_) =>
+          ConstructorScreenController(constructor: constructor, currentDrivers: currentDrivers)..loadCareerStats(),
       child: Scaffold(
         appBar: CustomAppBar(title: constructor.name, onPop: context.router.removeLast),
         body: SafeArea(
@@ -45,11 +39,7 @@ class ConstructorScreen extends StatelessWidget {
               final controller = context.read<ConstructorScreenController>();
               final error = controller.screenError;
               if (error != null) {
-                return ErrorBody(
-                  onTap: controller.loadCareerStats,
-                  title: error.title,
-                  subtitle: error.subtitle,
-                );
+                return ErrorBody(onTap: controller.loadCareerStats, title: error.title, subtitle: error.subtitle);
               }
               if (!controller.isLoaded) {
                 return const CustomLoadingIndicator();
@@ -73,9 +63,7 @@ class ConstructorScreen extends StatelessWidget {
                           const SizedBox(height: 16),
                           CareerInfoRow(
                             label: context.l10n.nationality,
-                            value: constructor.nationality.isEmpty
-                                ? context.l10n.unknown
-                                : constructor.nationality,
+                            value: constructor.nationality.isEmpty ? context.l10n.unknown : constructor.nationality,
                           ),
                           if (stats.current.isNotEmpty)
                             CareerInfoRow(
@@ -110,9 +98,7 @@ class ConstructorScreen extends StatelessWidget {
                           ...stats.related.map(
                             (driver) => CareerListTile(
                               title: '${driver.givenName} ${driver.familyName}',
-                              subtitle: driver.nationality.isEmpty
-                                  ? context.l10n.unknown
-                                  : driver.nationality,
+                              subtitle: driver.nationality.isEmpty ? context.l10n.unknown : driver.nationality,
                               onTap: () => context.router.push(DriverRoute(driver: driver)),
                             ),
                           ),

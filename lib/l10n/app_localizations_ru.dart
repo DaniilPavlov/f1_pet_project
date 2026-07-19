@@ -166,7 +166,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get circuitInfoTitle => 'Информация о трассе';
 
   @override
+  String get circuitWinnersTitle => 'Победители';
+
+  @override
+  String get circuitWinnersEmpty => 'Побед на этой трассе пока нет';
+
+  @override
   String get readOnWikipedia => 'Прочитать информацию в википедии';
+
+  @override
+  String get wikipedia => 'Википедия';
 
   @override
   String countryLabel(String country) {

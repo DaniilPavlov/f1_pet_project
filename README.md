@@ -100,7 +100,8 @@ For release APK signing (optional) — `ANDROID_KEYSTORE_*` secrets in GitHub Ac
 - **Results** — latest race, search by year and round (season picker), detail card (race, sprint, qualifying, pit stops)  
 - **Calendar** — season schedule with weekend sessions (practice, qualifying, sprint, sprint qualifying, race)  
 - **Hall of fame** — final driver and constructor tables for a selected year (season picker from Jolpica)  
-- **Circuits** — list and Yandex MapKit map with pins/clusters, circuit card and Wikipedia link  
+- **Circuits** — list and Yandex MapKit map with pins/clusters, circuit card, Wikipedia link, and race winners history  
+
 - **Driver card** — passport data plus career stats (races, wins, podiums, poles, teams) from Jolpica endpoints  
 - **Constructor card** — nationality, Wikipedia link, career stats (races, wins, podiums, poles) and drivers list  
 

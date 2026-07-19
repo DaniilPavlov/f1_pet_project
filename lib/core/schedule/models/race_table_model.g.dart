@@ -11,13 +11,13 @@ RaceTableModel _$RaceTableModelFromJson(Map<String, dynamic> json) =>
       races: (json['Races'] as List<dynamic>)
           .map((e) => RacesModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      season: json['season'] as String,
+      season: json['season'] as String? ?? '',
       round: json['round'] as String?,
     );
 
 Map<String, dynamic> _$RaceTableModelToJson(RaceTableModel instance) =>
     <String, dynamic>{
-      'season': instance.season,
       'round': instance.round,
+      'season': instance.season,
       'Races': instance.races,
     };

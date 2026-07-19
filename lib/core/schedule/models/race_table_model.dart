@@ -17,8 +17,10 @@ class RaceTableModel {
       Error.throwWithStackTrace(ResponseParseException('RaceTableModel: $e'), StackTrace.current);
     }
   }
-  final String season;
   final String? round;
+  /// В ответах `circuits/.../results` season на уровне таблицы отсутствует.
+  @JsonKey(defaultValue: '')
+  final String season;
   @JsonKey(name: 'Races')
   final List<RacesModel> races;
 
