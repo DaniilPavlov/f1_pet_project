@@ -1,29 +1,34 @@
 # F1 Pet Project
 
-Flutter-приложение со статистикой Formula 1  
-(турнирные таблицы, результаты, календарь, зал славы, трассы).
+Flutter app with Formula 1 stats  
+(standings, results, calendar, hall of fame, circuits).
 
-Данные — [Jolpica F1 API](https://github.com/jolpica/jolpica-f1) (совместим с Ergast).
+Data — [Jolpica F1 API](https://github.com/jolpica/jolpica-f1) (Ergast-compatible).
 
-## Стек
+Same idea, other stacks:
 
-| Слой | Технологии |
+- [f1_kotlin](https://github.com/DaniilPavlov/f1_kotlin) — Kotlin + Jetpack Compose (Android)
+- [f1_kmp](https://github.com/DaniilPavlov/f1_kmp) — Kotlin Multiplatform (Android / iOS)
+
+## Stack
+
+| Layer | Tech |
 |------|------------|
 | UI | Flutter, Material |
 | State | MobX + Provider |
-| Навигация | Auto Route |
-| Сеть | Dio |
+| Navigation | Auto Route |
+| Network | Dio |
 | Codegen | json_serializable, mobx_codegen, auto_route_generator |
-| Карта | Yandex MapKit |
+| Map | Yandex MapKit |
 
-## Структура
+## Structure
 
 ```
 f1_pet_project/
 ├── lib/
-│   ├── common/      # виджеты, тема, helpers, map package
-│   ├── core/        # фичи: home, results, schedule, hall_of_fame, circuits, map
-│   ├── data/        # модели ответа, exceptions
+│   ├── common/      # widgets, theme, helpers, map package
+│   ├── core/        # features: home, results, schedule, hall_of_fame, circuits, map
+│   ├── data/        # response models, exceptions
 │   ├── services/    # Dio, executor, cache
 │   └── router/      # Auto Route
 ├── test/
@@ -32,30 +37,30 @@ f1_pet_project/
 └── .github/workflows/
 ```
 
-## Требования
+## Requirements
 
 - Flutter **3.35.3+**
 - Dart **3.8+**
 - Java **21** (Android / Yandex MapKit)
-- Yandex MapKit API key (см. ниже)
+- Yandex MapKit API key (see below)
 
 ## Yandex MapKit
 
-Ключ **не хранится в git**.
+The key is **not stored in git**.
 
-**Android** — в `android/local.properties`:
+**Android** — in `android/local.properties`:
 
 ```properties
 yandex.mapkit.apiKey=YOUR_KEY
 ```
 
-**iOS** — скопируй example и подставь ключ:
+**iOS** — copy the example and put your key in:
 
 ```bash
 cp ios/Flutter/Secrets.xcconfig.example ios/Flutter/Secrets.xcconfig
 ```
 
-## Запуск
+## Run
 
 ```bash
 flutter pub get
@@ -63,7 +68,7 @@ dart run build_runner build
 flutter run
 ```
 
-## Тесты и анализ
+## Tests and analysis
 
 ```bash
 flutter analyze
@@ -74,29 +79,29 @@ flutter test
 
 [![CI](https://github.com/DaniilPavlov/f1_pet_project/actions/workflows/ci.yml/badge.svg)](https://github.com/DaniilPavlov/f1_pet_project/actions/workflows/ci.yml)
 
-| Workflow | Когда | Что делает |
+| Workflow | When | What it does |
 |----------|-------|------------|
-| `ci.yml` | push / PR в `master` | codegen check, analyze, test |
-| `release.yml` | тег `v*` или вручную | Android APK (+ GitHub Release) |
+| `ci.yml` | push / PR to `master` | codegen check, analyze, test |
+| `release.yml` | tag `v*` or manual | Android APK (+ GitHub Release) |
 
-Релиз:
+Release:
 
 ```bash
-# версия в pubspec.yaml должна совпадать с тегом
+# version in pubspec.yaml must match the tag
 git tag v1.0.2
 git push origin v1.0.2
 ```
 
-Для release-подписи APK (опционально) — secrets `ANDROID_KEYSTORE_*` в GitHub Actions.
+For release APK signing (optional) — `ANDROID_KEYSTORE_*` secrets in GitHub Actions.
 
-## Возможности
+## Features
 
-- **Главная** — турнирные таблицы пилотов и конструкторов текущего сезона  
-- **Результаты** — последняя гонка, поиск гонки по году и раунду, детальная карточка (гонка, спринт, квалификация, пит-стопы)  
-- **Календарь** — расписание сезона с сессиями уик-энда (практики, квалификация, спринт, спринт-квалификация, гонка)  
-- **Зал славы** — итоговые таблицы пилотов и конструкторов за выбранный год  
-- **Трассы** — список и карта Yandex MapKit с пинами/кластерами, карточка трассы и ссылка на Wikipedia  
-- **Карточка пилота** — по нажатию на строку в таблицах (код, номер, национальность, дата рождения, Wikipedia)  
-- **Локализация** — русский и английский, переключатель в верхней панели без перезапуска приложения  
-- **Напоминания** — локальные уведомления за 30 минут до сессии (в ОС держим до 10 ближайших, окно обновляется при открытии приложения)
-- **Кэш расписания** — общий дневной кэш для календаря и напоминаний
+- **Home** — current season driver and constructor standings  
+- **Results** — latest race, search by year and round, detail card (race, sprint, qualifying, pit stops)  
+- **Calendar** — season schedule with weekend sessions (practice, qualifying, sprint, sprint qualifying, race)  
+- **Hall of fame** — final driver and constructor tables for a selected year  
+- **Circuits** — list and Yandex MapKit map with pins/clusters, circuit card and Wikipedia link  
+- **Driver card** — from a standings row (code, number, nationality, date of birth, Wikipedia)  
+- **Localization** — Russian and English, toggle in the app bar without restarting the app  
+- **Reminders** — local notifications 30 minutes before a session (up to 10 upcoming kept in the OS; window refreshes when the app opens)  
+- **Schedule cache** — shared daily cache for the calendar and reminders  
