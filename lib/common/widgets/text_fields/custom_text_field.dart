@@ -112,7 +112,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     : const BorderRadius.all(Radius.circular(100))),
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (Platform.isIOS)
                 Expanded(
@@ -123,7 +122,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     suffix: widget.suffix,
                     readOnly: widget.readOnly,
                     scrollPadding: widget.scrollPadding,
-                    // autofocus: widget.autofocus,
                     controller: widget.controller,
                     maxLines: widget.maxLines,
                     keyboardType: widget.keyboardType,
