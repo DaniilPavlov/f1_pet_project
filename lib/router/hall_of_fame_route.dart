@@ -7,5 +7,7 @@ final AutoRoute hallOfFameRoute = AutoRoute(
   page: HallOfFameRouter.page,
   children: [
     AutoRoute(path: '', page: HallOfFameRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
+    AutoRoute(path: 'driver', page: DriverRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
+    AutoRoute(path: 'constructor', page: ConstructorRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
   ],
 );

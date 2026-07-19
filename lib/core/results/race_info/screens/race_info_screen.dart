@@ -15,6 +15,7 @@ import 'package:f1_pet_project/core/results/race_info/components/qualification_t
 import 'package:f1_pet_project/core/results/race_info/components/race_info_table_appbar.dart';
 import 'package:f1_pet_project/core/results/race_info/controllers/race_info_screen_controller/race_info_screen_controller.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
+import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +31,10 @@ class RaceInfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<RaceInfoScreenController>(
-      create: (_) => RaceInfoScreenController(raceModel: raceModel)..loadAllData(),
+      create: (_) => RaceInfoScreenController(
+        raceModel: raceModel,
+        scheduleRepository: context.read<ScheduleRepository>(),
+      )..loadAllData(),
       child: Scaffold(
         appBar: CustomAppBar(title: context.l10n.detailedInfo, onPop: () => context.router.removeLast()),
         body: SafeArea(

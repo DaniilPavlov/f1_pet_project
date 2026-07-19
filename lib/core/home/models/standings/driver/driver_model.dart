@@ -28,11 +28,17 @@ class DriverModel {
       Error.throwWithStackTrace(ResponseParseException('DriverModel: $e'), StackTrace.current);
     }
   }
+
   final String driverId;
+  /// У старых пилотов в Jolpica иногда нет url / dateOfBirth / nationality —
+  /// в модели остаётся пустая строка, в UI показывается l10n.unknown.
+  @JsonKey(defaultValue: '')
   final String url;
   final String givenName;
   final String familyName;
+  @JsonKey(defaultValue: '')
   final String dateOfBirth;
+  @JsonKey(defaultValue: '')
   final String nationality;
   String? permanentNumber;
   String? code;

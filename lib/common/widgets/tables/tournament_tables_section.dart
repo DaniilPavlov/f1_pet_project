@@ -19,6 +19,7 @@ class TournamentTablesSection extends StatelessWidget {
     this.title,
     this.season,
     this.round,
+    this.passCurrentRoster = false,
     super.key,
   });
 
@@ -27,6 +28,9 @@ class TournamentTablesSection extends StatelessWidget {
   final String? title;
   final String? season;
   final String? round;
+
+  /// Прокидывать текущий состав из standings на карточки (Home текущего сезона).
+  final bool passCurrentRoster;
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +73,16 @@ class TournamentTablesSection extends StatelessWidget {
                 activeValue: controller.activeTable,
               ),
               if (controller.activeTable == 0)
-                TournamentDriversTable(drivers: driversStandings)
+                TournamentDriversTable(
+                  drivers: driversStandings,
+                  passCurrentRoster: passCurrentRoster,
+                )
               else
-                TournamentConstructorsTable(constructors: constructorsStandings),
+                TournamentConstructorsTable(
+                  constructors: constructorsStandings,
+                  driversStandings: driversStandings,
+                  passCurrentRoster: passCurrentRoster,
+                ),
               const SizedBox(height: 32),
             ],
           );

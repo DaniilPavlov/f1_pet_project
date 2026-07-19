@@ -46,6 +46,7 @@ class HomeScreen extends StatelessWidget {
                       title: context.l10n.homeStandingsTitle,
                       season: controller.currentSeason,
                       round: controller.currentRound,
+                      passCurrentRoster: true,
                     ),
                   ),
                 ],

@@ -102,6 +102,8 @@ For release APK signing (optional) — `ANDROID_KEYSTORE_*` secrets in GitHub Ac
 - **Hall of fame** — final driver and constructor tables for a selected year  
 - **Circuits** — list and Yandex MapKit map with pins/clusters, circuit card and Wikipedia link  
 - **Driver card** — passport data plus career stats (races, wins, podiums, poles, teams) from Jolpica endpoints  
+- **Constructor card** — nationality, Wikipedia link, career stats (races, wins, podiums, poles) and drivers list  
+
 - **Localization** — Russian and English, toggle in the app bar without restarting the app  
 - **Reminders** — local notifications 30 minutes before a session (up to 10 upcoming kept in the OS; window refreshes when the app opens)  
 - **Schedule cache** — shared daily cache for the calendar and reminders  

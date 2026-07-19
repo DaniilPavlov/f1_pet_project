@@ -8,8 +8,16 @@ import 'package:flutter/material.dart';
 
 /// Таблица зачёта пилотов текущего сезона.
 class TournamentDriversTable extends StatelessWidget {
-  const TournamentDriversTable({required this.drivers, super.key});
+  const TournamentDriversTable({
+    required this.drivers,
+    this.passCurrentRoster = false,
+    super.key,
+  });
+
   final List<DriverStandingsModel> drivers;
+
+  /// Передавать команды из standings как «текущие» на карточку пилота (только Home).
+  final bool passCurrentRoster;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +47,7 @@ class TournamentDriversTable extends StatelessWidget {
                 children: tappableDriverRowCells(
                   context: context,
                   driver: standing.driver,
+                  currentConstructors: passCurrentRoster ? standing.constructors : const [],
                   children: tournamentTableDriversDetailRowChildren(standing, i + 1),
                 ),
               );

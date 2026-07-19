@@ -4,12 +4,12 @@ import 'package:f1_pet_project/core/home/models/standings/driver/driver_model.da
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
 
-/// Делает все ячейки строки таблицы кликабельными и открывает экран пилота.
-List<Widget> tappableDriverRowCells({
+/// Делает все ячейки строки таблицы кликабельными и открывает экран конструктора.
+List<Widget> tappableConstructorRowCells({
   required List<Widget> children,
   required BuildContext context,
-  required DriverModel driver,
-  List<ConstructorModel> currentConstructors = const [],
+  required ConstructorModel constructor,
+  List<DriverModel> currentDrivers = const [],
 }) {
   return [
     for (final child in children)
@@ -18,7 +18,7 @@ List<Widget> tappableDriverRowCells({
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => context.router.push(
-            DriverRoute(driver: driver, currentConstructors: currentConstructors),
+            ConstructorRoute(constructor: constructor, currentDrivers: currentDrivers),
           ),
           child: child,
         ),

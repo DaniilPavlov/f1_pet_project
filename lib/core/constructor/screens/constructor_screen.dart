@@ -10,42 +10,39 @@ import 'package:f1_pet_project/common/widgets/career/career_list_tile.dart';
 import 'package:f1_pet_project/common/widgets/career/career_stats_grid.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
-import 'package:f1_pet_project/core/driver/controllers/driver_screen_controller/driver_screen_controller.dart';
+import 'package:f1_pet_project/core/constructor/controllers/constructor_screen_controller/constructor_screen_controller.dart';
 import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_model.dart';
 import 'package:f1_pet_project/core/home/models/standings/driver/driver_model.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-/// Экран пилота: паспортные данные и карьерная статистика.
+/// Экран конструктора: паспортные данные и карьерная статистика.
 @RoutePage()
-class DriverScreen extends StatelessWidget {
-  const DriverScreen({
-    required this.driver,
-    this.currentConstructors = const [],
+class ConstructorScreen extends StatelessWidget {
+  const ConstructorScreen({
+    required this.constructor,
+    this.currentDrivers = const [],
     super.key,
   });
 
-  final DriverModel driver;
-  final List<ConstructorModel> currentConstructors;
+  final ConstructorModel constructor;
+  final List<DriverModel> currentDrivers;
 
   @override
   Widget build(BuildContext context) {
-    final fullName = '${driver.givenName} ${driver.familyName}';
-
     return Provider(
-      create: (_) => DriverScreenController(
-        driver: driver,
-        currentConstructors: currentConstructors,
+      create: (_) => ConstructorScreenController(
+        constructor: constructor,
+        currentDrivers: currentDrivers,
       )..loadCareerStats(),
       child: Scaffold(
-        appBar: CustomAppBar(title: fullName, onPop: context.router.removeLast),
+        appBar: CustomAppBar(title: constructor.name, onPop: context.router.removeLast),
         body: SafeArea(
           child: Observer(
             builder: (context) {
-              final controller = context.read<DriverScreenController>();
+              final controller = context.read<ConstructorScreenController>();
               final error = controller.screenError;
               if (error != null) {
                 return ErrorBody(
@@ -72,35 +69,26 @@ class DriverScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(fullName, style: AppStyles.h1),
+                          Text(constructor.name, style: AppStyles.h1),
                           const SizedBox(height: 16),
                           CareerInfoRow(
-                            label: context.l10n.driverCode,
-                            value: _displayValue(context, driver.code),
-                          ),
-                          CareerInfoRow(
-                            label: context.l10n.driverNumber,
-                            value: _displayValue(context, driver.permanentNumber),
-                          ),
-                          CareerInfoRow(
                             label: context.l10n.nationality,
-                            value: _displayValue(context, driver.nationality),
-                          ),
-                          CareerInfoRow(
-                            label: context.l10n.dateOfBirth,
-                            value: driver.dateOfBirth.isEmpty
+                            value: constructor.nationality.isEmpty
                                 ? context.l10n.unknown
-                                : _formatBirthDate(context, driver.dateOfBirth),
+                                : constructor.nationality,
                           ),
                           if (stats.current.isNotEmpty)
                             CareerInfoRow(
-                              label: context.l10n.currentTeam,
-                              value: stats.current.map((c) => c.name).join(', '),
+                              label: context.l10n.currentDrivers,
+                              value: stats.current
+                                  .map((d) => '${d.givenName} ${d.familyName}'.trim())
+                                  .where((name) => name.isNotEmpty)
+                                  .join(', '),
                             ),
-                          if (driver.url.isNotEmpty) ...[
+                          if (constructor.url.isNotEmpty) ...[
                             const SizedBox(height: 12),
                             GestureDetector(
-                              onTap: () => Utils.openUrl(rawUrl: driver.url, externalApplication: true),
+                              onTap: () => Utils.openUrl(rawUrl: constructor.url, externalApplication: true),
                               child: Text(
                                 context.l10n.openInWikipedia,
                                 style: AppStyles.body.copyWith(decoration: TextDecoration.underline),
@@ -117,13 +105,15 @@ class DriverScreen extends StatelessWidget {
                             poles: stats.poles,
                           ),
                           const SizedBox(height: 28),
-                          Text(context.l10n.driverTeamsTitle, style: AppStyles.h2),
+                          Text(context.l10n.constructorDriversTitle, style: AppStyles.h2),
                           const SizedBox(height: 12),
                           ...stats.related.map(
-                            (constructor) => CareerListTile(
-                              title: constructor.name,
-                              subtitle: _displayValue(context, constructor.nationality),
-                              onTap: () => context.router.push(ConstructorRoute(constructor: constructor)),
+                            (driver) => CareerListTile(
+                              title: '${driver.givenName} ${driver.familyName}',
+                              subtitle: driver.nationality.isEmpty
+                                  ? context.l10n.unknown
+                                  : driver.nationality,
+                              onTap: () => context.router.push(DriverRoute(driver: driver)),
                             ),
                           ),
                         ],
@@ -137,26 +127,5 @@ class DriverScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  static String _displayValue(BuildContext context, String? value) {
-    if (value == null || value.isEmpty || value == 'none') {
-      return context.l10n.unknown;
-    }
-    return value;
-  }
-
-  static String _formatBirthDate(BuildContext context, String raw) {
-    final parts = raw.split('-');
-    if (parts.length != 3) {
-      return raw;
-    }
-    final year = int.tryParse(parts[0]);
-    final month = int.tryParse(parts[1]);
-    final day = int.tryParse(parts[2]);
-    if (year == null || month == null || day == null) {
-      return raw;
-    }
-    return DateFormat.yMMMMd(Localizations.localeOf(context).toLanguageTag()).format(DateTime(year, month, day));
   }
 }

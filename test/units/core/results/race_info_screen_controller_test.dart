@@ -106,6 +106,7 @@ void main() {
         'marks data as loaded',
         build: () => RaceInfoScreenController(
           raceModel: ControllerFixtures.race,
+          weekendHasSprint: () async => false,
           fetchQualifyingResults: ({required year, required round}) async => ControllerFixtures.scheduleModel,
           fetchPitStops: ({required year, required round}) async => ControllerFixtures.scheduleModel,
           fetchSprintResults: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,

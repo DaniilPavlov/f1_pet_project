@@ -434,11 +434,47 @@ abstract class AppLocalizations {
   /// **'Открыть в Wikipedia'**
   String get openInWikipedia;
 
-  /// No description provided for @driverCareerTitle.
+  /// No description provided for @unknown.
+  ///
+  /// In ru, this message translates to:
+  /// **'Неизвестно'**
+  String get unknown;
+
+  /// No description provided for @currentTeam.
+  ///
+  /// In ru, this message translates to:
+  /// **'Текущая команда'**
+  String get currentTeam;
+
+  /// No description provided for @currentDrivers.
+  ///
+  /// In ru, this message translates to:
+  /// **'Текущие пилоты'**
+  String get currentDrivers;
+
+  /// No description provided for @careerTitle.
   ///
   /// In ru, this message translates to:
   /// **'Карьера'**
-  String get driverCareerTitle;
+  String get careerTitle;
+
+  /// No description provided for @careerStatRaces.
+  ///
+  /// In ru, this message translates to:
+  /// **'Гонки'**
+  String get careerStatRaces;
+
+  /// No description provided for @careerStatPodiums.
+  ///
+  /// In ru, this message translates to:
+  /// **'Подиумы'**
+  String get careerStatPodiums;
+
+  /// No description provided for @careerStatPoles.
+  ///
+  /// In ru, this message translates to:
+  /// **'Поулы'**
+  String get careerStatPoles;
 
   /// No description provided for @driverTeamsTitle.
   ///
@@ -446,23 +482,11 @@ abstract class AppLocalizations {
   /// **'Команды'**
   String get driverTeamsTitle;
 
-  /// No description provided for @driverStatRaces.
+  /// No description provided for @constructorDriversTitle.
   ///
   /// In ru, this message translates to:
-  /// **'Гонки'**
-  String get driverStatRaces;
-
-  /// No description provided for @driverStatPodiums.
-  ///
-  /// In ru, this message translates to:
-  /// **'Подиумы'**
-  String get driverStatPodiums;
-
-  /// No description provided for @driverStatPoles.
-  ///
-  /// In ru, this message translates to:
-  /// **'Поулы'**
-  String get driverStatPoles;
+  /// **'Пилоты'**
+  String get constructorDriversTitle;
 
   /// No description provided for @noConnection.
   ///

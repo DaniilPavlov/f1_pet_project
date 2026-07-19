@@ -189,19 +189,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openInWikipedia => 'Open on Wikipedia';
 
   @override
-  String get driverCareerTitle => 'Career';
+  String get unknown => 'Unknown';
+
+  @override
+  String get currentTeam => 'Current team';
+
+  @override
+  String get currentDrivers => 'Current drivers';
+
+  @override
+  String get careerTitle => 'Career';
+
+  @override
+  String get careerStatRaces => 'Races';
+
+  @override
+  String get careerStatPodiums => 'Podiums';
+
+  @override
+  String get careerStatPoles => 'Poles';
 
   @override
   String get driverTeamsTitle => 'Teams';
 
   @override
-  String get driverStatRaces => 'Races';
-
-  @override
-  String get driverStatPodiums => 'Podiums';
-
-  @override
-  String get driverStatPoles => 'Poles';
+  String get constructorDriversTitle => 'Drivers';
 
   @override
   String get noConnection => 'No connection';

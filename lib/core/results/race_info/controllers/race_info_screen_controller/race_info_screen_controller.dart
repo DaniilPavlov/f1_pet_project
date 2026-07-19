@@ -9,6 +9,7 @@ import 'package:f1_pet_project/core/results/race_info/loaders/qualifying_results
 import 'package:f1_pet_project/core/results/race_info/loaders/sprint_results_loader.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
+import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/services/interceptors_functions.dart';
 import 'package:mobx/mobx.dart';
@@ -31,14 +32,19 @@ class RaceInfoScreenController = RaceInfoScreenControllerBase with _$RaceInfoScr
 abstract class RaceInfoScreenControllerBase with Store {
   RaceInfoScreenControllerBase({
     required this.raceModel,
+    this.scheduleRepository,
+    Future<bool> Function()? weekendHasSprint,
     Future<ScheduleModel> Function({required String year, required String round})? fetchQualifyingResults,
     Future<ScheduleModel> Function({required String year, required String round})? fetchPitStops,
     Future<ScheduleModel> Function({required String year, required String round})? fetchSprintResults,
-  }) : _fetchQualifyingResultsOverride = fetchQualifyingResults,
+  }) : _weekendHasSprintOverride = weekendHasSprint,
+       _fetchQualifyingResultsOverride = fetchQualifyingResults,
        _fetchPitStopsOverride = fetchPitStops,
        _fetchSprintResultsOverride = fetchSprintResults;
 
   final RacesModel raceModel;
+  final ScheduleRepository? scheduleRepository;
+  final Future<bool> Function()? _weekendHasSprintOverride;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchQualifyingResultsOverride;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchPitStopsOverride;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchSprintResultsOverride;
@@ -73,12 +79,45 @@ abstract class RaceInfoScreenControllerBase with Store {
   /// Есть ли результаты спринта для отображения.
   bool get hasSprintResults => sprintResults.value?.isNotEmpty ?? false;
 
-  /// Загружает спринт, квалификацию и пит-стопы выбранной гонки.
+  /// Загружает квалификацию, пит-стопы и спринт (только если уикенд со спринтом).
   @action
   Future<void> loadAllData() async {
     allDataIsLoaded = false;
-    await Future.wait([loadSprintResults(), loadQualifyingResults(), loadPitStops()]);
+    final loads = <Future<void>>[loadQualifyingResults(), loadPitStops()];
+    if (await _weekendHasSprint()) {
+      loads.add(loadSprintResults());
+    } else {
+      sprintResults = const AsyncValue.value(value: []);
+    }
+    await Future.wait(loads);
     allDataIsLoaded = screenError == null;
+  }
+
+  /// Results API не отдаёт расписание сессий — смотрим [RacesModel.sprint] или кэш календаря.
+  Future<bool> _weekendHasSprint() async {
+    if (raceModel.sprint != null) {
+      return true;
+    }
+    final override = _weekendHasSprintOverride;
+    if (override != null) {
+      return override();
+    }
+    final repository = scheduleRepository;
+    if (repository == null) {
+      return true;
+    }
+    try {
+      final schedule = (await repository.getSchedule()).schedule;
+      for (final race in schedule.raceTable.races) {
+        if (race.season == raceModel.season && race.round == raceModel.round) {
+          return race.sprint != null;
+        }
+      }
+      // Гонки нет в текущем календаре (поиск по прошлому сезону) — подстраховываемся запросом.
+      return true;
+    } on Object {
+      return true;
+    }
   }
 
   /// Обновляет закрепление шапки таблицы результатов при прокрутке.
