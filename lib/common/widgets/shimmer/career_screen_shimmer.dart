@@ -27,10 +27,7 @@ class CareerScreenShimmer extends StatelessWidget {
                 AspectRatio(
                   aspectRatio: 3 / 2,
                   child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: AppTheme.shimmerBase,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                    decoration: BoxDecoration(color: AppTheme.shimmerBase, borderRadius: BorderRadius.circular(20)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -57,9 +54,7 @@ class CareerScreenShimmer extends StatelessWidget {
               ),
               const SizedBox(height: 28),
               const ShimmerTextLine(height: 18, width: 120, bottomGap: 14),
-              for (var i = 0; i < 4; i++) ...[
-                const ShimmerSkeleton(height: 44, bottomPadding: 12, radius: 8),
-              ],
+              for (var i = 0; i < 4; i++) ...[const ShimmerSkeleton(height: 44, bottomPadding: 12)],
             ],
           ),
         ),

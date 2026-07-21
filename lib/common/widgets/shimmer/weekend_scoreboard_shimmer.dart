@@ -27,7 +27,7 @@ class WeekendScoreboardShimmer extends StatelessWidget {
             children: [
               Expanded(child: ShimmerSkeleton(height: 24, radius: 4)),
               SizedBox(width: 8),
-              ShimmerSkeleton(height: 24, width: 72, radius: 8),
+              ShimmerSkeleton(height: 24, width: 72),
             ],
           ),
           // circuitName (body)
@@ -47,16 +47,15 @@ class WeekendScoreboardShimmer extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppTheme.shimmerBase,
-              borderRadius: BorderRadius.circular(12),
-            ),
+            decoration: BoxDecoration(color: AppTheme.shimmerBase, borderRadius: BorderRadius.circular(12)),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Expanded(child: ShimmerSkeleton(height: 20, width: 48, radius: 4, color: AppTheme.shimmerHighlight)),
+                    Expanded(
+                      child: ShimmerSkeleton(height: 20, width: 48, radius: 4, color: AppTheme.shimmerHighlight),
+                    ),
                     ShimmerSkeleton(height: 20, width: 20, radius: 4, color: AppTheme.shimmerHighlight),
                   ],
                 ),

@@ -39,11 +39,8 @@ class LastRaceSectionShimmer extends StatelessWidget {
               const SizedBox(height: 14),
               for (var i = 0; i < 3; i++) ...[
                 const Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: StaticData.defaultHorizontalPadding,
-                    vertical: 6,
-                  ),
-                  child: ShimmerSkeleton(height: 36, radius: 8),
+                  padding: EdgeInsets.symmetric(horizontal: StaticData.defaultHorizontalPadding, vertical: 6),
+                  child: ShimmerSkeleton(height: 36),
                 ),
               ],
             ],
@@ -75,14 +72,10 @@ class RaceInfoShimmer extends StatelessWidget {
               const ShimmerTextLine(height: 20, width: 200, bottomGap: 14),
               const ShimmerTextLine(width: 140, bottomGap: 24),
               const ShimmerTextLine(height: 16, width: 100, bottomGap: 14),
-              for (var i = 0; i < 8; i++) ...[
-                const ShimmerSkeleton(height: 36, bottomPadding: 12, radius: 8),
-              ],
+              for (var i = 0; i < 8; i++) ...[const ShimmerSkeleton(height: 36, bottomPadding: 12)],
               const SizedBox(height: 12),
               const ShimmerTextLine(height: 16, width: 120, bottomGap: 14),
-              for (var i = 0; i < 6; i++) ...[
-                const ShimmerSkeleton(height: 36, bottomPadding: 12, radius: 8),
-              ],
+              for (var i = 0; i < 6; i++) ...[const ShimmerSkeleton(height: 36, bottomPadding: 12)],
             ],
           ),
         ),

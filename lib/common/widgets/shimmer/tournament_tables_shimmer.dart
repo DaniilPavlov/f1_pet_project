@@ -32,9 +32,7 @@ class TournamentTablesShimmer extends StatelessWidget {
                 const SizedBox(height: 24),
               ],
               const ShimmerSkeleton(height: 40, radius: 10, bottomPadding: 16),
-              for (var i = 0; i < 10; i++) ...[
-                const ShimmerSkeleton(height: 40, bottomPadding: 12, radius: 8),
-              ],
+              for (var i = 0; i < 10; i++) ...[const ShimmerSkeleton(height: 40, bottomPadding: 12)],
             ],
           ),
         ),
