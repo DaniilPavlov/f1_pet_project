@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/common/widgets/country_flag.dart';
 import 'package:f1_pet_project/core/home/models/standings/driver/driver_standings_model.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ List<Widget> tournamentTableDriversDetailRowChildren(DriverStandingsModel driver
       ),
     ),
     Center(
-      child: Text(driverStanding.driver.nationality, style: textStyle, textAlign: TextAlign.center),
+      child: CountryFlag(countryOrNationality: driverStanding.driver.nationality),
     ),
     Center(
       child: Text(driverStanding.points, style: textStyle, textAlign: TextAlign.center),

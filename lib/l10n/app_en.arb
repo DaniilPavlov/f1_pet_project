@@ -3,9 +3,33 @@
   "navHome": "Home",
   "navResults": "Results",
   "navCalendar": "Calendar",
-  "navHallOfFame": "Hall of Fame",
+  "navNews": "News",
   "navCircuits": "Circuits",
+  "newsTitle": "News",
+  "newsEmpty": "No news right now",
   "homeStandingsTitle": "Current season standings",
+  "homeWeekendTitle": "Race weekend",
+  "homeWeekendLive": "Live",
+  "homeWeekendLeader": "Leader: {name}",
+  "@homeWeekendLeader": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "homeWeekendWinner": "Winner: {name}",
+  "@homeWeekendWinner": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "weekendSessionResultsTitle": "Results: {session}",
+  "@weekendSessionResultsTitle": {
+    "placeholders": {
+      "session": { "type": "String" }
+    }
+  },
+  "weekendSessionResultsEmpty": "No results yet",
+  "driverNotFound": "Driver not found",
   "seasonLabel": "Season: {season}",
   "roundLabel": "Round: {round}",
   "drivers": "Drivers",
@@ -18,6 +42,7 @@
   "winsShort": "W",
   "country": "Country",
   "time": "Time",
+  "timeStatus": "Time /\nStatus",
   "bestLap": "Best\nlap",
   "none": "n/a",
   "fastestLapLabel": "{time}\nfastest\nlap",
@@ -30,7 +55,6 @@
   "stopNumber": "Stop\nnumber",
   "stopTime": "Stop\ntime",
   "raceTime": "Race\ntime",
-  "lastRace": "Last race: ",
   "chooseSpecificRace": "Choose a specific race",
   "raceSearchTitle": "Race search",
   "season": "Season",
@@ -46,6 +70,44 @@
   "raceSearchInfo": "Pick a season, then a race from the list.",
   "raceNotFound": "No races found for your query. Check the entered data and try again.",
   "hallOfFameTitle": "Hall of Fame",
+  "h2hTitle": "H2H · Drivers",
+  "h2hSubtitle": "Compare two drivers with filters for period and driver list",
+  "h2hDriverA": "Driver 1",
+  "h2hDriverB": "Driver 2",
+  "h2hCompare": "Compare",
+  "h2hFiltersTitle": "Filters",
+  "h2hPeriodFilter": "Period",
+  "h2hSeasonFilter": "Season",
+  "h2hCurrentSeason": "Current",
+  "h2hPickYear": "Pick year",
+  "h2hDriversFilter": "Drivers",
+  "h2hCurrentDrivers": "Current",
+  "h2hAllDrivers": "All",
+  "h2hSearchDriver": "Name or code",
+  "h2hDriversEmpty": "No drivers found",
+  "h2hConstructorsTitle": "H2H · Constructors",
+  "h2hConstructorsSubtitle": "Compare two constructors with filters for period and constructor list",
+  "h2hConstructorA": "Constructor 1",
+  "h2hConstructorB": "Constructor 2",
+  "h2hConstructorsFilter": "Constructors",
+  "h2hCurrentConstructors": "Current",
+  "h2hAllConstructors": "All",
+  "h2hSearchConstructor": "Name",
+  "h2hConstructorsEmpty": "No constructors found",
+  "selectConstructor": "Select a constructor",
+  "constructorsLoadError": "Could not load constructors",
+  "finishStatusTitle": "Finish statuses",
+  "finishStatusSubtitle": "How drivers finished races this season — Finished, Retired, DSQ, +laps, and more.",
+  "finishStatusEmpty": "No finish statuses for this season",
+  "shareNoResults": "No race results yet",
+  "shareAndMore": "…and {count} more",
+  "@shareAndMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "selectDriver": "Select a driver",
+  "driversLoadError": "Could not load drivers",
   "onMap": "On map",
   "asList": "List",
   "circuitDetails": "Circuit details",
@@ -68,9 +130,11 @@
   "currentTeam": "Current team",
   "currentDrivers": "Current drivers",
   "careerTitle": "Career",
+  "driverNewsTitle": "Latest news",
   "careerStatRaces": "Races",
   "careerStatPodiums": "Podiums",
   "careerStatPoles": "Poles",
+  "careerRaceListEmpty": "No races in this list",
   "driverTeamsTitle": "Teams",
   "constructorDriversTitle": "Drivers",
   "noConnection": "No connection",

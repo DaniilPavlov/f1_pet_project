@@ -3,9 +3,33 @@
   "navHome": "Главная",
   "navResults": "Результаты",
   "navCalendar": "Календарь",
-  "navHallOfFame": "Зал славы",
+  "navNews": "Новости",
   "navCircuits": "Трассы",
+  "newsTitle": "Новости",
+  "newsEmpty": "Новостей пока нет",
   "homeStandingsTitle": "Турнирная таблица текущего сезона",
+  "homeWeekendTitle": "Уикенд",
+  "homeWeekendLive": "Live",
+  "homeWeekendLeader": "Лидер: {name}",
+  "@homeWeekendLeader": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "homeWeekendWinner": "Победитель: {name}",
+  "@homeWeekendWinner": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "weekendSessionResultsTitle": "Результаты: {session}",
+  "@weekendSessionResultsTitle": {
+    "placeholders": {
+      "session": { "type": "String" }
+    }
+  },
+  "weekendSessionResultsEmpty": "Результатов пока нет",
+  "driverNotFound": "Пилот не найден",
   "seasonLabel": "Сезон: {season}",
   "@seasonLabel": {
     "placeholders": {
@@ -28,6 +52,7 @@
   "winsShort": "W",
   "country": "Страна",
   "time": "Время",
+  "timeStatus": "Время /\nстатус",
   "bestLap": "Лучший\nкруг",
   "none": "нет",
   "fastestLapLabel": "{time}\nсамый\nбыстрый",
@@ -45,7 +70,6 @@
   "stopNumber": "Номер\nостановки",
   "stopTime": "Время\nстопа",
   "raceTime": "Время\nгонки",
-  "lastRace": "Последняя гонка: ",
   "chooseSpecificRace": "Выбрать конкретную гонку",
   "raceSearchTitle": "Поиск гонки",
   "season": "Сезон",
@@ -61,6 +85,44 @@
   "raceSearchInfo": "Выберите сезон, затем гонку из списка.",
   "raceNotFound": "По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.",
   "hallOfFameTitle": "Зал славы",
+  "h2hTitle": "H2H · Пилоты",
+  "h2hSubtitle": "Сравните двух пилотов с фильтрами периода и списка",
+  "h2hDriverA": "Пилот 1",
+  "h2hDriverB": "Пилот 2",
+  "h2hCompare": "Сравнить",
+  "h2hFiltersTitle": "Фильтры",
+  "h2hPeriodFilter": "Период",
+  "h2hSeasonFilter": "Сезон",
+  "h2hCurrentSeason": "Текущий",
+  "h2hPickYear": "Выбор года",
+  "h2hDriversFilter": "Пилоты",
+  "h2hCurrentDrivers": "Текущие",
+  "h2hAllDrivers": "Все",
+  "h2hSearchDriver": "Имя или код",
+  "h2hDriversEmpty": "Пилоты не найдены",
+  "h2hConstructorsTitle": "H2H · Конструкторы",
+  "h2hConstructorsSubtitle": "Сравните двух конструкторов с фильтрами периода и списка",
+  "h2hConstructorA": "Конструктор 1",
+  "h2hConstructorB": "Конструктор 2",
+  "h2hConstructorsFilter": "Конструкторы",
+  "h2hCurrentConstructors": "Текущие",
+  "h2hAllConstructors": "Все",
+  "h2hSearchConstructor": "Название",
+  "h2hConstructorsEmpty": "Конструкторы не найдены",
+  "selectConstructor": "Выберите конструктора",
+  "constructorsLoadError": "Не удалось загрузить конструкторов",
+  "finishStatusTitle": "Статусы финиша",
+  "finishStatusSubtitle": "Как пилоты завершали гонки в сезоне — Finished, Retired, DSQ, +круги и другие.",
+  "finishStatusEmpty": "Нет статусов финиша за этот сезон",
+  "shareNoResults": "Результатов гонки пока нет",
+  "shareAndMore": "…и ещё {count}",
+  "@shareAndMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "selectDriver": "Выберите пилота",
+  "driversLoadError": "Не удалось загрузить пилотов",
   "onMap": "На карте",
   "asList": "Списком",
   "circuitDetails": "Подробнее о трассе",
@@ -93,9 +155,11 @@
   "currentTeam": "Текущая команда",
   "currentDrivers": "Текущие пилоты",
   "careerTitle": "Карьера",
+  "driverNewsTitle": "Последние новости",
   "careerStatRaces": "Гонки",
   "careerStatPodiums": "Подиумы",
   "careerStatPoles": "Поулы",
+  "careerRaceListEmpty": "В этом списке пока нет гонок",
   "driverTeamsTitle": "Команды",
   "constructorDriversTitle": "Пилоты",
   "noConnection": "Соединение отсутствует",

@@ -18,13 +18,46 @@ class AppLocalizationsRu extends AppLocalizations {
   String get navCalendar => 'Календарь';
 
   @override
-  String get navHallOfFame => 'Зал славы';
+  String get navNews => 'Новости';
 
   @override
   String get navCircuits => 'Трассы';
 
   @override
+  String get newsTitle => 'Новости';
+
+  @override
+  String get newsEmpty => 'Новостей пока нет';
+
+  @override
   String get homeStandingsTitle => 'Турнирная таблица текущего сезона';
+
+  @override
+  String get homeWeekendTitle => 'Уикенд';
+
+  @override
+  String get homeWeekendLive => 'Live';
+
+  @override
+  String homeWeekendLeader(String name) {
+    return 'Лидер: $name';
+  }
+
+  @override
+  String homeWeekendWinner(String name) {
+    return 'Победитель: $name';
+  }
+
+  @override
+  String weekendSessionResultsTitle(String session) {
+    return 'Результаты: $session';
+  }
+
+  @override
+  String get weekendSessionResultsEmpty => 'Результатов пока нет';
+
+  @override
+  String get driverNotFound => 'Пилот не найден';
 
   @override
   String seasonLabel(String season) {
@@ -67,6 +100,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get time => 'Время';
 
   @override
+  String get timeStatus => 'Время /\nстатус';
+
+  @override
   String get bestLap => 'Лучший\nкруг';
 
   @override
@@ -103,9 +139,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get raceTime => 'Время\nгонки';
-
-  @override
-  String get lastRace => 'Последняя гонка: ';
 
   @override
   String get chooseSpecificRace => 'Выбрать конкретную гонку';
@@ -152,6 +185,110 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get hallOfFameTitle => 'Зал славы';
+
+  @override
+  String get h2hTitle => 'H2H · Пилоты';
+
+  @override
+  String get h2hSubtitle =>
+      'Сравните двух пилотов с фильтрами периода и списка';
+
+  @override
+  String get h2hDriverA => 'Пилот 1';
+
+  @override
+  String get h2hDriverB => 'Пилот 2';
+
+  @override
+  String get h2hCompare => 'Сравнить';
+
+  @override
+  String get h2hFiltersTitle => 'Фильтры';
+
+  @override
+  String get h2hPeriodFilter => 'Период';
+
+  @override
+  String get h2hSeasonFilter => 'Сезон';
+
+  @override
+  String get h2hCurrentSeason => 'Текущий';
+
+  @override
+  String get h2hPickYear => 'Выбор года';
+
+  @override
+  String get h2hDriversFilter => 'Пилоты';
+
+  @override
+  String get h2hCurrentDrivers => 'Текущие';
+
+  @override
+  String get h2hAllDrivers => 'Все';
+
+  @override
+  String get h2hSearchDriver => 'Имя или код';
+
+  @override
+  String get h2hDriversEmpty => 'Пилоты не найдены';
+
+  @override
+  String get h2hConstructorsTitle => 'H2H · Конструкторы';
+
+  @override
+  String get h2hConstructorsSubtitle =>
+      'Сравните двух конструкторов с фильтрами периода и списка';
+
+  @override
+  String get h2hConstructorA => 'Конструктор 1';
+
+  @override
+  String get h2hConstructorB => 'Конструктор 2';
+
+  @override
+  String get h2hConstructorsFilter => 'Конструкторы';
+
+  @override
+  String get h2hCurrentConstructors => 'Текущие';
+
+  @override
+  String get h2hAllConstructors => 'Все';
+
+  @override
+  String get h2hSearchConstructor => 'Название';
+
+  @override
+  String get h2hConstructorsEmpty => 'Конструкторы не найдены';
+
+  @override
+  String get selectConstructor => 'Выберите конструктора';
+
+  @override
+  String get constructorsLoadError => 'Не удалось загрузить конструкторов';
+
+  @override
+  String get finishStatusTitle => 'Статусы финиша';
+
+  @override
+  String get finishStatusSubtitle =>
+      'Как пилоты завершали гонки в сезоне — Finished, Retired, DSQ, +круги и другие.';
+
+  @override
+  String get finishStatusEmpty => 'Нет статусов финиша за этот сезон';
+
+  @override
+  String get shareNoResults => 'Результатов гонки пока нет';
+
+  @override
+  String shareAndMore(int count) {
+    return '…и ещё $count';
+  }
+
+  @override
+  String get selectDriver => 'Выберите пилота';
+
+  @override
+  String get driversLoadError => 'Не удалось загрузить пилотов';
 
   @override
   String get onMap => 'На карте';
@@ -224,6 +361,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get careerTitle => 'Карьера';
 
   @override
+  String get driverNewsTitle => 'Последние новости';
+
+  @override
   String get careerStatRaces => 'Гонки';
 
   @override
@@ -231,6 +371,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get careerStatPoles => 'Поулы';
+
+  @override
+  String get careerRaceListEmpty => 'В этом списке пока нет гонок';
 
   @override
   String get driverTeamsTitle => 'Команды';

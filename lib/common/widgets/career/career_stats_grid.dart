@@ -10,6 +10,9 @@ class CareerStatsGrid extends StatelessWidget {
     required this.wins,
     required this.podiums,
     required this.poles,
+    this.onWinsTap,
+    this.onPodiumsTap,
+    this.onPolesTap,
     super.key,
   });
 
@@ -17,14 +20,17 @@ class CareerStatsGrid extends StatelessWidget {
   final int wins;
   final int podiums;
   final int poles;
+  final VoidCallback? onWinsTap;
+  final VoidCallback? onPodiumsTap;
+  final VoidCallback? onPolesTap;
 
   @override
   Widget build(BuildContext context) {
     final items = [
-      (context.l10n.careerStatRaces, races),
-      (context.l10n.wins, wins),
-      (context.l10n.careerStatPodiums, podiums),
-      (context.l10n.careerStatPoles, poles),
+      (context.l10n.careerStatRaces, races, null),
+      (context.l10n.wins, wins, onWinsTap),
+      (context.l10n.careerStatPodiums, podiums, onPodiumsTap),
+      (context.l10n.careerStatPoles, poles, onPolesTap),
     ];
 
     return GridView.count(
@@ -35,28 +41,41 @@ class CareerStatsGrid extends StatelessWidget {
       crossAxisSpacing: 12,
       childAspectRatio: 1.85,
       children: [
-        for (final (label, value) in items)
-          DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(color: AppTheme.red),
+        for (final (label, value, onTap) in items)
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: value > 0 ? onTap : null,
               borderRadius: BorderRadius.circular(8),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('$value', style: AppStyles.h2),
-                  const SizedBox(height: 2),
-                  Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppStyles.body.copyWith(color: AppTheme.textGray),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppTheme.red),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: Text('$value', style: AppStyles.h2)),
+                          if (onTap != null && value > 0)
+                            const Icon(Icons.chevron_right, color: AppTheme.red, size: 20),
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppStyles.body.copyWith(color: AppTheme.textGray),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

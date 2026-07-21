@@ -55,7 +55,7 @@ class NavBar extends StatelessWidget {
                 ),
                 NavBarItem(
                   imageAsset: 'assets/nav_bar/trophy.png',
-                  title: context.l10n.navHallOfFame,
+                  title: context.l10n.navNews,
                   isSelected: tabsRouter?.activeIndex == 3,
                   onPressed: () {
                     tabsRouter?.setActiveIndex(3);

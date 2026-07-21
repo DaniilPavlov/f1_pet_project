@@ -9,6 +9,10 @@ class AppTheme {
   static const grayBG = Color(0xFFF6F6F6);
   static const shadowColor = Color(0xFFD7D7D7);
   static const strokeGray = Color(0xFFD8D8D8);
+  /// База скелетона шиммера.
+  static const shimmerBase = Color(0xFFC8C8C8);
+  /// Блик шиммера (чуть светлее базы).
+  static const shimmerHighlight = Color(0xFFE0E0E0);
   static const pink = Color(0xffF3B2AE);
   static const white = Color(0xffFFFFFF);
   static const red = Color.fromARGB(255, 225, 39, 30);

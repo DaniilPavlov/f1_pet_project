@@ -24,6 +24,14 @@ mixin _$ConstructorScreenController on ConstructorScreenControllerBase, Store {
     () => super.isLoaded,
     name: 'ConstructorScreenControllerBase.isLoaded',
   )).value;
+  Computed<List<NewsArticleModel>>? _$newsComputed;
+
+  @override
+  List<NewsArticleModel> get news =>
+      (_$newsComputed ??= Computed<List<NewsArticleModel>>(
+        () => super.news,
+        name: 'ConstructorScreenControllerBase.news',
+      )).value;
 
   late final _$careerStatsAtom = Atom(
     name: 'ConstructorScreenControllerBase.careerStats',
@@ -43,6 +51,34 @@ mixin _$ConstructorScreenController on ConstructorScreenControllerBase, Store {
     });
   }
 
+  late final _$espnNewsAtom = Atom(
+    name: 'ConstructorScreenControllerBase.espnNews',
+    context: context,
+  );
+
+  @override
+  AsyncValue<List<NewsArticleModel>> get espnNews {
+    _$espnNewsAtom.reportRead();
+    return super.espnNews;
+  }
+
+  @override
+  set espnNews(AsyncValue<List<NewsArticleModel>> value) {
+    _$espnNewsAtom.reportWrite(value, super.espnNews, () {
+      super.espnNews = value;
+    });
+  }
+
+  late final _$loadAllAsyncAction = AsyncAction(
+    'ConstructorScreenControllerBase.loadAll',
+    context: context,
+  );
+
+  @override
+  Future<void> loadAll() {
+    return _$loadAllAsyncAction.run(() => super.loadAll());
+  }
+
   late final _$loadCareerStatsAsyncAction = AsyncAction(
     'ConstructorScreenControllerBase.loadCareerStats',
     context: context,
@@ -53,12 +89,24 @@ mixin _$ConstructorScreenController on ConstructorScreenControllerBase, Store {
     return _$loadCareerStatsAsyncAction.run(() => super.loadCareerStats());
   }
 
+  late final _$loadEspnNewsAsyncAction = AsyncAction(
+    'ConstructorScreenControllerBase.loadEspnNews',
+    context: context,
+  );
+
+  @override
+  Future<void> loadEspnNews() {
+    return _$loadEspnNewsAsyncAction.run(() => super.loadEspnNews());
+  }
+
   @override
   String toString() {
     return '''
 careerStats: ${careerStats},
+espnNews: ${espnNews},
 screenError: ${screenError},
-isLoaded: ${isLoaded}
+isLoaded: ${isLoaded},
+news: ${news}
     ''';
   }
 }

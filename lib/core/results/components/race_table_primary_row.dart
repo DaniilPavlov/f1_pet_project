@@ -28,7 +28,7 @@ TableRow raceTablePrimaryRow(AppLocalizations l10n) {
       Center(
         child: Padding(
           padding: EdgeInsets.zero,
-          child: Text(l10n.time, style: textStyle),
+          child: Text(l10n.timeStatus, style: textStyle, textAlign: TextAlign.center),
         ),
       ),
       Center(

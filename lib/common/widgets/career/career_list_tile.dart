@@ -6,13 +6,15 @@ import 'package:flutter/material.dart';
 class CareerListTile extends StatelessWidget {
   const CareerListTile({
     required this.title,
-    required this.subtitle,
+    this.subtitle,
+    this.trailing,
     this.onTap,
     super.key,
   });
 
   final String title;
-  final String subtitle;
+  final String? subtitle;
+  final Widget? trailing;
   final VoidCallback? onTap;
 
   @override
@@ -25,7 +27,10 @@ class CareerListTile extends StatelessWidget {
         child: Row(
           children: [
             Expanded(child: Text(title, style: AppStyles.body)),
-            Text(subtitle, style: AppStyles.body.copyWith(color: AppTheme.textGray)),
+            if (trailing != null)
+              trailing!
+            else if (subtitle != null && subtitle!.isNotEmpty)
+              Text(subtitle!, style: AppStyles.body.copyWith(color: AppTheme.textGray)),
           ],
         ),
       ),

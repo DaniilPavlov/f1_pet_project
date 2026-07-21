@@ -47,4 +47,16 @@ class ResultsModel {
   final TimeModel? time;
   @JsonKey(name: 'FastestLap')
   final FastestLapModel? fastestLap;
+
+  /// Классифицирован (есть финишная позиция), а не DNF / DSQ.
+  bool get isClassified => int.tryParse(positionText) != null;
+
+  /// Время круга/отставания или статус (Retired, Engine, …).
+  String get displayTimeOrStatus {
+    final raceTime = time?.time.trim();
+    if (raceTime != null && raceTime.isNotEmpty) {
+      return raceTime;
+    }
+    return status;
+  }
 }

@@ -1,12 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
+import 'package:f1_pet_project/common/utils/helpers/share_helper.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
-import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
+import 'package:f1_pet_project/common/widgets/shimmer/race_section_shimmer.dart';
 import 'package:f1_pet_project/core/results/components/race_info_table.dart';
 import 'package:f1_pet_project/core/results/race_info/components/pit_stops_table.dart';
 import 'package:f1_pet_project/core/results/race_info/components/pit_stops_table_appbar.dart';
@@ -35,26 +36,40 @@ class RaceInfoScreen extends StatelessWidget {
         raceModel: raceModel,
         scheduleRepository: context.read<ScheduleRepository>(),
       )..loadAllData(),
-      child: Scaffold(
-        appBar: CustomAppBar(title: context.l10n.detailedInfo, onPop: () => context.router.removeLast()),
-        body: SafeArea(
-          child: Observer(
-            builder: (context) {
-              final controller = context.read<RaceInfoScreenController>();
-              if (controller.screenError != null) {
-                return ErrorBody(
-                  onTap: controller.loadAllData,
-                  title: controller.screenError!.title,
-                  subtitle: controller.screenError!.subtitle,
-                );
-              }
-              if (!controller.allDataIsLoaded) {
-                return const CustomLoadingIndicator();
-              }
+      child: Observer(
+        builder: (context) {
+          final controller = context.read<RaceInfoScreenController>();
+          final canShare = controller.allDataIsLoaded && controller.screenError == null;
 
-              final sprintResults = controller.sprintResults.value ?? const [];
+          return Scaffold(
+            appBar: CustomAppBar(
+              title: context.l10n.detailedInfo,
+              onPop: () => context.router.removeLast(),
+              onShare: canShare
+                  ? () => ShareHelper.shareRaceResultsCard(
+                      context: context,
+                      l10n: context.l10n,
+                      race: controller.raceModel,
+                    )
+                  : null,
+            ),
+            body: SafeArea(
+              child: Builder(
+                builder: (context) {
+                  if (controller.screenError != null) {
+                    return ErrorBody(
+                      onTap: controller.loadAllData,
+                      title: controller.screenError!.title,
+                      subtitle: controller.screenError!.subtitle,
+                    );
+                  }
+                  if (!controller.allDataIsLoaded) {
+                    return const RaceInfoShimmer();
+                  }
 
-              return CustomScrollView(
+                  final sprintResults = controller.sprintResults.value ?? const [];
+
+                  return CustomScrollView(
                 scrollBehavior: AntiGlowBehavior(),
                 slivers: [
                   SliverToBoxAdapter(
@@ -150,9 +165,11 @@ class RaceInfoScreen extends StatelessWidget {
                   ),
                 ],
               );
-            },
-          ),
-        ),
+                },
+              ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -2,6 +2,8 @@ import 'package:f1_pet_project/common/career/models/career_stats.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/core/driver/loaders/driver_career_loader.dart';
+import 'package:f1_pet_project/core/espn/models/espn_driver_card_data.dart';
+import 'package:f1_pet_project/core/espn/repositories/espn_media_repository.dart';
 import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_model.dart';
 import 'package:f1_pet_project/core/home/models/standings/driver/driver_model.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
@@ -12,20 +14,23 @@ part 'driver_screen_controller.g.dart';
 /// MobX-контроллер экрана пилота.
 class DriverScreenController = DriverScreenControllerBase with _$DriverScreenController;
 
-/// Загружает карьерную статистику выбранного пилота.
+/// Загружает карьеру (Jolpica) и ESPN-медиа пилота.
 abstract class DriverScreenControllerBase with Store {
   DriverScreenControllerBase({
     required this.driver,
+    required EspnMediaRepository espnMediaRepository,
     this.currentConstructors = const [],
     Future<CareerStats<ConstructorModel>> Function({
       required String driverId,
       List<ConstructorModel> current,
     })?
     fetchCareerStats,
-  }) : _fetchCareerStatsOverride = fetchCareerStats;
+  }) : _espnMediaRepository = espnMediaRepository,
+       _fetchCareerStatsOverride = fetchCareerStats;
 
   final DriverModel driver;
   final List<ConstructorModel> currentConstructors;
+  final EspnMediaRepository _espnMediaRepository;
   final Future<CareerStats<ConstructorModel>> Function({
     required String driverId,
     List<ConstructorModel> current,
@@ -35,11 +40,26 @@ abstract class DriverScreenControllerBase with Store {
   @observable
   AsyncValue<CareerStats<ConstructorModel>> careerStats = const AsyncValue.loading();
 
+  @observable
+  AsyncValue<EspnDriverCardData> espnCard = const AsyncValue.loading();
+
   @computed
   CustomException? get screenError => firstException([careerStats]);
 
   @computed
   bool get isLoaded => careerStats.isValue && careerStats.value != null;
+
+  @computed
+  EspnDriverCardData get espnCardData => espnCard.value ?? const EspnDriverCardData();
+
+  @computed
+  bool get isEspnLoading => espnCard.isLoading;
+
+  /// Загружает карьеру и ESPN-данные параллельно.
+  @action
+  Future<void> loadAll() async {
+    await Future.wait([loadCareerStats(), loadEspnCard()]);
+  }
 
   /// Загружает (или перезагружает) карьерную статистику.
   @action
@@ -54,6 +74,21 @@ abstract class DriverScreenControllerBase with Store {
         }
       },
     );
+  }
+
+  /// Загружает фото / флаг / новости ESPN (ошибка → пустые данные, экран не ломаем).
+  @action
+  Future<void> loadEspnCard() async {
+    espnCard = espnCard.toLoading();
+    try {
+      final data = await _espnMediaRepository.driverCardData(
+        givenName: driver.givenName,
+        familyName: driver.familyName,
+      );
+      espnCard = espnCard.toValue(data);
+    } on Object {
+      espnCard = espnCard.toValue(const EspnDriverCardData());
+    }
   }
 
   Future<CareerStats<ConstructorModel>> _fetchCareerStats({

@@ -24,6 +24,21 @@ mixin _$CircuitScreenController on CircuitScreenControllerBase, Store {
     () => super.isLoaded,
     name: 'CircuitScreenControllerBase.isLoaded',
   )).value;
+  Computed<bool>? _$isPhotoLoadingComputed;
+
+  @override
+  bool get isPhotoLoading => (_$isPhotoLoadingComputed ??= Computed<bool>(
+    () => super.isPhotoLoading,
+    name: 'CircuitScreenControllerBase.isPhotoLoading',
+  )).value;
+  Computed<String?>? _$circuitPhotoUrlComputed;
+
+  @override
+  String? get circuitPhotoUrl =>
+      (_$circuitPhotoUrlComputed ??= Computed<String?>(
+        () => super.circuitPhotoUrl,
+        name: 'CircuitScreenControllerBase.circuitPhotoUrl',
+      )).value;
 
   late final _$winnersAtom = Atom(
     name: 'CircuitScreenControllerBase.winners',
@@ -43,6 +58,34 @@ mixin _$CircuitScreenController on CircuitScreenControllerBase, Store {
     });
   }
 
+  late final _$photoUrlAtom = Atom(
+    name: 'CircuitScreenControllerBase.photoUrl',
+    context: context,
+  );
+
+  @override
+  AsyncValue<String?> get photoUrl {
+    _$photoUrlAtom.reportRead();
+    return super.photoUrl;
+  }
+
+  @override
+  set photoUrl(AsyncValue<String?> value) {
+    _$photoUrlAtom.reportWrite(value, super.photoUrl, () {
+      super.photoUrl = value;
+    });
+  }
+
+  late final _$loadAllAsyncAction = AsyncAction(
+    'CircuitScreenControllerBase.loadAll',
+    context: context,
+  );
+
+  @override
+  Future<void> loadAll() {
+    return _$loadAllAsyncAction.run(() => super.loadAll());
+  }
+
   late final _$loadWinnersAsyncAction = AsyncAction(
     'CircuitScreenControllerBase.loadWinners',
     context: context,
@@ -53,12 +96,25 @@ mixin _$CircuitScreenController on CircuitScreenControllerBase, Store {
     return _$loadWinnersAsyncAction.run(() => super.loadWinners());
   }
 
+  late final _$loadPhotoAsyncAction = AsyncAction(
+    'CircuitScreenControllerBase.loadPhoto',
+    context: context,
+  );
+
+  @override
+  Future<void> loadPhoto() {
+    return _$loadPhotoAsyncAction.run(() => super.loadPhoto());
+  }
+
   @override
   String toString() {
     return '''
 winners: ${winners},
+photoUrl: ${photoUrl},
 screenError: ${screenError},
-isLoaded: ${isLoaded}
+isLoaded: ${isLoaded},
+isPhotoLoading: ${isPhotoLoading},
+circuitPhotoUrl: ${circuitPhotoUrl}
     ''';
   }
 }

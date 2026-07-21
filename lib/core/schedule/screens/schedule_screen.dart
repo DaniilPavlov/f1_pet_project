@@ -5,8 +5,8 @@ import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/custom_calendar.dart';
-import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
+import 'package:f1_pet_project/common/widgets/shimmer/schedule_shimmer.dart';
 import 'package:f1_pet_project/core/schedule/controllers/schedule_screen_controller/schedule_screen_controller.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +47,7 @@ class ScheduleScreen extends StatelessWidget {
                     );
                   }
                   if (!controller.allDataIsLoaded) {
-                    return const CustomLoadingIndicator();
+                    return const ScheduleShimmer();
                   }
 
                   return CustomScrollView(

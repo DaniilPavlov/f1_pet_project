@@ -18,13 +18,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navCalendar => 'Calendar';
 
   @override
-  String get navHallOfFame => 'Hall of Fame';
+  String get navNews => 'News';
 
   @override
   String get navCircuits => 'Circuits';
 
   @override
+  String get newsTitle => 'News';
+
+  @override
+  String get newsEmpty => 'No news right now';
+
+  @override
   String get homeStandingsTitle => 'Current season standings';
+
+  @override
+  String get homeWeekendTitle => 'Race weekend';
+
+  @override
+  String get homeWeekendLive => 'Live';
+
+  @override
+  String homeWeekendLeader(String name) {
+    return 'Leader: $name';
+  }
+
+  @override
+  String homeWeekendWinner(String name) {
+    return 'Winner: $name';
+  }
+
+  @override
+  String weekendSessionResultsTitle(String session) {
+    return 'Results: $session';
+  }
+
+  @override
+  String get weekendSessionResultsEmpty => 'No results yet';
+
+  @override
+  String get driverNotFound => 'Driver not found';
 
   @override
   String seasonLabel(String season) {
@@ -67,6 +100,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get time => 'Time';
 
   @override
+  String get timeStatus => 'Time /\nStatus';
+
+  @override
   String get bestLap => 'Best\nlap';
 
   @override
@@ -103,9 +139,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get raceTime => 'Race\ntime';
-
-  @override
-  String get lastRace => 'Last race: ';
 
   @override
   String get chooseSpecificRace => 'Choose a specific race';
@@ -152,6 +185,110 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hallOfFameTitle => 'Hall of Fame';
+
+  @override
+  String get h2hTitle => 'H2H · Drivers';
+
+  @override
+  String get h2hSubtitle =>
+      'Compare two drivers with filters for period and driver list';
+
+  @override
+  String get h2hDriverA => 'Driver 1';
+
+  @override
+  String get h2hDriverB => 'Driver 2';
+
+  @override
+  String get h2hCompare => 'Compare';
+
+  @override
+  String get h2hFiltersTitle => 'Filters';
+
+  @override
+  String get h2hPeriodFilter => 'Period';
+
+  @override
+  String get h2hSeasonFilter => 'Season';
+
+  @override
+  String get h2hCurrentSeason => 'Current';
+
+  @override
+  String get h2hPickYear => 'Pick year';
+
+  @override
+  String get h2hDriversFilter => 'Drivers';
+
+  @override
+  String get h2hCurrentDrivers => 'Current';
+
+  @override
+  String get h2hAllDrivers => 'All';
+
+  @override
+  String get h2hSearchDriver => 'Name or code';
+
+  @override
+  String get h2hDriversEmpty => 'No drivers found';
+
+  @override
+  String get h2hConstructorsTitle => 'H2H · Constructors';
+
+  @override
+  String get h2hConstructorsSubtitle =>
+      'Compare two constructors with filters for period and constructor list';
+
+  @override
+  String get h2hConstructorA => 'Constructor 1';
+
+  @override
+  String get h2hConstructorB => 'Constructor 2';
+
+  @override
+  String get h2hConstructorsFilter => 'Constructors';
+
+  @override
+  String get h2hCurrentConstructors => 'Current';
+
+  @override
+  String get h2hAllConstructors => 'All';
+
+  @override
+  String get h2hSearchConstructor => 'Name';
+
+  @override
+  String get h2hConstructorsEmpty => 'No constructors found';
+
+  @override
+  String get selectConstructor => 'Select a constructor';
+
+  @override
+  String get constructorsLoadError => 'Could not load constructors';
+
+  @override
+  String get finishStatusTitle => 'Finish statuses';
+
+  @override
+  String get finishStatusSubtitle =>
+      'How drivers finished races this season — Finished, Retired, DSQ, +laps, and more.';
+
+  @override
+  String get finishStatusEmpty => 'No finish statuses for this season';
+
+  @override
+  String get shareNoResults => 'No race results yet';
+
+  @override
+  String shareAndMore(int count) {
+    return '…and $count more';
+  }
+
+  @override
+  String get selectDriver => 'Select a driver';
+
+  @override
+  String get driversLoadError => 'Could not load drivers';
 
   @override
   String get onMap => 'On map';
@@ -224,6 +361,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get careerTitle => 'Career';
 
   @override
+  String get driverNewsTitle => 'Latest news';
+
+  @override
   String get careerStatRaces => 'Races';
 
   @override
@@ -231,6 +371,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get careerStatPoles => 'Poles';
+
+  @override
+  String get careerRaceListEmpty => 'No races in this list';
 
   @override
   String get driverTeamsTitle => 'Teams';

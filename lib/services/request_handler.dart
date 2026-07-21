@@ -22,6 +22,9 @@ class RequestHandler {
   final _cacheInterceptor = CacheInterceptor();
   late Dio? _dio;
 
+  /// Сбрасывает in-memory HTTP-кэш (pull-to-refresh).
+  void clearCache() => _cacheInterceptor.clear();
+
   /// Подключает интерцепторы кэширования к клиенту Dio.
   Interceptor addInterceptors() {
     return InterceptorsWrapper(
@@ -31,9 +34,10 @@ class RequestHandler {
     );
   }
 
-  /// Выполняет GET-запрос к API с суффиксом `.json?limit=100`.
+  /// Выполняет GET-запрос к API с суффиксом `.json?limit=…`.
   Future<Response<T>> get<T>(
     String path, {
+    int limit = 100,
     Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
@@ -43,8 +47,7 @@ class RequestHandler {
 
     try {
       res = await _dio!.get(
-        // ! this api needs '.json?limit=100'
-        '$path.json?limit=100',
+        '$path.json?limit=$limit',
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
         options: await _getOptions(options),

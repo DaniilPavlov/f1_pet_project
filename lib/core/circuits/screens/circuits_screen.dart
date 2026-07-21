@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
-import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/custom_switcher.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
+import 'package:f1_pet_project/common/widgets/shimmer/list_rows_shimmer.dart';
 import 'package:f1_pet_project/core/circuits/components/circuits_list.dart';
 import 'package:f1_pet_project/core/circuits/components/circuits_map.dart';
 import 'package:f1_pet_project/core/circuits/controllers/circuits_screen_controller/circuits_screen_controller.dart';
@@ -28,7 +28,7 @@ class CircuitsScreen extends StatelessWidget {
             builder: (context) {
               final controller = context.read<CircuitsScreenController>();
               if (controller.circuits.isLoading) {
-                return const CustomLoadingIndicator();
+                return const CircuitsShimmer();
               }
               if (controller.circuits.isError) {
                 return ErrorBody(

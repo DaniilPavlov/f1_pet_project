@@ -6,8 +6,10 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/career/career_list_tile.dart';
-import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
+import 'package:f1_pet_project/common/widgets/career/network_hero_photo.dart';
+import 'package:f1_pet_project/common/widgets/country_flag.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
+import 'package:f1_pet_project/common/widgets/shimmer/career_screen_shimmer.dart';
 import 'package:f1_pet_project/core/circuits/controllers/circuit_screen_controller/circuit_screen_controller.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
@@ -15,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-/// Экран трассы: информация о трассе и история побед.
+/// Экран трассы: фото, информация и история побед.
 @RoutePage()
 class CircuitScreen extends StatelessWidget {
   const CircuitScreen({required this.circuitModel, super.key});
@@ -25,7 +27,7 @@ class CircuitScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      create: (_) => CircuitScreenController(circuit: circuitModel)..loadWinners(),
+      create: (_) => CircuitScreenController(circuit: circuitModel)..loadAll(),
       child: Scaffold(
         appBar: CustomAppBar(title: context.l10n.circuitInfoTitle, onPop: context.router.removeLast),
         body: SafeArea(
@@ -34,10 +36,10 @@ class CircuitScreen extends StatelessWidget {
               final controller = context.read<CircuitScreenController>();
               final error = controller.screenError;
               if (error != null) {
-                return ErrorBody(onTap: controller.loadWinners, title: error.title, subtitle: error.subtitle);
+                return ErrorBody(onTap: controller.loadAll, title: error.title, subtitle: error.subtitle);
               }
               if (!controller.isLoaded) {
-                return const CustomLoadingIndicator();
+                return const CareerScreenShimmer();
               }
 
               final wins = controller.winners.value!;
@@ -54,6 +56,13 @@ class CircuitScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          NetworkHeroPhoto(
+                            photoUrl: controller.circuitPhotoUrl,
+                            isLoading: controller.isPhotoLoading,
+                            placeholderIcon: Icons.map_outlined,
+                            fit: BoxFit.contain,
+                          ),
+                          const SizedBox(height: 16),
                           Text(circuitModel.circuitName, style: AppStyles.h1),
                           const SizedBox(height: 16),
                           if (circuitModel.url.isNotEmpty)
@@ -65,7 +74,16 @@ class CircuitScreen extends StatelessWidget {
                               ),
                             ),
                           const SizedBox(height: 16),
-                          Text(context.l10n.countryLabel(circuitModel.location.country), style: AppStyles.h3),
+                          Row(
+                            children: [
+                              Text('${context.l10n.country}: ', style: AppStyles.h3),
+                              CountryFlag(
+                                countryOrNationality: circuitModel.location.country,
+                                fontSize: 28,
+                                fallbackStyle: AppStyles.h3,
+                              ),
+                            ],
+                          ),
                           const SizedBox(height: 10),
                           Text(context.l10n.cityLabel(circuitModel.location.locality), style: AppStyles.h3),
                           const SizedBox(height: 28),

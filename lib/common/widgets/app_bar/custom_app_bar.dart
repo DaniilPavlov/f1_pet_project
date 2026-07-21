@@ -14,10 +14,13 @@ import 'package:provider/provider.dart';
 
 /// Кастомный AppBar с логотипом или заголовком и кнопкой «назад».
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({this.title, this.onPop, super.key});
+  const CustomAppBar({this.title, this.onPop, this.onShare, super.key});
   final String? title;
 
   final VoidCallback? onPop;
+
+  /// Кнопка шаринга слева от переключателя языка.
+  final VoidCallback? onShare;
 
   @override
   Size get preferredSize => const Size.fromHeight(56);
@@ -71,31 +74,43 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               Align(
                 alignment: Alignment.centerRight,
-                child: Observer(
-                  builder: (context) {
-                    return GestureDetector(
-                      onTap: () async {
-                        await localeController.toggle();
-                        if (!context.mounted) {
-                          return;
-                        }
-                        unawaited(
-                          context.read<RaceReminderService>().sync(locale: localeController.locale),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (onShare != null) ...[
+                      CircleButton(
+                        onPressed: onShare,
+                        child: const Icon(Icons.ios_share, size: 18, color: Colors.white),
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                    Observer(
+                      builder: (context) {
+                        return GestureDetector(
+                          onTap: () async {
+                            await localeController.toggle();
+                            if (!context.mounted) {
+                              return;
+                            }
+                            unawaited(
+                              context.read<RaceReminderService>().sync(locale: localeController.locale),
+                            );
+                          },
+                          behavior: HitTestBehavior.opaque,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                            child: Text(
+                              localeController.localeCodeLabel,
+                              style: AppStyles.body.copyWith(
+                                color: AppTheme.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
                         );
                       },
-                      behavior: HitTestBehavior.opaque,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                        child: Text(
-                          localeController.localeCodeLabel,
-                          style: AppStyles.body.copyWith(
-                            color: AppTheme.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
               ),
             ],

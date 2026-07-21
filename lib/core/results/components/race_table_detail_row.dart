@@ -5,8 +5,11 @@ import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 /// Формирует ячейки строки с результатом пилота в гонке.
-List<Widget> raceTableDetailRowChildren(ResultsModel results, String fastestLap, int place, AppLocalizations l10n) {
+List<Widget> raceTableDetailRowChildren(ResultsModel results, String fastestLap, AppLocalizations l10n) {
   const textStyle = AppStyles.caption;
+  final classified = results.isClassified;
+  final timeOrStatus = results.displayTimeOrStatus;
+  final timeStyle = classified ? textStyle : textStyle.copyWith(color: AppTheme.red);
 
   return [
     Center(
@@ -16,7 +19,11 @@ List<Widget> raceTableDetailRowChildren(ResultsModel results, String fastestLap,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const SizedBox(width: 5),
-            Text(place.toString(), style: textStyle, textAlign: TextAlign.left),
+            Text(
+              results.positionText,
+              style: classified ? textStyle : textStyle.copyWith(color: AppTheme.red, fontWeight: FontWeight.w600),
+              textAlign: TextAlign.left,
+            ),
             const SizedBox(width: 4),
             Expanded(
               child: Text(
@@ -33,7 +40,7 @@ List<Widget> raceTableDetailRowChildren(ResultsModel results, String fastestLap,
       child: Text(results.constructor.name, style: textStyle, textAlign: TextAlign.center),
     ),
     Center(
-      child: Text(results.time?.time ?? results.status, style: textStyle, textAlign: TextAlign.center),
+      child: Text(timeOrStatus, style: timeStyle, textAlign: TextAlign.center),
     ),
     Center(
       child: Text(results.points, style: textStyle, textAlign: TextAlign.center),

@@ -23,7 +23,6 @@ class LastRaceTableSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(context.l10n.lastRace, style: AppStyles.h2),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: StaticData.defaultVerticalPadding),
                 child: Text(lastRace.raceName, style: AppStyles.h2),

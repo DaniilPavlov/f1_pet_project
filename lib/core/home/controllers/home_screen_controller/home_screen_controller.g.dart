@@ -100,6 +100,16 @@ mixin _$HomeScreenController on HomeScreenControllerBase, Store {
     return _$loadAllDataAsyncAction.run(() => super.loadAllData());
   }
 
+  late final _$refreshAllAsyncAction = AsyncAction(
+    'HomeScreenControllerBase.refreshAll',
+    context: context,
+  );
+
+  @override
+  Future<void> refreshAll() {
+    return _$refreshAllAsyncAction.run(() => super.refreshAll());
+  }
+
   late final _$loadCurrentDriversStandingsAsyncAction = AsyncAction(
     'HomeScreenControllerBase.loadCurrentDriversStandings',
     context: context,

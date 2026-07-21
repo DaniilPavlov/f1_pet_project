@@ -4,10 +4,18 @@ import 'package:flutter/material.dart';
 
 /// Строка «лейбл — значение» на экранах карьеры.
 class CareerInfoRow extends StatelessWidget {
-  const CareerInfoRow({required this.label, required this.value, super.key});
+  const CareerInfoRow({
+    required this.label,
+    this.value = '',
+    this.valueLeading,
+    this.valueWidget,
+    super.key,
+  });
 
   final String label;
   final String value;
+  final Widget? valueLeading;
+  final Widget? valueWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +24,21 @@ class CareerInfoRow extends StatelessWidget {
       child: Row(
         children: [
           Expanded(child: Text(label, style: AppStyles.body.copyWith(color: AppTheme.textGray))),
-          Expanded(child: Text(value, style: AppStyles.body, textAlign: TextAlign.right)),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (valueLeading != null) ...[
+                  valueLeading!,
+                  if (valueWidget != null || value.isNotEmpty) const SizedBox(width: 8),
+                ],
+                if (valueWidget != null)
+                  valueWidget!
+                else if (value.isNotEmpty)
+                  Flexible(child: Text(value, style: AppStyles.body, textAlign: TextAlign.right)),
+              ],
+            ),
+          ),
         ],
       ),
     );

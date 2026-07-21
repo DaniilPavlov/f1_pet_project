@@ -116,11 +116,11 @@ abstract class AppLocalizations {
   /// **'Календарь'**
   String get navCalendar;
 
-  /// No description provided for @navHallOfFame.
+  /// No description provided for @navNews.
   ///
   /// In ru, this message translates to:
-  /// **'Зал славы'**
-  String get navHallOfFame;
+  /// **'Новости'**
+  String get navNews;
 
   /// No description provided for @navCircuits.
   ///
@@ -128,11 +128,65 @@ abstract class AppLocalizations {
   /// **'Трассы'**
   String get navCircuits;
 
+  /// No description provided for @newsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Новости'**
+  String get newsTitle;
+
+  /// No description provided for @newsEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Новостей пока нет'**
+  String get newsEmpty;
+
   /// No description provided for @homeStandingsTitle.
   ///
   /// In ru, this message translates to:
   /// **'Турнирная таблица текущего сезона'**
   String get homeStandingsTitle;
+
+  /// No description provided for @homeWeekendTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Уикенд'**
+  String get homeWeekendTitle;
+
+  /// No description provided for @homeWeekendLive.
+  ///
+  /// In ru, this message translates to:
+  /// **'Live'**
+  String get homeWeekendLive;
+
+  /// No description provided for @homeWeekendLeader.
+  ///
+  /// In ru, this message translates to:
+  /// **'Лидер: {name}'**
+  String homeWeekendLeader(String name);
+
+  /// No description provided for @homeWeekendWinner.
+  ///
+  /// In ru, this message translates to:
+  /// **'Победитель: {name}'**
+  String homeWeekendWinner(String name);
+
+  /// No description provided for @weekendSessionResultsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Результаты: {session}'**
+  String weekendSessionResultsTitle(String session);
+
+  /// No description provided for @weekendSessionResultsEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Результатов пока нет'**
+  String get weekendSessionResultsEmpty;
+
+  /// No description provided for @driverNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пилот не найден'**
+  String get driverNotFound;
 
   /// No description provided for @seasonLabel.
   ///
@@ -206,6 +260,12 @@ abstract class AppLocalizations {
   /// **'Время'**
   String get time;
 
+  /// No description provided for @timeStatus.
+  ///
+  /// In ru, this message translates to:
+  /// **'Время /\nстатус'**
+  String get timeStatus;
+
   /// No description provided for @bestLap.
   ///
   /// In ru, this message translates to:
@@ -277,12 +337,6 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Время\nгонки'**
   String get raceTime;
-
-  /// No description provided for @lastRace.
-  ///
-  /// In ru, this message translates to:
-  /// **'Последняя гонка: '**
-  String get lastRace;
 
   /// No description provided for @chooseSpecificRace.
   ///
@@ -373,6 +427,204 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Зал славы'**
   String get hallOfFameTitle;
+
+  /// No description provided for @h2hTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'H2H · Пилоты'**
+  String get h2hTitle;
+
+  /// No description provided for @h2hSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сравните двух пилотов с фильтрами периода и списка'**
+  String get h2hSubtitle;
+
+  /// No description provided for @h2hDriverA.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пилот 1'**
+  String get h2hDriverA;
+
+  /// No description provided for @h2hDriverB.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пилот 2'**
+  String get h2hDriverB;
+
+  /// No description provided for @h2hCompare.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сравнить'**
+  String get h2hCompare;
+
+  /// No description provided for @h2hFiltersTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Фильтры'**
+  String get h2hFiltersTitle;
+
+  /// No description provided for @h2hPeriodFilter.
+  ///
+  /// In ru, this message translates to:
+  /// **'Период'**
+  String get h2hPeriodFilter;
+
+  /// No description provided for @h2hSeasonFilter.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сезон'**
+  String get h2hSeasonFilter;
+
+  /// No description provided for @h2hCurrentSeason.
+  ///
+  /// In ru, this message translates to:
+  /// **'Текущий'**
+  String get h2hCurrentSeason;
+
+  /// No description provided for @h2hPickYear.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выбор года'**
+  String get h2hPickYear;
+
+  /// No description provided for @h2hDriversFilter.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пилоты'**
+  String get h2hDriversFilter;
+
+  /// No description provided for @h2hCurrentDrivers.
+  ///
+  /// In ru, this message translates to:
+  /// **'Текущие'**
+  String get h2hCurrentDrivers;
+
+  /// No description provided for @h2hAllDrivers.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все'**
+  String get h2hAllDrivers;
+
+  /// No description provided for @h2hSearchDriver.
+  ///
+  /// In ru, this message translates to:
+  /// **'Имя или код'**
+  String get h2hSearchDriver;
+
+  /// No description provided for @h2hDriversEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пилоты не найдены'**
+  String get h2hDriversEmpty;
+
+  /// No description provided for @h2hConstructorsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'H2H · Конструкторы'**
+  String get h2hConstructorsTitle;
+
+  /// No description provided for @h2hConstructorsSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сравните двух конструкторов с фильтрами периода и списка'**
+  String get h2hConstructorsSubtitle;
+
+  /// No description provided for @h2hConstructorA.
+  ///
+  /// In ru, this message translates to:
+  /// **'Конструктор 1'**
+  String get h2hConstructorA;
+
+  /// No description provided for @h2hConstructorB.
+  ///
+  /// In ru, this message translates to:
+  /// **'Конструктор 2'**
+  String get h2hConstructorB;
+
+  /// No description provided for @h2hConstructorsFilter.
+  ///
+  /// In ru, this message translates to:
+  /// **'Конструкторы'**
+  String get h2hConstructorsFilter;
+
+  /// No description provided for @h2hCurrentConstructors.
+  ///
+  /// In ru, this message translates to:
+  /// **'Текущие'**
+  String get h2hCurrentConstructors;
+
+  /// No description provided for @h2hAllConstructors.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все'**
+  String get h2hAllConstructors;
+
+  /// No description provided for @h2hSearchConstructor.
+  ///
+  /// In ru, this message translates to:
+  /// **'Название'**
+  String get h2hSearchConstructor;
+
+  /// No description provided for @h2hConstructorsEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Конструкторы не найдены'**
+  String get h2hConstructorsEmpty;
+
+  /// No description provided for @selectConstructor.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите конструктора'**
+  String get selectConstructor;
+
+  /// No description provided for @constructorsLoadError.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить конструкторов'**
+  String get constructorsLoadError;
+
+  /// No description provided for @finishStatusTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Статусы финиша'**
+  String get finishStatusTitle;
+
+  /// No description provided for @finishStatusSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Как пилоты завершали гонки в сезоне — Finished, Retired, DSQ, +круги и другие.'**
+  String get finishStatusSubtitle;
+
+  /// No description provided for @finishStatusEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет статусов финиша за этот сезон'**
+  String get finishStatusEmpty;
+
+  /// No description provided for @shareNoResults.
+  ///
+  /// In ru, this message translates to:
+  /// **'Результатов гонки пока нет'**
+  String get shareNoResults;
+
+  /// No description provided for @shareAndMore.
+  ///
+  /// In ru, this message translates to:
+  /// **'…и ещё {count}'**
+  String shareAndMore(int count);
+
+  /// No description provided for @selectDriver.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выберите пилота'**
+  String get selectDriver;
+
+  /// No description provided for @driversLoadError.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить пилотов'**
+  String get driversLoadError;
 
   /// No description provided for @onMap.
   ///
@@ -506,6 +758,12 @@ abstract class AppLocalizations {
   /// **'Карьера'**
   String get careerTitle;
 
+  /// No description provided for @driverNewsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Последние новости'**
+  String get driverNewsTitle;
+
   /// No description provided for @careerStatRaces.
   ///
   /// In ru, this message translates to:
@@ -523,6 +781,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Поулы'**
   String get careerStatPoles;
+
+  /// No description provided for @careerRaceListEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'В этом списке пока нет гонок'**
+  String get careerRaceListEmpty;
 
   /// No description provided for @driverTeamsTitle.
   ///

@@ -18,10 +18,10 @@ class ScheduleRouterScreen extends AutoRouter {
   const ScheduleRouterScreen({super.key});
 }
 
-/// Вложенный роутер раздела «Зал славы».
-@RoutePage(name: 'HallOfFameRouter')
-class HallOfFameRouterScreen extends AutoRouter {
-  const HallOfFameRouterScreen({super.key});
+/// Вложенный роутер раздела «Новости».
+@RoutePage(name: 'NewsRouter')
+class NewsRouterScreen extends AutoRouter {
+  const NewsRouterScreen({super.key});
 }
 
 /// Вложенный роутер раздела «Трассы».

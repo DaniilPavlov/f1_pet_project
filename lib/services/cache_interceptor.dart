@@ -33,4 +33,7 @@ class CacheInterceptor extends Interceptor {
     }
     handler.next(err);
   }
+
+  /// Очищает in-memory кэш (для pull-to-refresh).
+  void clear() => _cache.clear();
 }

@@ -7,6 +7,7 @@ import 'package:f1_pet_project/core/home/models/standings/constructor/constructo
 import 'package:f1_pet_project/core/home/models/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/core/home/models/standings/standings_model.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
+import 'package:f1_pet_project/services/request_handler.dart';
 import 'package:mobx/mobx.dart';
 
 part 'home_screen_controller.g.dart';
@@ -44,6 +45,13 @@ abstract class HomeScreenControllerBase with Store {
   @action
   Future<void> loadAllData() async {
     await Future.wait([loadCurrentDriversStandings(), loadCurrentConstructorsStandings()]);
+  }
+
+  /// Pull-to-refresh: сброс Jolpica-кэша и перезагрузка таблиц.
+  @action
+  Future<void> refreshAll() async {
+    RequestHandler().clearCache();
+    await loadAllData();
   }
 
   /// Загружает турнирную таблицу пилотов текущего сезона.

@@ -1,4 +1,4 @@
-# F1 Pet Project
+# F1 App Project
 
 Flutter app with Formula 1 stats  
 (standings, results, calendar, hall of fame, circuits).
@@ -27,7 +27,7 @@ Same idea, other stacks:
 f1_pet_project/
 ├── lib/
 │   ├── common/      # widgets, theme, helpers, map package
-│   ├── core/        # features: home, results, schedule, hall_of_fame, circuits, map
+│   ├── core/        # features: home, results, schedule, news, circuits, h2h, …
 │   ├── data/        # response models, exceptions
 │   ├── services/    # Dio, executor, cache
 │   └── router/      # Auto Route
@@ -97,14 +97,11 @@ For release APK signing (optional) — `ANDROID_KEYSTORE_*` secrets in GitHub Ac
 ## Features
 
 - **Home** — current season driver and constructor standings  
-- **Results** — latest race, search by year and round (season picker), detail card (race, sprint, qualifying, pit stops)  
-- **Calendar** — season schedule with weekend sessions (practice, qualifying, sprint, sprint qualifying, race)  
-- **Hall of fame** — final driver and constructor tables for a selected year (season picker from Jolpica)  
-- **Circuits** — list and Yandex MapKit map with pins/clusters, circuit card, Wikipedia link, and race winners history  
-
-- **Driver card** — passport data plus career stats (races, wins, podiums, poles, teams) from Jolpica endpoints  
-- **Constructor card** — nationality, Wikipedia link, career stats (races, wins, podiums, poles) and drivers list  
-
-- **Localization** — Russian and English, toggle in the app bar without restarting the app  
-- **Reminders** — local notifications 30 minutes before a session (up to 10 upcoming kept in the OS; window refreshes when the app opens)  
+- **Results** — weekend scoreboard, latest race, race search, hall of fame, H2H (drivers / constructors), finish statuses  
+- **Calendar** — season schedule with weekend sessions and reminders  
+- **News** — F1 headlines from ESPN  
+- **Circuits** — list and Yandex MapKit map with pins/clusters, circuit card, Wikipedia, winners history  
+- **Driver / Constructor cards** — career stats with tappable wins / podiums / poles lists, share as image  
+- **Localization** — Russian and English  
+- **Reminders** — local notifications 30 minutes before a session  
 - **Schedule cache** — shared daily cache for the calendar and reminders  

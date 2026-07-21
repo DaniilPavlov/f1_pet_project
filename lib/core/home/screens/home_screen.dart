@@ -1,9 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
+import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
-import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
+import 'package:f1_pet_project/common/widgets/shimmer/tournament_tables_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/tables/tournament_tables_section.dart';
 import 'package:f1_pet_project/core/home/controllers/home_screen_controller/home_screen_controller.dart';
 import 'package:flutter/material.dart';
@@ -25,10 +26,11 @@ class HomeScreen extends StatelessWidget {
           child: Observer(
             builder: (context) {
               final controller = context.read<HomeScreenController>();
-              if (controller.currentDrivers.isLoading || controller.currentConstructors.isLoading) {
-                return const CustomLoadingIndicator();
+              final hasData = controller.currentDrivers.value != null && controller.currentConstructors.value != null;
+              if (!hasData && (controller.currentDrivers.isLoading || controller.currentConstructors.isLoading)) {
+                return const SingleChildScrollView(child: TournamentTablesShimmer());
               }
-              if (controller.screenError != null) {
+              if (controller.screenError != null && !hasData) {
                 return ErrorBody(
                   onTap: controller.loadAllData,
                   title: controller.screenError!.title,
@@ -36,20 +38,25 @@ class HomeScreen extends StatelessWidget {
                 );
               }
 
-              return CustomScrollView(
-                scrollBehavior: AntiGlowBehavior(),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: TournamentTablesSection(
-                      driversStandings: controller.currentDrivers.value!,
-                      constructorsStandings: controller.currentConstructors.value!,
-                      title: context.l10n.homeStandingsTitle,
-                      season: controller.currentSeason,
-                      round: controller.currentRound,
-                      passCurrentRoster: true,
+              return RefreshIndicator(
+                color: AppTheme.red,
+                onRefresh: controller.refreshAll,
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  scrollBehavior: AntiGlowBehavior(),
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: TournamentTablesSection(
+                        driversStandings: controller.currentDrivers.value!,
+                        constructorsStandings: controller.currentConstructors.value!,
+                        title: context.l10n.homeStandingsTitle,
+                        season: controller.currentSeason,
+                        round: controller.currentRound,
+                        passCurrentRoster: true,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),

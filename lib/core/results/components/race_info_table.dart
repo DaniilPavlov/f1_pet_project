@@ -41,6 +41,7 @@ class RaceInfoTable extends StatelessWidget {
             1: FlexColumnWidth(1.35),
             2: FlexColumnWidth(1.1),
             3: FlexColumnWidth(0.55),
+            4: FlexColumnWidth(0.9),
           },
           children: [
             if (withPrimaryRow) raceTablePrimaryRow(context.l10n),
@@ -54,7 +55,7 @@ class RaceInfoTable extends StatelessWidget {
                 children: tappableDriverRowCells(
                   context: context,
                   driver: result.driver,
-                  children: raceTableDetailRowChildren(result, fastest, i + 1, context.l10n),
+                  children: raceTableDetailRowChildren(result, fastest, context.l10n),
                 ),
               );
             }),

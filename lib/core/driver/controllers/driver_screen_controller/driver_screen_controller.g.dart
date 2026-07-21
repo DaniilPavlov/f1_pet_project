@@ -24,6 +24,21 @@ mixin _$DriverScreenController on DriverScreenControllerBase, Store {
     () => super.isLoaded,
     name: 'DriverScreenControllerBase.isLoaded',
   )).value;
+  Computed<EspnDriverCardData>? _$espnCardDataComputed;
+
+  @override
+  EspnDriverCardData get espnCardData =>
+      (_$espnCardDataComputed ??= Computed<EspnDriverCardData>(
+        () => super.espnCardData,
+        name: 'DriverScreenControllerBase.espnCardData',
+      )).value;
+  Computed<bool>? _$isEspnLoadingComputed;
+
+  @override
+  bool get isEspnLoading => (_$isEspnLoadingComputed ??= Computed<bool>(
+    () => super.isEspnLoading,
+    name: 'DriverScreenControllerBase.isEspnLoading',
+  )).value;
 
   late final _$careerStatsAtom = Atom(
     name: 'DriverScreenControllerBase.careerStats',
@@ -43,6 +58,34 @@ mixin _$DriverScreenController on DriverScreenControllerBase, Store {
     });
   }
 
+  late final _$espnCardAtom = Atom(
+    name: 'DriverScreenControllerBase.espnCard',
+    context: context,
+  );
+
+  @override
+  AsyncValue<EspnDriverCardData> get espnCard {
+    _$espnCardAtom.reportRead();
+    return super.espnCard;
+  }
+
+  @override
+  set espnCard(AsyncValue<EspnDriverCardData> value) {
+    _$espnCardAtom.reportWrite(value, super.espnCard, () {
+      super.espnCard = value;
+    });
+  }
+
+  late final _$loadAllAsyncAction = AsyncAction(
+    'DriverScreenControllerBase.loadAll',
+    context: context,
+  );
+
+  @override
+  Future<void> loadAll() {
+    return _$loadAllAsyncAction.run(() => super.loadAll());
+  }
+
   late final _$loadCareerStatsAsyncAction = AsyncAction(
     'DriverScreenControllerBase.loadCareerStats',
     context: context,
@@ -53,12 +96,25 @@ mixin _$DriverScreenController on DriverScreenControllerBase, Store {
     return _$loadCareerStatsAsyncAction.run(() => super.loadCareerStats());
   }
 
+  late final _$loadEspnCardAsyncAction = AsyncAction(
+    'DriverScreenControllerBase.loadEspnCard',
+    context: context,
+  );
+
+  @override
+  Future<void> loadEspnCard() {
+    return _$loadEspnCardAsyncAction.run(() => super.loadEspnCard());
+  }
+
   @override
   String toString() {
     return '''
 careerStats: ${careerStats},
+espnCard: ${espnCard},
 screenError: ${screenError},
-isLoaded: ${isLoaded}
+isLoaded: ${isLoaded},
+espnCardData: ${espnCardData},
+isEspnLoading: ${isEspnLoading}
     ''';
   }
 }

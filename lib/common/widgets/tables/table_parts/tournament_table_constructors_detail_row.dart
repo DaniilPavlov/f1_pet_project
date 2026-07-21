@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/common/widgets/country_flag.dart';
 import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_standings_model.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ List<Widget> tournamentTableConstructorsDetailRowChildren(ConstructorStandingsMo
       child: Text(constructorStanding.constructor.name, style: textStyle, textAlign: TextAlign.center),
     ),
     Center(
-      child: Text(constructorStanding.constructor.nationality, style: textStyle, textAlign: TextAlign.center),
+      child: CountryFlag(countryOrNationality: constructorStanding.constructor.nationality),
     ),
     Center(
       child: Text(constructorStanding.points, style: textStyle, textAlign: TextAlign.center),
