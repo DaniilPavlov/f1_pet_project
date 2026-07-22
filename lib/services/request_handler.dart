@@ -3,7 +3,6 @@ import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
 import 'package:f1_pet_project/services/cache_interceptor.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 /// Синглтон для HTTP-запросов к API через Dio.

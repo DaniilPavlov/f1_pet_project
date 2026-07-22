@@ -103,6 +103,7 @@ void main() {
     test('splits duration into parts', () {
       final parts = CountdownParts.until(
         DateTime(2026, 1, 3, 5, 10, 15),
+        // ignore: avoid_redundant_argument_values
         DateTime(2026, 1, 1, 2, 0, 0),
       );
       expect(parts.days, 2);
