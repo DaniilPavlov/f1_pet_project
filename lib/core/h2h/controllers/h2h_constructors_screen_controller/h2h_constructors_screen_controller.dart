@@ -1,12 +1,13 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/utils/helpers/text_editing_controller_extension.dart';
-import 'package:f1_pet_project/core/constructor/utils/constructor_lookup.dart';
-import 'package:f1_pet_project/core/h2h/loaders/h2h_stats_loader.dart';
+import 'package:f1_pet_project/core/constructor/repositories/constructor_catalog_repository.dart';
 import 'package:f1_pet_project/core/h2h/models/h2h_stats.dart';
-import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_model.dart';
+import 'package:f1_pet_project/core/h2h/repositories/h2h_repository.dart';
 import 'package:f1_pet_project/core/seasons/repositories/seasons_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
@@ -39,17 +40,27 @@ class H2hConstructorsScreenController = H2hConstructorsScreenControllerBase
 abstract class H2hConstructorsScreenControllerBase with Store {
   H2hConstructorsScreenControllerBase({
     this.seasonsRepository,
-    Future<H2hStats> Function({required String constructorId, String? season})? fetchStats,
-    Future<List<ConstructorModel>> Function()? loadCurrentConstructors,
-    Future<List<ConstructorModel>> Function()? loadAllConstructors,
-  }) : _fetchStatsOverride = fetchStats,
-       _loadCurrentConstructors = loadCurrentConstructors ?? ConstructorLookup.loadCurrentConstructors,
-       _loadAllConstructors = loadAllConstructors ?? ConstructorLookup.loadAllConstructors {
+    H2hRepository? h2hRepository,
+    ConstructorCatalogRepository? constructorCatalogRepository,
+    AppDataRefresh? dataRefresh,
+    @visibleForTesting
+    Future<H2hStats> Function({required String constructorId, String? season})? fetchStatsForTest,
+    @visibleForTesting
+    Future<List<ConstructorModel>> Function()? loadCurrentConstructorsForTest,
+    @visibleForTesting
+    Future<List<ConstructorModel>> Function()? loadAllConstructorsForTest,
+  }) : _h2hRepository = h2hRepository,
+       _dataRefresh = dataRefresh,
+       _fetchStatsForTest = fetchStatsForTest,
+       _loadCurrentConstructors = loadCurrentConstructorsForTest ?? constructorCatalogRepository!.loadCurrent,
+       _loadAllConstructors = loadAllConstructorsForTest ?? constructorCatalogRepository!.loadAll {
     yearController = TextEditingController();
   }
 
   final SeasonsRepository? seasonsRepository;
-  final Future<H2hStats> Function({required String constructorId, String? season})? _fetchStatsOverride;
+  final H2hRepository? _h2hRepository;
+  final AppDataRefresh? _dataRefresh;
+  final Future<H2hStats> Function({required String constructorId, String? season})? _fetchStatsForTest;
   final Future<List<ConstructorModel>> Function() _loadCurrentConstructors;
   final Future<List<ConstructorModel>> Function() _loadAllConstructors;
 
@@ -220,15 +231,22 @@ abstract class H2hConstructorsScreenControllerBase with Store {
     );
   }
 
+  /// ErrorBody retry: сброс кэшей и повторное сравнение.
+  @action
+  Future<void> refreshComparison() async {
+    await _dataRefresh?.clearAll();
+    await compare();
+  }
+
   void _resetComparison() {
     comparison = const AsyncValue.value();
   }
 
   Future<H2hStats> _fetchStats({required String constructorId, String? season}) {
-    final override = _fetchStatsOverride;
-    if (override != null) {
-      return override(constructorId: constructorId, season: season);
+    final forTest = _fetchStatsForTest;
+    if (forTest != null) {
+      return forTest(constructorId: constructorId, season: season);
     }
-    return H2hStatsLoader.loadForConstructor(constructorId: constructorId, season: season);
+    return _h2hRepository!.constructorStats(constructorId: constructorId, season: season);
   }
 }

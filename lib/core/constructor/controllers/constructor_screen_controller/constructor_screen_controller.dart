@@ -1,12 +1,14 @@
 import 'package:f1_pet_project/common/career/models/career_stats.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
-import 'package:f1_pet_project/core/constructor/loaders/constructor_career_loader.dart';
+import 'package:f1_pet_project/core/constructor/repositories/constructor_career_repository.dart';
 import 'package:f1_pet_project/core/espn/repositories/espn_media_repository.dart';
-import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/driver/driver_model.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
+import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 
 part 'constructor_screen_controller.g.dart';
@@ -19,23 +21,24 @@ abstract class ConstructorScreenControllerBase with Store {
   ConstructorScreenControllerBase({
     required this.constructor,
     required EspnMediaRepository espnMediaRepository,
+    ConstructorCareerRepository? careerRepository,
+    AppDataRefresh? dataRefresh,
     this.currentDrivers = const [],
-    Future<CareerStats<DriverModel>> Function({
-      required String constructorId,
-      List<DriverModel> current,
-    })?
-    fetchCareerStats,
+    @visibleForTesting
+    Future<CareerStats<DriverModel>> Function({required String constructorId, List<DriverModel> current})?
+    fetchCareerStatsForTest,
   }) : _espnMediaRepository = espnMediaRepository,
-       _fetchCareerStatsOverride = fetchCareerStats;
+       _careerRepository = careerRepository,
+       _dataRefresh = dataRefresh,
+       _fetchCareerStatsForTest = fetchCareerStatsForTest;
 
   final ConstructorModel constructor;
   final List<DriverModel> currentDrivers;
   final EspnMediaRepository _espnMediaRepository;
-  final Future<CareerStats<DriverModel>> Function({
-    required String constructorId,
-    List<DriverModel> current,
-  })?
-  _fetchCareerStatsOverride;
+  final ConstructorCareerRepository? _careerRepository;
+  final AppDataRefresh? _dataRefresh;
+  final Future<CareerStats<DriverModel>> Function({required String constructorId, List<DriverModel> current})?
+  _fetchCareerStatsForTest;
 
   @observable
   AsyncValue<CareerStats<DriverModel>> careerStats = const AsyncValue.loading();
@@ -56,6 +59,13 @@ abstract class ConstructorScreenControllerBase with Store {
   @action
   Future<void> loadAll() async {
     await Future.wait([loadCareerStats(), loadEspnNews()]);
+  }
+
+  /// Pull-to-refresh / ErrorBody: сброс кэшей и перезагрузка.
+  @action
+  Future<void> refreshAll() async {
+    await _dataRefresh?.clearAll();
+    await loadAll();
   }
 
   /// Загружает (или перезагружает) карьерную статистику.
@@ -92,10 +102,10 @@ abstract class ConstructorScreenControllerBase with Store {
     required String constructorId,
     required List<DriverModel> current,
   }) {
-    final override = _fetchCareerStatsOverride;
-    if (override != null) {
-      return override(constructorId: constructorId, current: current);
+    final forTest = _fetchCareerStatsForTest;
+    if (forTest != null) {
+      return forTest(constructorId: constructorId, current: current);
     }
-    return ConstructorCareerLoader.loadData(constructorId: constructorId, current: current);
+    return _careerRepository!.load(constructorId: constructorId, current: current);
   }
 }

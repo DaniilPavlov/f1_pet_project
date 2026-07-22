@@ -2,13 +2,16 @@ import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
+import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/tournament_tables_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/tables/tournament_tables_section.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/season_picker_field.dart';
 import 'package:f1_pet_project/core/hall_of_fame/controllers/hall_of_fame_screen_controller/hall_of_fame_screen_controller.dart';
+import 'package:f1_pet_project/core/hall_of_fame/repositories/season_standings_repository.dart';
 import 'package:f1_pet_project/core/seasons/repositories/seasons_repository.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -21,8 +24,10 @@ class HallOfFameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<HallOfFameScreenController>(
-      create: (_) => HallOfFameScreenController(
+      create: (context) => HallOfFameScreenController(
         seasonsRepository: context.read<SeasonsRepository>(),
+        standingsRepository: context.read<SeasonStandingsRepository>(),
+        dataRefresh: context.read<AppDataRefresh>(),
       )..bootstrap(),
       dispose: (_, controller) => controller.dispose(),
       child: Scaffold(
@@ -35,7 +40,7 @@ class HallOfFameScreen extends StatelessWidget {
                   controller.driversStandings.isLoading || controller.constructorsStandings.isLoading;
               if (controller.screenError != null && !isLoading) {
                 return ErrorBody(
-                  onTap: controller.loadAllData,
+                  onTap: controller.refreshAll,
                   title: controller.screenError!.title,
                   subtitle: controller.screenError!.subtitle,
                 );
@@ -44,39 +49,44 @@ class HallOfFameScreen extends StatelessWidget {
               final constructors = controller.constructorsStandings.value;
               final drivers = controller.driversStandings.value;
 
-              return CustomScrollView(
-                scrollBehavior: AntiGlowBehavior(),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: StaticData.defaultHorizontalPadding,
-                        right: StaticData.defaultHorizontalPadding,
-                        top: StaticData.defaultVerticalPadding,
-                        bottom: StaticData.defaultVerticalPadding,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: MediaQuery.sizeOf(context).width * 0.5,
-                          child: SeasonPickerField(
-                            controller: controller.yearController,
-                            onChanged: controller.loadAllData,
+              return RefreshIndicator(
+                color: AppTheme.red,
+                onRefresh: controller.refreshAll,
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  scrollBehavior: AntiGlowBehavior(),
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: StaticData.defaultHorizontalPadding,
+                          right: StaticData.defaultHorizontalPadding,
+                          top: StaticData.defaultVerticalPadding,
+                          bottom: StaticData.defaultVerticalPadding,
+                        ),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: SizedBox(
+                            width: MediaQuery.sizeOf(context).width * 0.5,
+                            child: SeasonPickerField(
+                              controller: controller.yearController,
+                              onChanged: controller.loadAllData,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  if (isLoading)
-                    const SliverToBoxAdapter(child: TournamentTablesShimmer(showHeader: false))
-                  else if (constructors != null && drivers != null)
-                    SliverToBoxAdapter(
-                      child: TournamentTablesSection(
-                        driversStandings: drivers[0].driverStandings!,
-                        constructorsStandings: constructors[0].constructorStandings!,
+                    if (isLoading)
+                      const SliverToBoxAdapter(child: TournamentTablesShimmer(showHeader: false))
+                    else if (constructors != null && drivers != null)
+                      SliverToBoxAdapter(
+                        child: TournamentTablesSection(
+                          driversStandings: drivers[0].driverStandings!,
+                          constructorsStandings: constructors[0].constructorStandings!,
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               );
             },
           ),

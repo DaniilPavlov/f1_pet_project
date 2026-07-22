@@ -180,6 +180,16 @@ mixin _$RaceInfoScreenController on RaceInfoScreenControllerBase, Store {
     return _$loadAllDataAsyncAction.run(() => super.loadAllData());
   }
 
+  late final _$refreshAllAsyncAction = AsyncAction(
+    'RaceInfoScreenControllerBase.refreshAll',
+    context: context,
+  );
+
+  @override
+  Future<void> refreshAll() {
+    return _$refreshAllAsyncAction.run(() => super.refreshAll());
+  }
+
   late final _$loadSprintResultsAsyncAction = AsyncAction(
     'RaceInfoScreenControllerBase.loadSprintResults',
     context: context,

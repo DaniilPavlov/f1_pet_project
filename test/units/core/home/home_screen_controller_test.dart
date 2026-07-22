@@ -1,8 +1,8 @@
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/core/home/controllers/home_screen_controller/home_screen_controller.dart';
-import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_standings_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/driver/driver_standings_model.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_standings_model.dart';
+import 'package:f1_pet_project/data/models/standings/driver/driver_standings_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/controller_fixtures.dart';
@@ -13,8 +13,9 @@ void main() {
     group('loadCurrentDriversStandings', () {
       mobxTest(
         'sets value on success',
-        build: () =>
-            HomeScreenController(fetchCurrentDriversStandings: () async => ControllerFixtures.driversStandingsModel),
+        build: () => HomeScreenController(
+          fetchCurrentDriversStandingsForTest: () async => ControllerFixtures.driversStandingsModel,
+        ),
         value: (store) => store.currentDrivers,
         act: (store) => store.loadCurrentDriversStandings(),
         expect: () => [
@@ -31,8 +32,9 @@ void main() {
 
       mobxTest(
         'sets error on failure',
-        build: () =>
-            HomeScreenController(fetchCurrentDriversStandings: () async => throw ResponseParseException('parse error')),
+        build: () => HomeScreenController(
+          fetchCurrentDriversStandingsForTest: () async => throw ResponseParseException('parse error'),
+        ),
         value: (store) => store.currentDrivers,
         act: (store) => store.loadCurrentDriversStandings(),
         expect: () => [
@@ -49,7 +51,7 @@ void main() {
       mobxTest(
         'sets value on success',
         build: () => HomeScreenController(
-          fetchCurrentConstructorsStandings: () async => ControllerFixtures.constructorsStandingsModel,
+          fetchCurrentConstructorsStandingsForTest: () async => ControllerFixtures.constructorsStandingsModel,
         ),
         value: (store) => store.currentConstructors,
         act: (store) => store.loadCurrentConstructorsStandings(),
@@ -65,8 +67,8 @@ void main() {
     group('loadAllData', () {
       test('loads drivers and constructors standings', () async {
         final controller = HomeScreenController(
-          fetchCurrentDriversStandings: () async => ControllerFixtures.driversStandingsModel,
-          fetchCurrentConstructorsStandings: () async => ControllerFixtures.constructorsStandingsModel,
+          fetchCurrentDriversStandingsForTest: () async => ControllerFixtures.driversStandingsModel,
+          fetchCurrentConstructorsStandingsForTest: () async => ControllerFixtures.constructorsStandingsModel,
         );
 
         await controller.loadAllData();

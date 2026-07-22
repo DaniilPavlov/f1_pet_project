@@ -1,12 +1,13 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/utils/helpers/text_editing_controller_extension.dart';
-import 'package:f1_pet_project/core/driver/utils/driver_lookup.dart';
-import 'package:f1_pet_project/core/h2h/loaders/h2h_stats_loader.dart';
+import 'package:f1_pet_project/core/driver/repositories/driver_catalog_repository.dart';
 import 'package:f1_pet_project/core/h2h/models/h2h_stats.dart';
-import 'package:f1_pet_project/core/home/models/standings/driver/driver_model.dart';
+import 'package:f1_pet_project/core/h2h/repositories/h2h_repository.dart';
 import 'package:f1_pet_project/core/seasons/repositories/seasons_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
+import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
@@ -38,17 +39,27 @@ class H2hScreenController = H2hScreenControllerBase with _$H2hScreenController;
 abstract class H2hScreenControllerBase with Store {
   H2hScreenControllerBase({
     this.seasonsRepository,
-    Future<H2hStats> Function({required String driverId, String? season})? fetchStats,
-    Future<List<DriverModel>> Function()? loadCurrentDrivers,
-    Future<List<DriverModel>> Function()? loadAllDrivers,
-  }) : _fetchStatsOverride = fetchStats,
-       _loadCurrentDrivers = loadCurrentDrivers ?? DriverLookup.loadCurrentDrivers,
-       _loadAllDrivers = loadAllDrivers ?? DriverLookup.loadAllDrivers {
+    H2hRepository? h2hRepository,
+    DriverCatalogRepository? driverCatalogRepository,
+    AppDataRefresh? dataRefresh,
+    @visibleForTesting
+    Future<H2hStats> Function({required String driverId, String? season})? fetchStatsForTest,
+    @visibleForTesting
+    Future<List<DriverModel>> Function()? loadCurrentDriversForTest,
+    @visibleForTesting
+    Future<List<DriverModel>> Function()? loadAllDriversForTest,
+  }) : _h2hRepository = h2hRepository,
+       _dataRefresh = dataRefresh,
+       _fetchStatsForTest = fetchStatsForTest,
+       _loadCurrentDrivers = loadCurrentDriversForTest ?? driverCatalogRepository!.loadCurrent,
+       _loadAllDrivers = loadAllDriversForTest ?? driverCatalogRepository!.loadAll {
     yearController = TextEditingController();
   }
 
   final SeasonsRepository? seasonsRepository;
-  final Future<H2hStats> Function({required String driverId, String? season})? _fetchStatsOverride;
+  final H2hRepository? _h2hRepository;
+  final AppDataRefresh? _dataRefresh;
+  final Future<H2hStats> Function({required String driverId, String? season})? _fetchStatsForTest;
   final Future<List<DriverModel>> Function() _loadCurrentDrivers;
   final Future<List<DriverModel>> Function() _loadAllDrivers;
 
@@ -219,15 +230,22 @@ abstract class H2hScreenControllerBase with Store {
     );
   }
 
+  /// ErrorBody retry: сброс кэшей и повторное сравнение.
+  @action
+  Future<void> refreshComparison() async {
+    await _dataRefresh?.clearAll();
+    await compare();
+  }
+
   void _resetComparison() {
     comparison = const AsyncValue.value();
   }
 
   Future<H2hStats> _fetchStats({required String driverId, String? season}) {
-    final override = _fetchStatsOverride;
-    if (override != null) {
-      return override(driverId: driverId, season: season);
+    final forTest = _fetchStatsForTest;
+    if (forTest != null) {
+      return forTest(driverId: driverId, season: season);
     }
-    return H2hStatsLoader.load(driverId: driverId, season: season);
+    return _h2hRepository!.driverStats(driverId: driverId, season: season);
   }
 }

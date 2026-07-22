@@ -18,7 +18,7 @@ void main() {
         'loads races and marks data as loaded',
         build: () => ScheduleScreenController(
           l10n: AppLocalizationsRu(),
-          fetchSchedule: () async => ControllerFixtures.scheduleModel,
+          fetchScheduleForTest: () async => ControllerFixtures.scheduleModel,
         ),
         value: (store) => store.racesElements,
         act: (store) => store.loadAllData(),
@@ -38,7 +38,7 @@ void main() {
         'sets error on failure',
         build: () => ScheduleScreenController(
           l10n: AppLocalizationsRu(),
-          fetchSchedule: () async => throw ResponseParseException('parse error'),
+          fetchScheduleForTest: () async => throw ResponseParseException('parse error'),
         ),
         value: (store) => store.racesElements,
         act: (store) => store.loadAllData(),
@@ -57,7 +57,7 @@ void main() {
       test('updates selected date and shows sessions on race day', () async {
         final controller = ScheduleScreenController(
           l10n: AppLocalizationsRu(),
-          fetchSchedule: () async => ControllerFixtures.scheduleModel,
+          fetchScheduleForTest: () async => ControllerFixtures.scheduleModel,
         );
 
         await controller.loadAllData();
@@ -71,7 +71,7 @@ void main() {
       test('empty day exposes upcoming race fallback', () async {
         final controller = ScheduleScreenController(
           l10n: AppLocalizationsRu(),
-          fetchSchedule: () async => ControllerFixtures.scheduleModel,
+          fetchScheduleForTest: () async => ControllerFixtures.scheduleModel,
         );
 
         await controller.loadAllData();
@@ -88,7 +88,7 @@ void main() {
       test('returns finish icon for race day', () async {
         final controller = ScheduleScreenController(
           l10n: AppLocalizationsRu(),
-          fetchSchedule: () async => ControllerFixtures.scheduleModel,
+          fetchScheduleForTest: () async => ControllerFixtures.scheduleModel,
         );
 
         await controller.loadAllData();

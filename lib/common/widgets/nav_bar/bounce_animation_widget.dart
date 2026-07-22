@@ -90,12 +90,10 @@ class _BounceAnimationWidgetState extends State<BounceAnimationWidget> with Tick
     );
   }
 
-  /// * Перехватчик нажатия на виджет, который запускает анимацию "прыжка" виджета при нажатии
   void _onTapDown(PointerDownEvent _) {
     _tapDownAnimationController.forward();
   }
 
-  /// * При отпускании кнопки на экране запускает в обратную сторону анимацию нажатия
   void _onTapUp(PointerUpEvent _) {
     _tapDownAnimationController.reverse();
   }

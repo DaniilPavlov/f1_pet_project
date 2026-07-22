@@ -1,17 +1,15 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/fetch_from_loader.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/core/results/models/pit_stops_model.dart';
 import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
 import 'package:f1_pet_project/core/results/models/results_model.dart';
-import 'package:f1_pet_project/core/results/race_info/loaders/pit_stops_loader.dart';
-import 'package:f1_pet_project/core/results/race_info/loaders/qualifying_results_loader.dart';
-import 'package:f1_pet_project/core/results/race_info/loaders/sprint_results_loader.dart';
+import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
-import 'package:f1_pet_project/services/interceptors_functions.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -33,21 +31,30 @@ abstract class RaceInfoScreenControllerBase with Store {
   RaceInfoScreenControllerBase({
     required this.raceModel,
     this.scheduleRepository,
-    Future<bool> Function()? weekendHasSprint,
-    Future<ScheduleModel> Function({required String year, required String round})? fetchQualifyingResults,
-    Future<ScheduleModel> Function({required String year, required String round})? fetchPitStops,
-    Future<ScheduleModel> Function({required String year, required String round})? fetchSprintResults,
-  }) : _weekendHasSprintOverride = weekendHasSprint,
-       _fetchQualifyingResultsOverride = fetchQualifyingResults,
-       _fetchPitStopsOverride = fetchPitStops,
-       _fetchSprintResultsOverride = fetchSprintResults;
+    RaceWeekendRepository? raceWeekendRepository,
+    AppDataRefresh? dataRefresh,
+    @visibleForTesting Future<bool> Function()? weekendHasSprintForTest,
+    @visibleForTesting
+    Future<ScheduleModel> Function({required String year, required String round})? fetchQualifyingResultsForTest,
+    @visibleForTesting
+    Future<ScheduleModel> Function({required String year, required String round})? fetchPitStopsForTest,
+    @visibleForTesting
+    Future<ScheduleModel> Function({required String year, required String round})? fetchSprintResultsForTest,
+  }) : _raceWeekendRepository = raceWeekendRepository,
+       _dataRefresh = dataRefresh,
+       _weekendHasSprintForTest = weekendHasSprintForTest,
+       _fetchQualifyingResultsForTest = fetchQualifyingResultsForTest,
+       _fetchPitStopsForTest = fetchPitStopsForTest,
+       _fetchSprintResultsForTest = fetchSprintResultsForTest;
 
   final RacesModel raceModel;
   final ScheduleRepository? scheduleRepository;
-  final Future<bool> Function()? _weekendHasSprintOverride;
-  final Future<ScheduleModel> Function({required String year, required String round})? _fetchQualifyingResultsOverride;
-  final Future<ScheduleModel> Function({required String year, required String round})? _fetchPitStopsOverride;
-  final Future<ScheduleModel> Function({required String year, required String round})? _fetchSprintResultsOverride;
+  final RaceWeekendRepository? _raceWeekendRepository;
+  final AppDataRefresh? _dataRefresh;
+  final Future<bool> Function()? _weekendHasSprintForTest;
+  final Future<ScheduleModel> Function({required String year, required String round})? _fetchQualifyingResultsForTest;
+  final Future<ScheduleModel> Function({required String year, required String round})? _fetchPitStopsForTest;
+  final Future<ScheduleModel> Function({required String year, required String round})? _fetchSprintResultsForTest;
 
   @observable
   bool raceAppBarPinned = true;
@@ -93,14 +100,21 @@ abstract class RaceInfoScreenControllerBase with Store {
     allDataIsLoaded = screenError == null;
   }
 
+  /// Pull-to-refresh / ErrorBody: сброс кэшей и перезагрузка секций.
+  @action
+  Future<void> refreshAll() async {
+    await _dataRefresh?.clearAll();
+    await loadAllData();
+  }
+
   /// Results API не отдаёт расписание сессий — смотрим [RacesModel.sprint] или кэш календаря.
   Future<bool> _weekendHasSprint() async {
     if (raceModel.sprint != null) {
       return true;
     }
-    final override = _weekendHasSprintOverride;
-    if (override != null) {
-      return override();
+    final forTest = _weekendHasSprintForTest;
+    if (forTest != null) {
+      return forTest();
     }
     final repository = scheduleRepository;
     if (repository == null) {
@@ -224,32 +238,26 @@ abstract class RaceInfoScreenControllerBase with Store {
   }
 
   Future<ScheduleModel> _fetchSprintResults({required String year, required String round}) {
-    final override = _fetchSprintResultsOverride;
-    return fetchFromLoader(
-      override: override == null ? null : () => override(year: year, round: round),
-      load: () => SprintResultsLoader.loadData(year: year, round: round),
-      parse: ScheduleModel.fromJson,
-      withCache: checkCache,
-    );
+    final forTest = _fetchSprintResultsForTest;
+    if (forTest != null) {
+      return forTest(year: year, round: round);
+    }
+    return _raceWeekendRepository!.sprintResults(year: year, round: round);
   }
 
   Future<ScheduleModel> _fetchQualifyingResults({required String year, required String round}) {
-    final override = _fetchQualifyingResultsOverride;
-    return fetchFromLoader(
-      override: override == null ? null : () => override(year: year, round: round),
-      load: () => QualifyingResultsLoader.loadData(year: year, round: round),
-      parse: ScheduleModel.fromJson,
-      withCache: checkCache,
-    );
+    final forTest = _fetchQualifyingResultsForTest;
+    if (forTest != null) {
+      return forTest(year: year, round: round);
+    }
+    return _raceWeekendRepository!.qualifyingResults(year: year, round: round);
   }
 
   Future<ScheduleModel> _fetchPitStops({required String year, required String round}) {
-    final override = _fetchPitStopsOverride;
-    return fetchFromLoader(
-      override: override == null ? null : () => override(year: year, round: round),
-      load: () => PitStopsLoader.loadData(year: year, round: round),
-      parse: ScheduleModel.fromJson,
-      withCache: checkCache,
-    );
+    final forTest = _fetchPitStopsForTest;
+    if (forTest != null) {
+      return forTest(year: year, round: round);
+    }
+    return _raceWeekendRepository!.pitStops(year: year, round: round);
   }
 }

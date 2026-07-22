@@ -86,6 +86,16 @@ mixin _$DriverScreenController on DriverScreenControllerBase, Store {
     return _$loadAllAsyncAction.run(() => super.loadAll());
   }
 
+  late final _$refreshAllAsyncAction = AsyncAction(
+    'DriverScreenControllerBase.refreshAll',
+    context: context,
+  );
+
+  @override
+  Future<void> refreshAll() {
+    return _$refreshAllAsyncAction.run(() => super.refreshAll());
+  }
+
   late final _$loadCareerStatsAsyncAction = AsyncAction(
     'DriverScreenControllerBase.loadCareerStats',
     context: context,

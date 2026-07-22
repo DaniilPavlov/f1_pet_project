@@ -4,7 +4,7 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/bottom_sheets/default_bottom_sheet.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/list_rows_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart';
-import 'package:f1_pet_project/core/home/models/standings/driver/driver_model.dart';
+import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
 import 'package:flutter/material.dart';
 
 /// Bottom sheet со списком пилотов и опциональным поиском.

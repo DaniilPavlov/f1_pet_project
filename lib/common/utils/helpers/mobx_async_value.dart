@@ -2,6 +2,10 @@ import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:flutter/foundation.dart';
 
 /// Обёртка над асинхронным значением с состояниями загрузки, данных и ошибки.
+///
+/// GoF Behavioral State — поведение UI/контроллера зависит от текущего
+/// [AsyncStatus] (loading / value / error); переходы через `toLoading` /
+/// `toValue` / `toErrorFrom` вместо разрозненных флагов.
 @immutable
 class AsyncValue<T> {
   const AsyncValue({required this.status, this.value, this.error});

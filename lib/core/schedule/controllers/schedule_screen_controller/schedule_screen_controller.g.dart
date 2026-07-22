@@ -146,6 +146,16 @@ mixin _$ScheduleScreenController on ScheduleScreenControllerBase, Store {
     return _$loadAllDataAsyncAction.run(() => super.loadAllData());
   }
 
+  late final _$refreshAllAsyncAction = AsyncAction(
+    'ScheduleScreenControllerBase.refreshAll',
+    context: context,
+  );
+
+  @override
+  Future<void> refreshAll() {
+    return _$refreshAllAsyncAction.run(() => super.refreshAll());
+  }
+
   late final _$_loadScheduleAsyncAction = AsyncAction(
     'ScheduleScreenControllerBase._loadSchedule',
     context: context,

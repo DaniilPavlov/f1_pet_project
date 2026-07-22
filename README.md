@@ -19,19 +19,29 @@ Same idea, other stacks:
 | UI | Flutter, Material |
 | State | MobX + Provider |
 | Navigation | Auto Route |
-| Network | Dio |
+| Network | Dio (`AppDio`, Jolpica `RequestHandler`) |
+| Data | Feature repositories + `AppDataRefresh` (pull-to-refresh) |
 | Codegen | json_serializable, mobx_codegen, auto_route_generator |
 | Map | Yandex MapKit |
+
+## Architecture
+
+- **DI** — root `MultiProvider` in `lib/main.dart` (repos, `AppDataRefresh`, reminders). ESPN `Dio` is created in `main` and passed into repos.
+- **Jolpica** — one `RequestHandler` wired via `ApiLoader.configure` (static access from repos); screens do not call Dio.
+- **Repositories** — Jolpica/ESPN/Wikipedia live in `*/repositories/`.
+- **`AppDataRefresh.clearAll()`** — pull-to-refresh / ErrorBody retry: Jolpica Dio cache, ESPN TTL (news, scoreboard), ESPN media (session), catalogs, Wikipedia thumbs, prefs day-cache (schedule/seasons).
+- **Logging** — package `logger` + Dio `LogInterceptor` in debug.
+- **Controller `*ForTest` params** — optional fetch hooks for unit tests (`@visibleForTesting`).
 
 ## Structure
 
 ```
 f1_pet_project/
 ├── lib/
-│   ├── common/      # widgets, theme, helpers, map package
+│   ├── common/      # widgets, theme, helpers, map, wikipedia
 │   ├── core/        # features: home, results, schedule, news, circuits, h2h, …
-│   ├── data/        # response models, exceptions
-│   ├── services/    # Dio, executor, cache
+│   ├── data/        # shared models (standings, …), exceptions
+│   ├── services/    # AppDio, RequestHandler, ApiLoader, AppDataRefresh, executor
 │   └── router/      # Auto Route
 ├── assets/          # circuit layouts, circuit stats, icons
 ├── test/
@@ -85,11 +95,11 @@ After installing a release APK, check logcat: `RootApp` must log `API key presen
 Use `versionName+versionCode` in `pubspec.yaml`:
 
 ```yaml
-version: 1.3.0+2
+version: 1.4.2+202607220
 ```
 
 Android updates only if the new APK has a **higher `versionCode`** and the **same signing certificate**.  
-Bumping only `1.3.0` → `1.3.1` keeps `versionCode = 1`, so the device will not replace the installed app.  
+Bumping only `1.4.2` → `1.4.3` without raising the `+N` part keeps the same `versionCode`, so the device will not replace the installed app.  
 Different signing (debug vs release / another keystore) also forces uninstall + reinstall.
 
 ## Web
@@ -124,9 +134,9 @@ flutter test
 Release:
 
 ```bash
-# bump version in pubspec.yaml first (e.g. 1.3.0+2), then tag the same versionName
-git tag v1.3.0
-git push origin v1.3.0
+# bump version in pubspec.yaml first (e.g. 1.4.2+202607220), then tag the same versionName
+git tag v1.4.2
+git push origin v1.4.2
 ```
 
 Secrets:

@@ -1,13 +1,12 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/fetch_from_loader.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/utils/helpers/text_editing_controller_extension.dart';
-import 'package:f1_pet_project/core/hall_of_fame/loaders/constructors_standings_loader.dart';
-import 'package:f1_pet_project/core/hall_of_fame/loaders/drivers_standings_loader.dart';
-import 'package:f1_pet_project/core/home/models/standings/standings_lists_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/standings_model.dart';
+import 'package:f1_pet_project/core/hall_of_fame/repositories/season_standings_repository.dart';
 import 'package:f1_pet_project/core/seasons/repositories/seasons_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
+import 'package:f1_pet_project/data/models/standings/standings_lists_model.dart';
+import 'package:f1_pet_project/data/models/standings/standings_model.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
@@ -20,16 +19,24 @@ class HallOfFameScreenController = HallOfFameScreenControllerBase with _$HallOfF
 abstract class HallOfFameScreenControllerBase with Store {
   HallOfFameScreenControllerBase({
     this.seasonsRepository,
-    Future<StandingsModel> Function(String year)? fetchDriversStandings,
-    Future<StandingsModel> Function(String year)? fetchConstructorsStandings,
-  }) : _fetchDriversStandingsOverride = fetchDriversStandings,
-       _fetchConstructorsStandingsOverride = fetchConstructorsStandings {
+    SeasonStandingsRepository? standingsRepository,
+    AppDataRefresh? dataRefresh,
+    @visibleForTesting
+    Future<StandingsModel> Function(String year)? fetchDriversStandingsForTest,
+    @visibleForTesting
+    Future<StandingsModel> Function(String year)? fetchConstructorsStandingsForTest,
+  }) : _standingsRepository = standingsRepository,
+       _dataRefresh = dataRefresh,
+       _fetchDriversStandingsForTest = fetchDriversStandingsForTest,
+       _fetchConstructorsStandingsForTest = fetchConstructorsStandingsForTest {
     yearController = TextEditingController(text: '2026');
   }
 
   final SeasonsRepository? seasonsRepository;
-  final Future<StandingsModel> Function(String year)? _fetchDriversStandingsOverride;
-  final Future<StandingsModel> Function(String year)? _fetchConstructorsStandingsOverride;
+  final SeasonStandingsRepository? _standingsRepository;
+  final AppDataRefresh? _dataRefresh;
+  final Future<StandingsModel> Function(String year)? _fetchDriversStandingsForTest;
+  final Future<StandingsModel> Function(String year)? _fetchConstructorsStandingsForTest;
 
   late final TextEditingController yearController;
 
@@ -81,6 +88,13 @@ abstract class HallOfFameScreenControllerBase with Store {
     await Future.wait([loadConstructorsStandings(year: year), loadDriversStandings(year: year)]);
   }
 
+  /// Pull-to-refresh / ErrorBody: сброс кэшей и перезагрузка.
+  @action
+  Future<void> refreshAll() async {
+    await _dataRefresh?.clearAll();
+    await loadAllData();
+  }
+
   /// Загружает зачёт пилотов за указанный сезон.
   @action
   Future<void> loadDriversStandings({required String year}) async {
@@ -104,20 +118,18 @@ abstract class HallOfFameScreenControllerBase with Store {
   }
 
   Future<StandingsModel> _fetchDriversStandings({required String year}) {
-    final override = _fetchDriversStandingsOverride;
-    return fetchFromLoader(
-      override: override == null ? null : () => override(year),
-      load: () => DriversStandingsLoader.loadData(year: year),
-      parse: StandingsModel.fromJson,
-    );
+    final forTest = _fetchDriversStandingsForTest;
+    if (forTest != null) {
+      return forTest(year);
+    }
+    return _standingsRepository!.drivers(year: year);
   }
 
   Future<StandingsModel> _fetchConstructorsStandings({required String year}) {
-    final override = _fetchConstructorsStandingsOverride;
-    return fetchFromLoader(
-      override: override == null ? null : () => override(year),
-      load: () => ConstructorsStandingsLoader.loadData(year: year),
-      parse: StandingsModel.fromJson,
-    );
+    final forTest = _fetchConstructorsStandingsForTest;
+    if (forTest != null) {
+      return forTest(year);
+    }
+    return _standingsRepository!.constructors(year: year);
   }
 }

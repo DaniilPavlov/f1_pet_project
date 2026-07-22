@@ -28,9 +28,9 @@ import 'package:f1_pet_project/core/h2h/screens/h2h_constructors_screen.dart'
 import 'package:f1_pet_project/core/h2h/screens/h2h_screen.dart' as _i8;
 import 'package:f1_pet_project/core/hall_of_fame/screens/hall_of_fame_screen.dart'
     as _i9;
-import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_model.dart'
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart'
     as _i20;
-import 'package:f1_pet_project/core/home/models/standings/driver/driver_model.dart'
+import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart'
     as _i21;
 import 'package:f1_pet_project/core/home/screens/home_screen.dart' as _i10;
 import 'package:f1_pet_project/core/news/screens/news_screen.dart' as _i11;

@@ -185,6 +185,7 @@
   "settings": "Настройки",
   "locationPermissionNeeded": "Приложению требуется доступ к геопозиции.",
   "tooManyRequests": "Слишком много запросов",
+  "tooManyRequestsSubtitle": "API временно ограничивает частоту. Подождите немного и попробуйте снова.",
   "requestError": "Ошибка при отправке запроса",
   "responseParseError": "Ошибка при обработке ответа от сервера",
   "unexpectedError": "Непредвиденная ошибка",

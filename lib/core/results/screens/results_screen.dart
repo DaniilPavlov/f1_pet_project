@@ -7,10 +7,13 @@ import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/containers/red_border_container.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/race_section_shimmer.dart';
+import 'package:f1_pet_project/core/espn/repositories/espn_scoreboard_repository.dart';
 import 'package:f1_pet_project/core/results/components/last_race_table_section.dart';
 import 'package:f1_pet_project/core/results/components/weekend_scoreboard_section.dart';
 import 'package:f1_pet_project/core/results/controllers/results_screen_controller/results_screen_controller.dart';
+import 'package:f1_pet_project/core/results/repositories/results_repository.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +26,11 @@ class ResultsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<ResultsScreenController>(
-      create: (_) => ResultsScreenController()..loadAllData(),
+      create: (context) => ResultsScreenController(
+        resultsRepository: context.read<ResultsRepository>(),
+        scoreboardRepository: context.read<EspnScoreboardRepository>(),
+        dataRefresh: context.read<AppDataRefresh>(),
+      )..loadAllData(),
       dispose: (_, controller) => controller.dispose(),
       child: Scaffold(
         appBar: const CustomAppBar(),
@@ -54,7 +61,7 @@ class ResultsScreen extends StatelessWidget {
                           ? Padding(
                               padding: const EdgeInsets.all(StaticData.defaultHorizontalPadding),
                               child: ErrorBody(
-                                onTap: controller.loadLastRaceResults,
+                                onTap: controller.refreshAll,
                                 title: controller.screenError?.title ??
                                     controller.lastRace.error?.errorMessage ??
                                     '',

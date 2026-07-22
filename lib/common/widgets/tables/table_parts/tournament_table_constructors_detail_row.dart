@@ -1,6 +1,6 @@
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/widgets/country_flag.dart';
-import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_standings_model.dart';
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_standings_model.dart';
 import 'package:flutter/material.dart';
 
 /// Формирует ячейки строки таблицы конструкторов.

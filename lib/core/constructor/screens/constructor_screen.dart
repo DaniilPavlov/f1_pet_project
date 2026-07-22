@@ -4,6 +4,7 @@ import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/helpers/share_helper.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/career/career_info_row.dart';
@@ -15,10 +16,12 @@ import 'package:f1_pet_project/common/widgets/country_flag.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/career_screen_shimmer.dart';
 import 'package:f1_pet_project/core/constructor/controllers/constructor_screen_controller/constructor_screen_controller.dart';
+import 'package:f1_pet_project/core/constructor/repositories/constructor_career_repository.dart';
 import 'package:f1_pet_project/core/espn/repositories/espn_media_repository.dart';
-import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/driver/driver_model.dart';
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
+import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -34,10 +37,12 @@ class ConstructorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      create: (_) => ConstructorScreenController(
+      create: (context) => ConstructorScreenController(
         constructor: constructor,
         currentDrivers: currentDrivers,
         espnMediaRepository: context.read<EspnMediaRepository>(),
+        careerRepository: context.read<ConstructorCareerRepository>(),
+        dataRefresh: context.read<AppDataRefresh>(),
       )..loadAll(),
       child: Observer(
         builder: (context) {
@@ -62,13 +67,17 @@ class ConstructorScreen extends StatelessWidget {
                 builder: (context) {
                   final error = controller.screenError;
                   if (error != null) {
-                    return ErrorBody(onTap: controller.loadAll, title: error.title, subtitle: error.subtitle);
+                    return ErrorBody(onTap: controller.refreshAll, title: error.title, subtitle: error.subtitle);
                   }
                   if (!controller.isLoaded || stats == null) {
                     return const CareerScreenShimmer(showPhoto: false);
                   }
 
-                  return CustomScrollView(
+                  return RefreshIndicator(
+                    color: AppTheme.red,
+                    onRefresh: controller.refreshAll,
+                    child: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     scrollBehavior: AntiGlowBehavior(),
                     slivers: [
                       SliverToBoxAdapter(
@@ -151,6 +160,7 @@ class ConstructorScreen extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
                   );
                 },
               ),

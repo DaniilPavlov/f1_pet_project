@@ -64,6 +64,16 @@ mixin _$CircuitsScreenController on CircuitsScreenControllerBase, Store {
     return _$loadCircuitsAsyncAction.run(() => super.loadCircuits());
   }
 
+  late final _$refreshAllAsyncAction = AsyncAction(
+    'CircuitsScreenControllerBase.refreshAll',
+    context: context,
+  );
+
+  @override
+  Future<void> refreshAll() {
+    return _$refreshAllAsyncAction.run(() => super.refreshAll());
+  }
+
   late final _$CircuitsScreenControllerBaseActionController = ActionController(
     name: 'CircuitsScreenControllerBase',
     context: context,

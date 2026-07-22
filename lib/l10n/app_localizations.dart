@@ -908,6 +908,12 @@ abstract class AppLocalizations {
   /// **'Слишком много запросов'**
   String get tooManyRequests;
 
+  /// No description provided for @tooManyRequestsSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'API временно ограничивает частоту. Подождите немного и попробуйте снова.'**
+  String get tooManyRequestsSubtitle;
+
   /// No description provided for @requestError.
   ///
   /// In ru, this message translates to:

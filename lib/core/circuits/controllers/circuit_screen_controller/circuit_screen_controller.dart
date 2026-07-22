@@ -2,11 +2,13 @@ import 'package:f1_pet_project/common/circuits/circuit_stats_repository.dart';
 import 'package:f1_pet_project/common/circuits/models/circuit_stats.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
-import 'package:f1_pet_project/common/wikipedia/loaders/wikipedia_page_image_loader.dart';
-import 'package:f1_pet_project/core/circuits/loaders/circuit_history_loader.dart';
+import 'package:f1_pet_project/common/wikipedia/repositories/wikipedia_page_image_repository.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_race_win.dart';
+import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 
 part 'circuit_screen_controller.g.dart';
@@ -18,19 +20,29 @@ class CircuitScreenController = CircuitScreenControllerBase with _$CircuitScreen
 abstract class CircuitScreenControllerBase with Store {
   CircuitScreenControllerBase({
     required this.circuit,
-    Future<List<CircuitRaceWin>> Function({required String circuitId})? fetchWinners,
-    Future<String?> Function(String articleUrl)? fetchPhotoUrl,
-    Future<CircuitStats?> Function(String circuitId)? fetchStats,
-  }) : _fetchWinnersOverride = fetchWinners,
-       _fetchPhotoUrlOverride = fetchPhotoUrl,
-       _fetchStatsOverride = fetchStats;
+    required CircuitStatsRepository statsRepository,
+    CircuitsRepository? circuitsRepository,
+    WikipediaPageImageRepository? wikipediaRepository,
+    AppDataRefresh? dataRefresh,
+    @visibleForTesting Future<List<CircuitRaceWin>> Function({required String circuitId})? fetchWinnersForTest,
+    @visibleForTesting Future<String?> Function(String articleUrl)? fetchPhotoUrlForTest,
+    @visibleForTesting Future<CircuitStats?> Function(String circuitId)? fetchStatsForTest,
+  }) : _statsRepository = statsRepository,
+       _circuitsRepository = circuitsRepository,
+       _wikipediaRepository = wikipediaRepository,
+       _dataRefresh = dataRefresh,
+       _fetchWinnersForTest = fetchWinnersForTest,
+       _fetchPhotoUrlForTest = fetchPhotoUrlForTest,
+       _fetchStatsForTest = fetchStatsForTest;
 
   final CircuitModel circuit;
-  final Future<List<CircuitRaceWin>> Function({required String circuitId})? _fetchWinnersOverride;
-  final Future<String?> Function(String articleUrl)? _fetchPhotoUrlOverride;
-  final Future<CircuitStats?> Function(String circuitId)? _fetchStatsOverride;
-  final CircuitStatsRepository _statsRepository = CircuitStatsRepository();
-
+  final CircuitStatsRepository _statsRepository;
+  final CircuitsRepository? _circuitsRepository;
+  final WikipediaPageImageRepository? _wikipediaRepository;
+  final AppDataRefresh? _dataRefresh;
+  final Future<List<CircuitRaceWin>> Function({required String circuitId})? _fetchWinnersForTest;
+  final Future<String?> Function(String articleUrl)? _fetchPhotoUrlForTest;
+  final Future<CircuitStats?> Function(String circuitId)? _fetchStatsForTest;
   @observable
   AsyncValue<List<CircuitRaceWin>> winners = const AsyncValue.loading();
 
@@ -59,6 +71,13 @@ abstract class CircuitScreenControllerBase with Store {
   @action
   Future<void> loadAll() async {
     await Future.wait([loadWinners(), loadPhoto(), loadStats()]);
+  }
+
+  /// Pull-to-refresh / ErrorBody: сброс кэшей и перезагрузка.
+  @action
+  Future<void> refreshAll() async {
+    await _dataRefresh?.clearAll();
+    await loadAll();
   }
 
   /// Загружает (или перезагружает) список победителей.
@@ -101,25 +120,25 @@ abstract class CircuitScreenControllerBase with Store {
   }
 
   Future<List<CircuitRaceWin>> _fetchWinners({required String circuitId}) {
-    final override = _fetchWinnersOverride;
-    if (override != null) {
-      return override(circuitId: circuitId);
+    final forTest = _fetchWinnersForTest;
+    if (forTest != null) {
+      return forTest(circuitId: circuitId);
     }
-    return CircuitHistoryLoader.loadWinners(circuitId: circuitId);
+    return _circuitsRepository!.winners(circuitId: circuitId);
   }
 
   Future<String?> _fetchPhoto(String articleUrl) {
-    final override = _fetchPhotoUrlOverride;
-    if (override != null) {
-      return override(articleUrl);
+    final forTest = _fetchPhotoUrlForTest;
+    if (forTest != null) {
+      return forTest(articleUrl);
     }
-    return WikipediaPageImageLoader.loadThumbnail(articleUrl: articleUrl);
+    return _wikipediaRepository!.loadThumbnail(articleUrl: articleUrl);
   }
 
   Future<CircuitStats?> _fetchStats(String circuitId) {
-    final override = _fetchStatsOverride;
-    if (override != null) {
-      return override(circuitId);
+    final forTest = _fetchStatsForTest;
+    if (forTest != null) {
+      return forTest(circuitId);
     }
     return _statsRepository.of(circuitId);
   }

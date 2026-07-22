@@ -1,11 +1,11 @@
 import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
+import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/core/schedule/models/race_date_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -91,15 +91,13 @@ class RaceReminderService {
       await _plugin.cancelAll();
       await _scheduleAll(toSchedule);
 
-      if (kDebugMode) {
-        final next = toSchedule.isEmpty ? 'none' : toSchedule.first.notifyAt.toIso8601String();
-        debugPrint(
-          'RaceReminderService: scheduled ${toSchedule.length}/${upcoming.length} '
-          'reminders, next=$next (network=${loadResult.fetchedFromNetwork})',
-        );
-      }
+      final next = toSchedule.isEmpty ? 'none' : toSchedule.first.notifyAt.toIso8601String();
+      logger.d(
+        'RaceReminderService: scheduled ${toSchedule.length}/${upcoming.length} '
+        'reminders, next=$next (network=${loadResult.fetchedFromNetwork})',
+      );
     } on Object catch (error, stackTrace) {
-      debugPrint('RaceReminderService.sync failed: $error\n$stackTrace');
+      logger.e('RaceReminderService.sync failed', error: error, stackTrace: stackTrace);
     }
   }
 
@@ -108,7 +106,7 @@ class RaceReminderService {
       final timeZoneName = (await FlutterTimezone.getLocalTimezone()).identifier;
       tz.setLocalLocation(tz.getLocation(timeZoneName));
     } on Object catch (error) {
-      debugPrint('RaceReminderService: timezone fallback to UTC ($error)');
+      logger.w('RaceReminderService: timezone fallback to UTC', error: error);
       tz.setLocalLocation(tz.UTC);
     }
   }
@@ -180,7 +178,7 @@ class RaceReminderService {
           payload: item.grandPrixName,
         );
       } on Object catch (error) {
-        debugPrint('RaceReminderService: exact failed for ${item.id}, try alarmClock: $error');
+        logger.w('RaceReminderService: exact failed for ${item.id}, try alarmClock', error: error);
         try {
           await _plugin.zonedSchedule(
             id: item.id,
@@ -192,7 +190,7 @@ class RaceReminderService {
             payload: item.grandPrixName,
           );
         } on Object catch (alarmClockError) {
-          debugPrint('RaceReminderService: alarmClock failed for ${item.id}, fallback inexact: $alarmClockError');
+          logger.w('RaceReminderService: alarmClock failed for ${item.id}, fallback inexact', error: alarmClockError);
           await _plugin.zonedSchedule(
             id: item.id,
             title: item.activityTitle,

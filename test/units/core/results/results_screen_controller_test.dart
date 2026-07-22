@@ -12,7 +12,7 @@ void main() {
     group('loadLastRaceResults', () {
       mobxTest(
         'sets value on success',
-        build: () => ResultsScreenController(fetchLastRaceResults: () async => ControllerFixtures.scheduleModel),
+        build: () => ResultsScreenController(fetchLastRaceResultsForTest: () async => ControllerFixtures.scheduleModel),
         value: (store) => store.lastRace,
         act: (store) => store.loadLastRaceResults(),
         expect: () => [
@@ -26,7 +26,7 @@ void main() {
       mobxTest(
         'sets error on failure',
         build: () =>
-            ResultsScreenController(fetchLastRaceResults: () async => throw ResponseParseException('parse error')),
+            ResultsScreenController(fetchLastRaceResultsForTest: () async => throw ResponseParseException('parse error')),
         value: (store) => store.lastRace,
         act: (store) => store.loadLastRaceResults(),
         expect: () => [
@@ -39,8 +39,8 @@ void main() {
     group('loadAllData', () {
       test('loads last race and scoreboard', () async {
         final controller = ResultsScreenController(
-          fetchLastRaceResults: () async => ControllerFixtures.scheduleModel,
-          fetchScoreboard: () async => null,
+          fetchLastRaceResultsForTest: () async => ControllerFixtures.scheduleModel,
+          fetchScoreboardForTest: () async => null,
         );
 
         await controller.loadAllData();
@@ -54,7 +54,7 @@ void main() {
     group('loadScoreboard', () {
       test('keeps results usable when scoreboard fails', () async {
         final controller = ResultsScreenController(
-          fetchScoreboard: () async => throw Exception('network'),
+          fetchScoreboardForTest: () async => throw Exception('network'),
         );
 
         await controller.loadScoreboard();

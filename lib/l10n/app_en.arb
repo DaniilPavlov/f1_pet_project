@@ -160,6 +160,7 @@
   "settings": "Settings",
   "locationPermissionNeeded": "The app needs access to your location.",
   "tooManyRequests": "Too many requests",
+  "tooManyRequestsSubtitle": "The API is rate-limiting requests. Wait a moment and try again.",
   "requestError": "Error sending the request",
   "responseParseError": "Error processing the server response",
   "unexpectedError": "Unexpected error",

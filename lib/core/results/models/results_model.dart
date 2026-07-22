@@ -1,8 +1,8 @@
-import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/driver/driver_model.dart';
 import 'package:f1_pet_project/core/results/models/fastest_lap_model.dart';
 import 'package:f1_pet_project/core/results/models/time_model.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
+import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'results_model.g.dart';

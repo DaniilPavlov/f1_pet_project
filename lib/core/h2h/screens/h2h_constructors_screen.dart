@@ -8,10 +8,13 @@ import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/list_rows_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/constructor_picker_field.dart';
+import 'package:f1_pet_project/core/constructor/repositories/constructor_catalog_repository.dart';
 import 'package:f1_pet_project/core/h2h/components/h2h_compare_table.dart';
 import 'package:f1_pet_project/core/h2h/components/h2h_filters_card.dart';
 import 'package:f1_pet_project/core/h2h/controllers/h2h_constructors_screen_controller/h2h_constructors_screen_controller.dart';
+import 'package:f1_pet_project/core/h2h/repositories/h2h_repository.dart';
 import 'package:f1_pet_project/core/seasons/repositories/seasons_repository.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +27,11 @@ class H2hConstructorsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<H2hConstructorsScreenController>(
-      create: (_) => H2hConstructorsScreenController(
+      create: (context) => H2hConstructorsScreenController(
         seasonsRepository: context.read<SeasonsRepository>(),
+        h2hRepository: context.read<H2hRepository>(),
+        constructorCatalogRepository: context.read<ConstructorCatalogRepository>(),
+        dataRefresh: context.read<AppDataRefresh>(),
       )..bootstrap(),
       dispose: (_, controller) => controller.dispose(),
       child: Scaffold(
@@ -108,7 +114,7 @@ class H2hConstructorsScreen extends StatelessWidget {
                             )
                           else if (comparison.isError)
                             ErrorBody(
-                              onTap: controller.compare,
+                              onTap: controller.refreshComparison,
                               title: controller.screenError!.title,
                               subtitle: controller.screenError!.subtitle,
                             )

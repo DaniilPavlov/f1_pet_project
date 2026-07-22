@@ -8,6 +8,8 @@ import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/news_list_shimmer.dart';
 import 'package:f1_pet_project/core/news/components/news_article_tile.dart';
 import 'package:f1_pet_project/core/news/controllers/news_screen_controller/news_screen_controller.dart';
+import 'package:f1_pet_project/core/news/repositories/news_repository.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +22,10 @@ class NewsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<NewsScreenController>(
-      create: (_) => NewsScreenController()..loadArticles(),
+      create: (context) => NewsScreenController(
+        newsRepository: context.read<NewsRepository>(),
+        dataRefresh: context.read<AppDataRefresh>(),
+      )..loadArticles(),
       child: Scaffold(
         appBar: CustomAppBar(title: context.l10n.newsTitle),
         body: SafeArea(
@@ -33,7 +38,7 @@ class NewsScreen extends StatelessWidget {
               }
               if (controller.articles.isError && articles == null) {
                 return ErrorBody(
-                  onTap: controller.loadArticles,
+                  onTap: controller.refreshAll,
                   title: controller.screenError!.title,
                   subtitle: controller.screenError!.subtitle,
                 );

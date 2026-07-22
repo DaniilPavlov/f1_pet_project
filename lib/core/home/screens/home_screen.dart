@@ -7,6 +7,8 @@ import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/tournament_tables_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/tables/tournament_tables_section.dart';
 import 'package:f1_pet_project/core/home/controllers/home_screen_controller/home_screen_controller.dart';
+import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -19,10 +21,15 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<HomeScreenController>(
-      create: (_) => HomeScreenController()..loadAllData(),
+      create: (context) => HomeScreenController(
+        standingsRepository: context.read<CurrentStandingsRepository>(),
+        dataRefresh: context.read<AppDataRefresh>(),
+      )..loadAllData(),
       child: Scaffold(
         appBar: const CustomAppBar(),
         body: SafeArea(
+          // GoF Behavioral Observer — вид подписывается на MobX-observable
+          // контроллера и перестраивается при изменении standings / ошибок.
           child: Observer(
             builder: (context) {
               final controller = context.read<HomeScreenController>();
@@ -32,7 +39,7 @@ class HomeScreen extends StatelessWidget {
               }
               if (controller.screenError != null && !hasData) {
                 return ErrorBody(
-                  onTap: controller.loadAllData,
+                  onTap: controller.refreshAll,
                   title: controller.screenError!.title,
                   subtitle: controller.screenError!.subtitle,
                 );

@@ -39,7 +39,7 @@ void main() {
         'sets value on success',
         build: () => RaceSearchScreenController(
           l10n: AppLocalizationsRu(),
-          fetchRaceResults: ({required year, required round}) async => ControllerFixtures.scheduleModel,
+          fetchRaceResultsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
         ),
         value: (store) => store.searchedRace,
         act: (store) async {
@@ -66,7 +66,7 @@ void main() {
         'sets message when race is not found',
         build: () => RaceSearchScreenController(
           l10n: AppLocalizationsRu(),
-          fetchRaceResults: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
+          fetchRaceResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
         ),
         value: (store) => store.errorMessage,
         act: (store) async {
@@ -81,7 +81,7 @@ void main() {
         'sets error on failure',
         build: () => RaceSearchScreenController(
           l10n: AppLocalizationsRu(),
-          fetchRaceResults: ({required year, required round}) async => throw ResponseParseException('parse error'),
+          fetchRaceResultsForTest: ({required year, required round}) async => throw ResponseParseException('parse error'),
         ),
         value: (store) => store.searchedRace,
         act: (store) async {

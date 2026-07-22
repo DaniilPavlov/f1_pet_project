@@ -1,7 +1,6 @@
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
-import 'package:f1_pet_project/core/results/race_search/loaders/season_races_loader.dart';
+import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
-import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:mobx/mobx.dart';
 
 part 'race_picker_sheet_controller.g.dart';
@@ -11,9 +10,13 @@ class RacePickerSheetController = RacePickerSheetControllerBase with _$RacePicke
 
 /// Загружает этапы выбранного сезона.
 abstract class RacePickerSheetControllerBase with Store {
-  RacePickerSheetControllerBase({required this.seasonYear});
+  RacePickerSheetControllerBase({
+    required this.seasonYear,
+    required RaceWeekendRepository raceWeekendRepository,
+  }) : _raceWeekendRepository = raceWeekendRepository;
 
   final String seasonYear;
+  final RaceWeekendRepository _raceWeekendRepository;
 
   @observable
   AsyncValue<List<RacesModel>> races = const AsyncValue.loading();
@@ -23,9 +26,8 @@ abstract class RacePickerSheetControllerBase with Store {
   Future<void> load() async {
     races = races.toLoading();
     try {
-      final response = await SeasonRacesLoader.loadData(year: seasonYear);
-      final model = ScheduleModel.fromJson(Map<String, dynamic>.from(response.mrData as Map));
-      races = races.toValue(model.raceTable.races);
+      final list = await _raceWeekendRepository.seasonRaces(year: seasonYear);
+      races = races.toValue(list);
     } on Object catch (error) {
       races = races.toError(error.toString());
     }

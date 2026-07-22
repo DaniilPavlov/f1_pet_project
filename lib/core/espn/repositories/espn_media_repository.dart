@@ -1,19 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
+import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/core/espn/models/espn_driver_card_data.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
-import 'package:flutter/foundation.dart';
+import 'package:f1_pet_project/services/http/app_dio.dart';
 
 /// Медиа ESPN для F1: пилоты (search → athlete → overview) и новости команд.
 class EspnMediaRepository {
-  EspnMediaRepository({Dio? dio})
-    : _dio = dio ??
-          Dio(
-            BaseOptions(
-              connectTimeout: const Duration(milliseconds: 15000),
-              receiveTimeout: const Duration(milliseconds: 20000),
-            ),
-          );
+  EspnMediaRepository({Dio? dio}) : _dio = dio ?? AppDio.external();
 
   final Dio _dio;
   final Map<String, EspnDriverCardData> _driverCardCache = {};
@@ -114,7 +108,7 @@ class EspnMediaRepository {
       _constructorNewsCache[cacheKey] = news;
       return news;
     } on Object catch (error, stackTrace) {
-      debugPrint('EspnMediaRepository.constructorNews failed: $error\n$stackTrace');
+      logger.e('EspnMediaRepository.constructorNews failed', error: error, stackTrace: stackTrace);
       const empty = <NewsArticleModel>[];
       _constructorNewsCache[cacheKey] = empty;
       return empty;
@@ -222,7 +216,7 @@ class EspnMediaRepository {
 
       return null;
     } on Object catch (error, stackTrace) {
-      debugPrint('EspnMediaRepository.athlete failed: $error\n$stackTrace');
+      logger.e('EspnMediaRepository.athlete failed', error: error, stackTrace: stackTrace);
       return null;
     }
   }
@@ -235,7 +229,7 @@ class EspnMediaRepository {
       );
       return _parseArticles(response.data?['news']).take(5).toList();
     } on Object catch (error, stackTrace) {
-      debugPrint('EspnMediaRepository.overview failed: $error\n$stackTrace');
+      logger.e('EspnMediaRepository.overview failed', error: error, stackTrace: stackTrace);
       return const [];
     }
   }
@@ -288,7 +282,7 @@ class EspnMediaRepository {
       }
       return id.toString();
     } on Object catch (error, stackTrace) {
-      debugPrint('EspnMediaRepository.search failed: $error\n$stackTrace');
+      logger.e('EspnMediaRepository.search failed', error: error, stackTrace: stackTrace);
       return null;
     }
   }
@@ -299,5 +293,11 @@ class EspnMediaRepository {
     var name = _normalize(value);
     name = name.replaceAll(RegExp(r'\bf1 team\b'), '').replaceAll(RegExp(r'\bteam\b'), '');
     return name.replaceAll(RegExp(r'\s+'), ' ').trim();
+  }
+
+  /// Сброс in-memory media-кэша (pull-to-refresh).
+  void clearCache() {
+    _driverCardCache.clear();
+    _constructorNewsCache.clear();
   }
 }

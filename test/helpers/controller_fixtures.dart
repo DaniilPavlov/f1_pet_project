@@ -2,19 +2,19 @@ import 'package:f1_pet_project/core/circuits/models/circuit_location_model.dart'
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_table_model.dart';
 import 'package:f1_pet_project/core/circuits/models/circuits_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_standings_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/driver/driver_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/driver/driver_standings_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/standings_lists_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/standings_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/standings_table_model.dart';
 import 'package:f1_pet_project/core/results/models/pit_stops_model.dart';
 import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
 import 'package:f1_pet_project/core/results/models/results_model.dart';
 import 'package:f1_pet_project/core/schedule/models/race_table_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_standings_model.dart';
+import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
+import 'package:f1_pet_project/data/models/standings/driver/driver_standings_model.dart';
+import 'package:f1_pet_project/data/models/standings/standings_lists_model.dart';
+import 'package:f1_pet_project/data/models/standings/standings_model.dart';
+import 'package:f1_pet_project/data/models/standings/standings_table_model.dart';
 
 abstract final class ControllerFixtures {
   static ConstructorModel get constructor => ConstructorModel(

@@ -4,13 +4,15 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:flutter/material.dart';
 
-/// Экран ошибки с изображением и кнопкой повторной попытки.
+/// Экран ошибки с изображением и кнопкой повторной попытки ([onTap]).
+///
+/// GoF Behavioral Command — действие повтора инкапсулировано в [onTap]
+/// (`refreshAll` / `clearAll`+reload); вид только вызывает команду, не зная деталей.
 class ErrorBody extends StatelessWidget {
-  const ErrorBody({required this.onTap, required this.title, required this.subtitle, this.withImage = true, super.key});
+  const ErrorBody({required this.onTap, required this.title, required this.subtitle, super.key});
   final VoidCallback onTap;
   final String? title;
   final String? subtitle;
-  final bool withImage;
 
   @override
   Widget build(BuildContext context) {

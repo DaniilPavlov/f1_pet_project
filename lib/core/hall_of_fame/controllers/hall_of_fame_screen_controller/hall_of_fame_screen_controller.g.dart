@@ -96,6 +96,16 @@ mixin _$HallOfFameScreenController on HallOfFameScreenControllerBase, Store {
     return _$loadAllDataAsyncAction.run(() => super.loadAllData());
   }
 
+  late final _$refreshAllAsyncAction = AsyncAction(
+    'HallOfFameScreenControllerBase.refreshAll',
+    context: context,
+  );
+
+  @override
+  Future<void> refreshAll() {
+    return _$refreshAllAsyncAction.run(() => super.refreshAll());
+  }
+
   late final _$loadDriversStandingsAsyncAction = AsyncAction(
     'HallOfFameScreenControllerBase.loadDriversStandings',
     context: context,

@@ -15,8 +15,10 @@ import 'package:f1_pet_project/core/results/race_info/components/qualification_t
 import 'package:f1_pet_project/core/results/race_info/components/qualification_table_appbar.dart';
 import 'package:f1_pet_project/core/results/race_info/components/race_info_table_appbar.dart';
 import 'package:f1_pet_project/core/results/race_info/controllers/race_info_screen_controller/race_info_screen_controller.dart';
+import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -32,9 +34,11 @@ class RaceInfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<RaceInfoScreenController>(
-      create: (_) => RaceInfoScreenController(
+      create: (context) => RaceInfoScreenController(
         raceModel: raceModel,
         scheduleRepository: context.read<ScheduleRepository>(),
+        raceWeekendRepository: context.read<RaceWeekendRepository>(),
+        dataRefresh: context.read<AppDataRefresh>(),
       )..loadAllData(),
       child: Observer(
         builder: (context) {
@@ -58,7 +62,7 @@ class RaceInfoScreen extends StatelessWidget {
                 builder: (context) {
                   if (controller.screenError != null) {
                     return ErrorBody(
-                      onTap: controller.loadAllData,
+                      onTap: controller.refreshAll,
                       title: controller.screenError!.title,
                       subtitle: controller.screenError!.subtitle,
                     );
@@ -69,7 +73,11 @@ class RaceInfoScreen extends StatelessWidget {
 
                   final sprintResults = controller.sprintResults.value ?? const [];
 
-                  return CustomScrollView(
+                  return RefreshIndicator(
+                    color: AppTheme.red,
+                    onRefresh: controller.refreshAll,
+                    child: CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 scrollBehavior: AntiGlowBehavior(),
                 slivers: [
                   SliverToBoxAdapter(
@@ -164,7 +172,8 @@ class RaceInfoScreen extends StatelessWidget {
                     ),
                   ),
                 ],
-              );
+              ),
+                  );
                 },
               ),
             ),

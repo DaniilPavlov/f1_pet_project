@@ -441,6 +441,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tooManyRequests => 'Слишком много запросов';
 
   @override
+  String get tooManyRequestsSubtitle =>
+      'API временно ограничивает частоту. Подождите немного и попробуйте снова.';
+
+  @override
   String get requestError => 'Ошибка при отправке запроса';
 
   @override

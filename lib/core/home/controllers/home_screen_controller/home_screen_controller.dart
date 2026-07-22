@@ -1,13 +1,12 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/fetch_from_loader.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
-import 'package:f1_pet_project/core/home/loaders/current_constructors_standings_loader.dart';
-import 'package:f1_pet_project/core/home/loaders/current_drivers_standings_loader.dart';
-import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_standings_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/driver/driver_standings_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/standings_model.dart';
+import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
-import 'package:f1_pet_project/services/request_handler.dart';
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_standings_model.dart';
+import 'package:f1_pet_project/data/models/standings/driver/driver_standings_model.dart';
+import 'package:f1_pet_project/data/models/standings/standings_model.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 
 part 'home_screen_controller.g.dart';
@@ -18,13 +17,19 @@ class HomeScreenController = HomeScreenControllerBase with _$HomeScreenControlle
 /// Управляет загрузкой и состоянием турнирных таблиц пилотов и конструкторов.
 abstract class HomeScreenControllerBase with Store {
   HomeScreenControllerBase({
-    Future<StandingsModel> Function()? fetchCurrentDriversStandings,
-    Future<StandingsModel> Function()? fetchCurrentConstructorsStandings,
-  }) : _fetchCurrentDriversStandingsOverride = fetchCurrentDriversStandings,
-       _fetchCurrentConstructorsStandingsOverride = fetchCurrentConstructorsStandings;
+    CurrentStandingsRepository? standingsRepository,
+    AppDataRefresh? dataRefresh,
+    @visibleForTesting Future<StandingsModel> Function()? fetchCurrentDriversStandingsForTest,
+    @visibleForTesting Future<StandingsModel> Function()? fetchCurrentConstructorsStandingsForTest,
+  }) : _standingsRepository = standingsRepository,
+       _dataRefresh = dataRefresh,
+       _fetchCurrentDriversStandingsForTest = fetchCurrentDriversStandingsForTest,
+       _fetchCurrentConstructorsStandingsForTest = fetchCurrentConstructorsStandingsForTest;
 
-  final Future<StandingsModel> Function()? _fetchCurrentDriversStandingsOverride;
-  final Future<StandingsModel> Function()? _fetchCurrentConstructorsStandingsOverride;
+  final CurrentStandingsRepository? _standingsRepository;
+  final AppDataRefresh? _dataRefresh;
+  final Future<StandingsModel> Function()? _fetchCurrentDriversStandingsForTest;
+  final Future<StandingsModel> Function()? _fetchCurrentConstructorsStandingsForTest;
 
   @observable
   AsyncValue<List<DriverStandingsModel>> currentDrivers = const AsyncValue.loading();
@@ -47,10 +52,10 @@ abstract class HomeScreenControllerBase with Store {
     await Future.wait([loadCurrentDriversStandings(), loadCurrentConstructorsStandings()]);
   }
 
-  /// Pull-to-refresh: сброс Jolpica-кэша и перезагрузка таблиц.
+  /// Pull-to-refresh: единый сброс кэшей и перезагрузка таблиц.
   @action
   Future<void> refreshAll() async {
-    RequestHandler().clearCache();
+    await _dataRefresh?.clearAll();
     await loadAllData();
   }
 
@@ -85,15 +90,19 @@ abstract class HomeScreenControllerBase with Store {
     );
   }
 
-  Future<StandingsModel> _fetchCurrentDriversStandings() => fetchFromLoader(
-    override: _fetchCurrentDriversStandingsOverride,
-    load: CurrentDriversStandingsLoader.loadData,
-    parse: StandingsModel.fromJson,
-  );
+  Future<StandingsModel> _fetchCurrentDriversStandings() {
+    final forTest = _fetchCurrentDriversStandingsForTest;
+    if (forTest != null) {
+      return forTest();
+    }
+    return _standingsRepository!.drivers();
+  }
 
-  Future<StandingsModel> _fetchCurrentConstructorsStandings() => fetchFromLoader(
-    override: _fetchCurrentConstructorsStandingsOverride,
-    load: CurrentConstructorsStandingsLoader.loadData,
-    parse: StandingsModel.fromJson,
-  );
+  Future<StandingsModel> _fetchCurrentConstructorsStandings() {
+    final forTest = _fetchCurrentConstructorsStandingsForTest;
+    if (forTest != null) {
+      return forTest();
+    }
+    return _standingsRepository!.constructors();
+  }
 }

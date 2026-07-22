@@ -1,10 +1,11 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/utils/helpers/text_editing_controller_extension.dart';
-import 'package:f1_pet_project/core/finish_status/loaders/season_status_loader.dart';
 import 'package:f1_pet_project/core/finish_status/models/finish_status_item.dart';
+import 'package:f1_pet_project/core/finish_status/repositories/finish_status_repository.dart';
 import 'package:f1_pet_project/core/seasons/repositories/seasons_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
@@ -17,13 +18,20 @@ class FinishStatusScreenController = FinishStatusScreenControllerBase with _$Fin
 abstract class FinishStatusScreenControllerBase with Store {
   FinishStatusScreenControllerBase({
     this.seasonsRepository,
-    Future<List<FinishStatusItem>> Function(String year)? fetchStatuses,
-  }) : _fetchStatusesOverride = fetchStatuses {
+    FinishStatusRepository? finishStatusRepository,
+    AppDataRefresh? dataRefresh,
+    @visibleForTesting
+    Future<List<FinishStatusItem>> Function(String year)? fetchStatusesForTest,
+  }) : _finishStatusRepository = finishStatusRepository,
+       _dataRefresh = dataRefresh,
+       _fetchStatusesForTest = fetchStatusesForTest {
     yearController = TextEditingController(text: '2026');
   }
 
   final SeasonsRepository? seasonsRepository;
-  final Future<List<FinishStatusItem>> Function(String year)? _fetchStatusesOverride;
+  final FinishStatusRepository? _finishStatusRepository;
+  final AppDataRefresh? _dataRefresh;
+  final Future<List<FinishStatusItem>> Function(String year)? _fetchStatusesForTest;
 
   late final TextEditingController yearController;
 
@@ -56,6 +64,13 @@ abstract class FinishStatusScreenControllerBase with Store {
     await loadAllData();
   }
 
+  /// Pull-to-refresh / ErrorBody: сброс кэшей и перезагрузка.
+  @action
+  Future<void> refreshAll() async {
+    await _dataRefresh?.clearAll();
+    await loadAllData();
+  }
+
   @action
   Future<void> loadAllData() async {
     if (!yearController.isValidYear) {
@@ -75,10 +90,10 @@ abstract class FinishStatusScreenControllerBase with Store {
   }
 
   Future<List<FinishStatusItem>> _fetchStatuses({required String year}) {
-    final override = _fetchStatusesOverride;
-    if (override != null) {
-      return override(year);
+    final forTest = _fetchStatusesForTest;
+    if (forTest != null) {
+      return forTest(year);
     }
-    return SeasonStatusLoader.loadData(year: year);
+    return _finishStatusRepository!.forSeason(year: year);
   }
 }

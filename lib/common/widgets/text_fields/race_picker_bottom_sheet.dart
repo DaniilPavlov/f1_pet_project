@@ -5,6 +5,7 @@ import 'package:f1_pet_project/common/widgets/bottom_sheets/default_bottom_sheet
 import 'package:f1_pet_project/common/widgets/shimmer/list_rows_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/controllers/race_picker_sheet_controller/race_picker_sheet_controller.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/race_picker_field.dart';
+import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -24,7 +25,10 @@ class RacePickerBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      create: (_) => RacePickerSheetController(seasonYear: seasonYear)..load(),
+      create: (context) => RacePickerSheetController(
+        seasonYear: seasonYear,
+        raceWeekendRepository: context.read<RaceWeekendRepository>(),
+      )..load(),
       child: SizedBox(
         height: MediaQuery.sizeOf(context).height * 0.6,
         child: DefaultBottomSheet(

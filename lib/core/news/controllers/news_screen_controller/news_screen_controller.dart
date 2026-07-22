@@ -1,8 +1,10 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
-import 'package:f1_pet_project/core/news/loaders/news_loader.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
+import 'package:f1_pet_project/core/news/repositories/news_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 
 part 'news_screen_controller.g.dart';
@@ -12,10 +14,17 @@ class NewsScreenController = NewsScreenControllerBase with _$NewsScreenControlle
 
 /// Управляет загрузкой ленты новостей ESPN F1.
 abstract class NewsScreenControllerBase with Store {
-  NewsScreenControllerBase({Future<List<NewsArticleModel>> Function()? fetchArticles})
-    : _fetchArticlesOverride = fetchArticles;
+  NewsScreenControllerBase({
+    NewsRepository? newsRepository,
+    AppDataRefresh? dataRefresh,
+    @visibleForTesting Future<List<NewsArticleModel>> Function()? fetchArticlesForTest,
+  }) : _newsRepository = newsRepository,
+       _dataRefresh = dataRefresh,
+       _fetchArticlesForTest = fetchArticlesForTest;
 
-  final Future<List<NewsArticleModel>> Function()? _fetchArticlesOverride;
+  final NewsRepository? _newsRepository;
+  final AppDataRefresh? _dataRefresh;
+  final Future<List<NewsArticleModel>> Function()? _fetchArticlesForTest;
 
   @observable
   AsyncValue<List<NewsArticleModel>> articles = const AsyncValue.loading();
@@ -26,17 +35,18 @@ abstract class NewsScreenControllerBase with Store {
   /// Загружает новости (сначала кэш, без мигания лоадера при повторном открытии).
   @action
   Future<void> loadArticles({bool forceRefresh = false}) async {
-    final useSharedCache = _fetchArticlesOverride == null;
+    final newsRepository = _newsRepository;
+    final useSharedCache = _fetchArticlesForTest == null && newsRepository != null;
     if (useSharedCache && !forceRefresh) {
-      final cached = NewsLoader.peek;
-      if (NewsLoader.isFresh && cached != null) {
+      final cached = newsRepository.peek;
+      if (newsRepository.isFresh && cached != null) {
         articles = articles.toValue(cached);
         return;
       }
       if (cached != null) {
         articles = articles.toValue(cached);
         try {
-          final data = await NewsLoader.loadArticles();
+          final data = await newsRepository.loadArticles();
           articles = articles.toValue(data);
         } on Object {
           // оставляем кэш на экране
@@ -47,7 +57,7 @@ abstract class NewsScreenControllerBase with Store {
 
     if (forceRefresh && useSharedCache) {
       try {
-        final data = await NewsLoader.loadArticles(forceRefresh: true);
+        final data = await newsRepository.loadArticles(forceRefresh: true);
         articles = articles.toValue(data);
       } on Object {
         if (!articles.isValue) {
@@ -70,10 +80,18 @@ abstract class NewsScreenControllerBase with Store {
     );
   }
 
-  /// Pull-to-refresh.
+  /// Pull-to-refresh: единый сброс кэшей и перезагрузка ленты.
   @action
-  Future<void> refreshAll() => loadArticles(forceRefresh: true);
+  Future<void> refreshAll() async {
+    await _dataRefresh?.clearAll();
+    await loadArticles(forceRefresh: true);
+  }
 
-  Future<List<NewsArticleModel>> _fetchArticles() =>
-      _fetchArticlesOverride?.call() ?? NewsLoader.loadArticles();
+  Future<List<NewsArticleModel>> _fetchArticles() {
+    final forTest = _fetchArticlesForTest;
+    if (forTest != null) {
+      return forTest();
+    }
+    return _newsRepository!.loadArticles();
+  }
 }

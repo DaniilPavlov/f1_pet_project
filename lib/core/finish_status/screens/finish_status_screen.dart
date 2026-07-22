@@ -10,7 +10,9 @@ import 'package:f1_pet_project/common/widgets/shimmer/list_rows_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/season_picker_field.dart';
 import 'package:f1_pet_project/core/finish_status/controllers/finish_status_screen_controller/finish_status_screen_controller.dart';
 import 'package:f1_pet_project/core/finish_status/models/finish_status_item.dart';
+import 'package:f1_pet_project/core/finish_status/repositories/finish_status_repository.dart';
 import 'package:f1_pet_project/core/seasons/repositories/seasons_repository.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -23,8 +25,10 @@ class FinishStatusScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<FinishStatusScreenController>(
-      create: (_) => FinishStatusScreenController(
+      create: (context) => FinishStatusScreenController(
         seasonsRepository: context.read<SeasonsRepository>(),
+        finishStatusRepository: context.read<FinishStatusRepository>(),
+        dataRefresh: context.read<AppDataRefresh>(),
       )..bootstrap(),
       dispose: (_, controller) => controller.dispose(),
       child: Scaffold(
@@ -34,45 +38,50 @@ class FinishStatusScreen extends StatelessWidget {
             builder: (context) {
               final controller = context.read<FinishStatusScreenController>();
 
-              return CustomScrollView(
-                scrollBehavior: AntiGlowBehavior(),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        StaticData.defaultHorizontalPadding,
-                        StaticData.defaultVerticalPadding,
-                        StaticData.defaultHorizontalPadding,
-                        StaticData.defaultVerticalPadding,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(context.l10n.finishStatusSubtitle, style: AppStyles.body),
-                          const SizedBox(height: 16),
-                          SizedBox(
-                            width: MediaQuery.sizeOf(context).width * 0.5,
-                            child: SeasonPickerField(
-                              controller: controller.yearController,
-                              onChanged: controller.loadAllData,
+              return RefreshIndicator(
+                color: AppTheme.red,
+                onRefresh: controller.refreshAll,
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  scrollBehavior: AntiGlowBehavior(),
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          StaticData.defaultHorizontalPadding,
+                          StaticData.defaultVerticalPadding,
+                          StaticData.defaultHorizontalPadding,
+                          StaticData.defaultVerticalPadding,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(context.l10n.finishStatusSubtitle, style: AppStyles.body),
+                            const SizedBox(height: 16),
+                            SizedBox(
+                              width: MediaQuery.sizeOf(context).width * 0.5,
+                              child: SeasonPickerField(
+                                controller: controller.yearController,
+                                onChanged: controller.loadAllData,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 20),
-                          if (controller.statuses.isLoading)
-                            const ListRowsShimmer(rowCount: 8, padding: EdgeInsets.zero)
-                          else if (controller.statuses.isError)
-                            ErrorBody(
-                              onTap: controller.loadAllData,
-                              title: controller.screenError!.title,
-                              subtitle: controller.screenError!.subtitle,
-                            )
-                          else
-                            _StatusList(items: controller.statuses.value ?? const []),
-                        ],
+                            const SizedBox(height: 20),
+                            if (controller.statuses.isLoading)
+                              const ListRowsShimmer(rowCount: 8, padding: EdgeInsets.zero)
+                            else if (controller.statuses.isError)
+                              ErrorBody(
+                                onTap: controller.refreshAll,
+                                title: controller.screenError!.title,
+                                subtitle: controller.screenError!.subtitle,
+                              )
+                            else
+                              _StatusList(items: controller.statuses.value ?? const []),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),

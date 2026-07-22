@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:f1_pet_project/common/utils/constants/keys.dart';
 import 'package:f1_pet_project/common/widgets/nav_bar/navbar.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,6 @@ class ScaffoldWithNavBarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
-      scaffoldKey: Keys.scaffoldKey,
       routes: const [HomeRouter(), ResultsRouter(), ScheduleRouter(), NewsRouter(), CircuitsRouter()],
       bottomNavigationBuilder: (_, tabsRouter) => NavBar(tabsRouter: tabsRouter),
     );

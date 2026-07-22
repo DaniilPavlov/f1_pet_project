@@ -1,6 +1,6 @@
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/constructor/constructor_model.dart';
-import 'package:f1_pet_project/core/home/models/standings/driver/driver_model.dart';
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
+import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
 
 /// Финиш в конкретной гонке (победа / подиум / поул).
 class CareerRaceResult {

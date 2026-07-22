@@ -79,6 +79,16 @@ mixin _$ConstructorScreenController on ConstructorScreenControllerBase, Store {
     return _$loadAllAsyncAction.run(() => super.loadAll());
   }
 
+  late final _$refreshAllAsyncAction = AsyncAction(
+    'ConstructorScreenControllerBase.refreshAll',
+    context: context,
+  );
+
+  @override
+  Future<void> refreshAll() {
+    return _$refreshAllAsyncAction.run(() => super.refreshAll());
+  }
+
   late final _$loadCareerStatsAsyncAction = AsyncAction(
     'ConstructorScreenControllerBase.loadCareerStats',
     context: context,

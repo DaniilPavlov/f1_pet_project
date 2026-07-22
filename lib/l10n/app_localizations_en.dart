@@ -441,6 +441,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tooManyRequests => 'Too many requests';
 
   @override
+  String get tooManyRequestsSubtitle =>
+      'The API is rate-limiting requests. Wait a moment and try again.';
+
+  @override
   String get requestError => 'Error sending the request';
 
   @override

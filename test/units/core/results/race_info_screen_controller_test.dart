@@ -18,7 +18,7 @@ void main() {
         'sets value on success',
         build: () => RaceInfoScreenController(
           raceModel: ControllerFixtures.race,
-          fetchQualifyingResults: ({required year, required round}) async => ControllerFixtures.scheduleModel,
+          fetchQualifyingResultsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
         ),
         value: (store) => store.qualifyingResults,
         act: (store) => store.loadQualifyingResults(),
@@ -34,7 +34,7 @@ void main() {
         'sets error on failure',
         build: () => RaceInfoScreenController(
           raceModel: ControllerFixtures.race,
-          fetchQualifyingResults: ({required year, required round}) async =>
+          fetchQualifyingResultsForTest: ({required year, required round}) async =>
               throw ResponseParseException('parse error'),
         ),
         value: (store) => store.qualifyingResults,
@@ -88,7 +88,7 @@ void main() {
         'resolves driver names from race results without extra API calls',
         build: () => RaceInfoScreenController(
           raceModel: ControllerFixtures.race,
-          fetchPitStops: ({required year, required round}) async => ControllerFixtures.scheduleModel,
+          fetchPitStopsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
         ),
         value: (store) => store.pitStops,
         act: (store) => store.loadPitStops(),
@@ -106,10 +106,10 @@ void main() {
         'marks data as loaded',
         build: () => RaceInfoScreenController(
           raceModel: ControllerFixtures.race,
-          weekendHasSprint: () async => false,
-          fetchQualifyingResults: ({required year, required round}) async => ControllerFixtures.scheduleModel,
-          fetchPitStops: ({required year, required round}) async => ControllerFixtures.scheduleModel,
-          fetchSprintResults: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
+          weekendHasSprintForTest: () async => false,
+          fetchQualifyingResultsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
+          fetchPitStopsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
+          fetchSprintResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
         ),
         value: (store) => store.allDataIsLoaded,
         act: (store) => store.loadAllData(),
@@ -122,7 +122,7 @@ void main() {
         'sets empty list when weekend has no sprint',
         build: () => RaceInfoScreenController(
           raceModel: ControllerFixtures.race,
-          fetchSprintResults: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
+          fetchSprintResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
         ),
         value: (store) => store.sprintResults,
         act: (store) => store.loadSprintResults(),

@@ -1,10 +1,10 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/fetch_from_loader.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
-import 'package:f1_pet_project/core/circuits/loaders/circuits_loader.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
 import 'package:f1_pet_project/core/circuits/models/circuits_model.dart';
+import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
@@ -15,10 +15,18 @@ class CircuitsScreenController = CircuitsScreenControllerBase with _$CircuitsScr
 
 /// Управляет загрузкой трасс и переключением вкладок списка/карты.
 abstract class CircuitsScreenControllerBase with Store {
-  CircuitsScreenControllerBase({Future<CircuitsModel> Function()? fetchCircuits})
-    : _fetchCircuitsOverride = fetchCircuits;
+  CircuitsScreenControllerBase({
+    CircuitsRepository? circuitsRepository,
+    AppDataRefresh? dataRefresh,
+    @visibleForTesting
+    Future<CircuitsModel> Function()? fetchCircuitsForTest,
+  }) : _circuitsRepository = circuitsRepository,
+       _dataRefresh = dataRefresh,
+       _fetchCircuitsForTest = fetchCircuitsForTest;
 
-  final Future<CircuitsModel> Function()? _fetchCircuitsOverride;
+  final CircuitsRepository? _circuitsRepository;
+  final AppDataRefresh? _dataRefresh;
+  final Future<CircuitsModel> Function()? _fetchCircuitsForTest;
 
   final pageController = PageController();
 
@@ -47,6 +55,13 @@ abstract class CircuitsScreenControllerBase with Store {
     );
   }
 
+  /// Pull-to-refresh / ErrorBody: сброс кэшей и перезагрузка списка.
+  @action
+  Future<void> refreshAll() async {
+    await _dataRefresh?.clearAll();
+    await loadCircuits();
+  }
+
   /// Переключает активную вкладку (карта или список).
   @action
   void changeActivePage(int value) {
@@ -56,6 +71,11 @@ abstract class CircuitsScreenControllerBase with Store {
     }
   }
 
-  Future<CircuitsModel> _fetchCircuits() =>
-      fetchFromLoader(override: _fetchCircuitsOverride, load: CircuitsLoader.loadData, parse: CircuitsModel.fromJson);
+  Future<CircuitsModel> _fetchCircuits() {
+    final forTest = _fetchCircuitsForTest;
+    if (forTest != null) {
+      return forTest();
+    }
+    return _circuitsRepository!.all();
+  }
 }

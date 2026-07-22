@@ -1,6 +1,6 @@
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/core/hall_of_fame/controllers/hall_of_fame_screen_controller/hall_of_fame_screen_controller.dart';
-import 'package:f1_pet_project/core/home/models/standings/standings_lists_model.dart';
+import 'package:f1_pet_project/data/models/standings/standings_lists_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/controller_fixtures.dart';
@@ -35,7 +35,7 @@ void main() {
       mobxTest(
         'sets value on success',
         build: () =>
-            HallOfFameScreenController(fetchDriversStandings: (_) async => ControllerFixtures.driversStandingsModel),
+            HallOfFameScreenController(fetchDriversStandingsForTest: (_) async => ControllerFixtures.driversStandingsModel),
         value: (store) => store.driversStandings,
         act: (store) => store.loadDriversStandings(year: '2024'),
         expect: () => [
@@ -50,8 +50,8 @@ void main() {
     group('loadAllData', () {
       test('loads standings for selected year', () async {
         final controller = HallOfFameScreenController(
-          fetchDriversStandings: (_) async => ControllerFixtures.driversStandingsModel,
-          fetchConstructorsStandings: (_) async => ControllerFixtures.constructorsStandingsModel,
+          fetchDriversStandingsForTest: (_) async => ControllerFixtures.driversStandingsModel,
+          fetchConstructorsStandingsForTest: (_) async => ControllerFixtures.constructorsStandingsModel,
         );
 
         await controller.loadAllData();

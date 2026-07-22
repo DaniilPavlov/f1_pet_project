@@ -3,7 +3,7 @@ import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/data/models/baseResponse/base_response_model.dart';
 import 'package:f1_pet_project/services/api_loader.dart';
 
-/// Общие хелперы загрузки карьерной статистики (Jolpica ≤4 req/s).
+/// Хелперы карьерных запросов к Jolpica (throttle ≤4 req/s, пагинация).
 abstract class CareerLoaderHelper {
   static const minGap = Duration(milliseconds: 500);
 
@@ -89,21 +89,7 @@ abstract class CareerLoaderHelper {
     return int.tryParse(total?.toString() ?? '') ?? 0;
   }
 
-  /// Число уникальных гонок (`season`+`round`) в RaceTable ответа.
-  static int uniqueRaceCount(BaseResponseModel response) {
-    try {
-      final schedule = ScheduleModel.fromJson(Map<String, dynamic>.from(response.mrData as Map));
-      final keys = <String>{};
-      for (final race in schedule.raceTable.races) {
-        keys.add(_raceKey(race.season, race.round));
-      }
-      return keys.length;
-    } on Object {
-      return 0;
-    }
-  }
-
-  /// Уникальные гонки по всем страницам.
+  /// Уникальные гонки (`season`+`round`) по всем страницам.
   static int uniqueRaceCountAcross(List<BaseResponseModel> pages) {
     final keys = <String>{};
     for (final page in pages) {

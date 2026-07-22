@@ -13,6 +13,7 @@ import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -27,13 +28,21 @@ abstract class ScheduleScreenControllerBase with Store {
   ScheduleScreenControllerBase({
     required this.l10n,
     ScheduleRepository? scheduleRepository,
-    Future<ScheduleModel> Function()? fetchSchedule,
-  }) : _scheduleRepository = scheduleRepository,
-       _fetchScheduleOverride = fetchSchedule;
+    AppDataRefresh? dataRefresh,
+    @visibleForTesting
+    Future<ScheduleModel> Function()? fetchScheduleForTest,
+  }) : assert(
+         scheduleRepository != null || fetchScheduleForTest != null,
+         'Provide scheduleRepository or fetchScheduleForTest',
+       ),
+       _scheduleRepository = scheduleRepository,
+       _dataRefresh = dataRefresh,
+       _fetchScheduleForTest = fetchScheduleForTest;
 
   final AppLocalizations l10n;
   final ScheduleRepository? _scheduleRepository;
-  final Future<ScheduleModel> Function()? _fetchScheduleOverride;
+  final AppDataRefresh? _dataRefresh;
+  final Future<ScheduleModel> Function()? _fetchScheduleForTest;
 
   final scrollController = ScrollController();
   Timer? _ticker;
@@ -99,6 +108,13 @@ abstract class ScheduleScreenControllerBase with Store {
     }
 
     allDataIsLoaded = screenError == null;
+  }
+
+  /// Pull-to-refresh: единый сброс кэшей и перезагрузка календаря.
+  @action
+  Future<void> refreshAll() async {
+    await _dataRefresh?.clearAll();
+    await loadAllData();
   }
 
   /// Обрабатывает выбор даты в календаре и обновляет список сессий.
@@ -217,12 +233,11 @@ abstract class ScheduleScreenControllerBase with Store {
   }
 
   Future<ScheduleModel> _fetchSchedule() async {
-    final override = _fetchScheduleOverride;
-    if (override != null) {
-      return override();
+    final forTest = _fetchScheduleForTest;
+    if (forTest != null) {
+      return forTest();
     }
-    final repository = _scheduleRepository ?? ScheduleRepository();
-    final result = await repository.getSchedule();
+    final result = await _scheduleRepository!.getSchedule();
     return result.schedule;
   }
 }

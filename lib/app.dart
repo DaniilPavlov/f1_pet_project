@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:f1_pet_project/common/localization/error_copy.dart';
 import 'package:f1_pet_project/common/localization/locale_controller.dart';
+import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/router/app_router.dart';
@@ -68,7 +70,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       await reminders.sync(locale: localeController.locale);
       _remindersReady = true;
     } on Object catch (error, stackTrace) {
-      debugPrint('App bootstrap failed: $error\n$stackTrace');
+      logger.e('App bootstrap failed', error: error, stackTrace: stackTrace);
     }
   }
 
@@ -100,6 +102,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           routerDelegate: _appRouter.delegate(),
           routeInformationParser: _appRouter.defaultRouteParser(),
           builder: (context, child) {
+            ErrorCopy.sync(AppLocalizations.of(context));
             final data = MediaQuery.of(context);
             return MediaQuery(
               data: data.copyWith(textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.2)),

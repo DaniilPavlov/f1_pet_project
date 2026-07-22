@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/fetch_from_loader.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
-import 'package:f1_pet_project/core/espn/loaders/espn_scoreboard_loader.dart';
+import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/core/espn/models/espn_scoreboard_models.dart';
-import 'package:f1_pet_project/core/results/loaders/last_race_results_loader.dart';
+import 'package:f1_pet_project/core/espn/repositories/espn_scoreboard_repository.dart';
+import 'package:f1_pet_project/core/results/repositories/results_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
-import 'package:f1_pet_project/services/request_handler.dart';
+import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 
@@ -22,13 +22,22 @@ class ResultsScreenController = ResultsScreenControllerBase with _$ResultsScreen
 /// Управляет загрузкой результатов последней гонки и ESPN scoreboard.
 abstract class ResultsScreenControllerBase with Store {
   ResultsScreenControllerBase({
-    Future<ScheduleModel> Function()? fetchLastRaceResults,
-    Future<EspnScoreboardEvent?> Function()? fetchScoreboard,
-  }) : _fetchLastRaceResultsOverride = fetchLastRaceResults,
-       _fetchScoreboardOverride = fetchScoreboard;
+    ResultsRepository? resultsRepository,
+    EspnScoreboardRepository? scoreboardRepository,
+    AppDataRefresh? dataRefresh,
+    @visibleForTesting Future<ScheduleModel> Function()? fetchLastRaceResultsForTest,
+    @visibleForTesting Future<EspnScoreboardEvent?> Function()? fetchScoreboardForTest,
+  }) : _resultsRepository = resultsRepository,
+       _scoreboardRepository = scoreboardRepository,
+       _dataRefresh = dataRefresh,
+       _fetchLastRaceResultsForTest = fetchLastRaceResultsForTest,
+       _fetchScoreboardForTest = fetchScoreboardForTest;
 
-  final Future<ScheduleModel> Function()? _fetchLastRaceResultsOverride;
-  final Future<EspnScoreboardEvent?> Function()? _fetchScoreboardOverride;
+  final ResultsRepository? _resultsRepository;
+  final EspnScoreboardRepository? _scoreboardRepository;
+  final AppDataRefresh? _dataRefresh;
+  final Future<ScheduleModel> Function()? _fetchLastRaceResultsForTest;
+  final Future<EspnScoreboardEvent?> Function()? _fetchScoreboardForTest;
 
   Timer? _pollTimer;
 
@@ -50,14 +59,11 @@ abstract class ResultsScreenControllerBase with Store {
     await Future.wait([loadLastRaceResults(), loadScoreboard()]);
   }
 
-  /// Pull-to-refresh: сброс кэшей и принудительная перезагрузка.
+  /// Pull-to-refresh: единый сброс кэшей и принудительная перезагрузка.
   @action
   Future<void> refreshAll() async {
-    RequestHandler().clearCache();
-    await Future.wait([
-      loadLastRaceResults(),
-      loadScoreboard(forceRefresh: true),
-    ]);
+    await _dataRefresh?.clearAll();
+    await Future.wait([loadLastRaceResults(), loadScoreboard(forceRefresh: true)]);
   }
 
   /// Запрашивает результаты последней завершённой гонки.
@@ -74,10 +80,11 @@ abstract class ResultsScreenControllerBase with Store {
   /// ESPN scoreboard: кэш → сразу на экран; ошибка сети не ломает Results.
   @action
   Future<void> loadScoreboard({bool forceRefresh = false}) async {
-    final useSharedCache = _fetchScoreboardOverride == null;
+    final scoreboardRepository = _scoreboardRepository;
+    final useSharedCache = _fetchScoreboardForTest == null && scoreboardRepository != null;
     if (useSharedCache && !forceRefresh) {
-      final cached = EspnScoreboardLoader.peek;
-      if (EspnScoreboardLoader.isFresh) {
+      final cached = scoreboardRepository.peek;
+      if (scoreboardRepository.isFresh) {
         scoreboard = scoreboard.toValue(cached);
         _syncLivePolling();
         return;
@@ -95,7 +102,7 @@ abstract class ResultsScreenControllerBase with Store {
       final event = await _fetchScoreboard(forceRefresh: forceRefresh);
       scoreboard = scoreboard.toValue(event);
     } on Object catch (error, stackTrace) {
-      debugPrint('ResultsScreenController.loadScoreboard failed: $error\n$stackTrace');
+      logger.e('ResultsScreenController.loadScoreboard failed', error: error, stackTrace: stackTrace);
       if (!scoreboard.isValue) {
         scoreboard = scoreboard.toValue(null);
       }
@@ -134,17 +141,19 @@ abstract class ResultsScreenControllerBase with Store {
   /// Dispose контроллера.
   void dispose() => stopLivePolling();
 
-  Future<ScheduleModel> _fetchLastRaceResults() => fetchFromLoader(
-    override: _fetchLastRaceResultsOverride,
-    load: LastRaceResultsLoader.loadData,
-    parse: ScheduleModel.fromJson,
-  );
+  Future<ScheduleModel> _fetchLastRaceResults() {
+    final forTest = _fetchLastRaceResultsForTest;
+    if (forTest != null) {
+      return forTest();
+    }
+    return _resultsRepository!.lastRace();
+  }
 
   Future<EspnScoreboardEvent?> _fetchScoreboard({bool forceRefresh = false}) {
-    final override = _fetchScoreboardOverride;
-    if (override != null) {
-      return override();
+    final forTest = _fetchScoreboardForTest;
+    if (forTest != null) {
+      return forTest();
     }
-    return EspnScoreboardLoader.loadEvent(forceRefresh: forceRefresh);
+    return _scoreboardRepository!.loadEvent(forceRefresh: forceRefresh);
   }
 }

@@ -2,27 +2,20 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:f1_pet_project/common/localization/error_copy.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
 import 'package:f1_pet_project/data/exceptions/success_false.dart';
 
-/// Функция, в которую следует обернуть отправку запроса.
+/// Обёртка над асинхронной операцией: retry, before/after, onSuccess/onError.
 ///
-/// [processing] - наша функция, которую мы оборачиваем.
+/// GoF Behavioral Template Method — фиксированный скелет алгоритма
+/// (`before` → retry/`processing` → `after` → `onSuccess`/`onError`);
+/// вызывающий подставляет только переменные шаги.
 ///
-/// [dioErrorText], [responseParseErrorText], [otherErrorText] - тексты ошибок.
+/// Порядок: [before] → [processing] (с повторами) → [after] → [onSuccess]/[onError].
 ///
-/// [before] - коллбек, который запускается единожды перед запуском [processing].
-///
-/// [after] - коллбек, который запускается всегда единожды после [processing], но до [onError] и [onSuccess].
-///
-/// [onSuccess] - коллбек, который запускается если не была отловлена никакая ошибка.
-///
-/// [onError] - коллбек, который запускается если была отловлена ошибка.
-///
-/// [maxAttempts] - количество попыток. По-дефолту: 1.
-///
-/// [attemptsDelayCallback] - коллбек с задержкой между попытками.
+/// [maxAttempts] по умолчанию 1; сетевые экраны через [runAsyncLoad] обычно ставят 3.
 Future<void> execute<T>(
   Future<T> Function() processing, {
   String? dioErrorText,
@@ -97,11 +90,11 @@ void _logException(CustomException ex) {
   }
 }
 
-/// Клиентские 4xx (включая 429) не ретраим — повтор только усугубляет лимит.
+/// Повторяем только сетевые/временные Dio-ошибки. Parse и прочее — сразу fail.
 bool _shouldRetry(CustomException ex) {
   final parent = ex.parentException;
   if (parent is! DioException) {
-    return true;
+    return false;
   }
 
   final status = parent.response?.statusCode;
@@ -113,7 +106,7 @@ bool _shouldRetry(CustomException ex) {
     return true;
   }
 
-  return status < 400 || status >= 500;
+  return status >= 500;
 }
 
 /// Функция, которая производит один вызов [processing].
@@ -130,23 +123,27 @@ Future<(T?, CustomException?)> _process<T>(
     data = await processing();
   } on DioException catch (e) {
     final status = e.response?.statusCode;
-    if (e.type == DioExceptionType.unknown) {
+    final isConnectionIssue =
+        e.type == DioExceptionType.connectionError ||
+        e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.unknown;
+    if (isConnectionIssue) {
       ex = CustomException(
-        title: 'Соединение отсутствует',
-        subtitle: 'Как только соединение восстановится, вы снова сможете пользоваться приложением',
+        title: ErrorCopy.noConnection,
+        subtitle: ErrorCopy.noConnectionSubtitle,
         parentException: e,
         stackTrace: e.stackTrace,
       );
     } else if (status == 429) {
       ex = CustomException(
-        title: 'Слишком много запросов',
-        subtitle: 'API временно ограничивает частоту. Подождите немного и попробуйте снова.',
+        title: ErrorCopy.tooManyRequests,
+        subtitle: ErrorCopy.tooManyRequestsSubtitle,
         parentException: e,
         stackTrace: e.stackTrace,
       );
     } else {
       ex = CustomException(
-        title: dioErrorText ?? 'Ошибка при отправке запроса',
+        title: dioErrorText ?? ErrorCopy.requestError,
         subtitle: e.message,
         parentException: e,
         stackTrace: e.stackTrace,
@@ -154,7 +151,7 @@ Future<(T?, CustomException?)> _process<T>(
     }
   } on ResponseParseException catch (e) {
     ex = CustomException(
-      title: responseParseErrorText ?? 'Ошибка при обработке ответа от сервера',
+      title: responseParseErrorText ?? ErrorCopy.responseParseError,
       subtitle: e.toString(),
       stackTrace: e.stackTrace,
     );
@@ -162,7 +159,7 @@ Future<(T?, CustomException?)> _process<T>(
     ex = CustomException(title: e.toString(), stackTrace: e.stackTrace);
   } catch (e) {
     ex = CustomException(
-      title: otherErrorText ?? 'Непредвиденная ошибка',
+      title: otherErrorText ?? ErrorCopy.unexpectedError,
       subtitle: e.toString(),
       stackTrace: StackTrace.current,
     );

@@ -1,10 +1,9 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/fetch_from_loader.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/utils/helpers/scroll_controller_extension.dart';
 import 'package:f1_pet_project/common/utils/helpers/text_editing_controller_extension.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/race_picker_field.dart';
-import 'package:f1_pet_project/core/results/race_search/loaders/race_results_loader.dart';
+import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
@@ -20,15 +19,19 @@ class RaceSearchScreenController = RaceSearchScreenControllerBase with _$RaceSea
 abstract class RaceSearchScreenControllerBase with Store {
   RaceSearchScreenControllerBase({
     required this.l10n,
-    Future<ScheduleModel> Function({required String year, required String round})? fetchRaceResults,
-  }) : _fetchRaceResultsOverride = fetchRaceResults {
+    RaceWeekendRepository? raceWeekendRepository,
+    @visibleForTesting
+    Future<ScheduleModel> Function({required String year, required String round})? fetchRaceResultsForTest,
+  }) : _raceWeekendRepository = raceWeekendRepository,
+       _fetchRaceResultsForTest = fetchRaceResultsForTest {
     yearController = TextEditingController();
     raceDisplayController = TextEditingController();
     roundController = TextEditingController();
   }
 
   final AppLocalizations l10n;
-  final Future<ScheduleModel> Function({required String year, required String round})? _fetchRaceResultsOverride;
+  final RaceWeekendRepository? _raceWeekendRepository;
+  final Future<ScheduleModel> Function({required String year, required String round})? _fetchRaceResultsForTest;
 
   late final TextEditingController yearController;
   late final TextEditingController raceDisplayController;
@@ -110,11 +113,10 @@ abstract class RaceSearchScreenControllerBase with Store {
   }
 
   Future<ScheduleModel> _fetchRaceResults({required String year, required String round}) {
-    final override = _fetchRaceResultsOverride;
-    return fetchFromLoader(
-      override: override == null ? null : () => override(year: year, round: round),
-      load: () => RaceResultsLoader.loadData(year: year, round: round),
-      parse: ScheduleModel.fromJson,
-    );
+    final forTest = _fetchRaceResultsForTest;
+    if (forTest != null) {
+      return forTest(year: year, round: round);
+    }
+    return _raceWeekendRepository!.raceResults(year: year, round: round);
   }
 }

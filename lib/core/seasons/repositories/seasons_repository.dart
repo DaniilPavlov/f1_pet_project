@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:f1_pet_project/core/seasons/loaders/seasons_loader.dart';
+import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/core/seasons/models/seasons_model.dart';
-import 'package:flutter/foundation.dart';
+import 'package:f1_pet_project/services/api_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Кэш списка сезонов (SharedPreferences, не чаще 1 раза в сутки).
@@ -14,7 +14,7 @@ class SeasonsRepository {
 
   Future<List<String>>? _inFlight;
 
-  /// Годы сезонов, новые сверху. Один in-flight на параллельные вызовы.
+  /// Годы сезонов, новые сверху.
   Future<List<String>> getSeasonYears({bool forceRefresh = false}) {
     if (_inFlight != null) {
       return _inFlight!;
@@ -29,6 +29,13 @@ class SeasonsRepository {
     });
   }
 
+  /// Сбрасывает дневной SharedPreferences-кэш.
+  Future<void> clearCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_cacheKey);
+    await prefs.remove(_cacheDateKey);
+  }
+
   Future<List<String>> _load({required bool forceRefresh}) async {
     final prefs = await SharedPreferences.getInstance();
     final today = _dayKey(DateTime.now());
@@ -41,13 +48,13 @@ class SeasonsRepository {
     }
 
     try {
-      final response = await SeasonsLoader.loadData();
+      final response = await ApiLoader.get('seasons');
       final mrData = Map<String, dynamic>.from(response.mrData as Map);
       await prefs.setString(_cacheKey, jsonEncode(mrData));
       await prefs.setString(_cacheDateKey, today);
       return _yearsFromMrData(mrData);
     } on Object catch (error) {
-      debugPrint('SeasonsRepository: fetch failed, fallback to cache: $error');
+      logger.w('SeasonsRepository: fetch failed, fallback to cache', error: error);
       if (cachedRaw != null) {
         return _yearsFromMrData(jsonDecode(cachedRaw) as Map<String, dynamic>);
       }
@@ -58,7 +65,6 @@ class SeasonsRepository {
   static List<String> _yearsFromMrData(Map<String, dynamic> mrData) {
     final model = SeasonsModel.fromJson(mrData);
     final years = model.seasonTable.seasons.map((s) => s.season).toList();
-    // API отдаёт по возрастанию — для picker нужны новые сверху.
     return years.reversed.toList(growable: false);
   }
 

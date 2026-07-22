@@ -210,6 +210,16 @@ mixin _$H2hScreenController on H2hScreenControllerBase, Store {
     return _$compareAsyncAction.run(() => super.compare());
   }
 
+  late final _$refreshComparisonAsyncAction = AsyncAction(
+    'H2hScreenControllerBase.refreshComparison',
+    context: context,
+  );
+
+  @override
+  Future<void> refreshComparison() {
+    return _$refreshComparisonAsyncAction.run(() => super.refreshComparison());
+  }
+
   late final _$H2hScreenControllerBaseActionController = ActionController(
     name: 'H2hScreenControllerBase',
     context: context,

@@ -1,9 +1,7 @@
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// Утилиты общего назначения: ссылки, даты и форматирование.
+/// Утилиты общего назначения: ссылки и форматирование времени.
 class Utils {
   /// Открывает URL во внешнем или системном браузере.
   static Future<bool> openUrl({
@@ -23,11 +21,6 @@ class Utils {
 
       return false;
     }
-  }
-
-  /// Возвращает название месяца по номеру для [locale].
-  static String getMonthNameByNumber({required int month, required Locale locale}) {
-    return DateFormat.MMMM(locale.toLanguageTag()).format(DateTime(2000, month));
   }
 
   /// Форматирует время в строку вида «ЧЧ:ММ».

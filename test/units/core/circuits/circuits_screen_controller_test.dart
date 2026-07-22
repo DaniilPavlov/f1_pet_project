@@ -14,7 +14,7 @@ void main() {
     group('loadCircuits', () {
       mobxTest(
         'sets value on success',
-        build: () => CircuitsScreenController(fetchCircuits: () async => ControllerFixtures.circuitsModel),
+        build: () => CircuitsScreenController(fetchCircuitsForTest: () async => ControllerFixtures.circuitsModel),
         value: (store) => store.circuits,
         act: (store) => store.loadCircuits(),
         expect: () => [
@@ -27,7 +27,7 @@ void main() {
 
       mobxTest(
         'sets error on failure',
-        build: () => CircuitsScreenController(fetchCircuits: () async => throw ResponseParseException('parse error')),
+        build: () => CircuitsScreenController(fetchCircuitsForTest: () async => throw ResponseParseException('parse error')),
         value: (store) => store.circuits,
         act: (store) => store.loadCircuits(),
         expect: () => [

@@ -64,6 +64,16 @@ mixin _$FinishStatusScreenController
     return _$loadAllDataAsyncAction.run(() => super.loadAllData());
   }
 
+  late final _$refreshAllAsyncAction = AsyncAction(
+    'FinishStatusScreenControllerBase.refreshAll',
+    context: context,
+  );
+
+  @override
+  Future<void> refreshAll() {
+    return _$refreshAllAsyncAction.run(() => super.refreshAll());
+  }
+
   @override
   String toString() {
     return '''

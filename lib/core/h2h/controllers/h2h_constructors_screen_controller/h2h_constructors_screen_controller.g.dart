@@ -215,6 +215,16 @@ mixin _$H2hConstructorsScreenController
     return _$compareAsyncAction.run(() => super.compare());
   }
 
+  late final _$refreshComparisonAsyncAction = AsyncAction(
+    'H2hConstructorsScreenControllerBase.refreshComparison',
+    context: context,
+  );
+
+  @override
+  Future<void> refreshComparison() {
+    return _$refreshComparisonAsyncAction.run(() => super.refreshComparison());
+  }
+
   late final _$H2hConstructorsScreenControllerBaseActionController =
       ActionController(
         name: 'H2hConstructorsScreenControllerBase',
