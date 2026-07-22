@@ -8,6 +8,11 @@
   "newsTitle": "Новости",
   "newsEmpty": "Новостей пока нет",
   "homeStandingsTitle": "Турнирная таблица текущего сезона",
+  "circuitStatLength": "Длина",
+  "circuitStatLaps": "Круги",
+  "circuitStatTurns": "Повороты",
+  "circuitStatTopSpeed": "Скорость",
+  "circuitStatElevation": "Перепад",
   "homeWeekendTitle": "Уикенд",
   "homeWeekendLive": "Live",
   "homeWeekendLeader": "Лидер: {name}",
@@ -130,7 +135,6 @@
   "circuitWinnersTitle": "Победители",
   "circuitWinnersEmpty": "Побед на этой трассе пока нет",
   "readOnWikipedia": "Прочитать информацию в википедии",
-  "wikipedia": "Википедия",
   "countryLabel": "Страна: {country}",
   "@countryLabel": {
     "placeholders": {

@@ -33,6 +33,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeStandingsTitle => 'Current season standings';
 
   @override
+  String get circuitStatLength => 'Length';
+
+  @override
+  String get circuitStatLaps => 'Laps';
+
+  @override
+  String get circuitStatTurns => 'Turns';
+
+  @override
+  String get circuitStatTopSpeed => 'Speed';
+
+  @override
+  String get circuitStatElevation => 'Elevation';
+
+  @override
   String get homeWeekendTitle => 'Race weekend';
 
   @override
@@ -310,9 +325,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get readOnWikipedia => 'Read on Wikipedia';
-
-  @override
-  String get wikipedia => 'Wikipedia';
 
   @override
   String countryLabel(String country) {

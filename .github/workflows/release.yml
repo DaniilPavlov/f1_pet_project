@@ -63,6 +63,18 @@ jobs:
           storeFile=upload-keystore.jks
           EOF
 
+      - name: Configure Yandex MapKit API key
+        env:
+          YANDEX_MAPKIT_API_KEY: ${{ secrets.YANDEX_MAPKIT_API_KEY }}
+        run: |
+          if [ -z "$YANDEX_MAPKIT_API_KEY" ]; then
+            echo "::error::Secret YANDEX_MAPKIT_API_KEY is missing. Release APK would show a grey map."
+            exit 1
+          fi
+          # Flutter/Android read the key from android/local.properties at build time.
+          echo "yandex.mapkit.apiKey=$YANDEX_MAPKIT_API_KEY" >> android/local.properties
+          echo "Yandex MapKit API key written to android/local.properties"
+
       - name: Accept Android licenses
         run: yes | flutter doctor --android-licenses
 

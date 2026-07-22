@@ -3,7 +3,9 @@
 Flutter app with Formula 1 stats  
 (standings, results, calendar, hall of fame, circuits).
 
-Data — [Jolpica F1 API](https://github.com/jolpica/jolpica-f1) (Ergast-compatible).
+Data:
+- [Jolpica F1 API](https://github.com/jolpica/jolpica-f1) (Ergast-compatible) — schedule, results, standings
+- [ESPN](https://site.api.espn.com/) — news, weekend scoreboard, driver photos
 
 Same idea, other stacks:
 
@@ -31,6 +33,7 @@ f1_pet_project/
 │   ├── data/        # response models, exceptions
 │   ├── services/    # Dio, executor, cache
 │   └── router/      # Auto Route
+├── assets/          # circuit layouts, circuit stats, icons
 ├── test/
 ├── android/
 ├── ios/
@@ -60,6 +63,22 @@ yandex.mapkit.apiKey=YOUR_KEY
 cp ios/Flutter/Secrets.xcconfig.example ios/Flutter/Secrets.xcconfig
 ```
 
+**Release / CI:** GitHub secret `YANDEX_MAPKIT_API_KEY` is required. Without it the release APK ships an empty key and the map stays grey.
+
+If the key is restricted by app fingerprint in [Yandex Developer Console](https://developer.tech.yandex.ru/services/), register **both** debug and release SHA-1 (`keytool -list -v` on the corresponding keystore).
+
+## Android versioning / APK updates
+
+Use `versionName+versionCode` in `pubspec.yaml`:
+
+```yaml
+version: 1.3.0+2
+```
+
+Android updates only if the new APK has a **higher `versionCode`** and the **same signing certificate**.  
+Bumping only `1.3.0` → `1.3.1` keeps `versionCode = 1`, so the device will not replace the installed app.  
+Different signing (debug vs release / another keystore) also forces uninstall + reinstall.
+
 ## Run
 
 ```bash
@@ -87,21 +106,21 @@ flutter test
 Release:
 
 ```bash
-# version in pubspec.yaml must match the tag
-git tag v1.0.2
-git push origin v1.0.2
+# bump version in pubspec.yaml first (e.g. 1.3.0+2), then tag the same versionName
+git tag v1.3.0
+git push origin v1.3.0
 ```
 
-For release APK signing (optional) — `ANDROID_KEYSTORE_*` secrets in GitHub Actions.
+Secrets:
+- `YANDEX_MAPKIT_API_KEY` — required for the map in release APKs
+- `ANDROID_KEYSTORE_*` — optional; without them the APK is debug-signed
 
 ## Features
 
-- **Home** — current season driver and constructor standings  
-- **Results** — weekend scoreboard, latest race, race search, hall of fame, H2H (drivers / constructors), finish statuses  
-- **Calendar** — season schedule with weekend sessions and reminders  
-- **News** — F1 headlines from ESPN  
-- **Circuits** — list and Yandex MapKit map with pins/clusters, circuit card, Wikipedia, winners history  
-- **Driver / Constructor cards** — career stats with tappable wins / podiums / poles lists, share as image  
-- **Localization** — Russian and English  
-- **Reminders** — local notifications 30 minutes before a session  
-- **Schedule cache** — shared daily cache for the calendar and reminders  
+- **Home** — current season driver and constructor standings
+- **Results** — weekend scoreboard, latest race, race search, hall of fame, H2H (drivers / constructors), finish statuses
+- **Calendar** — season schedule with weekend sessions and local reminders (30 min before)
+- **News** — F1 headlines from ESPN
+- **Circuits** — list and map with pins/clusters, track layouts, length/laps/turns/speed/elevation, Wikipedia, winners history
+- **Driver / Constructor cards** — ESPN photos, career stats with tappable wins / podiums / poles lists, share as image
+- **Localization** — Russian and English

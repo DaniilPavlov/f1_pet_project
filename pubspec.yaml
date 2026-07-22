@@ -82,6 +82,8 @@ flutter:
     - assets/calendar/
     - assets/nav_bar/
     - assets/icons/
+    - assets/circuits/
+    - assets/data/
 
   fonts:
     - family: HelveticaNeueCyr-Bold

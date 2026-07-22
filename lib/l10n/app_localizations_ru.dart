@@ -33,6 +33,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeStandingsTitle => 'Турнирная таблица текущего сезона';
 
   @override
+  String get circuitStatLength => 'Длина';
+
+  @override
+  String get circuitStatLaps => 'Круги';
+
+  @override
+  String get circuitStatTurns => 'Повороты';
+
+  @override
+  String get circuitStatTopSpeed => 'Скорость';
+
+  @override
+  String get circuitStatElevation => 'Перепад';
+
+  @override
   String get homeWeekendTitle => 'Уикенд';
 
   @override
@@ -310,9 +325,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get readOnWikipedia => 'Прочитать информацию в википедии';
-
-  @override
-  String get wikipedia => 'Википедия';
 
   @override
   String countryLabel(String country) {

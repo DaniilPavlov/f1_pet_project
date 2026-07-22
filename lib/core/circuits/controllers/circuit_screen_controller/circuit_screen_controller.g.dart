@@ -39,6 +39,14 @@ mixin _$CircuitScreenController on CircuitScreenControllerBase, Store {
         () => super.circuitPhotoUrl,
         name: 'CircuitScreenControllerBase.circuitPhotoUrl',
       )).value;
+  Computed<CircuitStats?>? _$circuitStatsComputed;
+
+  @override
+  CircuitStats? get circuitStats =>
+      (_$circuitStatsComputed ??= Computed<CircuitStats?>(
+        () => super.circuitStats,
+        name: 'CircuitScreenControllerBase.circuitStats',
+      )).value;
 
   late final _$winnersAtom = Atom(
     name: 'CircuitScreenControllerBase.winners',
@@ -76,6 +84,24 @@ mixin _$CircuitScreenController on CircuitScreenControllerBase, Store {
     });
   }
 
+  late final _$statsAtom = Atom(
+    name: 'CircuitScreenControllerBase.stats',
+    context: context,
+  );
+
+  @override
+  AsyncValue<CircuitStats?> get stats {
+    _$statsAtom.reportRead();
+    return super.stats;
+  }
+
+  @override
+  set stats(AsyncValue<CircuitStats?> value) {
+    _$statsAtom.reportWrite(value, super.stats, () {
+      super.stats = value;
+    });
+  }
+
   late final _$loadAllAsyncAction = AsyncAction(
     'CircuitScreenControllerBase.loadAll',
     context: context,
@@ -96,6 +122,16 @@ mixin _$CircuitScreenController on CircuitScreenControllerBase, Store {
     return _$loadWinnersAsyncAction.run(() => super.loadWinners());
   }
 
+  late final _$loadStatsAsyncAction = AsyncAction(
+    'CircuitScreenControllerBase.loadStats',
+    context: context,
+  );
+
+  @override
+  Future<void> loadStats() {
+    return _$loadStatsAsyncAction.run(() => super.loadStats());
+  }
+
   late final _$loadPhotoAsyncAction = AsyncAction(
     'CircuitScreenControllerBase.loadPhoto',
     context: context,
@@ -111,10 +147,12 @@ mixin _$CircuitScreenController on CircuitScreenControllerBase, Store {
     return '''
 winners: ${winners},
 photoUrl: ${photoUrl},
+stats: ${stats},
 screenError: ${screenError},
 isLoaded: ${isLoaded},
 isPhotoLoading: ${isPhotoLoading},
-circuitPhotoUrl: ${circuitPhotoUrl}
+circuitPhotoUrl: ${circuitPhotoUrl},
+circuitStats: ${circuitStats}
     ''';
   }
 }

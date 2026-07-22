@@ -146,6 +146,36 @@ abstract class AppLocalizations {
   /// **'Турнирная таблица текущего сезона'**
   String get homeStandingsTitle;
 
+  /// No description provided for @circuitStatLength.
+  ///
+  /// In ru, this message translates to:
+  /// **'Длина'**
+  String get circuitStatLength;
+
+  /// No description provided for @circuitStatLaps.
+  ///
+  /// In ru, this message translates to:
+  /// **'Круги'**
+  String get circuitStatLaps;
+
+  /// No description provided for @circuitStatTurns.
+  ///
+  /// In ru, this message translates to:
+  /// **'Повороты'**
+  String get circuitStatTurns;
+
+  /// No description provided for @circuitStatTopSpeed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Скорость'**
+  String get circuitStatTopSpeed;
+
+  /// No description provided for @circuitStatElevation.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перепад'**
+  String get circuitStatElevation;
+
   /// No description provided for @homeWeekendTitle.
   ///
   /// In ru, this message translates to:
@@ -667,12 +697,6 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Прочитать информацию в википедии'**
   String get readOnWikipedia;
-
-  /// No description provided for @wikipedia.
-  ///
-  /// In ru, this message translates to:
-  /// **'Википедия'**
-  String get wikipedia;
 
   /// No description provided for @countryLabel.
   ///
