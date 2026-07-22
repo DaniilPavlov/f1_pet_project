@@ -337,6 +337,26 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String scheduleRound(String round) {
+    return 'Round $round';
+  }
+
+  @override
+  String get scheduleCountdownTitle => 'FP1 starts in';
+
+  @override
+  String get scheduleDays => 'Days';
+
+  @override
+  String get scheduleHours => 'Hours';
+
+  @override
+  String get scheduleMinutes => 'Minutes';
+
+  @override
+  String get scheduleViewSessions => 'View schedule';
+
+  @override
   String get firstPractice => 'First practice';
 
   @override

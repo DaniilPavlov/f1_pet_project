@@ -1,4 +1,4 @@
-# F1 App Project
+# F1 App
 
 Flutter app with Formula 1 stats  
 (standings, results, calendar, hall of fame, circuits).
@@ -119,7 +119,7 @@ Secrets:
 
 - **Home** — current season driver and constructor standings
 - **Results** — weekend scoreboard, latest race, race search, hall of fame, H2H (drivers / constructors), finish statuses
-- **Calendar** — season schedule with weekend sessions and local reminders (30 min before)
+- **Calendar** — monthly calendar with session times; on empty days shows next GP card (layout + countdown); local reminders 30 min before
 - **News** — F1 headlines from ESPN
 - **Circuits** — list and map with pins/clusters, track layouts, length/laps/turns/speed/elevation, Wikipedia, winners history
 - **Driver / Constructor cards** — ESPN photos, career stats with tappable wins / podiums / poles lists, share as image

@@ -710,6 +710,42 @@ abstract class AppLocalizations {
   /// **'Город: {city}'**
   String cityLabel(String city);
 
+  /// No description provided for @scheduleRound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Этап {round}'**
+  String scheduleRound(String round);
+
+  /// No description provided for @scheduleCountdownTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'До FP1'**
+  String get scheduleCountdownTitle;
+
+  /// No description provided for @scheduleDays.
+  ///
+  /// In ru, this message translates to:
+  /// **'Дни'**
+  String get scheduleDays;
+
+  /// No description provided for @scheduleHours.
+  ///
+  /// In ru, this message translates to:
+  /// **'Часы'**
+  String get scheduleHours;
+
+  /// No description provided for @scheduleMinutes.
+  ///
+  /// In ru, this message translates to:
+  /// **'Минуты'**
+  String get scheduleMinutes;
+
+  /// No description provided for @scheduleViewSessions.
+  ///
+  /// In ru, this message translates to:
+  /// **'Расписание сессий'**
+  String get scheduleViewSessions;
+
   /// No description provided for @firstPractice.
   ///
   /// In ru, this message translates to:

@@ -122,6 +122,17 @@
   "readOnWikipedia": "Read on Wikipedia",
   "countryLabel": "Country: {country}",
   "cityLabel": "City: {city}",
+  "scheduleRound": "Round {round}",
+  "@scheduleRound": {
+    "placeholders": {
+      "round": { "type": "String" }
+    }
+  },
+  "scheduleCountdownTitle": "FP1 starts in",
+  "scheduleDays": "Days",
+  "scheduleHours": "Hours",
+  "scheduleMinutes": "Minutes",
+  "scheduleViewSessions": "View schedule",
   "firstPractice": "First practice",
   "secondPractice": "Second practice",
   "thirdPractice": "Third practice",

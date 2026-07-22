@@ -7,6 +7,8 @@ import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/custom_calendar.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/schedule_shimmer.dart';
+import 'package:f1_pet_project/core/schedule/components/schedule_race_featured_card.dart';
+import 'package:f1_pet_project/core/schedule/components/schedule_race_sessions_sheet.dart';
 import 'package:f1_pet_project/core/schedule/controllers/schedule_screen_controller/schedule_screen_controller.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +52,8 @@ class ScheduleScreen extends StatelessWidget {
                     return const ScheduleShimmer();
                   }
 
+                  final upcoming = controller.upcomingRace;
+
                   return CustomScrollView(
                     controller: controller.scrollController,
                     scrollBehavior: AntiGlowBehavior(),
@@ -74,11 +78,20 @@ class ScheduleScreen extends StatelessWidget {
                             vertical: StaticData.defaultVerticalPadding,
                             horizontal: StaticData.defaultHorizontalPadding,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: controller.scheduleOfSelectedDate,
-                          ),
+                          child: controller.selectedDayHasSessions
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: controller.scheduleOfSelectedDate,
+                                )
+                              : upcoming == null
+                              ? const SizedBox.shrink()
+                              : ScheduleRaceFeaturedCard(
+                                  race: upcoming,
+                                  countdown: controller.upcomingCountdown,
+                                  showCountdown: true,
+                                  onViewSchedule: () => ScheduleRaceSessionsSheet.show(context, upcoming),
+                                ),
                         ),
                       ),
                     ],

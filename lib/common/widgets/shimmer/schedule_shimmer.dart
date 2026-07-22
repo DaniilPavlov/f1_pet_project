@@ -4,7 +4,7 @@ import 'package:f1_pet_project/common/widgets/shimmer/shimmer_loading_widget.dar
 import 'package:f1_pet_project/common/widgets/shimmer/shimmer_skeleton.dart';
 import 'package:flutter/material.dart';
 
-/// Скелет календаря (сетка + блок сессий).
+/// Скелет календаря (сетка + блок сессий / next GP).
 class ScheduleShimmer extends StatelessWidget {
   const ScheduleShimmer({super.key});
 
@@ -22,10 +22,7 @@ class ScheduleShimmer extends StatelessWidget {
             children: [
               const ShimmerSkeleton(height: 280, radius: 16),
               const SizedBox(height: StaticData.defaultVerticalPadding),
-              const ShimmerTextLine(height: 18, width: 160, bottomGap: 16),
-              for (var i = 0; i < 5; i++) ...[
-                const ShimmerSkeleton(height: 44, bottomPadding: 12, radius: 10),
-              ],
+              const ShimmerSkeleton(height: 200, radius: 20),
             ],
           ),
         ),

@@ -17,6 +17,30 @@ mixin _$ScheduleScreenController on ScheduleScreenControllerBase, Store {
         () => super.screenError,
         name: 'ScheduleScreenControllerBase.screenError',
       )).value;
+  Computed<bool>? _$selectedDayHasSessionsComputed;
+
+  @override
+  bool get selectedDayHasSessions =>
+      (_$selectedDayHasSessionsComputed ??= Computed<bool>(
+        () => super.selectedDayHasSessions,
+        name: 'ScheduleScreenControllerBase.selectedDayHasSessions',
+      )).value;
+  Computed<RacesModel?>? _$upcomingRaceComputed;
+
+  @override
+  RacesModel? get upcomingRace =>
+      (_$upcomingRaceComputed ??= Computed<RacesModel?>(
+        () => super.upcomingRace,
+        name: 'ScheduleScreenControllerBase.upcomingRace',
+      )).value;
+  Computed<CountdownParts>? _$upcomingCountdownComputed;
+
+  @override
+  CountdownParts get upcomingCountdown =>
+      (_$upcomingCountdownComputed ??= Computed<CountdownParts>(
+        () => super.upcomingCountdown,
+        name: 'ScheduleScreenControllerBase.upcomingCountdown',
+      )).value;
 
   late final _$racesElementsAtom = Atom(
     name: 'ScheduleScreenControllerBase.racesElements',
@@ -51,6 +75,24 @@ mixin _$ScheduleScreenController on ScheduleScreenControllerBase, Store {
   set allDataIsLoaded(bool value) {
     _$allDataIsLoadedAtom.reportWrite(value, super.allDataIsLoaded, () {
       super.allDataIsLoaded = value;
+    });
+  }
+
+  late final _$nowAtom = Atom(
+    name: 'ScheduleScreenControllerBase.now',
+    context: context,
+  );
+
+  @override
+  DateTime get now {
+    _$nowAtom.reportRead();
+    return super.now;
+  }
+
+  @override
+  set now(DateTime value) {
+    _$nowAtom.reportWrite(value, super.now, () {
+      super.now = value;
     });
   }
 
@@ -144,13 +186,28 @@ mixin _$ScheduleScreenController on ScheduleScreenControllerBase, Store {
   }
 
   @override
+  void _tickNow() {
+    final _$actionInfo = _$ScheduleScreenControllerBaseActionController
+        .startAction(name: 'ScheduleScreenControllerBase._tickNow');
+    try {
+      return super._tickNow();
+    } finally {
+      _$ScheduleScreenControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 racesElements: ${racesElements},
 allDataIsLoaded: ${allDataIsLoaded},
+now: ${now},
 selectedDate: ${selectedDate},
 scheduleOfSelectedDate: ${scheduleOfSelectedDate},
-screenError: ${screenError}
+screenError: ${screenError},
+selectedDayHasSessions: ${selectedDayHasSessions},
+upcomingRace: ${upcomingRace},
+upcomingCountdown: ${upcomingCountdown}
     ''';
   }
 }

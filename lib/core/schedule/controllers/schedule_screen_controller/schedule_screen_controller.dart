@@ -1,8 +1,9 @@
-// ignore_for_file: avoid_bool_literals_in_conditional_expressions
+import 'dart:async';
 
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/scroll_controller_extension.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/core/schedule/components/schedule_container.dart';
@@ -21,7 +22,7 @@ part 'schedule_screen_controller.g.dart';
 /// MobX-контроллер экрана расписания.
 class ScheduleScreenController = ScheduleScreenControllerBase with _$ScheduleScreenController;
 
-/// Управляет загрузкой расписания, календарём и списком сессий выбранного дня.
+/// Календарь сессий; если день пустой — ближайший ГП с countdown.
 abstract class ScheduleScreenControllerBase with Store {
   ScheduleScreenControllerBase({
     required this.l10n,
@@ -35,12 +36,16 @@ abstract class ScheduleScreenControllerBase with Store {
   final Future<ScheduleModel> Function()? _fetchScheduleOverride;
 
   final scrollController = ScrollController();
+  Timer? _ticker;
 
   @observable
   AsyncValue<List<RacesModel>> racesElements = const AsyncValue.loading();
 
   @observable
   bool allDataIsLoaded = false;
+
+  @observable
+  DateTime now = DateTime.now();
 
   @observable
   DateTime selectedDate = DateTime.now();
@@ -51,8 +56,34 @@ abstract class ScheduleScreenControllerBase with Store {
   @computed
   CustomException? get screenError => racesElements.exception;
 
-  /// Освобождает [scrollController] при уничтожении контроллера.
+  @computed
+  bool get selectedDayHasSessions => scheduleOfSelectedDate.isNotEmpty;
+
+  /// Ближайшая ещё не стартовавшая гонка.
+  @computed
+  RacesModel? get upcomingRace {
+    final races = racesElements.value;
+    if (races == null) {
+      return null;
+    }
+    final upcoming = races.where((race) => RaceDateTimeHelper.isUpcoming(race, now)).toList()
+      ..sort((a, b) => RaceDateTimeHelper.raceLocal(a).compareTo(RaceDateTimeHelper.raceLocal(b)));
+    return upcoming.isEmpty ? null : upcoming.first;
+  }
+
+  @computed
+  CountdownParts get upcomingCountdown {
+    final race = upcomingRace;
+    if (race == null) {
+      return CountdownParts.zero;
+    }
+    return CountdownParts.until(RaceDateTimeHelper.countdownTarget(race), now);
+  }
+
+  /// Освобождает таймер и scroll controller.
   void dispose() {
+    _ticker?.cancel();
+    _ticker = null;
     scrollController.dispose();
   }
 
@@ -64,6 +95,7 @@ abstract class ScheduleScreenControllerBase with Store {
 
     if (screenError == null) {
       onSelectDay(DateTime.now(), DateTime.now());
+      _startTicker();
     }
 
     allDataIsLoaded = screenError == null;
@@ -79,7 +111,9 @@ abstract class ScheduleScreenControllerBase with Store {
   /// Возвращает иконку для дня с гонкой или сессией, иначе null.
   String? getLogoPath(DateTime day) {
     final races = racesElements.value;
-    if (races == null) return null;
+    if (races == null) {
+      return null;
+    }
 
     if (races.any((race) => isSameDay(DateTime.parse(race.date), day))) {
       return 'assets/calendar/finish.png';
@@ -125,7 +159,9 @@ abstract class ScheduleScreenControllerBase with Store {
     scheduleOfSelectedDate.clear();
 
     final races = racesElements.value;
-    if (races == null) return;
+    if (races == null) {
+      return;
+    }
 
     final newSchedule = <Widget>[];
     for (var i = 0; i < races.length; i++) {
@@ -157,6 +193,17 @@ abstract class ScheduleScreenControllerBase with Store {
         break;
       }
     }
+  }
+
+  void _startTicker() {
+    _ticker?.cancel();
+    _tickNow();
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tickNow());
+  }
+
+  @action
+  void _tickNow() {
+    now = DateTime.now();
   }
 
   @action

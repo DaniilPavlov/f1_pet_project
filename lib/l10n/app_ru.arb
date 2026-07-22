@@ -147,6 +147,17 @@
       "city": { "type": "String" }
     }
   },
+  "scheduleRound": "Этап {round}",
+  "@scheduleRound": {
+    "placeholders": {
+      "round": { "type": "String" }
+    }
+  },
+  "scheduleCountdownTitle": "До FP1",
+  "scheduleDays": "Дни",
+  "scheduleHours": "Часы",
+  "scheduleMinutes": "Минуты",
+  "scheduleViewSessions": "Расписание сессий",
   "firstPractice": "Первая практика",
   "secondPractice": "Вторая практика",
   "thirdPractice": "Третья практика",
