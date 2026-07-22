@@ -668,6 +668,12 @@ abstract class AppLocalizations {
   /// **'Списком'**
   String get asList;
 
+  /// No description provided for @circuitsMapWebUnavailable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Карта доступна в мобильном приложении. Ниже — список трасс.'**
+  String get circuitsMapWebUnavailable;
+
   /// No description provided for @circuitDetails.
   ///
   /// In ru, this message translates to:

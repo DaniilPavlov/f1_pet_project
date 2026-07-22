@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:f1_pet_project/common/career/models/career_stats.dart';
@@ -79,9 +78,7 @@ abstract class ShareHelper {
         return;
       }
 
-      // `Directory.systemTemp` — без path_provider (нет pigeon-канала).
-      final file = File('${Directory.systemTemp.path}/$fileName');
-      await file.writeAsBytes(byteData.buffer.asUint8List(), flush: true);
+      final bytes = byteData.buffer.asUint8List();
 
       if (!context.mounted) {
         return;
@@ -89,7 +86,9 @@ abstract class ShareHelper {
       final box = context.findRenderObject() as RenderBox?;
       await SharePlus.instance.share(
         ShareParams(
-          files: [XFile(file.path, mimeType: 'image/png')],
+          files: [
+            XFile.fromData(bytes, mimeType: 'image/png', name: fileName),
+          ],
           sharePositionOrigin: box == null ? null : box.localToGlobal(Offset.zero) & box.size,
         ),
       );

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:f1_pet_project/common/localization/locale_controller.dart';
+import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/router/app_router.dart';
 import 'package:f1_pet_project/services/notifications/race_reminder_service.dart';
@@ -38,7 +39,11 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     );
     // Permissions/init после первого кадра — иначе в release возможен вечный splash.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      unawaited(_bootstrapReminders());
+      if (PlatformCapabilities.hasLocalNotifications) {
+        unawaited(_bootstrapReminders());
+      } else {
+        unawaited(context.read<LocaleController>().load());
+      }
     });
   }
 

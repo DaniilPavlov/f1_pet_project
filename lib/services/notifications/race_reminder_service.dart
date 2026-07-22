@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
+import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/core/schedule/models/race_date_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
@@ -42,6 +43,9 @@ class RaceReminderService {
 
   /// Инициализирует плагин и таймзону (без запроса permissions).
   Future<void> init() async {
+    if (!PlatformCapabilities.hasLocalNotifications) {
+      return;
+    }
     tz_data.initializeTimeZones();
     await _configureLocalTimezone();
 
@@ -60,6 +64,9 @@ class RaceReminderService {
 
   /// Запрос разрешений уведомлений / exact alarms.
   Future<void> requestPermissions() async {
+    if (!PlatformCapabilities.hasLocalNotifications) {
+      return;
+    }
     final android = _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
     await android?.requestNotificationsPermission();
     await android?.requestExactAlarmsPermission();
@@ -70,6 +77,9 @@ class RaceReminderService {
 
   /// Подтягивает расписание и планирует ближайшие уведомления.
   Future<void> sync({required Locale locale}) async {
+    if (!PlatformCapabilities.hasLocalNotifications) {
+      return;
+    }
     try {
       await _configureLocalTimezone();
 

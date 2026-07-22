@@ -115,6 +115,7 @@
   "driversLoadError": "Could not load drivers",
   "onMap": "On map",
   "asList": "List",
+  "circuitsMapWebUnavailable": "Map is available in the mobile app. Browse circuits as a list below.",
   "circuitDetails": "Circuit details",
   "circuitInfoTitle": "Circuit information",
   "circuitWinnersTitle": "Winners",

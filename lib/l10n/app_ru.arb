@@ -130,6 +130,7 @@
   "driversLoadError": "Не удалось загрузить пилотов",
   "onMap": "На карте",
   "asList": "Списком",
+  "circuitsMapWebUnavailable": "Карта доступна в мобильном приложении. Ниже — список трасс.",
   "circuitDetails": "Подробнее о трассе",
   "circuitInfoTitle": "Информация о трассе",
   "circuitWinnersTitle": "Победители",

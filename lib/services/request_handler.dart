@@ -1,8 +1,8 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
+import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
 import 'package:f1_pet_project/services/cache_interceptor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -34,7 +34,7 @@ class RequestHandler {
     );
   }
 
-  /// Выполняет GET-запрос к API с суффиксом `.json?limit=…`.
+  /// Выполняет GET-запрос к API с суффиксом `.json`.
   Future<Response<T>> get<T>(
     String path, {
     int limit = 100,
@@ -47,11 +47,14 @@ class RequestHandler {
 
     try {
       res = await _dio!.get(
-        '$path.json?limit=$limit',
+        '$path.json',
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
         options: await _getOptions(options),
-        queryParameters: queryParameters,
+        queryParameters: <String, dynamic>{
+          'limit': limit,
+          ...?queryParameters,
+        },
       );
     } on DioException catch (e) {
       final result = e.response;
@@ -145,32 +148,23 @@ class RequestHandler {
   }
 
   Future<Options> _getOptions(Options? options) async {
+    // Custom headers break Jolpica CORS in browsers that can reach the API.
+    if (kIsWeb) {
+      return options ?? Options();
+    }
+
     final info = await PackageInfo.fromPlatform();
-    final system = Platform.isAndroid ? 'android' : (Platform.isIOS ? 'ios' : 'another');
-    return options != null
-        ? options.copyWith(
-            headers: options.headers != null
-                ? (options.headers!..addAll(<String, dynamic>{
-                    'system': options.headers!.containsKey('system') ? options.headers!['system'] : system,
-                    'version': info.version,
-                    'device-id': 'deviceID',
-                    'build-number': info.buildNumber,
-                  }))
-                : <String, dynamic>{
-                    'system': system,
-                    'device-id': 'deviceID',
-                    'version': info.version,
-                    'build-number': info.buildNumber,
-                  },
-          )
-        : Options(
-            headers: <String, dynamic>{
-              'version': info.version,
-              'build-number': info.buildNumber,
-              'device-id': 'deviceID',
-              'system': system,
-            },
-          );
+    final headers = <String, dynamic>{
+      ...?options?.headers,
+      'system': options?.headers?.containsKey('system') ?? false
+          ? options!.headers!['system']
+          : PlatformCapabilities.systemLabel,
+      'version': info.version,
+      'device-id': 'deviceID',
+      'build-number': info.buildNumber,
+    };
+
+    return (options ?? Options()).copyWith(headers: headers);
   }
 
   Dio _createDio() {

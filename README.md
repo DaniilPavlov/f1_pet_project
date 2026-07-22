@@ -92,13 +92,18 @@ Android updates only if the new APK has a **higher `versionCode`** and the **sam
 Bumping only `1.3.0` → `1.3.1` keeps `versionCode = 1`, so the device will not replace the installed app.  
 Different signing (debug vs release / another keystore) also forces uninstall + reinstall.
 
-## Run
+## Web
 
 ```bash
-flutter pub get
-dart run build_runner build
-flutter run
+flutter build web --release
+flutter run -d web-server --web-hostname=0.0.0.0 --web-port=8080
+# open http://127.0.0.1:8080
 ```
+
+Works for news (ESPN), circuit list/layouts, H2H UI, etc.  
+**Yandex Map** and **local race reminders** are mobile-only.
+
+Jolpica (`api.jolpi.ca`) may be blocked by some browsers (e.g. Yandex Protect) even for a direct URL open — then standings/calendar/results stay empty on web; Chrome/Safari usually work. Use `0.0.0.0` + `127.0.0.1` locally so IPv4 clients can connect.
 
 ## Tests and analysis
 

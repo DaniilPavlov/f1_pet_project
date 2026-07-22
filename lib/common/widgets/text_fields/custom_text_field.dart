@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/custom_context_menu_builder.dart';
@@ -91,7 +90,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             child: Text(widget.label!, style: AppStyles.caption.copyWith(color: AppTheme.black)),
           ),
         Container(
-          padding: Platform.isIOS ? const EdgeInsets.symmetric(horizontal: 16) : EdgeInsets.zero,
+          padding: PlatformCapabilities.isCupertino ? const EdgeInsets.symmetric(horizontal: 16) : EdgeInsets.zero,
           decoration: BoxDecoration(
             border: Border.all(
               color: widget.disabled
@@ -113,7 +112,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           child: Row(
             children: [
-              if (Platform.isIOS)
+              if (PlatformCapabilities.isCupertino)
                 Expanded(
                   child: CupertinoTextField.borderless(
                     inputFormatters: widget.inputFormatters,

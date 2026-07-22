@@ -312,6 +312,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get asList => 'Списком';
 
   @override
+  String get circuitsMapWebUnavailable =>
+      'Карта доступна в мобильном приложении. Ниже — список трасс.';
+
+  @override
   String get circuitDetails => 'Подробнее о трассе';
 
   @override

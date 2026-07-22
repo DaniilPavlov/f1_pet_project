@@ -312,6 +312,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asList => 'List';
 
   @override
+  String get circuitsMapWebUnavailable =>
+      'Map is available in the mobile app. Browse circuits as a list below.';
+
+  @override
   String get circuitDetails => 'Circuit details';
 
   @override
