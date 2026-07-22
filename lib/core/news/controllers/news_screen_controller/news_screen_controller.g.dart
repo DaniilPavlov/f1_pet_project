@@ -48,21 +48,14 @@ mixin _$NewsScreenController on NewsScreenControllerBase, Store {
     );
   }
 
-  late final _$NewsScreenControllerBaseActionController = ActionController(
-    name: 'NewsScreenControllerBase',
+  late final _$refreshAllAsyncAction = AsyncAction(
+    'NewsScreenControllerBase.refreshAll',
     context: context,
   );
 
   @override
   Future<void> refreshAll() {
-    final _$actionInfo = _$NewsScreenControllerBaseActionController.startAction(
-      name: 'NewsScreenControllerBase.refreshAll',
-    );
-    try {
-      return super.refreshAll();
-    } finally {
-      _$NewsScreenControllerBaseActionController.endAction(_$actionInfo);
-    }
+    return _$refreshAllAsyncAction.run(() => super.refreshAll());
   }
 
   @override

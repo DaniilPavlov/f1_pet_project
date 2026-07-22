@@ -54,16 +54,6 @@ mixin _$FinishStatusScreenController
     return _$bootstrapAsyncAction.run(() => super.bootstrap());
   }
 
-  late final _$loadAllDataAsyncAction = AsyncAction(
-    'FinishStatusScreenControllerBase.loadAllData',
-    context: context,
-  );
-
-  @override
-  Future<void> loadAllData() {
-    return _$loadAllDataAsyncAction.run(() => super.loadAllData());
-  }
-
   late final _$refreshAllAsyncAction = AsyncAction(
     'FinishStatusScreenControllerBase.refreshAll',
     context: context,
@@ -72,6 +62,16 @@ mixin _$FinishStatusScreenController
   @override
   Future<void> refreshAll() {
     return _$refreshAllAsyncAction.run(() => super.refreshAll());
+  }
+
+  late final _$loadAllDataAsyncAction = AsyncAction(
+    'FinishStatusScreenControllerBase.loadAllData',
+    context: context,
+  );
+
+  @override
+  Future<void> loadAllData() {
+    return _$loadAllDataAsyncAction.run(() => super.loadAllData());
   }
 
   @override

@@ -28,10 +28,6 @@ import 'package:f1_pet_project/core/h2h/screens/h2h_constructors_screen.dart'
 import 'package:f1_pet_project/core/h2h/screens/h2h_screen.dart' as _i8;
 import 'package:f1_pet_project/core/hall_of_fame/screens/hall_of_fame_screen.dart'
     as _i9;
-import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart'
-    as _i20;
-import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart'
-    as _i21;
 import 'package:f1_pet_project/core/home/screens/home_screen.dart' as _i10;
 import 'package:f1_pet_project/core/news/screens/news_screen.dart' as _i11;
 import 'package:f1_pet_project/core/results/race_info/screens/race_info_screen.dart'
@@ -43,6 +39,10 @@ import 'package:f1_pet_project/core/results/screens/results_screen.dart'
 import 'package:f1_pet_project/core/schedule/models/races_model.dart' as _i23;
 import 'package:f1_pet_project/core/schedule/screens/schedule_screen.dart'
     as _i16;
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart'
+    as _i20;
+import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart'
+    as _i21;
 import 'package:f1_pet_project/router/nested_router_screens.dart' as _i2;
 import 'package:flutter/material.dart' as _i19;
 
