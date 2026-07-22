@@ -51,11 +51,14 @@ f1_pet_project/
 
 The key is **not stored in git**.
 
-**Android** — in `android/local.properties`:
+**Android** — Flutter overwrites `android/local.properties` on every build, so keep the key in a separate file:
 
-```properties
-yandex.mapkit.apiKey=YOUR_KEY
+```bash
+cp android/mapkit.properties.example android/mapkit.properties
+# edit android/mapkit.properties → yandex.mapkit.apiKey=YOUR_KEY
 ```
+
+Or export `YANDEX_MAPKIT_API_KEY` in the environment.
 
 **iOS** — copy the example and put your key in:
 
@@ -63,9 +66,19 @@ yandex.mapkit.apiKey=YOUR_KEY
 cp ios/Flutter/Secrets.xcconfig.example ios/Flutter/Secrets.xcconfig
 ```
 
-**Release / CI:** GitHub secret `YANDEX_MAPKIT_API_KEY` is required. Without it the release APK ships an empty key and the map stays grey.
+**Release / CI:** GitHub secret `YANDEX_MAPKIT_API_KEY` is required (written to `android/mapkit.properties` in the workflow).
 
-If the key is restricted by app fingerprint in [Yandex Developer Console](https://developer.tech.yandex.ru/services/), register **both** debug and release SHA-1 (`keytool -list -v` on the corresponding keystore).
+If the key is restricted by app fingerprint in [Yandex Developer Console](https://developer.tech.yandex.ru/services/), register **both** debug and release SHA-1:
+
+```bash
+# debug
+keytool -list -v -alias androiddebugkey -keystore ~/.android/debug.keystore -storepass android
+
+# release (your upload keystore)
+keytool -list -v -alias YOUR_ALIAS -keystore path/to/upload-keystore.jks
+```
+
+After installing a release APK, check logcat: `RootApp` must log `API key present`. If it says `EMPTY`, the key was not baked into the build.
 
 ## Android versioning / APK updates
 

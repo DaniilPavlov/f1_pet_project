@@ -24,11 +24,26 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-def yandexMapKitApiKey = localProperties.getProperty('yandex.mapkit.apiKey') ?: ''
+// Flutter overwrites local.properties on every build — keep MapKit key elsewhere.
+def yandexMapKitApiKey = System.getenv('YANDEX_MAPKIT_API_KEY') ?: ''
+if (yandexMapKitApiKey.isEmpty()) {
+    def mapkitProperties = new Properties()
+    def mapkitPropertiesFile = rootProject.file('mapkit.properties')
+    if (mapkitPropertiesFile.exists()) {
+        mapkitPropertiesFile.withReader('UTF-8') { reader ->
+            mapkitProperties.load(reader)
+        }
+        yandexMapKitApiKey = mapkitProperties.getProperty('yandex.mapkit.apiKey') ?: ''
+    }
+}
+if (yandexMapKitApiKey.isEmpty()) {
+    yandexMapKitApiKey = localProperties.getProperty('yandex.mapkit.apiKey') ?: ''
+}
 if (yandexMapKitApiKey.isEmpty()) {
     println "____NOTE____"
     println "Yandex MapKit API key is missing."
-    println "Add yandex.mapkit.apiKey=YOUR_KEY to android/local.properties"
+    println "Copy android/mapkit.properties.example → android/mapkit.properties"
+    println "or set env YANDEX_MAPKIT_API_KEY"
     println "____________"
 }
 
@@ -126,6 +141,20 @@ android {
                 signingConfig signingConfigs.debug
             }
         }
+    }
+}
+
+gradle.taskGraph.whenReady { graph ->
+    def buildingRelease = graph.allTasks.any { task ->
+        def n = task.name.toLowerCase()
+        n.contains('release') && (n.contains('assemble') || n.contains('bundle') || n.contains('install'))
+    }
+    if (buildingRelease && yandexMapKitApiKey.isEmpty()) {
+        throw new GradleException(
+            "Yandex MapKit API key is empty for release. " +
+            "Create android/mapkit.properties from mapkit.properties.example " +
+            "or set YANDEX_MAPKIT_API_KEY."
+        )
     }
 }
 

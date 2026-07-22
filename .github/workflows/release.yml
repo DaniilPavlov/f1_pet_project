@@ -62,6 +62,8 @@ jobs:
           keyAlias=$ANDROID_KEY_ALIAS
           storeFile=upload-keystore.jks
           EOF
+          # Strip accidental leading spaces from HEREDOC indentation.
+          sed -i 's/^[[:space:]]*//' android/key.properties
 
       - name: Configure Yandex MapKit API key
         env:
@@ -71,9 +73,9 @@ jobs:
             echo "::error::Secret YANDEX_MAPKIT_API_KEY is missing. Release APK would show a grey map."
             exit 1
           fi
-          # Flutter/Android read the key from android/local.properties at build time.
-          echo "yandex.mapkit.apiKey=$YANDEX_MAPKIT_API_KEY" >> android/local.properties
-          echo "Yandex MapKit API key written to android/local.properties"
+          # Do NOT put the key in local.properties — Flutter overwrites that file on build.
+          printf 'yandex.mapkit.apiKey=%s\n' "$YANDEX_MAPKIT_API_KEY" > android/mapkit.properties
+          echo "Yandex MapKit API key written to android/mapkit.properties"
 
       - name: Accept Android licenses
         run: yes | flutter doctor --android-licenses

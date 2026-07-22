@@ -11,7 +11,8 @@ import 'package:yandex_mapkit/yandex_mapkit.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  AndroidYandexMap.useAndroidViewSurface = false;
+  // Hybrid Composition (default) — Virtual Display often shows a grey map in release.
+  AndroidYandexMap.useAndroidViewSurface = true;
 
   final scheduleRepository = ScheduleRepository();
   final seasonsRepository = SeasonsRepository();

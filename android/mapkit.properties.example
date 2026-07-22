@@ -1,0 +1,3 @@
+# Copy to mapkit.properties and put your real key.
+# Flutter overwrites android/local.properties on every build — do NOT keep the key there.
+yandex.mapkit.apiKey=YOUR_KEY
