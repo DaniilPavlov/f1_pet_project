@@ -1,26 +1,35 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
+import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
+import 'package:f1_pet_project/services/cache/prefs_json_store.dart';
 import 'package:f1_pet_project/services/http/app_dio.dart';
 
-/// ESPN F1 scoreboard (ближайший / текущий уикенд) с TTL-кэшем.
+/// ESPN F1 scoreboard: TTL в памяти + диск, stale-while-revalidate.
 class EspnScoreboardRepository {
-  EspnScoreboardRepository({Dio? dio}) : _dio = dio ?? AppDio.external();
+  EspnScoreboardRepository({Dio? dio, PrefsJsonStore? store})
+    : _dio = dio ?? AppDio.external(),
+      _store = store ?? const PrefsJsonStore('espn_scoreboard_cache_v1');
 
   final Dio _dio;
+  final PrefsJsonStore _store;
+
   EspnScoreboardEvent? _cache;
   DateTime? _cachedAt;
   Future<EspnScoreboardEvent?>? _inFlight;
+  var _hasValue = false;
+  var _diskChecked = false;
 
-  /// Последний успешно загруженный event (может быть `null`, если events пуст).
   EspnScoreboardEvent? get peek => _cache;
 
-  /// Есть ли валидный кэш (включая «пустой» ответ).
   bool get isFresh =>
-      _cachedAt != null && DateTime.now().difference(_cachedAt!) < StaticData.espnScoreboardCacheTtl;
+      _hasValue &&
+      _cachedAt != null &&
+      DateTime.now().difference(_cachedAt!) < StaticData.espnScoreboardCacheTtl;
 
-  /// Возвращает первый event из scoreboard или `null`, если список пуст.
   Future<EspnScoreboardEvent?> loadEvent({bool forceRefresh = false}) async {
     if (!forceRefresh && isFresh) {
       return _cache;
@@ -29,7 +38,52 @@ class EspnScoreboardRepository {
       return _inFlight!;
     }
 
-    final future = _fetchAndCache();
+    await _ensureDisk();
+
+    if (!forceRefresh && _hasValue) {
+      if (!isFresh) {
+        unawaited(_refreshSilently());
+      }
+      return _cache;
+    }
+
+    return _runInFlight(_fetch);
+  }
+
+  void invalidate() => _cachedAt = null;
+
+  void clearCache() {
+    _cache = null;
+    _cachedAt = null;
+    _inFlight = null;
+    _hasValue = false;
+    _diskChecked = false;
+  }
+
+  Future<void> _ensureDisk() async {
+    if (_diskChecked || _hasValue) {
+      return;
+    }
+    _diskChecked = true;
+    final stored = await _store.read();
+    if (stored == null) {
+      return;
+    }
+    _cache = _eventFrom(stored.data);
+    _cachedAt = stored.cachedAt;
+    _hasValue = true;
+  }
+
+  Future<void> _refreshSilently() async {
+    try {
+      await _fetch();
+    } on Object catch (error, stackTrace) {
+      logger.w('EspnScoreboardRepository: silent refresh failed', error: error, stackTrace: stackTrace);
+    }
+  }
+
+  Future<EspnScoreboardEvent?> _runInFlight(Future<EspnScoreboardEvent?> Function() fetch) async {
+    final future = fetch();
     _inFlight = future;
     try {
       return await future;
@@ -40,45 +94,48 @@ class EspnScoreboardRepository {
     }
   }
 
-  Future<EspnScoreboardEvent?> _fetchAndCache() async {
-    final response = await _dio.get<Map<String, dynamic>>(StaticData.espnF1ScoreboardUrl);
-    final data = response.data;
-    if (data == null) {
-      throw ResponseParseException('Empty ESPN scoreboard response');
+  Future<EspnScoreboardEvent?> _fetch() async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(StaticData.espnF1ScoreboardUrl);
+      final data = response.data;
+      if (data == null) {
+        throw ResponseParseException('Empty ESPN scoreboard response');
+      }
+      final event = _eventFrom(data);
+      _cache = event;
+      _cachedAt = DateTime.now();
+      _hasValue = true;
+      await _store.write(data, cachedAt: _cachedAt);
+      return event;
+    } on Object {
+      if (_hasValue) {
+        return _cache;
+      }
+      await _ensureDisk();
+      if (_hasValue) {
+        return _cache;
+      }
+      rethrow;
     }
+  }
 
+  EspnScoreboardEvent? _eventFrom(Map<String, dynamic> data) {
     final rawEvents = data['events'];
     if (rawEvents is! List<dynamic> || rawEvents.isEmpty) {
-      _cache = null;
-      _cachedAt = DateTime.now();
       return null;
     }
-
     final first = rawEvents.first;
     if (first is! Map<String, dynamic>) {
       throw ResponseParseException('ESPN scoreboard: invalid event');
     }
-
-    final event = _parseEvent(first);
-    _cache = event;
-    _cachedAt = DateTime.now();
-    return event;
+    return _parseEvent(first);
   }
 
-  void clearCache() {
-    _cache = null;
-    _cachedAt = null;
-    _inFlight = null;
-  }
-
-  /// GoF Structural Adapter — чужой JSON ESPN приводится к доменной модели
-  /// [EspnScoreboardEvent]; контроллеры работают с приложением, а не с API ESPN.
   EspnScoreboardEvent _parseEvent(Map<String, dynamic> json) {
-    final statusType = _asMap(json['status'])?['type'];
-    final statusMap = _asMap(statusType);
+    // GoF Structural Adapter — чужой JSON ESPN → [EspnScoreboardEvent].
+    final statusMap = _asMap(_asMap(json['status'])?['type']);
     final circuit = _asMap(json['circuit']);
     final address = _asMap(circuit?['address']);
-
     final competitions = json['competitions'];
     final sessions = <EspnScoreboardSession>[];
 
@@ -107,8 +164,8 @@ class EspnScoreboardRepository {
     final statusMap = _asMap(_asMap(json['status'])?['type']);
     final results = _parseResults(json['competitors']);
     final leader = results.isEmpty ? null : results.first;
-
     final abbreviation = (type?['abbreviation'] as String?)?.trim() ?? '';
+
     return EspnScoreboardSession(
       abbreviation: abbreviation.isEmpty ? 'Session' : abbreviation,
       statusState: (statusMap?['state'] as String?)?.trim() ?? '',

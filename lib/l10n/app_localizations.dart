@@ -938,6 +938,24 @@ abstract class AppLocalizations {
   /// **'Не удалось перейти по ссылке {url}'**
   String openUrlFailed(String url);
 
+  /// No description provided for @forceUpdateTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Требуется обновление'**
+  String get forceUpdateTitle;
+
+  /// No description provided for @forceUpdateSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Эта версия больше не поддерживается. Скачайте свежий релиз на GitHub.'**
+  String get forceUpdateSubtitle;
+
+  /// No description provided for @forceUpdateButton.
+  ///
+  /// In ru, this message translates to:
+  /// **'Обновить'**
+  String get forceUpdateButton;
+
   /// No description provided for @localeCodeRu.
   ///
   /// In ru, this message translates to:

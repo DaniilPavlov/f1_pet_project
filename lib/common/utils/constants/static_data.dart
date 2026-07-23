@@ -37,4 +37,7 @@ class StaticData {
 
   /// Wikipedia MediaWiki API (pageimages) — lead-изображение статьи.
   static const wikipediaUserAgent = 'F1PetProject/1.0 (https://github.com; Flutter app)';
+
+  /// Релизы приложения на GitHub (кнопка обязательного обновления).
+  static const githubReleasesUrl = 'https://github.com/DaniilPavlov/f1_pet_project/releases';
 }

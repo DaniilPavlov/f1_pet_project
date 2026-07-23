@@ -22,6 +22,8 @@ import 'package:f1_pet_project/core/results/repositories/results_repository.dart
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/services/api_loader.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:f1_pet_project/services/firebase/firebase_bootstrap.dart';
+import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
 import 'package:f1_pet_project/services/http/app_dio.dart';
 import 'package:f1_pet_project/services/notifications/race_reminder_service.dart';
 import 'package:f1_pet_project/services/request_handler.dart';
@@ -31,6 +33,7 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   mapkit_init.configureMapKitPlatform();
+  final remoteConfig = await bootstrapFirebase();
 
   final requestHandler = RequestHandler();
   ApiLoader.configure(requestHandler);
@@ -78,14 +81,14 @@ Future<void> main() async {
             seasonsRepository: seasonsRepository,
             newsRepository: newsRepository,
             scoreboardRepository: scoreboardRepository,
-            mediaRepository: mediaRepository,
-            driverCatalogRepository: driverCatalogRepository,
-            constructorCatalogRepository: constructorCatalogRepository,
-            wikipediaRepository: wikipediaRepository,
           ),
         ),
+        Provider<RemoteConfigService>.value(value: remoteConfig),
         Provider(
-          create: (_) => RaceReminderService(scheduleRepository: scheduleRepository),
+          create: (_) => RaceReminderService(
+            scheduleRepository: scheduleRepository,
+            remoteConfig: remoteConfig,
+          ),
         ),
       ],
       child: const App(),

@@ -195,6 +195,9 @@
       "url": { "type": "String" }
     }
   },
+  "forceUpdateTitle": "Требуется обновление",
+  "forceUpdateSubtitle": "Эта версия больше не поддерживается. Скачайте свежий релиз на GitHub.",
+  "forceUpdateButton": "Обновить",
   "localeCodeRu": "RU",
   "localeCodeEn": "EN"
 }

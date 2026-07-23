@@ -83,8 +83,9 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// Переводит значение в состояние ошибки с сообщением.
   AsyncValue<T> toError(String message) => AsyncValue.error(error: AsyncError(errorMessage: message));
 
-  /// Переводит значение в состояние ошибки из [CustomException].
+  /// Переводит значение в состояние ошибки из [CustomException], сохраняя данные.
   AsyncValue<T> toErrorFrom(CustomException exception) => AsyncValue.error(
+    value: value,
     error: AsyncError(errorMessage: exception.title, errorObject: exception),
   );
 

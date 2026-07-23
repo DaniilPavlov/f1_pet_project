@@ -23,13 +23,16 @@ Same idea, other stacks:
 | Data | Feature repositories + `AppDataRefresh` (pull-to-refresh) |
 | Codegen | json_serializable, mobx_codegen, auto_route_generator |
 | Map | Yandex MapKit |
+| Backend | Firebase (Core, Analytics, Crashlytics, Remote Config) |
 
 ## Architecture
 
 - **DI** — root `MultiProvider` in `lib/main.dart` (repos, `AppDataRefresh`, reminders). ESPN `Dio` is created in `main` and passed into repos.
 - **Jolpica** — one `RequestHandler` wired via `ApiLoader.configure` (static access from repos); screens do not call Dio.
 - **Repositories** — Jolpica/ESPN/Wikipedia live in `*/repositories/`.
-- **`AppDataRefresh.clearAll()`** — pull-to-refresh / ErrorBody retry: Jolpica Dio cache, ESPN TTL (news, scoreboard), ESPN media (session), catalogs, Wikipedia thumbs, prefs day-cache (schedule/seasons).
+- **`AppDataRefresh.clearAll()`** — soft-invalidate on pull-to-refresh; cached data kept for offline.
+- **Cache** — Jolpica: `CacheInterceptor` (memory + prefs). ESPN/schedule/seasons: `PrefsJsonStore` / `DayPrefsJsonStore`.
+- **Firebase** — `bootstrapFirebase()` in `main` (Core, Analytics, Crashlytics, Remote Config). Config files from FlutterFire are **gitignored** (regenerate locally).
 - **Logging** — package `logger` + Dio `LogInterceptor` in debug.
 - **Controller `*ForTest` params** — optional fetch hooks for unit tests (`@visibleForTesting`).
 
@@ -61,6 +64,29 @@ f1_pet_project/
 - Dart **3.8+**
 - Java **21** (Android / Yandex MapKit)
 - Yandex MapKit API key (see below)
+- Firebase project (see below)
+
+## Firebase
+
+Packages: `firebase_core`, `firebase_analytics`, `firebase_crashlytics`, `firebase_remote_config`.  
+App IDs: Android `com.example.f1_pet_project`, iOS `com.example.f1PetProject`.
+
+One-time setup (CLI already usable if installed globally):
+
+```bash
+firebase login
+flutterfire configure --yes --project=<YOUR_FIREBASE_PROJECT_ID> --platforms=android,ios,web
+```
+
+This writes `lib/firebase_options.dart`, `android/app/google-services.json`, and `ios/Runner/GoogleService-Info.plist` (all **gitignored** — do not commit).  
+In Firebase Console enable **Analytics**, **Crashlytics**, and **Remote Config**. After iOS configure: `cd ios && pod install && cd ..`.
+
+Remote Config parameters (set in Firebase Console):
+
+| Key | Type | Default | Meaning |
+|-----|------|---------|---------|
+| `local_notifications_enabled` | Boolean | `true` | Allow creating local race reminder notifications |
+| `min_app_version` | String | `0.0.0` | Minimum supported app version; below → blocking update screen (GitHub Releases) |
 
 ## Yandex MapKit
 
@@ -100,11 +126,11 @@ After installing a release APK, check logcat: `RootApp` must log `API key presen
 Use `versionName+versionCode` in `pubspec.yaml`:
 
 ```yaml
-version: 1.4.2+202607220
+version: 1.5.0+202607230
 ```
 
 Android updates only if the new APK has a **higher `versionCode`** and the **same signing certificate**.  
-Bumping only `1.4.2` → `1.4.3` without raising the `+N` part keeps the same `versionCode`, so the device will not replace the installed app.  
+Bumping only `1.5.0` → `1.5.1` without raising the `+N` part keeps the same `versionCode`, so the device will not replace the installed app.  
 Different signing (debug vs release / another keystore) also forces uninstall + reinstall.
 
 ## Web
@@ -139,9 +165,9 @@ flutter test
 Release:
 
 ```bash
-# bump version in pubspec.yaml first (e.g. 1.4.2+202607220), then tag the same versionName
-git tag v1.4.2
-git push origin v1.4.2
+# bump version in pubspec.yaml first (e.g. 1.5.0+202607230), then tag the same versionName
+git tag v1.5.0
+git push origin v1.5.0
 ```
 
 Secrets:

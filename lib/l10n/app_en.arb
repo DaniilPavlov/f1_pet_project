@@ -165,6 +165,9 @@
   "responseParseError": "Error processing the server response",
   "unexpectedError": "Unexpected error",
   "openUrlFailed": "Could not open link {url}",
+  "forceUpdateTitle": "App update required",
+  "forceUpdateSubtitle": "This version is no longer supported. Download the latest release from GitHub.",
+  "forceUpdateButton": "Update",
   "localeCodeRu": "RU",
   "localeCodeEn": "EN"
 }

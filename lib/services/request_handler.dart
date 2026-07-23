@@ -9,23 +9,15 @@ import 'package:package_info_plus/package_info_plus.dart';
 /// HTTP-клиент Jolpica через Dio (один экземпляр на приложение).
 class RequestHandler {
   RequestHandler() {
-    _dio = _createDio();
-    _dio.interceptors.add(_cacheInterceptorWrapper());
+    _dio = AppDio.jolpica();
+    _dio.interceptors.add(_cache);
   }
 
-  final _cacheInterceptor = CacheInterceptor();
+  final _cache = CacheInterceptor();
   late final Dio _dio;
 
-  /// Сбрасывает in-memory HTTP-кэш (pull-to-refresh).
-  void clearCache() => _cacheInterceptor.clear();
-
-  Interceptor _cacheInterceptorWrapper() {
-    return InterceptorsWrapper(
-      onRequest: _cacheInterceptor.onRequest,
-      onResponse: _cacheInterceptor.onResponse,
-      onError: _cacheInterceptor.onError,
-    );
-  }
+  /// Pull-to-refresh: следующий запрос в сеть, кэш остаётся для офлайна.
+  void invalidateCache() => _cache.invalidate();
 
   /// GET к Jolpica с суффиксом `.json`.
   Future<Response<T>> get<T>(
@@ -41,7 +33,7 @@ class RequestHandler {
         '$path.json',
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
-        options: await _getOptions(options),
+        options: await _options(options),
         queryParameters: <String, dynamic>{
           'limit': limit,
           ...?queryParameters,
@@ -53,24 +45,19 @@ class RequestHandler {
     }
   }
 
-  Future<Options> _getOptions(Options? options) async {
-    // Custom headers break Jolpica CORS in browsers that can reach the API.
+  Future<Options> _options(Options? options) async {
     if (kIsWeb) {
       return options ?? Options();
     }
 
     final info = await PackageInfo.fromPlatform();
-    final headers = <String, dynamic>{
-      ...?options?.headers,
-      'system': options?.headers?.containsKey('system') ?? false
-          ? options!.headers!['system']
-          : PlatformCapabilities.systemLabel,
-      'version': info.version,
-      'build-number': info.buildNumber,
-    };
-
-    return (options ?? Options()).copyWith(headers: headers);
+    return (options ?? Options()).copyWith(
+      headers: <String, dynamic>{
+        ...?options?.headers,
+        'system': options?.headers?['system'] ?? PlatformCapabilities.systemLabel,
+        'version': info.version,
+        'build-number': info.buildNumber,
+      },
+    );
   }
-
-  Dio _createDio() => AppDio.jolpica();
 }

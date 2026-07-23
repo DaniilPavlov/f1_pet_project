@@ -25,11 +25,12 @@ class RaceSearchScreen extends StatelessWidget {
     return Observer(
       builder: (context) {
         final localeCode = localeController.locale.languageCode;
+        final l10n = context.l10n;
 
         return Provider<RaceSearchScreenController>(
           key: ValueKey('race_search_$localeCode'),
           create: (context) => RaceSearchScreenController(
-            l10n: context.l10n,
+            l10n: l10n,
             raceWeekendRepository: context.read<RaceWeekendRepository>(),
           ),
           dispose: (_, controller) => controller.dispose(),
@@ -37,7 +38,7 @@ class RaceSearchScreen extends StatelessWidget {
             builder: (context) {
               final controller = context.read<RaceSearchScreenController>();
               return Scaffold(
-                appBar: CustomAppBar(title: context.l10n.raceSearchTitle, onPop: () => context.router.removeLast()),
+                appBar: CustomAppBar(title: l10n.raceSearchTitle, onPop: () => context.router.removeLast()),
                 body: SafeArea(
                   child: CustomScrollView(
                     controller: controller.scrollController,

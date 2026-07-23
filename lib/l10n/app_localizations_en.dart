@@ -459,6 +459,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get forceUpdateTitle => 'App update required';
+
+  @override
+  String get forceUpdateSubtitle =>
+      'This version is no longer supported. Download the latest release from GitHub.';
+
+  @override
+  String get forceUpdateButton => 'Update';
+
+  @override
   String get localeCodeRu => 'RU';
 
   @override

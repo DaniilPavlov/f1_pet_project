@@ -6,6 +6,7 @@ import 'package:f1_pet_project/core/schedule/models/race_date_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
+import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -16,8 +17,14 @@ import 'package:timezone/timezone.dart' as tz;
 ///
 /// Расписание из [ScheduleRepository]. В ОС — окно из [_maxScheduledReminders]
 /// ближайших сессий; при старте / resume / смене локали пересобирается.
+/// Флаг Remote Config [RemoteConfigService.localNotificationsEnabledKey]
+/// запрещает создание (и снимает уже запланированные).
 class RaceReminderService {
-  RaceReminderService({required ScheduleRepository scheduleRepository}) : _scheduleRepository = scheduleRepository;
+  RaceReminderService({
+    required ScheduleRepository scheduleRepository,
+    required RemoteConfigService remoteConfig,
+  }) : _scheduleRepository = scheduleRepository,
+       _remoteConfig = remoteConfig;
 
   static const _reminderLead = Duration(minutes: 30);
   static const _maxScheduledReminders = 10;
@@ -39,11 +46,15 @@ class RaceReminderService {
   static const _notificationDetails = NotificationDetails(android: _androidDetails, iOS: DarwinNotificationDetails());
 
   final ScheduleRepository _scheduleRepository;
+  final RemoteConfigService _remoteConfig;
   final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
+
+  bool get _notificationsAllowed =>
+      PlatformCapabilities.hasLocalNotifications && _remoteConfig.localNotificationsEnabled;
 
   /// Инициализирует плагин и таймзону (без запроса permissions).
   Future<void> init() async {
-    if (!PlatformCapabilities.hasLocalNotifications) {
+    if (!_notificationsAllowed) {
       return;
     }
     tz_data.initializeTimeZones();
@@ -64,7 +75,7 @@ class RaceReminderService {
 
   /// Запрос разрешений уведомлений / exact alarms.
   Future<void> requestPermissions() async {
-    if (!PlatformCapabilities.hasLocalNotifications) {
+    if (!_notificationsAllowed) {
       return;
     }
     final android = _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
@@ -78,6 +89,11 @@ class RaceReminderService {
   /// Подтягивает расписание и планирует ближайшие уведомления.
   Future<void> sync({required Locale locale}) async {
     if (!PlatformCapabilities.hasLocalNotifications) {
+      return;
+    }
+    if (!_remoteConfig.localNotificationsEnabled) {
+      await _plugin.cancelAll();
+      logger.d('RaceReminderService: disabled by Remote Config, cancelled all');
       return;
     }
     try {
