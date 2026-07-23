@@ -37,7 +37,7 @@ coverage/
 .fvm/
 .fvmrc
 
-# Env / secrets
+# Env / secrets (never commit)
 .env
 .env.*
 *.env
@@ -46,11 +46,14 @@ coverage/
 **/*.keystore
 **/*.jks
 ios/Flutter/Secrets.xcconfig
+lib/app_config.g.dart
 
-# Firebase (FlutterFire: regenerate locally, do not commit)
+# Firebase (FlutterFire locally; do not commit — CI uses tool/ci stubs)
 lib/firebase_options.dart
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
+firebase.json
+.firebaserc
 .firebase/
 firebase-debug.log
 

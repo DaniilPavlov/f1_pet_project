@@ -41,12 +41,26 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Write CI stubs
+        run: |
+          cp tool/ci/firebase_options.stub.dart lib/firebase_options.dart
+          cp tool/ci/google-services.stub.json android/app/google-services.json
+          printf 'APPMETRICA_API_KEY=\nYANDEX_MAPKIT_API_KEY=\n' > .env
+
       - name: Verify codegen is up to date
         run: |
-          dart run build_runner build
-          if ! git diff --quiet; then
+          dart run build_runner build --delete-conflicting-outputs
+          if ! git diff --quiet -- . \
+            ':!lib/firebase_options.dart' \
+            ':!android/app/google-services.json' \
+            ':!lib/app_config.g.dart' \
+            ':!.env'; then
             echo "::error::Generated files are out of date. Run 'dart run build_runner build' locally and commit the changes."
-            git diff --stat
+            git diff --stat -- . \
+              ':!lib/firebase_options.dart' \
+              ':!android/app/google-services.json' \
+              ':!lib/app_config.g.dart' \
+              ':!.env'
             exit 1
           fi
 

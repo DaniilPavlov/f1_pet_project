@@ -26,7 +26,7 @@ import flutter_local_notifications
        apiKey != "$(YANDEX_MAPKIT_API_KEY)" {
       YMKMapKit.setApiKey(apiKey)
     } else {
-      NSLog("Yandex MapKit API key is missing. Copy ios/Flutter/Secrets.xcconfig.example to Secrets.xcconfig")
+      NSLog("Yandex MapKit API key is missing. Create ios/Flutter/Secrets.xcconfig with YANDEX_MAPKIT_API_KEY=...")
     }
 
     GeneratedPluginRegistrant.register(with: self)

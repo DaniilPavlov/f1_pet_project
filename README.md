@@ -23,7 +23,7 @@ Same idea, other stacks:
 | Data | Feature repositories + `AppDataRefresh` (pull-to-refresh) |
 | Codegen | json_serializable, mobx_codegen, auto_route_generator |
 | Map | Yandex MapKit |
-| Backend | Firebase (Core, Analytics, Crashlytics, Remote Config) |
+| Backend | Firebase (Core, Analytics, Crashlytics, Remote Config), AppMetrica |
 
 ## Architecture
 
@@ -32,7 +32,8 @@ Same idea, other stacks:
 - **Repositories** — Jolpica/ESPN/Wikipedia live in `*/repositories/`.
 - **`AppDataRefresh.clearAll()`** — soft-invalidate on pull-to-refresh; cached data kept for offline.
 - **Cache** — Jolpica: `CacheInterceptor` (memory + prefs). ESPN/schedule/seasons: `PrefsJsonStore` / `DayPrefsJsonStore`.
-- **Firebase** — `bootstrapFirebase()` in `main` (Core, Analytics, Crashlytics, Remote Config). Config files from FlutterFire are **gitignored** (regenerate locally).
+- **Firebase** — `bootstrapFirebase()` in `main` (Core, Analytics, Crashlytics, Remote Config). Client configs are **gitignored**; CI uses stubs under `tool/ci/`.
+- **AppMetrica** — `bootstrapAppMetrica()`: local `.env` (envied) or `--dart-define` / GitHub secret for release.
 - **Logging** — package `logger` + Dio `LogInterceptor` in debug.
 - **Controller `*ForTest` params** — optional fetch hooks for unit tests (`@visibleForTesting`).
 
@@ -49,8 +50,10 @@ f1_pet_project/
 │   │   ├── news/
 │   │   └── circuits/  # + map, circuit detail, stats
 │   ├── data/        # shared Jolpica models (standings, …), exceptions
-│   ├── services/    # AppDio, RequestHandler, ApiLoader, AppDataRefresh, executor
+│   ├── services/    # AppDio, RequestHandler, ApiLoader, AppDataRefresh, firebase, appmetrica
+│   ├── app_config.dart  # envied from .env
 │   └── router/      # Auto Route
+├── tool/ci/         # Firebase stubs for CI analyze
 ├── assets/
 ├── test/
 ├── android/
@@ -78,7 +81,8 @@ firebase login
 flutterfire configure --yes --project=<YOUR_FIREBASE_PROJECT_ID> --platforms=android,ios,web
 ```
 
-This writes `lib/firebase_options.dart`, `android/app/google-services.json`, and `ios/Runner/GoogleService-Info.plist` (all **gitignored** — do not commit).  
+This writes `lib/firebase_options.dart`, `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist`, and `firebase.json` (**gitignored** — do not commit, so clones cannot hit your project).  
+CI copies stubs from `tool/ci/`. Release can inject real files via secrets `FIREBASE_OPTIONS_DART` and `GOOGLE_SERVICES_JSON`.  
 In Firebase Console enable **Analytics**, **Crashlytics**, and **Remote Config**. After iOS configure: `cd ios && pod install && cd ..`.
 
 Remote Config parameters (set in Firebase Console):
@@ -88,26 +92,31 @@ Remote Config parameters (set in Firebase Console):
 | `local_notifications_enabled` | Boolean | `true` | Allow creating local race reminder notifications |
 | `min_app_version` | String | `0.0.0` | Minimum supported app version; below → blocking update screen (GitHub Releases) |
 
+## Secrets
+
+Keys are **not in git**. Locally one file:
+
+```bash
+# .env (gitignored)
+APPMETRICA_API_KEY=...
+YANDEX_MAPKIT_API_KEY=...
+
+dart run build_runner build   # once after changing AppMetrica key
+flutter run
+```
+
+- **Android MapKit** — reads `YANDEX_MAPKIT_API_KEY` from `.env`
+- **iOS MapKit** — `ios/Flutter/Secrets.xcconfig` with `YANDEX_MAPKIT_API_KEY=...` (gitignored)
+- **AppMetrica** — from `.env` via envied
+- **Firebase** — local `firebase_options.dart` / `google-services.json` / plist (gitignored); CI uses `tool/ci` stubs
+
+**Release** still needs GitHub Secrets (`YANDEX_MAPKIT_API_KEY`, optional `APPMETRICA_API_KEY`, optional Firebase) — Actions cannot see your local `.env`.
+
+## AppMetrica
+
+`appmetrica_plugin`: sessions/installs after activate. Crashes → Crashlytics.
+
 ## Yandex MapKit
-
-The key is **not stored in git**.
-
-**Android** — Flutter overwrites `android/local.properties` on every build, so keep the key in a separate file:
-
-```bash
-cp android/mapkit.properties.example android/mapkit.properties
-# edit android/mapkit.properties → yandex.mapkit.apiKey=YOUR_KEY
-```
-
-Or export `YANDEX_MAPKIT_API_KEY` in the environment.
-
-**iOS** — copy the example and put your key in:
-
-```bash
-cp ios/Flutter/Secrets.xcconfig.example ios/Flutter/Secrets.xcconfig
-```
-
-**Release / CI:** GitHub secret `YANDEX_MAPKIT_API_KEY` is required (written to `android/mapkit.properties` in the workflow).
 
 If the key is restricted by app fingerprint in [Yandex Developer Console](https://developer.tech.yandex.ru/services/), register **both** debug and release SHA-1:
 
@@ -170,9 +179,11 @@ git tag v1.5.0
 git push origin v1.5.0
 ```
 
-Secrets:
-- `YANDEX_MAPKIT_API_KEY` — required for the map in release APKs
-- `ANDROID_KEYSTORE_*` — optional; without them the APK is debug-signed
+Secrets (release only — local uses `.env` / Secrets.xcconfig):
+- `YANDEX_MAPKIT_API_KEY` — required for the map
+- `APPMETRICA_API_KEY` — optional
+- `FIREBASE_OPTIONS_DART` / `GOOGLE_SERVICES_JSON` — optional (else CI stubs)
+- `ANDROID_KEYSTORE_*` — optional
 
 ## Features
 

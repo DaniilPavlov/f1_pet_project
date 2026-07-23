@@ -44,6 +44,24 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Configure Firebase (secrets or CI stubs)
+        env:
+          FIREBASE_OPTIONS_DART: ${{ secrets.FIREBASE_OPTIONS_DART }}
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -n "$FIREBASE_OPTIONS_DART" ]; then
+            printf '%s\n' "$FIREBASE_OPTIONS_DART" > lib/firebase_options.dart
+          else
+            echo "FIREBASE_OPTIONS_DART secret missing — using CI stub (Firebase disabled in this APK)."
+            cp tool/ci/firebase_options.stub.dart lib/firebase_options.dart
+          fi
+          if [ -n "$GOOGLE_SERVICES_JSON" ]; then
+            printf '%s\n' "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
+          else
+            echo "GOOGLE_SERVICES_JSON secret missing — using CI stub."
+            cp tool/ci/google-services.stub.json android/app/google-services.json
+          fi
+
       - name: Configure Android signing
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -65,23 +83,33 @@ jobs:
           # Strip accidental leading spaces from HEREDOC indentation.
           sed -i 's/^[[:space:]]*//' android/key.properties
 
-      - name: Configure Yandex MapKit API key
+      - name: Configure MapKit + AppMetrica
         env:
           YANDEX_MAPKIT_API_KEY: ${{ secrets.YANDEX_MAPKIT_API_KEY }}
+          APPMETRICA_API_KEY: ${{ secrets.APPMETRICA_API_KEY }}
         run: |
           if [ -z "$YANDEX_MAPKIT_API_KEY" ]; then
-            echo "::error::Secret YANDEX_MAPKIT_API_KEY is missing. Release APK would show a grey map."
+            echo "::error::Secret YANDEX_MAPKIT_API_KEY is missing."
             exit 1
           fi
-          # Do NOT put the key in local.properties — Flutter overwrites that file on build.
           printf 'yandex.mapkit.apiKey=%s\n' "$YANDEX_MAPKIT_API_KEY" > android/mapkit.properties
-          echo "Yandex MapKit API key written to android/mapkit.properties"
+          printf 'APPMETRICA_API_KEY=%s\nYANDEX_MAPKIT_API_KEY=%s\n' \
+            "${APPMETRICA_API_KEY:-}" "$YANDEX_MAPKIT_API_KEY" > .env
+          dart run build_runner build --delete-conflicting-outputs
 
       - name: Accept Android licenses
         run: yes | flutter doctor --android-licenses
 
       - name: Build APK
-        run: flutter build apk --release
+        env:
+          APPMETRICA_API_KEY: ${{ secrets.APPMETRICA_API_KEY }}
+        run: |
+          if [ -n "$APPMETRICA_API_KEY" ]; then
+            flutter build apk --release --dart-define=APPMETRICA_API_KEY="$APPMETRICA_API_KEY"
+          else
+            echo "::warning::APPMETRICA_API_KEY secret missing — AppMetrica off."
+            flutter build apk --release
+          fi
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v7
@@ -108,6 +136,12 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Write CI stubs
+        run: |
+          cp tool/ci/firebase_options.stub.dart lib/firebase_options.dart
+          printf 'APPMETRICA_API_KEY=\n' > .env
+          dart run build_runner build --delete-conflicting-outputs
 
       - name: Build Web
         run: flutter build web --release
