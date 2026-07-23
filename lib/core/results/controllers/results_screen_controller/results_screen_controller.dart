@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
+import 'package:f1_pet_project/common/repositories/espn/espn_scoreboard_repository.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/utils/loggers/logger.dart';
-import 'package:f1_pet_project/core/espn/models/espn_scoreboard_models.dart';
-import 'package:f1_pet_project/core/espn/repositories/espn_scoreboard_repository.dart';
 import 'package:f1_pet_project/core/results/repositories/results_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';

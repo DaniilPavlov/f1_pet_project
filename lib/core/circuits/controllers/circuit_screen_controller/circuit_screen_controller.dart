@@ -1,11 +1,11 @@
-import 'package:f1_pet_project/common/circuits/circuit_stats_repository.dart';
-import 'package:f1_pet_project/common/circuits/models/circuit_stats.dart';
+import 'package:f1_pet_project/common/repositories/wikipedia/wikipedia_page_image_repository.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
-import 'package:f1_pet_project/common/wikipedia/repositories/wikipedia_page_image_repository.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_race_win.dart';
 import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.dart';
+import 'package:f1_pet_project/core/circuits/stats/circuit_stats_repository.dart';
+import 'package:f1_pet_project/core/circuits/stats/models/circuit_stats.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/foundation.dart';

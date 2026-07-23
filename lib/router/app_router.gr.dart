@@ -18,18 +18,19 @@ import 'package:f1_pet_project/core/circuits/screens/circuit_screen.dart'
     as _i1;
 import 'package:f1_pet_project/core/circuits/screens/circuits_screen.dart'
     as _i3;
-import 'package:f1_pet_project/core/constructor/screens/constructor_screen.dart'
-    as _i4;
-import 'package:f1_pet_project/core/driver/screens/driver_screen.dart' as _i5;
-import 'package:f1_pet_project/core/finish_status/screens/finish_status_screen.dart'
-    as _i6;
-import 'package:f1_pet_project/core/h2h/screens/h2h_constructors_screen.dart'
-    as _i7;
-import 'package:f1_pet_project/core/h2h/screens/h2h_screen.dart' as _i8;
-import 'package:f1_pet_project/core/hall_of_fame/screens/hall_of_fame_screen.dart'
-    as _i9;
 import 'package:f1_pet_project/core/home/screens/home_screen.dart' as _i10;
 import 'package:f1_pet_project/core/news/screens/news_screen.dart' as _i11;
+import 'package:f1_pet_project/core/results/constructor/screens/constructor_screen.dart'
+    as _i4;
+import 'package:f1_pet_project/core/results/driver/screens/driver_screen.dart'
+    as _i5;
+import 'package:f1_pet_project/core/results/finish_status/screens/finish_status_screen.dart'
+    as _i6;
+import 'package:f1_pet_project/core/results/h2h/screens/h2h_constructors_screen.dart'
+    as _i7;
+import 'package:f1_pet_project/core/results/h2h/screens/h2h_screen.dart' as _i8;
+import 'package:f1_pet_project/core/results/hall_of_fame/screens/hall_of_fame_screen.dart'
+    as _i9;
 import 'package:f1_pet_project/core/results/race_info/screens/race_info_screen.dart'
     as _i12;
 import 'package:f1_pet_project/core/results/race_search/screens/race_search_screen.dart'

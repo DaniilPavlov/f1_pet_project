@@ -38,12 +38,17 @@ Same idea, other stacks:
 ```
 f1_pet_project/
 ├── lib/
-│   ├── common/      # widgets, theme, helpers, map, wikipedia
-│   ├── core/        # features: home, results, schedule, news, circuits, h2h, …
-│   ├── data/        # shared models (standings, …), exceptions
+│   ├── common/      # layered shared: widgets, utils, models, repositories, packages, localization
+│   ├── core/        # 5 tabs only — nested screens inside each:
+│   │   ├── home/
+│   │   ├── results/   # + race_info, race_search, hof, h2h, finish_status, driver, constructor
+│   │   ├── schedule/
+│   │   ├── news/
+│   │   └── circuits/  # + map, circuit detail, stats
+│   ├── data/        # shared Jolpica models (standings, …), exceptions
 │   ├── services/    # AppDio, RequestHandler, ApiLoader, AppDataRefresh, executor
 │   └── router/      # Auto Route
-├── assets/          # circuit layouts, circuit stats, icons
+├── assets/
 ├── test/
 ├── android/
 ├── ios/

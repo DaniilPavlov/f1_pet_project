@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:f1_pet_project/common/circuits/circuit_layout_assets.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/circuits/circuit_layout_image.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
+import 'package:f1_pet_project/core/circuits/stats/circuit_layout_assets.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
 

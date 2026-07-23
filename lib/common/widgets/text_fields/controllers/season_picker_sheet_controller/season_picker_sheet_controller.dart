@@ -1,5 +1,5 @@
+import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
-import 'package:f1_pet_project/core/seasons/repositories/seasons_repository.dart';
 import 'package:mobx/mobx.dart';
 
 part 'season_picker_sheet_controller.g.dart';

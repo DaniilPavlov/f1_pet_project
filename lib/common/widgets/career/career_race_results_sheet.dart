@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:f1_pet_project/common/career/models/career_race_result.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/models/career/career_race_result.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/bottom_sheets/default_bottom_sheet.dart';

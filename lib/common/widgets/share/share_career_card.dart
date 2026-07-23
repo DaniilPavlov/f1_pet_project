@@ -1,4 +1,4 @@
-import 'package:f1_pet_project/common/career/models/career_stats.dart';
+import 'package:f1_pet_project/common/models/career/career_stats.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';

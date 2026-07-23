@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/repositories/espn/espn_scoreboard_repository.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
@@ -7,7 +8,6 @@ import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/containers/red_border_container.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/race_section_shimmer.dart';
-import 'package:f1_pet_project/core/espn/repositories/espn_scoreboard_repository.dart';
 import 'package:f1_pet_project/core/results/components/last_race_table_section.dart';
 import 'package:f1_pet_project/core/results/components/weekend_scoreboard_section.dart';
 import 'package:f1_pet_project/core/results/controllers/results_screen_controller/results_screen_controller.dart';

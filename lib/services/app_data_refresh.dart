@@ -1,11 +1,11 @@
-import 'package:f1_pet_project/common/wikipedia/repositories/wikipedia_page_image_repository.dart';
-import 'package:f1_pet_project/core/constructor/repositories/constructor_catalog_repository.dart';
-import 'package:f1_pet_project/core/driver/repositories/driver_catalog_repository.dart';
-import 'package:f1_pet_project/core/espn/repositories/espn_media_repository.dart';
-import 'package:f1_pet_project/core/espn/repositories/espn_scoreboard_repository.dart';
+import 'package:f1_pet_project/common/repositories/espn/espn_media_repository.dart';
+import 'package:f1_pet_project/common/repositories/espn/espn_scoreboard_repository.dart';
+import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
+import 'package:f1_pet_project/common/repositories/wikipedia/wikipedia_page_image_repository.dart';
 import 'package:f1_pet_project/core/news/repositories/news_repository.dart';
+import 'package:f1_pet_project/core/results/constructor/repositories/constructor_catalog_repository.dart';
+import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
-import 'package:f1_pet_project/core/seasons/repositories/seasons_repository.dart';
 import 'package:f1_pet_project/services/request_handler.dart';
 
 /// Единый контракт pull-to-refresh: сбрасывает все слои кэша приложения.

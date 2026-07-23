@@ -1,7 +1,7 @@
 import 'package:f1_pet_project/common/widgets/containers/rounded_container.dart';
 import 'package:f1_pet_project/core/circuits/components/circuits_map_bottom_sheet.dart';
+import 'package:f1_pet_project/core/circuits/map/components/map_container.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
-import 'package:f1_pet_project/core/map/components/map_container.dart';
 import 'package:flutter/material.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 

@@ -1,5 +1,5 @@
-import 'package:f1_pet_project/common/circuits/circuit_layout_assets.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/core/circuits/stats/circuit_layout_assets.dart';
 import 'package:flutter/material.dart';
 
 /// Локальная схема трассы; при отсутствии ассета — ничего не рисует.

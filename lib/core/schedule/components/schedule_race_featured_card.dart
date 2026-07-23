@@ -1,10 +1,10 @@
-import 'package:f1_pet_project/common/circuits/circuit_layout_assets.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/common/widgets/circuits/circuit_layout_image.dart';
+import 'package:f1_pet_project/core/circuits/stats/circuit_layout_assets.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

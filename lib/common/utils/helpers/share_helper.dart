@@ -1,6 +1,6 @@
 import 'dart:ui' as ui;
 
-import 'package:f1_pet_project/common/career/models/career_stats.dart';
+import 'package:f1_pet_project/common/models/career/career_stats.dart';
 import 'package:f1_pet_project/common/widgets/share/share_career_card.dart';
 import 'package:f1_pet_project/common/widgets/share/share_race_results_card.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';

@@ -1,7 +1,7 @@
-import 'package:f1_pet_project/common/circuits/models/circuit_stats.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/core/circuits/stats/models/circuit_stats.dart';
 import 'package:flutter/material.dart';
 
 /// Сетка характеристик трассы: длина, круги, повороты, скорость, перепад.

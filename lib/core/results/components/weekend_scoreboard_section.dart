@@ -1,11 +1,11 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/country_flag.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/weekend_scoreboard_shimmer.dart';
-import 'package:f1_pet_project/core/espn/models/espn_scoreboard_models.dart';
 import 'package:f1_pet_project/core/results/components/weekend_session_results_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
