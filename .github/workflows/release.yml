@@ -69,9 +69,10 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
-            echo "No Android signing secrets configured. APK will use debug signing."
-            exit 0
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ] || [ -z "$ANDROID_KEYSTORE_PASSWORD" ] \
+            || [ -z "$ANDROID_KEY_ALIAS" ] || [ -z "$ANDROID_KEY_PASSWORD" ]; then
+            echo "::error::Set ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD."
+            exit 1
           fi
           echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
           cat > android/key.properties <<EOF
@@ -80,7 +81,6 @@ jobs:
           keyAlias=$ANDROID_KEY_ALIAS
           storeFile=upload-keystore.jks
           EOF
-          # Strip accidental leading spaces from HEREDOC indentation.
           sed -i 's/^[[:space:]]*//' android/key.properties
 
       - name: Configure MapKit + AppMetrica
@@ -101,15 +101,7 @@ jobs:
         run: yes | flutter doctor --android-licenses
 
       - name: Build APK
-        env:
-          APPMETRICA_API_KEY: ${{ secrets.APPMETRICA_API_KEY }}
-        run: |
-          if [ -n "$APPMETRICA_API_KEY" ]; then
-            flutter build apk --release --dart-define=APPMETRICA_API_KEY="$APPMETRICA_API_KEY"
-          else
-            echo "::warning::APPMETRICA_API_KEY secret missing — AppMetrica off."
-            flutter build apk --release
-          fi
+        run: flutter build apk --release
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v7

@@ -111,7 +111,7 @@ android {
         minSdkVersion 26
         targetSdk 35
         // Do not set archivesBaseName here — names like "1.6.1(202607230)" break install
-        // on some devices ("App not installed"). b2c CI also strips this for the same reason.
+        // on some devices ("App not installed").
         buildConfigField "String", "YANDEX_MAPKIT_API_KEY", "\"${yandexMapKitApiKey}\""
     }
 
