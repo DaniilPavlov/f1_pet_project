@@ -135,12 +135,11 @@ After installing a release APK, check logcat: `RootApp` must log `API key presen
 Use `versionName+versionCode` in `pubspec.yaml`:
 
 ```yaml
-version: 1.5.0+202607230
+version: 1.6.2+202607231
 ```
 
 Android updates only if the new APK has a **higher `versionCode`** and the **same signing certificate**.  
-Bumping only `1.5.0` → `1.5.1` without raising the `+N` part keeps the same `versionCode`, so the device will not replace the installed app.  
-Different signing (debug vs release / another keystore) also forces uninstall + reinstall.
+Do **not** set `archivesBaseName` with parentheses (e.g. `1.6.1(202607230)`) — that pattern caused “App not installed” on devices; b2c CI strips it for the same reason. Release APK is the plain `app-release.apk`.
 
 ## Web
 

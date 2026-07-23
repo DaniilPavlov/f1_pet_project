@@ -1,5 +1,3 @@
-import java.text.SimpleDateFormat
-
 plugins {
     id "com.android.application"
     id "kotlin-android"
@@ -112,33 +110,13 @@ android {
         versionName flutterVersionName
         minSdkVersion 26
         targetSdk 35
-        setProperty("archivesBaseName", versionName + "(" + versionCode + ")")
+        // Do not set archivesBaseName here — names like "1.6.1(202607230)" break install
+        // on some devices ("App not installed"). b2c CI also strips this for the same reason.
         buildConfigField "String", "YANDEX_MAPKIT_API_KEY", "\"${yandexMapKitApiKey}\""
     }
 
-    applicationVariants.all { variant ->
-        variant.outputs.all { output ->
-            def branch = "unknown_branch"
-            def commitHash = "unknown_commit"
-            def buildDate = new SimpleDateFormat("yyyyMMdd").format(new Date())
-
-            try {
-                def procBranch = "git rev-parse --abbrev-ref HEAD".execute()
-                branch = procBranch.text.trim()
-
-                def procHash = "git rev-parse --short HEAD".execute()
-                commitHash = procHash.text.trim()
-            } catch (Exception e) {
-                println "Error occurred while getting Git info: ${e.message}"
-            }
-
-            def newApkName = "${variant.applicationId}_${buildDate}_${variant.buildType.name}_${branch}_${commitHash}.apk"
-
-            outputFileName = newApkName
-
-            println "Output APK: ${newApkName}"
-        }
-    }
+    // Keep default Gradle/Flutter APK names (app-release.apk). Custom outputFileName
+    // confuses flutter-apk output and has caused install failures.
 
     if (hasKeyStore) {
         signingConfigs {
