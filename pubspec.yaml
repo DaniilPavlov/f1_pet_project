@@ -10,7 +10,7 @@ environment:
   flutter: ">=3.35.3"
 
 dependencies:
-  appmetrica_plugin: ^3.4.0
+  appmetrica_plugin: ^4.0.0
   auto_route: ^11.1.0
   collection: any
   colorful_safe_area: ^1.0.0
