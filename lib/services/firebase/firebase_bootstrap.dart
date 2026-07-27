@@ -1,5 +1,6 @@
 import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/firebase_options.dart';
+import 'package:f1_pet_project/services/firebase/crashlytics_reporting.dart';
 import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,9 +11,15 @@ import 'package:flutter/foundation.dart';
 Future<RemoteConfigService> bootstrapFirebase() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  FlutterError.onError = (details) {
+    if (shouldReportUncaughtErrorToCrashlytics(details.exception)) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+    }
+  };
   PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    if (shouldReportUncaughtErrorToCrashlytics(error)) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    }
     return true;
   };
 

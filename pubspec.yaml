@@ -3,7 +3,7 @@ description: F1 stats app (Jolpica + ESPN). MobX, Provider, Auto Route, Dio.
 
 publish_to: "none"
 
-version: 1.6.3+202607232
+version: 1.7.0+202607271
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -53,6 +53,7 @@ dependencies:
 dev_dependencies:
   auto_route_generator: ^10.5.0
   build_runner: ^2.15.1
+  dart_audit: ^0.2.0
   envied_generator: ^1.3.8
   flutter_test:
     sdk: flutter

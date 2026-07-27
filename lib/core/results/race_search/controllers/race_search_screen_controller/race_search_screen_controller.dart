@@ -64,7 +64,7 @@ abstract class RaceSearchScreenControllerBase with Store {
   /// Проверяет заполненность сезона и гонки.
   @action
   void checkFields() {
-    fieldsInputted = yearController.isValidYear && roundController.text.isNotEmpty;
+    fieldsInputted = yearController.isValidYear && roundController.isValidRound;
   }
 
   /// Смена сезона сбрасывает выбранную гонку.

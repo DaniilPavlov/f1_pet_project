@@ -41,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.0"
+  archive:
+    dependency: transitive
+    description:
+      name: archive
+      sha256: cb6a278ef2dbb298455e1a713bda08524a175630ec643a242c399c932a0a1f7d
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.6.1"
   args:
     dependency: transitive
     description:
@@ -201,6 +209,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.7"
+  dart_audit:
+    dependency: "direct dev"
+    description:
+      name: dart_audit
+      sha256: "1716130241acec8083f4d666de58cfec93adc884eb5859951ad0fe817a320f05"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   dart_style:
     dependency: transitive
     description:

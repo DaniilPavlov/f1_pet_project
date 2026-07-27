@@ -4,16 +4,37 @@
 	<dict>
 		<key>YandexMapKitApiKey</key>
 		<string>$(YANDEX_MAPKIT_API_KEY)</string>
-		<key>NSCameraUsageDescription</key>
-		<string>your usage description here</string>
-		<key>NSMicrophoneUsageDescription</key>
-		<string>your usage description here</string>
-		<key>NSPhotoLibraryUsageDescription</key>
-		<string>your usage description here</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>This app needs access to location when open.</string>
-		<key>NSLocationAlwaysUsageDescription</key>
-		<string>This app needs access to location when in the background.</string>
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<false/>
+			<key>NSExceptionDomains</key>
+			<dict>
+				<key>yandex.ru</key>
+				<dict>
+					<key>NSIncludesSubdomains</key>
+					<true/>
+					<key>NSExceptionAllowsInsecureHTTPLoads</key>
+					<true/>
+				</dict>
+				<key>yandex.net</key>
+				<dict>
+					<key>NSIncludesSubdomains</key>
+					<true/>
+					<key>NSExceptionAllowsInsecureHTTPLoads</key>
+					<true/>
+				</dict>
+				<key>yandex.com</key>
+				<dict>
+					<key>NSIncludesSubdomains</key>
+					<true/>
+					<key>NSExceptionAllowsInsecureHTTPLoads</key>
+					<true/>
+				</dict>
+			</dict>
+		</dict>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true />
 		<key>CFBundleDevelopmentRegion</key>

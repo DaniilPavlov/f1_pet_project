@@ -11,9 +11,10 @@ class RootApp : Application() {
 
         val apiKey = BuildConfig.YANDEX_MAPKIT_API_KEY
         if (apiKey.isBlank()) {
-            Log.e(TAG, "Yandex MapKit API key is EMPTY — map tiles will stay grey")
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, "Yandex MapKit API key is EMPTY — map tiles will stay grey")
+            }
         } else {
-            Log.i(TAG, "Yandex MapKit API key present (length=${apiKey.length})")
             MapKitFactory.setApiKey(apiKey)
         }
     }
