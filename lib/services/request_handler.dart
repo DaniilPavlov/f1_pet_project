@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
 import 'package:f1_pet_project/services/cache_interceptor.dart';
@@ -34,10 +35,7 @@ class RequestHandler {
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
         options: await _options(options),
-        queryParameters: <String, dynamic>{
-          'limit': limit,
-          ...?queryParameters,
-        },
+        queryParameters: <String, dynamic>{'limit': limit, ...?queryParameters},
       );
     } on DioException catch (e) {
       logger.d('RequestHandler GET $path → ${e.response?.statusCode ?? e.type.name}');
@@ -46,18 +44,19 @@ class RequestHandler {
   }
 
   Future<Options> _options(Options? options) async {
-    if (kIsWeb) {
-      return options ?? Options();
+    final info = await PackageInfo.fromPlatform();
+    final headers = <String, dynamic>{
+      ...?options?.headers,
+      // Jolpica блокирует дефолтные UA с 21.08.2026 — нужен AppName/version
+      'User-Agent': StaticData.jolpicaUserAgent(info.version),
+    };
+
+    if (!kIsWeb) {
+      headers['system'] = options?.headers?['system'] ?? PlatformCapabilities.systemLabel;
+      headers['version'] = info.version;
+      headers['build-number'] = info.buildNumber;
     }
 
-    final info = await PackageInfo.fromPlatform();
-    return (options ?? Options()).copyWith(
-      headers: <String, dynamic>{
-        ...?options?.headers,
-        'system': options?.headers?['system'] ?? PlatformCapabilities.systemLabel,
-        'version': info.version,
-        'build-number': info.buildNumber,
-      },
-    );
+    return (options ?? Options()).copyWith(headers: headers);
   }
 }

@@ -35,8 +35,14 @@ class StaticData {
   static String espnF1DriverPhotoUrl(String headshotPath) =>
       'https://a.espncdn.com/combiner/i?img=$headshotPath&w=1200&h=800';
 
+  /// Имя приложения в User-Agent (Jolpica требует кастомный UA).
+  static const appUserAgentName = 'F1PetProject';
+
   /// Wikipedia MediaWiki API (pageimages) — lead-изображение статьи.
-  static const wikipediaUserAgent = 'F1PetProject/1.0 (https://github.com; Flutter app)';
+  static const wikipediaUserAgent = '$appUserAgentName/1.0 (https://github.com; Flutter app)';
+
+  /// Jolpica F1 API — формат `AppName/version`.
+  static String jolpicaUserAgent(String version) => '$appUserAgentName/$version';
 
   /// Релизы приложения на GitHub (кнопка обязательного обновления).
   static const githubReleasesUrl = 'https://github.com/DaniilPavlov/f1_pet_project/releases';
