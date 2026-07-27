@@ -83,10 +83,11 @@ void _logException(CustomException ex) {
   _duplicateErrorCount = 0;
 
   final skipStack = ex.parentException is DioException;
+  final detail = ex.parentException?.toString() ?? ex.subtitle ?? ex.title;
   if (skipStack) {
-    log('${ex.title}: ${ex.subtitle}');
+    log('${ex.title}: $detail');
   } else {
-    log('${ex.title}: ${ex.subtitle}', stackTrace: ex.stackTrace);
+    log('${ex.title}: $detail', stackTrace: ex.stackTrace);
   }
 }
 
@@ -144,7 +145,7 @@ Future<(T?, CustomException?)> _process<T>(
     } else {
       ex = CustomException(
         title: dioErrorText ?? ErrorCopy.requestError,
-        subtitle: e.message,
+        subtitle: ErrorCopy.errorRetrySubtitle,
         parentException: e,
         stackTrace: e.stackTrace,
       );
@@ -152,15 +153,22 @@ Future<(T?, CustomException?)> _process<T>(
   } on ResponseParseException catch (e) {
     ex = CustomException(
       title: responseParseErrorText ?? ErrorCopy.responseParseError,
-      subtitle: e.toString(),
+      subtitle: ErrorCopy.errorRetrySubtitle,
+      parentException: e,
       stackTrace: e.stackTrace,
     );
   } on SuccessFalse catch (e) {
-    ex = CustomException(title: e.toString(), stackTrace: e.stackTrace);
+    ex = CustomException(
+      title: ErrorCopy.unexpectedError,
+      subtitle: ErrorCopy.errorRetrySubtitle,
+      parentException: e,
+      stackTrace: e.stackTrace,
+    );
   } catch (e) {
     ex = CustomException(
       title: otherErrorText ?? ErrorCopy.unexpectedError,
-      subtitle: e.toString(),
+      subtitle: ErrorCopy.errorRetrySubtitle,
+      parentException: e is Exception ? e : null,
       stackTrace: StackTrace.current,
     );
   }

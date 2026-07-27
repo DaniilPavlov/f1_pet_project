@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  По умолчанию только HTTPS. Cleartext разрешён точечно для Yandex MapKit —
+  без этого карта не загружается (исторически причина usesCleartextTraffic=true).
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">yandex.ru</domain>
+        <domain includeSubdomains="true">yandex.net</domain>
+        <domain includeSubdomains="true">yandex.com</domain>
+    </domain-config>
+</network-security-config>

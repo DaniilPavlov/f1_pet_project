@@ -454,6 +454,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unexpectedError => 'Unexpected error';
 
   @override
+  String get errorRetrySubtitle => 'Try refreshing the screen.';
+
+  @override
   String openUrlFailed(String url) {
     return 'Could not open link $url';
   }

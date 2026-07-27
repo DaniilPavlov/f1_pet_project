@@ -1,5 +1,6 @@
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/trusted_url.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
 import 'package:flutter/material.dart';
@@ -25,9 +26,7 @@ class NewsArticleTile extends StatelessWidget {
       child: Container(
         width: double.infinity,
         clipBehavior: Clip.antiAlias,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-        ),
+        decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
         foregroundDecoration: BoxDecoration(
           border: Border.all(color: AppTheme.red),
           borderRadius: const BorderRadius.all(Radius.circular(20)),
@@ -39,7 +38,7 @@ class NewsArticleTile extends StatelessWidget {
               AspectRatio(
                 aspectRatio: 16 / 9,
                 child: Image.network(
-                  article.imageUrl!,
+                  TrustedUrl.preferHttps(article.imageUrl!),
                   fit: BoxFit.cover,
                   width: double.infinity,
                   errorBuilder: (_, _, _) => const SizedBox.shrink(),
@@ -68,10 +67,7 @@ class NewsArticleTile extends StatelessWidget {
                           ),
                         ),
                         if (published != null)
-                          Text(
-                            published,
-                            style: AppStyles.caption.copyWith(color: AppTheme.textGray),
-                          ),
+                          Text(published, style: AppStyles.caption.copyWith(color: AppTheme.textGray)),
                       ],
                     ),
                   ],

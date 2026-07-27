@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/trusted_url.dart';
 import 'package:flutter/material.dart';
 
 /// Широкое сетевое фото с рамкой; при отсутствии URL — иконка-плейсхолдер.
@@ -42,7 +43,7 @@ class NetworkHeroPhoto extends StatelessWidget {
             : photoUrl == null
             ? _Placeholder(icon: placeholderIcon)
             : Image.network(
-                photoUrl!,
+                TrustedUrl.preferHttps(photoUrl!),
                 fit: fit,
                 width: double.infinity,
                 height: double.infinity,

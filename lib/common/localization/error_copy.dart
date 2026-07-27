@@ -13,6 +13,7 @@ abstract final class ErrorCopy {
   static String requestError = 'Error sending the request';
   static String responseParseError = 'Error processing the server response';
   static String unexpectedError = 'Unexpected error';
+  static String errorRetrySubtitle = 'Try refreshing the screen.';
 
   static void sync(AppLocalizations l10n) {
     noConnection = l10n.noConnection;
@@ -22,5 +23,6 @@ abstract final class ErrorCopy {
     requestError = l10n.requestError;
     responseParseError = l10n.responseParseError;
     unexpectedError = l10n.unexpectedError;
+    errorRetrySubtitle = l10n.errorRetrySubtitle;
   }
 }

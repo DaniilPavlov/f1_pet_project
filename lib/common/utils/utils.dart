@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/utils/trusted_url.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -9,7 +10,11 @@ class Utils {
     bool externalApplication = false,
     void Function(CustomException ex)? onError,
   }) async {
-    final finalUrl = Uri.parse(rawUrl);
+    final finalUrl = TrustedUrl.parse(rawUrl);
+    if (finalUrl == null) {
+      onError?.call(const CustomException(title: 'Could not open link'));
+      return false;
+    }
 
     if (await canLaunchUrl(finalUrl)) {
       return launchUrl(
@@ -17,7 +22,7 @@ class Utils {
         mode: externalApplication ? LaunchMode.externalApplication : LaunchMode.platformDefault,
       );
     } else {
-      onError?.call(CustomException(title: 'Could not open link $rawUrl'));
+      onError?.call(const CustomException(title: 'Could not open link'));
 
       return false;
     }

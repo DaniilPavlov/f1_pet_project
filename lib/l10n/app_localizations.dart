@@ -932,6 +932,12 @@ abstract class AppLocalizations {
   /// **'Непредвиденная ошибка'**
   String get unexpectedError;
 
+  /// No description provided for @errorRetrySubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Попробуйте обновить экран.'**
+  String get errorRetrySubtitle;
+
   /// No description provided for @openUrlFailed.
   ///
   /// In ru, this message translates to:

@@ -87,7 +87,7 @@ class WikipediaPageImageRepository {
       return null;
     }
     final uri = Uri.tryParse(trimmed);
-    if (uri == null || uri.host.isEmpty) {
+    if (uri == null || uri.host.isEmpty || !_isWikipediaHost(uri.host)) {
       return null;
     }
     final segments = uri.pathSegments.where((s) => s.isNotEmpty).toList();
@@ -100,6 +100,11 @@ class WikipediaPageImageRepository {
       return null;
     }
     return (host: uri.host, title: title);
+  }
+
+  static bool _isWikipediaHost(String host) {
+    final lower = host.toLowerCase();
+    return lower == 'wikipedia.org' || lower.endsWith('.wikipedia.org');
   }
 
   /// Сброс in-memory кэша (pull-to-refresh).

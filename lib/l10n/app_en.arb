@@ -164,6 +164,7 @@
   "requestError": "Error sending the request",
   "responseParseError": "Error processing the server response",
   "unexpectedError": "Unexpected error",
+  "errorRetrySubtitle": "Try refreshing the screen.",
   "openUrlFailed": "Could not open link {url}",
   "forceUpdateTitle": "App update required",
   "forceUpdateSubtitle": "This version is no longer supported. Download the latest release from GitHub.",

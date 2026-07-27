@@ -189,6 +189,7 @@
   "requestError": "Ошибка при отправке запроса",
   "responseParseError": "Ошибка при обработке ответа от сервера",
   "unexpectedError": "Непредвиденная ошибка",
+  "errorRetrySubtitle": "Попробуйте обновить экран.",
   "openUrlFailed": "Не удалось перейти по ссылке {url}",
   "@openUrlFailed": {
     "placeholders": {

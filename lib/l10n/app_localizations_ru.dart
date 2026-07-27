@@ -454,6 +454,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get unexpectedError => 'Непредвиденная ошибка';
 
   @override
+  String get errorRetrySubtitle => 'Попробуйте обновить экран.';
+
+  @override
   String openUrlFailed(String url) {
     return 'Не удалось перейти по ссылке $url';
   }
