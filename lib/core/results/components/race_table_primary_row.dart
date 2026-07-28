@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 
 /// Строит шапку таблицы результатов гонки.
 TableRow raceTablePrimaryRow(AppLocalizations l10n) {
-  final textStyle = AppStyles.caption.copyWith(color: Colors.white);
+  final textStyle = AppStyles.caption.copyWith(color: AppTheme.onChrome);
 
   return TableRow(
     decoration: const BoxDecoration(
       color: AppTheme.red,
-      border: Border(bottom: BorderSide(color: AppTheme.strokeGray)),
+      border: Border(bottom: BorderSide(color: Color(0xFFD8D8D8))),
     ),
     children: [
       Center(

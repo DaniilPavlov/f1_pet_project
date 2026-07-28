@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/utils/helpers/string_extensions.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
           backgroundColor: isToday
               ? AppTheme.red
               : isSelected
-              ? AppTheme.white
+              ? AppTheme.onChrome
               : Colors.transparent,
           child: imageAsset.isEmpty
               ? const SizedBox(height: 24, child: Icon(Icons.home))
@@ -56,7 +57,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
         backgroundColor: isToday
             ? AppTheme.red
             : isSelected
-            ? AppTheme.white
+            ? AppTheme.onChrome
             : Colors.transparent,
         child: Text(date.day.toString(), style: textStyle),
       ),
@@ -68,7 +69,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
     const textStyle = AppStyles.body;
 
     return DecoratedBox(
-      decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(18)), color: AppTheme.shadowColor),
+      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(18)), color: context.colors.shadowColor),
       child: TableCalendar<dynamic>(
         locale: Localizations.localeOf(context).toLanguageTag(),
         availableGestures: AvailableGestures.horizontalSwipe,
@@ -113,15 +114,15 @@ class _CustomCalendarState extends State<CustomCalendar> {
           },
           outsideBuilder: (context, day, focusedDay) {
             return day.month == focusedDay.month
-                ? _makeLogoWidget(day) ?? _makeTextWidget(day, textStyle: textStyle.copyWith(color: AppTheme.white))
-                : _makeTextWidget(day, textStyle: textStyle.copyWith(color: AppTheme.white));
+                ? _makeLogoWidget(day) ?? _makeTextWidget(day, textStyle: textStyle.copyWith(color: AppTheme.onChrome))
+                : _makeTextWidget(day, textStyle: textStyle.copyWith(color: AppTheme.onChrome));
           },
           todayBuilder: (context, day, focusedDay) {
             return _makeLogoWidget(day, isToday: true) ??
                 _makeTextWidget(
                   day,
                   isToday: true,
-                  textStyle: textStyle.copyWith(color: day.month == focusedDay.month ? null : AppTheme.white),
+                  textStyle: textStyle.copyWith(color: day.month == focusedDay.month ? null : AppTheme.onChrome),
                 );
           },
           defaultBuilder: (context, day, focusedDay) {

@@ -30,10 +30,10 @@ class BlackButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 17),
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          color: isDisabled ? AppTheme.black.withValues(alpha: 0.3) : AppTheme.black,
+          color: isDisabled ? AppTheme.chrome.withValues(alpha: 0.3) : AppTheme.chrome,
           borderRadius: BorderRadius.circular(50),
           boxShadow: haveShadow && !isDisabled
-              ? [const BoxShadow(offset: Offset(0, 1), color: AppTheme.black, blurRadius: 5)]
+              ? [const BoxShadow(offset: Offset(0, 1), color: AppTheme.chrome, blurRadius: 5)]
               : [],
         ),
         child: Row(

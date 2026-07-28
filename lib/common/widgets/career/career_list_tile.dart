@@ -1,5 +1,5 @@
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 /// Строка списка на экране карьеры (команда / пилот) с опциональным тапом.
@@ -30,7 +30,7 @@ class CareerListTile extends StatelessWidget {
             if (trailing != null)
               trailing!
             else if (subtitle != null && subtitle!.isNotEmpty)
-              Text(subtitle!, style: AppStyles.body.copyWith(color: AppTheme.textGray)),
+              Text(subtitle!, style: AppStyles.body.copyWith(color: context.colors.textGray)),
           ],
         ),
       ),

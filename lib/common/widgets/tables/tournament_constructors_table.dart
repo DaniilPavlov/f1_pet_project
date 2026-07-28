@@ -1,5 +1,5 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/widgets/tables/table_parts/tournament_table_constructors_detail_row.dart';
 import 'package:f1_pet_project/common/widgets/tables/table_parts/tournament_table_constructors_primary_row.dart';
 import 'package:f1_pet_project/common/widgets/tables/tappable_constructor_row.dart';
@@ -44,8 +44,8 @@ class TournamentConstructorsTable extends StatelessWidget {
               final standing = constructors[i];
               return TableRow(
                 decoration: BoxDecoration(
-                  color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
-                  border: const Border(bottom: BorderSide(color: AppTheme.strokeGray)),
+                  color: i.isOdd ? context.colors.grayBG : Colors.transparent,
+                  border: Border(bottom: BorderSide(color: context.colors.strokeGray)),
                 ),
                 children: tappableConstructorRowCells(
                   context: context,

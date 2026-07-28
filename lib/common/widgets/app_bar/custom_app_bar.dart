@@ -6,6 +6,7 @@ import 'package:f1_pet_project/common/localization/locale_controller.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/theme/theme_controller.dart';
 import 'package:f1_pet_project/common/widgets/buttons/circle_button.dart';
 import 'package:f1_pet_project/services/notifications/race_reminder_service.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   final VoidCallback? onPop;
 
-  /// Кнопка шаринга слева от переключателя языка.
+  /// Кнопка шаринга слева от переключателя темы/языка.
   final VoidCallback? onShare;
 
   @override
@@ -28,16 +29,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final localeController = context.read<LocaleController>();
+    final themeController = context.read<ThemeController>();
 
     return ColorfulSafeArea(
-      color: AppTheme.black,
+      color: AppTheme.chrome,
       child: Container(
         width: double.infinity,
         height: 56,
         decoration: BoxDecoration(
-          color: AppTheme.black,
+          color: AppTheme.chrome,
           boxShadow: [
-            BoxShadow(color: AppTheme.black.withValues(alpha: 0.5), blurRadius: 8, blurStyle: BlurStyle.outer),
+            BoxShadow(color: AppTheme.chrome.withValues(alpha: 0.5), blurRadius: 8, blurStyle: BlurStyle.outer),
           ],
         ),
         child: Padding(
@@ -57,7 +59,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     CircleButton(
                       child: Transform.translate(
                         offset: const Offset(-1, 0),
-                        child: const Icon(Icons.arrow_back_ios_new, size: 16, color: Colors.white),
+                        child: const Icon(Icons.arrow_back_ios_new, size: 16, color: AppTheme.onChrome),
                       ),
                       onPressed: () {
                         if (context.router.canPop()) {
@@ -69,7 +71,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               Center(
                 child: title != null
-                    ? Text(title!, style: AppStyles.body.copyWith(color: AppTheme.white))
+                    ? Text(title!, style: AppStyles.body.copyWith(color: AppTheme.onChrome))
                     : Image.asset('assets/app_logo.png'),
               ),
               Align(
@@ -80,10 +82,27 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     if (onShare != null) ...[
                       CircleButton(
                         onPressed: onShare,
-                        child: const Icon(Icons.ios_share, size: 18, color: Colors.white),
+                        child: const Icon(Icons.ios_share, size: 18, color: AppTheme.onChrome),
                       ),
                       const SizedBox(width: 8),
                     ],
+                    Observer(
+                      builder: (context) {
+                        return GestureDetector(
+                          onTap: themeController.cycle,
+                          behavior: HitTestBehavior.opaque,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                            child: Icon(
+                              themeController.preferenceIcon,
+                              size: 20,
+                              color: AppTheme.onChrome,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(width: 8),
                     Observer(
                       builder: (context) {
                         return GestureDetector(
@@ -102,7 +121,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                             child: Text(
                               localeController.localeCodeLabel,
                               style: AppStyles.body.copyWith(
-                                color: AppTheme.white,
+                                color: AppTheme.onChrome,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

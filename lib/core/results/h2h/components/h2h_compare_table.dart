@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/core/results/h2h/models/h2h_stats.dart';
@@ -35,7 +36,7 @@ class H2hCompareTable extends StatelessWidget {
         if (season != null) ...[
           Text(
             context.l10n.seasonLabel(season!),
-            style: AppStyles.caption.copyWith(color: AppTheme.textGray),
+            style: AppStyles.caption.copyWith(color: context.colors.textGray),
           ),
           const SizedBox(height: 12),
         ],
@@ -53,7 +54,7 @@ class H2hCompareTable extends StatelessWidget {
         const SizedBox(height: 12),
         for (final (label, a, b) in rows) ...[
           _CompareRow(label: label, valueA: a, valueB: b),
-          const Divider(height: 1, color: AppTheme.strokeGray),
+          Divider(height: 1, color: context.colors.strokeGray),
         ],
       ],
     );
@@ -77,7 +78,7 @@ class _CompareRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 100,
-            child: Text(label, style: AppStyles.caption.copyWith(color: AppTheme.textGray)),
+            child: Text(label, style: AppStyles.caption.copyWith(color: context.colors.textGray)),
           ),
           Expanded(
             child: Text(
@@ -85,7 +86,7 @@ class _CompareRow extends StatelessWidget {
               textAlign: TextAlign.center,
               style: AppStyles.h3.copyWith(
                 fontSize: 22,
-                color: aWins ? AppTheme.red : AppTheme.black,
+                color: aWins ? AppTheme.red : context.colors.black,
               ),
             ),
           ),
@@ -95,7 +96,7 @@ class _CompareRow extends StatelessWidget {
               textAlign: TextAlign.center,
               style: AppStyles.h3.copyWith(
                 fontSize: 22,
-                color: bWins ? AppTheme.red : AppTheme.black,
+                color: bWins ? AppTheme.red : context.colors.black,
               ),
             ),
           ),

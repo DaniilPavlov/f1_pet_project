@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/trusted_url.dart';
@@ -26,7 +27,7 @@ class NewsArticleTile extends StatelessWidget {
       child: Container(
         width: double.infinity,
         clipBehavior: Clip.antiAlias,
-        decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
+        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
         foregroundDecoration: BoxDecoration(
           border: Border.all(color: AppTheme.red),
           borderRadius: const BorderRadius.all(Radius.circular(20)),
@@ -61,13 +62,13 @@ class NewsArticleTile extends StatelessWidget {
                         Expanded(
                           child: Text(
                             byline != null && byline.isNotEmpty ? byline : '',
-                            style: AppStyles.caption.copyWith(color: AppTheme.textGray),
+                            style: AppStyles.caption.copyWith(color: context.colors.textGray),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         if (published != null)
-                          Text(published, style: AppStyles.caption.copyWith(color: AppTheme.textGray)),
+                          Text(published, style: AppStyles.caption.copyWith(color: context.colors.textGray)),
                       ],
                     ),
                   ],

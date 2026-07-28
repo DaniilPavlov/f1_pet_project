@@ -1,5 +1,5 @@
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/screen_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/shimmer_loading_widget.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/shimmer_skeleton.dart';
@@ -15,7 +15,7 @@ class WeekendScoreboardShimmer extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(color: AppTheme.strokeGray),
+        border: Border.all(color: context.colors.strokeGray),
         borderRadius: const BorderRadius.all(Radius.circular(20)),
       ),
       child: Column(
@@ -47,22 +47,22 @@ class WeekendScoreboardShimmer extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: AppTheme.shimmerBase, borderRadius: BorderRadius.circular(12)),
-            child: const Column(
+            decoration: BoxDecoration(color: context.colors.shimmerBase, borderRadius: BorderRadius.circular(12)),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
                     Expanded(
-                      child: ShimmerSkeleton(height: 20, width: 48, radius: 4, color: AppTheme.shimmerHighlight),
+                      child: ShimmerSkeleton(height: 20, width: 48, radius: 4, color: context.colors.shimmerHighlight),
                     ),
-                    ShimmerSkeleton(height: 20, width: 20, radius: 4, color: AppTheme.shimmerHighlight),
+                    ShimmerSkeleton(height: 20, width: 20, radius: 4, color: context.colors.shimmerHighlight),
                   ],
                 ),
-                SizedBox(height: 4),
-                ShimmerSkeleton(height: 14, width: 140, radius: 4, color: AppTheme.shimmerHighlight),
-                SizedBox(height: 6),
-                ShimmerSkeleton(height: 20, width: 200, radius: 4, color: AppTheme.shimmerHighlight),
+                const SizedBox(height: 4),
+                ShimmerSkeleton(height: 14, width: 140, radius: 4, color: context.colors.shimmerHighlight),
+                const SizedBox(height: 6),
+                ShimmerSkeleton(height: 20, width: 200, radius: 4, color: context.colors.shimmerHighlight),
               ],
             ),
           ),

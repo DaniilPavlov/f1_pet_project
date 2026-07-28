@@ -11,14 +11,14 @@ class RaceInfoTableAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = AppStyles.caption.copyWith(color: Colors.white);
+    final textStyle = AppStyles.caption.copyWith(color: AppTheme.onChrome);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           title ?? context.l10n.race,
-          style: AppStyles.h2.copyWith(color: AppTheme.white),
+          style: AppStyles.h2.copyWith(color: AppTheme.onChrome),
           textAlign: TextAlign.center,
         ),
         Row(

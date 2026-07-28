@@ -20,7 +20,7 @@ class NavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isSelected ? AppTheme.red : AppTheme.white;
+    final color = isSelected ? AppTheme.red : AppTheme.onChrome;
     final itemWidth = (MediaQuery.sizeOf(context).width - StaticData.defaultHorizontalPadding * 2) / 5;
 
     return BounceAnimationWidget(

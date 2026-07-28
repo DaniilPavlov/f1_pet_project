@@ -16,7 +16,7 @@ class CircleButton extends StatelessWidget {
       height: size,
       child: Material(
         borderRadius: BorderRadius.circular(100),
-        color: backgroundColor ?? AppTheme.black,
+        color: backgroundColor ?? AppTheme.chrome,
         child: InkWell(
           borderRadius: BorderRadius.circular(100),
           onTap: onPressed,

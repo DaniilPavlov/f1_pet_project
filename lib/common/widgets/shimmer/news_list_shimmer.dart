@@ -1,5 +1,5 @@
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/screen_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/shimmer_loading_widget.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/shimmer_skeleton.dart';
@@ -27,18 +27,18 @@ class NewsListShimmer extends StatelessWidget {
           separatorBuilder: (_, _) => const SizedBox(height: 12),
           itemBuilder: (_, _) => Container(
             decoration: BoxDecoration(
-              border: Border.all(color: AppTheme.strokeGray),
+              border: Border.all(color: context.colors.strokeGray),
               borderRadius: const BorderRadius.all(Radius.circular(20)),
             ),
             clipBehavior: Clip.hardEdge,
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AspectRatio(
                   aspectRatio: 16 / 9,
-                  child: ColoredBox(color: AppTheme.shimmerBase),
+                  child: ColoredBox(color: context.colors.shimmerBase),
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

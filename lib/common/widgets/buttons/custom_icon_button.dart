@@ -38,7 +38,7 @@ class CustomIconButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
           child: Padding(
             padding: const EdgeInsets.all(10),
-            child: Image.asset(image, color: AppTheme.white),
+            child: Image.asset(image, color: AppTheme.onChrome),
           ),
         ),
       ),

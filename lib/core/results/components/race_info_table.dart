@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/tables/tappable_driver_row.dart';
 import 'package:f1_pet_project/core/results/components/race_table_detail_row.dart';
 import 'package:f1_pet_project/core/results/components/race_table_primary_row.dart';
@@ -49,8 +49,8 @@ class RaceInfoTable extends StatelessWidget {
               final result = rows[i];
               return TableRow(
                 decoration: BoxDecoration(
-                  color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
-                  border: const Border(bottom: BorderSide(color: AppTheme.strokeGray)),
+                  color: i.isOdd ? context.colors.grayBG : Colors.transparent,
+                  border: Border(bottom: BorderSide(color: context.colors.strokeGray)),
                 ),
                 children: tappableDriverRowCells(
                   context: context,
@@ -65,7 +65,7 @@ class RaceInfoTable extends StatelessWidget {
           GestureDetector(
             onTap: () async => context.router.navigate(RaceInfoRoute(raceModel: raceModel)),
             child: ColoredBox(
-              color: AppTheme.grayBG,
+              color: context.colors.grayBG,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -78,7 +78,7 @@ class RaceInfoTable extends StatelessWidget {
               ),
             ),
           ),
-        const Divider(height: 2, thickness: 1, color: AppTheme.strokeGray),
+        Divider(height: 2, thickness: 1, color: context.colors.strokeGray),
       ],
     );
   }

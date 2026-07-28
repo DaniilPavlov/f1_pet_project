@@ -3,7 +3,7 @@ description: F1 stats app (Jolpica + ESPN). MobX, Provider, Auto Route, Dio.
 
 publish_to: "none"
 
-version: 1.8.0+202607273
+version: 1.9.0+202607280
 
 environment:
   sdk: ">=3.10.0 <4.0.0"
@@ -22,7 +22,6 @@ dependencies:
   firebase_remote_config: ^6.5.5
   flutter:
     sdk: flutter
-  flutter_compass: ^0.8.1
   flutter_local_notifications: ^22.2.0
   flutter_localizations:
     sdk: flutter
@@ -75,6 +74,9 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+  # TODO: переключиться после решения вопроса с yandex_mapkit
+  config:
+    enable-swift-package-manager: false
   assets:
     - assets/
     - assets/calendar/

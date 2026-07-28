@@ -6,7 +6,6 @@ import 'package:f1_pet_project/common/packages/custom_yandex_map/src/services/cl
 import 'package:f1_pet_project/common/packages/custom_yandex_map/src/services/geometry_service.dart';
 import 'package:f1_pet_project/common/packages/custom_yandex_map/src/services/user_position_getter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_compass/flutter_compass.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mobx/mobx.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -47,11 +46,9 @@ abstract class CustomMapControllerBase with Store {
   final MapObjectId clusterMapId = const MapObjectId('cluster');
   final animation = const MapAnimation(duration: 0.3);
 
-  final _streamSubscriptions = <StreamSubscription<dynamic>>[];
   StreamSubscription<Position>? userPositionStream;
 
   YandexMapController? controller;
-  double userDirection = 0;
   Point? userPosition;
   BitmapDescriptor? mapIcon;
   BitmapDescriptor? selectedMapIcon;
@@ -66,12 +63,9 @@ abstract class CustomMapControllerBase with Store {
   @observable
   bool isDragging = false;
 
-  /// Отменяет подписки на потоки геопозиции и компаса.
+  /// Отменяет подписку на поток геопозиции.
   void dispose() {
     userPositionStream?.cancel();
-    for (final subscription in _streamSubscriptions) {
-      subscription.cancel();
-    }
   }
 
   /// Обновляет состояние перетаскивания карты для анимации метки.
@@ -92,7 +86,6 @@ abstract class CustomMapControllerBase with Store {
     mapController.stream.listen((event) {
       if (event.type == 'updateUserPosition') {
         _enableListenUserPosition();
-        _listenUserDirection();
       }
       if (event.type == 'zoomIn') {
         controller?.moveCamera(CameraUpdate.zoomIn(), animation: animation);
@@ -174,33 +167,6 @@ abstract class CustomMapControllerBase with Store {
     streamedMapObjects = ObservableList.of(objects);
   }
 
-  void _listenUserDirection() {
-    if (FlutterCompass.events == null) return;
-
-    _streamSubscriptions.add(
-      FlutterCompass.events!.listen((event) {
-        if (userPosition == null) return;
-        userDirection = event.heading ?? 0;
-        _setStreamedMapObjects([
-          ...streamedMapObjects.where((obj) => obj.mapId != userMapId),
-          PlacemarkMapObject(
-            mapId: userMapId,
-            point: userPosition!,
-            opacity: 1,
-            direction: userDirection,
-            icon: PlacemarkIcon.single(
-              PlacemarkIconStyle(
-                scale: 2,
-                rotationType: RotationType.rotate,
-                image: BitmapDescriptor.fromAssetImage(userIcon!),
-              ),
-            ),
-          ),
-        ]);
-      }),
-    );
-  }
-
   Future<void> _enableListenUserPosition() async {
     var permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -237,8 +203,31 @@ abstract class CustomMapControllerBase with Store {
       userPosition =
           newUserPosition ?? await UserPositionGetter.getUserPosition(onGetUserPositionError: onGetUserPositionError);
 
+      final position = userPosition;
+      if (position == null) {
+        return;
+      }
+
+      final iconAsset = userIcon;
+      if (iconAsset != null) {
+        _setStreamedMapObjects([
+          ...streamedMapObjects.where((obj) => obj.mapId != userMapId),
+          PlacemarkMapObject(
+            mapId: userMapId,
+            point: position,
+            opacity: 1,
+            icon: PlacemarkIcon.single(
+              PlacemarkIconStyle(
+                scale: 2,
+                image: BitmapDescriptor.fromAssetImage(iconAsset),
+              ),
+            ),
+          ),
+        ]);
+      }
+
       if (withMoveToUser) {
-        unawaited(CameraServices.setCenterOn([userPosition!], controller: controller));
+        unawaited(CameraServices.setCenterOn([position], controller: controller));
       }
     } catch (e) {
       onUserPositionStatusUpdate?.call(false);

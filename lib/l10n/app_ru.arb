@@ -78,14 +78,12 @@
   "chooseSpecificRace": "Выбрать конкретную гонку",
   "raceSearchTitle": "Поиск гонки",
   "season": "Сезон",
-  "yearHint": "Год",
   "selectSeason": "Выберите сезон",
   "selectRace": "Выберите гонку",
   "selectSeasonFirst": "Сначала выберите сезон",
   "seasonsLoadError": "Не удалось загрузить сезоны",
   "racesLoadError": "Не удалось загрузить гонки",
   "round": "Раунд",
-  "numberHint": "Номер",
   "search": "Поиск",
   "raceSearchInfo": "Выберите сезон, затем гонку из списка.",
   "raceNotFound": "По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.",
@@ -136,12 +134,6 @@
   "circuitWinnersTitle": "Победители",
   "circuitWinnersEmpty": "Побед на этой трассе пока нет",
   "readOnWikipedia": "Прочитать информацию в википедии",
-  "countryLabel": "Страна: {country}",
-  "@countryLabel": {
-    "placeholders": {
-      "country": { "type": "String" }
-    }
-  },
   "cityLabel": "Город: {city}",
   "@cityLabel": {
     "placeholders": {
@@ -190,15 +182,7 @@
   "responseParseError": "Ошибка при обработке ответа от сервера",
   "unexpectedError": "Непредвиденная ошибка",
   "errorRetrySubtitle": "Попробуйте обновить экран.",
-  "openUrlFailed": "Не удалось перейти по ссылке {url}",
-  "@openUrlFailed": {
-    "placeholders": {
-      "url": { "type": "String" }
-    }
-  },
   "forceUpdateTitle": "Требуется обновление",
   "forceUpdateSubtitle": "Эта версия больше не поддерживается. Скачайте свежий релиз на GitHub.",
-  "forceUpdateButton": "Обновить",
-  "localeCodeRu": "RU",
-  "localeCodeEn": "EN"
+  "forceUpdateButton": "Обновить"
 }

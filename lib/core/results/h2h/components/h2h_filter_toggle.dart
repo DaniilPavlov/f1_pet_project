@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -24,13 +25,13 @@ class H2hFilterToggle extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppStyles.caption.copyWith(color: AppTheme.textGray)),
+        Text(label, style: AppStyles.caption.copyWith(color: context.colors.textGray)),
         const SizedBox(height: 8),
         DecoratedBox(
           decoration: BoxDecoration(
-            color: AppTheme.grayBG,
+            color: context.colors.grayBG,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppTheme.strokeGray),
+            border: Border.all(color: context.colors.strokeGray),
           ),
           child: Row(
             children: [
@@ -67,7 +68,7 @@ class _Segment extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: AppStyles.caption.copyWith(
-              color: selected ? AppTheme.white : AppTheme.black,
+              color: selected ? AppTheme.onChrome : context.colors.black,
               fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
             ),
           ),

@@ -1,6 +1,6 @@
 import 'package:f1_pet_project/common/utils/country_flag_codes.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 /// Флаг страны/национальности Jolpica (эмодзи). Если код неизвестен — исходный текст.
@@ -36,7 +36,7 @@ class CountryFlag extends StatelessWidget {
 
     return Text(
       raw,
-      style: fallbackStyle ?? AppStyles.caption.copyWith(color: AppTheme.textGray),
+      style: fallbackStyle ?? AppStyles.caption.copyWith(color: context.colors.textGray),
       textAlign: TextAlign.center,
     );
   }

@@ -1,4 +1,4 @@
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 /// Непрозрачный «скелет» — форма для [ShimmerLoading].
@@ -40,7 +40,7 @@ class ShimmerSkeleton extends StatelessWidget {
         height: height,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: color ?? AppTheme.shimmerBase,
+            color: color ?? context.colors.shimmerBase,
             borderRadius: borderRadius ?? BorderRadius.circular(radius),
           ),
         ),

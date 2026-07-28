@@ -1,8 +1,8 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/localization/locale_controller.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +18,7 @@ class ForceUpdateScreen extends StatelessWidget {
     final localeController = context.read<LocaleController>();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -39,7 +39,7 @@ class ForceUpdateScreen extends StatelessWidget {
                         child: Text(
                           localeController.localeCodeLabel,
                           style: AppStyles.body.copyWith(
-                            color: AppTheme.black,
+                            color: context.colors.black,
                             fontWeight: FontWeight.w600,
                           ),
                         ),

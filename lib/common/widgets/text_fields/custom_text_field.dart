@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/custom_context_menu_builder.dart';
@@ -87,21 +88,21 @@ class _CustomTextFieldState extends State<CustomTextField> {
         if (widget.label != null && widget.label!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(bottom: 4),
-            child: Text(widget.label!, style: AppStyles.caption.copyWith(color: AppTheme.black)),
+            child: Text(widget.label!, style: AppStyles.caption.copyWith(color: context.colors.black)),
           ),
         Container(
           padding: PlatformCapabilities.isCupertino ? const EdgeInsets.symmetric(horizontal: 16) : EdgeInsets.zero,
           decoration: BoxDecoration(
             border: Border.all(
               color: widget.disabled
-                  ? AppTheme.strokeGray
+                  ? context.colors.strokeGray
                   : widget.errorText != null
                   ? AppTheme.red
                   : widget.readOnly
-                  ? widget.borderColor ?? AppTheme.strokeGray
+                  ? widget.borderColor ?? context.colors.strokeGray
                   : focusNode.hasFocus
-                  ? AppTheme.black
-                  : widget.borderColor ?? AppTheme.strokeGray,
+                  ? context.colors.black
+                  : widget.borderColor ?? context.colors.strokeGray,
             ),
             color: Colors.transparent,
             borderRadius:
@@ -128,12 +129,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     onChanged: widget.onChanged,
                     style: AppStyles.caption.copyWith(
                       color: widget.disabled
-                          ? AppTheme.textGray
+                          ? context.colors.textGray
                           : widget.errorText != null
                           ? AppTheme.red
-                          : widget.textColor ?? AppTheme.black,
+                          : widget.textColor ?? context.colors.black,
                     ),
-                    cursorColor: widget.cursorColor ?? AppTheme.black,
+                    cursorColor: widget.cursorColor ?? context.colors.black,
                     textAlign: widget.textAlign,
                     onSubmitted: widget.onSubmit,
                     focusNode: focusNode,
@@ -143,21 +144,21 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     placeholder: widget.disabled ? null : widget.hintText,
                     enabled: !widget.disabled,
-                    placeholderStyle: AppStyles.caption.copyWith(color: AppTheme.strokeGray),
+                    placeholderStyle: AppStyles.caption.copyWith(color: context.colors.strokeGray),
                     textCapitalization: widget.textCapitalization,
                   ),
                 )
               else
                 Expanded(
                   child: TextSelectionTheme(
-                    data: const TextSelectionThemeData(selectionColor: AppTheme.textGray),
+                    data: TextSelectionThemeData(selectionColor: context.colors.textGray),
                     child: TextFormField(
                       inputFormatters: widget.inputFormatters,
                       cursorRadius: Radius.zero,
                       cursorWidth: 1,
                       scrollPadding: widget.scrollPadding,
                       readOnly: widget.readOnly,
-                      cursorColor: widget.cursorColor ?? AppTheme.black,
+                      cursorColor: widget.cursorColor ?? context.colors.black,
                       controller: widget.controller,
                       keyboardType: widget.keyboardType,
                       textInputAction: widget.textInputAction,
@@ -168,10 +169,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       style: AppStyles.caption.copyWith(
                         decorationThickness: 0,
                         color: widget.disabled
-                            ? AppTheme.strokeGray
+                            ? context.colors.strokeGray
                             : widget.errorText != null
                             ? AppTheme.red
-                            : widget.textColor ?? AppTheme.black,
+                            : widget.textColor ?? context.colors.black,
                       ),
                       textAlign: widget.textAlign,
                       onFieldSubmitted: widget.onSubmit,
@@ -182,7 +183,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         isDense: true,
                         suffix: widget.suffix,
                         hintText: widget.disabled ? null : widget.hintText,
-                        hintStyle: AppStyles.caption.copyWith(color: AppTheme.strokeGray),
+                        hintStyle: AppStyles.caption.copyWith(color: context.colors.strokeGray),
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,

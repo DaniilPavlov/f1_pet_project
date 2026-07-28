@@ -1,5 +1,6 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/bottom_sheets/default_bottom_sheet.dart';
@@ -42,7 +43,7 @@ class SeasonPickerBottomSheet extends StatelessWidget {
               final years = controller.years.value!;
               return ListView.separated(
                 itemCount: years.length,
-                separatorBuilder: (_, _) => const Divider(height: 1, color: AppTheme.strokeGray),
+                separatorBuilder: (_, _) => Divider(height: 1, color: context.colors.strokeGray),
                 itemBuilder: (context, index) {
                   final year = years[index];
                   final isSelected = year == selectedYear;
@@ -51,7 +52,7 @@ class SeasonPickerBottomSheet extends StatelessWidget {
                       year,
                       style: AppStyles.body.copyWith(
                         fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-                        color: isSelected ? AppTheme.red : AppTheme.black,
+                        color: isSelected ? AppTheme.red : context.colors.black,
                       ),
                     ),
                     trailing: isSelected ? const Icon(Icons.check, color: AppTheme.red) : null,

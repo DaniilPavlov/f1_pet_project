@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/trusted_url.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +25,8 @@ class NetworkHeroPhoto extends StatelessWidget {
       child: Container(
         width: double.infinity,
         clipBehavior: Clip.antiAlias,
-        decoration: const BoxDecoration(
-          color: AppTheme.grayBG,
+        decoration: BoxDecoration(
+          color: context.colors.grayBG,
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         foregroundDecoration: BoxDecoration(
@@ -73,6 +74,6 @@ class _Placeholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Icon(icon, size: 72, color: AppTheme.textGray));
+    return Center(child: Icon(icon, size: 72, color: context.colors.textGray));
   }
 }

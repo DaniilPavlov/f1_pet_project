@@ -6,6 +6,7 @@ import 'package:f1_pet_project/common/repositories/espn/espn_media_repository.da
 import 'package:f1_pet_project/common/repositories/espn/espn_scoreboard_repository.dart';
 import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
 import 'package:f1_pet_project/common/repositories/wikipedia/wikipedia_page_image_repository.dart';
+import 'package:f1_pet_project/common/utils/theme/theme_controller.dart';
 import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.dart';
 import 'package:f1_pet_project/core/circuits/stats/circuit_stats_repository.dart';
 import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
@@ -58,6 +59,7 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         Provider(create: (_) => LocaleController()),
+        Provider(create: (_) => ThemeController()),
         Provider<ScheduleRepository>.value(value: scheduleRepository),
         Provider<SeasonsRepository>.value(value: seasonsRepository),
         Provider(create: (_) => CircuitStatsRepository()),

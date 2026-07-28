@@ -165,9 +165,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get season => 'Season';
 
   @override
-  String get yearHint => 'Year';
-
-  @override
   String get selectSeason => 'Select season';
 
   @override
@@ -184,9 +181,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get round => 'Round';
-
-  @override
-  String get numberHint => 'Number';
 
   @override
   String get search => 'Search';
@@ -331,11 +325,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get readOnWikipedia => 'Read on Wikipedia';
 
   @override
-  String countryLabel(String country) {
-    return 'Country: $country';
-  }
-
-  @override
   String cityLabel(String city) {
     return 'City: $city';
   }
@@ -457,11 +446,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorRetrySubtitle => 'Try refreshing the screen.';
 
   @override
-  String openUrlFailed(String url) {
-    return 'Could not open link $url';
-  }
-
-  @override
   String get forceUpdateTitle => 'App update required';
 
   @override
@@ -470,10 +454,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get forceUpdateButton => 'Update';
-
-  @override
-  String get localeCodeRu => 'RU';
-
-  @override
-  String get localeCodeEn => 'EN';
 }

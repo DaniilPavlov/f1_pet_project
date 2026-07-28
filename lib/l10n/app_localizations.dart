@@ -386,12 +386,6 @@ abstract class AppLocalizations {
   /// **'Сезон'**
   String get season;
 
-  /// No description provided for @yearHint.
-  ///
-  /// In ru, this message translates to:
-  /// **'Год'**
-  String get yearHint;
-
   /// No description provided for @selectSeason.
   ///
   /// In ru, this message translates to:
@@ -427,12 +421,6 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Раунд'**
   String get round;
-
-  /// No description provided for @numberHint.
-  ///
-  /// In ru, this message translates to:
-  /// **'Номер'**
-  String get numberHint;
 
   /// No description provided for @search.
   ///
@@ -704,12 +692,6 @@ abstract class AppLocalizations {
   /// **'Прочитать информацию в википедии'**
   String get readOnWikipedia;
 
-  /// No description provided for @countryLabel.
-  ///
-  /// In ru, this message translates to:
-  /// **'Страна: {country}'**
-  String countryLabel(String country);
-
   /// No description provided for @cityLabel.
   ///
   /// In ru, this message translates to:
@@ -938,12 +920,6 @@ abstract class AppLocalizations {
   /// **'Попробуйте обновить экран.'**
   String get errorRetrySubtitle;
 
-  /// No description provided for @openUrlFailed.
-  ///
-  /// In ru, this message translates to:
-  /// **'Не удалось перейти по ссылке {url}'**
-  String openUrlFailed(String url);
-
   /// No description provided for @forceUpdateTitle.
   ///
   /// In ru, this message translates to:
@@ -961,18 +937,6 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Обновить'**
   String get forceUpdateButton;
-
-  /// No description provided for @localeCodeRu.
-  ///
-  /// In ru, this message translates to:
-  /// **'RU'**
-  String get localeCodeRu;
-
-  /// No description provided for @localeCodeEn.
-  ///
-  /// In ru, this message translates to:
-  /// **'EN'**
-  String get localeCodeEn;
 }
 
 class _AppLocalizationsDelegate

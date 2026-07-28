@@ -1,4 +1,4 @@
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/core/circuits/stats/circuit_layout_assets.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +32,7 @@ class CircuitLayoutImage extends StatelessWidget {
         child: Image.asset(
           path,
           fit: BoxFit.contain,
-          color: color ?? AppTheme.black,
+          color: color ?? context.colors.black,
           colorBlendMode: BlendMode.srcIn,
           errorBuilder: (_, _, _) => const SizedBox.shrink(),
         ),

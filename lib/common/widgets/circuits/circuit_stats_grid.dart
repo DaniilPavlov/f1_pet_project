@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/core/circuits/stats/models/circuit_stats.dart';
@@ -31,7 +32,7 @@ class CircuitStatsGrid extends StatelessWidget {
       child: Row(
         children: [
           for (var i = 0; i < items.length; i++) ...[
-            if (i > 0) Container(width: 1, height: 44, color: AppTheme.strokeGray),
+            if (i > 0) Container(width: 1, height: 44, color: context.colors.strokeGray),
             Expanded(child: items[i]),
           ],
         ],
@@ -60,7 +61,7 @@ class _StatItem extends StatelessWidget {
         Text(
           label,
           textAlign: TextAlign.center,
-          style: AppStyles.caption.copyWith(color: AppTheme.textGray),
+          style: AppStyles.caption.copyWith(color: context.colors.textGray),
         ),
       ],
     );

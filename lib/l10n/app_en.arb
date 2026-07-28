@@ -63,14 +63,12 @@
   "chooseSpecificRace": "Choose a specific race",
   "raceSearchTitle": "Race search",
   "season": "Season",
-  "yearHint": "Year",
   "selectSeason": "Select season",
   "selectRace": "Select race",
   "selectSeasonFirst": "Select a season first",
   "seasonsLoadError": "Could not load seasons",
   "racesLoadError": "Could not load races",
   "round": "Round",
-  "numberHint": "Number",
   "search": "Search",
   "raceSearchInfo": "Pick a season, then a race from the list.",
   "raceNotFound": "No races found for your query. Check the entered data and try again.",
@@ -121,7 +119,6 @@
   "circuitWinnersTitle": "Winners",
   "circuitWinnersEmpty": "No race winners for this circuit yet",
   "readOnWikipedia": "Read on Wikipedia",
-  "countryLabel": "Country: {country}",
   "cityLabel": "City: {city}",
   "scheduleRound": "Round {round}",
   "@scheduleRound": {
@@ -165,10 +162,7 @@
   "responseParseError": "Error processing the server response",
   "unexpectedError": "Unexpected error",
   "errorRetrySubtitle": "Try refreshing the screen.",
-  "openUrlFailed": "Could not open link {url}",
   "forceUpdateTitle": "App update required",
   "forceUpdateSubtitle": "This version is no longer supported. Download the latest release from GitHub.",
-  "forceUpdateButton": "Update",
-  "localeCodeRu": "RU",
-  "localeCodeEn": "EN"
+  "forceUpdateButton": "Update"
 }

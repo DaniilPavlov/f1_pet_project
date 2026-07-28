@@ -1,4 +1,4 @@
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/widgets/tables/tappable_driver_row.dart';
 import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
 import 'package:f1_pet_project/core/results/race_info/components/qualification_table_detail_row.dart';
@@ -21,8 +21,8 @@ class QualificationTable extends StatelessWidget {
               final result = qualifyingResults[i];
               return TableRow(
                 decoration: BoxDecoration(
-                  color: i.isOdd ? AppTheme.grayBG : Colors.transparent,
-                  border: const Border(bottom: BorderSide(color: AppTheme.strokeGray)),
+                  color: i.isOdd ? context.colors.grayBG : Colors.transparent,
+                  border: Border(bottom: BorderSide(color: context.colors.strokeGray)),
                 ),
                 children: tappableDriverRowCells(
                   context: context,
@@ -33,7 +33,7 @@ class QualificationTable extends StatelessWidget {
             }),
           ],
         ),
-        const Divider(height: 2, thickness: 1, color: AppTheme.strokeGray),
+        Divider(height: 2, thickness: 1, color: context.colors.strokeGray),
       ],
     );
   }

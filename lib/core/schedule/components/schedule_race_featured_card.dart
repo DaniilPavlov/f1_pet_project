@@ -1,5 +1,6 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
@@ -43,7 +44,7 @@ class ScheduleRaceFeaturedCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(context.l10n.scheduleRound(race.round), style: AppStyles.caption.copyWith(color: AppTheme.textGray)),
+          Text(context.l10n.scheduleRound(race.round), style: AppStyles.caption.copyWith(color: context.colors.textGray)),
           const SizedBox(height: 4),
           Text(race.raceName, style: AppStyles.h2),
           const SizedBox(height: 4),
@@ -56,7 +57,7 @@ class ScheduleRaceFeaturedCard extends StatelessWidget {
           ],
           if (showCountdown) ...[
             const SizedBox(height: 16),
-            Text(context.l10n.scheduleCountdownTitle, style: AppStyles.caption.copyWith(color: AppTheme.textGray)),
+            Text(context.l10n.scheduleCountdownTitle, style: AppStyles.caption.copyWith(color: context.colors.textGray)),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -90,7 +91,7 @@ class _CountdownCell extends StatelessWidget {
       children: [
         Text(value, style: AppStyles.h3),
         const SizedBox(height: 2),
-        Text(label, style: AppStyles.caption.copyWith(color: AppTheme.textGray)),
+        Text(label, style: AppStyles.caption.copyWith(color: context.colors.textGray)),
       ],
     );
   }

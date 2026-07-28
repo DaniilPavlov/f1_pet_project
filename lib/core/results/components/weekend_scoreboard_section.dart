@@ -2,6 +2,7 @@ import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/country_flag.dart';
@@ -99,7 +100,7 @@ class _ScoreboardCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     locationParts.join(', '),
-                    style: AppStyles.caption.copyWith(color: AppTheme.textGray),
+                    style: AppStyles.caption.copyWith(color: context.colors.textGray),
                   ),
                 ),
               ],
@@ -114,7 +115,7 @@ class _ScoreboardCard extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppTheme.grayBG,
+                  color: context.colors.grayBG,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -128,14 +129,14 @@ class _ScoreboardCard extends StatelessWidget {
                             style: AppStyles.body.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ),
-                        Icon(Icons.chevron_right, color: AppTheme.textGray.withValues(alpha: 0.9), size: 20),
+                        Icon(Icons.chevron_right, color: context.colors.textGray.withValues(alpha: 0.9), size: 20),
                       ],
                     ),
                     if (highlighted.date != null) ...[
                       const SizedBox(height: 4),
                       Text(
                         dateFormat.format(highlighted.date!),
-                        style: AppStyles.caption.copyWith(color: AppTheme.textGray),
+                        style: AppStyles.caption.copyWith(color: context.colors.textGray),
                       ),
                     ],
                     if (highlighted.leaderName != null && highlighted.leaderName!.isNotEmpty) ...[
@@ -167,7 +168,7 @@ class _ScoreboardCard extends StatelessWidget {
                         child: Text(
                           session.abbreviation,
                           style: AppStyles.caption.copyWith(
-                            color: identical(session, highlighted) ? AppTheme.red : AppTheme.black,
+                            color: identical(session, highlighted) ? AppTheme.red : context.colors.black,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -175,17 +176,17 @@ class _ScoreboardCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           session.date == null ? session.statusDetail : dateFormat.format(session.date!),
-                          style: AppStyles.caption.copyWith(color: AppTheme.textGray),
+                          style: AppStyles.caption.copyWith(color: context.colors.textGray),
                         ),
                       ),
                       Text(
                         session.statusDetail,
                         style: AppStyles.caption.copyWith(
-                          color: session.isLive ? AppTheme.red : AppTheme.textGray,
+                          color: session.isLive ? AppTheme.red : context.colors.textGray,
                         ),
                       ),
                       const SizedBox(width: 4),
-                      Icon(Icons.chevron_right, size: 16, color: AppTheme.textGray.withValues(alpha: 0.8)),
+                      Icon(Icons.chevron_right, size: 16, color: context.colors.textGray.withValues(alpha: 0.8)),
                     ],
                   ),
                 ),
@@ -220,10 +221,10 @@ class _StatusChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: isLive ? AppTheme.red : AppTheme.black,
+        color: isLive ? AppTheme.red : context.colors.black,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(label, style: AppStyles.caption.copyWith(color: AppTheme.white)),
+      child: Text(label, style: AppStyles.caption.copyWith(color: AppTheme.onChrome)),
     );
   }
 }

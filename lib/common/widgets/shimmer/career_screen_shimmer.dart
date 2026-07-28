@@ -1,5 +1,5 @@
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/screen_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/shimmer_loading_widget.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/shimmer_skeleton.dart';
@@ -27,7 +27,7 @@ class CareerScreenShimmer extends StatelessWidget {
                 AspectRatio(
                   aspectRatio: 3 / 2,
                   child: DecoratedBox(
-                    decoration: BoxDecoration(color: AppTheme.shimmerBase, borderRadius: BorderRadius.circular(20)),
+                    decoration: BoxDecoration(color: context.colors.shimmerBase, borderRadius: BorderRadius.circular(20)),
                   ),
                 ),
                 const SizedBox(height: 20),

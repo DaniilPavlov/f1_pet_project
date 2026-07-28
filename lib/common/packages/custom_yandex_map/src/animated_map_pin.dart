@@ -1,4 +1,4 @@
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 /// Анимированная метка в центре карты при перетаскивании.
@@ -55,7 +55,7 @@ class _AnimatedMapPinState extends State<AnimatedMapPin> with TickerProviderStat
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(180),
 
-            color: AppTheme.black.withValues(alpha: 0.5),
+            color: context.colors.black.withValues(alpha: 0.5),
           ),
         ),
       ],

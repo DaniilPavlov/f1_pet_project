@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/race_picker_bottom_sheet.dart';
@@ -47,7 +48,7 @@ class RacePickerField extends StatelessWidget {
             padding: const EdgeInsets.only(right: 16),
             child: Icon(
               Icons.expand_more,
-              color: _hasSeason ? AppTheme.red : AppTheme.strokeGray,
+              color: _hasSeason ? AppTheme.red : context.colors.strokeGray,
               size: 22,
             ),
           ),

@@ -18,7 +18,7 @@ class NavBar extends StatelessWidget {
       children: [
         Container(
           height: 80 + bottomInset,
-          color: AppTheme.black,
+          color: AppTheme.chrome,
           child: Padding(
             padding: EdgeInsets.fromLTRB(
               StaticData.defaultHorizontalPadding,

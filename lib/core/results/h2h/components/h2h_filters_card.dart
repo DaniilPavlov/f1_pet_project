@@ -1,6 +1,6 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/season_picker_field.dart';
 import 'package:f1_pet_project/core/results/h2h/components/h2h_filter_toggle.dart';
 import 'package:flutter/material.dart';
@@ -44,9 +44,9 @@ class H2hFiltersCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppTheme.white,
+        color: context.colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.strokeGray),
+        border: Border.all(color: context.colors.strokeGray),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -84,7 +84,7 @@ class H2hFiltersCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text(
                   context.l10n.seasonLabel(latestSeason),
-                  style: AppStyles.caption.copyWith(color: AppTheme.textGray),
+                  style: AppStyles.caption.copyWith(color: context.colors.textGray),
                 ),
               ],
             ],

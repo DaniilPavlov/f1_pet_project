@@ -4,6 +4,9 @@ import 'package:f1_pet_project/common/localization/error_copy.dart';
 import 'package:f1_pet_project/common/localization/locale_controller.dart';
 import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
+import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/theme/app_theme_data.dart';
+import 'package:f1_pet_project/common/utils/theme/theme_controller.dart';
 import 'package:f1_pet_project/common/widgets/force_update_screen.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/router/app_router.dart';
@@ -56,7 +59,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       return;
     }
     if (_forceUpdate) {
-      await context.read<LocaleController>().load();
+      await Future.wait([
+        context.read<LocaleController>().load(),
+        context.read<ThemeController>().load(),
+      ]);
       return;
     }
     await _startRemindersIfNeeded();
@@ -91,8 +97,9 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     }
     final remoteConfig = context.read<RemoteConfigService>();
     final localeController = context.read<LocaleController>();
+    final themeController = context.read<ThemeController>();
     final reminders = context.read<RaceReminderService>();
-    await localeController.load();
+    await Future.wait([localeController.load(), themeController.load()]);
     if (!mounted) {
       return;
     }
@@ -133,9 +140,9 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
-        statusBarColor: Color.fromARGB(0, 25, 17, 17),
-        statusBarBrightness: Brightness.light,
-        statusBarIconBrightness: Brightness.dark,
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light,
       ),
     );
   }
@@ -143,11 +150,15 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final localeController = context.read<LocaleController>();
+    final themeController = context.read<ThemeController>();
 
     return Observer(
       builder: (context) {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
+          theme: AppThemeData.light(),
+          darkTheme: AppThemeData.dark(),
+          themeMode: themeController.themeMode,
           locale: localeController.locale,
           supportedLocales: LocaleControllerBase.supportedLocales,
           localizationsDelegates: const [
@@ -189,9 +200,21 @@ class _AppFrame extends StatelessWidget {
         ? const ForceUpdateScreen()
         : ResponsiveBreakpoints.builder(child: child!, breakpoints: _breakpoints);
 
-    return MediaQuery(
-      data: media.copyWith(textScaler: media.textScaler.clamp(maxScaleFactor: 1.2)),
-      child: content,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: AppTheme.chrome,
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+      child: MediaQuery(
+        data: media.copyWith(textScaler: media.textScaler.clamp(maxScaleFactor: 1.2)),
+        child: DefaultTextStyle(
+          style: Theme.of(context).textTheme.bodyMedium!,
+          child: content,
+        ),
+      ),
     );
   }
 }

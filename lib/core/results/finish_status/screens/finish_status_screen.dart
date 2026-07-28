@@ -3,6 +3,7 @@ import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
@@ -119,14 +120,14 @@ class _StatusList extends StatelessWidget {
                     item.status,
                     style: AppStyles.body.copyWith(
                       fontWeight: item.isHighlight ? FontWeight.w600 : FontWeight.w400,
-                      color: item.isHighlight ? AppTheme.red : AppTheme.black,
+                      color: item.isHighlight ? AppTheme.red : context.colors.black,
                     ),
                   ),
                 ),
                 Text(
                   '${item.count}',
                   style: AppStyles.h3.copyWith(
-                    color: item.isHighlight ? AppTheme.red : AppTheme.black,
+                    color: item.isHighlight ? AppTheme.red : context.colors.black,
                   ),
                 ),
                 if (total > 0) ...[
@@ -136,14 +137,14 @@ class _StatusList extends StatelessWidget {
                     child: Text(
                       '${((item.count / total) * 100).round()}%',
                       textAlign: TextAlign.right,
-                      style: AppStyles.caption.copyWith(color: AppTheme.textGray),
+                      style: AppStyles.caption.copyWith(color: context.colors.textGray),
                     ),
                   ),
                 ],
               ],
             ),
           ),
-          const Divider(height: 1, color: AppTheme.strokeGray),
+          Divider(height: 1, color: context.colors.strokeGray),
         ],
       ],
     );

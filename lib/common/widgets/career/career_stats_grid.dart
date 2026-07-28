@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,7 @@ class CareerStatsGrid extends StatelessWidget {
                         children: [
                           Expanded(child: Text('$value', style: AppStyles.h2)),
                           if (onTap != null && value > 0)
-                            const Icon(Icons.chevron_right, color: AppTheme.red, size: 20),
+                            Icon(Icons.chevron_right, color: AppTheme.red, size: 20),
                         ],
                       ),
                       const SizedBox(height: 2),
@@ -71,7 +72,7 @@ class CareerStatsGrid extends StatelessWidget {
                         label,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AppStyles.body.copyWith(color: AppTheme.textGray),
+                        style: AppStyles.body.copyWith(color: context.colors.textGray),
                       ),
                     ],
                   ),

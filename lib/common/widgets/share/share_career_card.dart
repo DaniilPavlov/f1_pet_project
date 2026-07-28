@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/models/career/career_stats.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
@@ -30,7 +31,7 @@ class ShareCareerCard extends StatelessWidget {
       width: 360,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppTheme.white,
+        color: AppColors.light.white,
         border: Border.all(color: AppTheme.red, width: 2),
         borderRadius: BorderRadius.circular(20),
       ),
@@ -42,7 +43,7 @@ class ShareCareerCard extends StatelessWidget {
           const SizedBox(height: 16),
           Text(title, style: AppStyles.h2.copyWith(fontSize: 26, height: 1.15)),
           const SizedBox(height: 6),
-          Text(l10n.careerTitle, style: AppStyles.body.copyWith(color: AppTheme.textGray)),
+          Text(l10n.careerTitle, style: AppStyles.body.copyWith(color: AppColors.light.textGray)),
           const SizedBox(height: 20),
           GridView.count(
             crossAxisCount: 2,
@@ -55,9 +56,9 @@ class ShareCareerCard extends StatelessWidget {
               for (final (label, value) in items)
                 DecoratedBox(
                   decoration: BoxDecoration(
-                    color: AppTheme.grayBG,
+                    color: AppColors.light.grayBG,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppTheme.strokeGray),
+                    border: Border.all(color: AppColors.light.strokeGray),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -67,7 +68,7 @@ class ShareCareerCard extends StatelessWidget {
                       children: [
                         Text('$value', style: AppStyles.h3.copyWith(fontSize: 22, color: AppTheme.red)),
                         const SizedBox(height: 2),
-                        Text(label, style: AppStyles.caption.copyWith(color: AppTheme.textGray)),
+                        Text(label, style: AppStyles.caption.copyWith(color: AppColors.light.textGray)),
                       ],
                     ),
                   ),
@@ -79,7 +80,7 @@ class ShareCareerCard extends StatelessWidget {
             children: [
               Image.asset('assets/app_logo.png', height: 18),
               const SizedBox(width: 8),
-              Text('F1 App', style: AppStyles.caption.copyWith(color: AppTheme.textGray)),
+              Text('F1 App', style: AppStyles.caption.copyWith(color: AppColors.light.textGray)),
             ],
           ),
         ],

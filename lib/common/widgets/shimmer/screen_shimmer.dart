@@ -1,4 +1,4 @@
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 /// Предок для анимации шиммера: владеет sliding-градиентом.
@@ -17,13 +17,21 @@ class ScreenShimmer extends StatefulWidget {
 }
 
 class ScreenShimmerState extends State<ScreenShimmer> with SingleTickerProviderStateMixin {
-  Gradient get gradient => LinearGradient(
-    colors: widget.colors ?? _shimmerGradient.colors,
-    stops: _shimmerGradient.stops,
-    begin: _shimmerGradient.begin,
-    end: _shimmerGradient.end,
-    transform: _SlidingGradientTransform(slidePercent: _shimmerController.value),
-  );
+  Gradient get gradient {
+    final colors = context.colors;
+    final base = LinearGradient(
+      colors: widget.colors ?? [colors.shimmerBase, colors.shimmerHighlight, colors.shimmerBase],
+      begin: Alignment.bottomRight,
+      end: Alignment.centerLeft,
+    );
+    return LinearGradient(
+      colors: base.colors,
+      stops: base.stops,
+      begin: base.begin,
+      end: base.end,
+      transform: _SlidingGradientTransform(slidePercent: _shimmerController.value),
+    );
+  }
 
   bool get isSized => (context.findRenderObject() as RenderBox?)?.hasSize ?? false;
 
@@ -67,9 +75,3 @@ class _SlidingGradientTransform extends GradientTransform {
     return Matrix4.translationValues(bounds.width * slidePercent, 0, 0);
   }
 }
-
-final _shimmerGradient = LinearGradient(
-  colors: [AppTheme.shimmerBase, AppTheme.shimmerHighlight, AppTheme.shimmerBase],
-  begin: Alignment.bottomRight,
-  end: Alignment.centerLeft,
-);
