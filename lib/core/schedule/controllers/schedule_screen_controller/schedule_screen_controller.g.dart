@@ -114,6 +114,24 @@ mixin _$ScheduleScreenController on ScheduleScreenControllerBase, Store {
     });
   }
 
+  late final _$focusedDateAtom = Atom(
+    name: 'ScheduleScreenControllerBase.focusedDate',
+    context: context,
+  );
+
+  @override
+  DateTime get focusedDate {
+    _$focusedDateAtom.reportRead();
+    return super.focusedDate;
+  }
+
+  @override
+  set focusedDate(DateTime value) {
+    _$focusedDateAtom.reportWrite(value, super.focusedDate, () {
+      super.focusedDate = value;
+    });
+  }
+
   late final _$scheduleOfSelectedDateAtom = Atom(
     name: 'ScheduleScreenControllerBase.scheduleOfSelectedDate',
     context: context,
@@ -183,6 +201,17 @@ mixin _$ScheduleScreenController on ScheduleScreenControllerBase, Store {
   }
 
   @override
+  void onPageChanged(DateTime focusedDay) {
+    final _$actionInfo = _$ScheduleScreenControllerBaseActionController
+        .startAction(name: 'ScheduleScreenControllerBase.onPageChanged');
+    try {
+      return super.onPageChanged(focusedDay);
+    } finally {
+      _$ScheduleScreenControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void _showScheduleOfSelectedDate() {
     final _$actionInfo = _$ScheduleScreenControllerBaseActionController
         .startAction(
@@ -213,6 +242,7 @@ racesElements: ${racesElements},
 allDataIsLoaded: ${allDataIsLoaded},
 now: ${now},
 selectedDate: ${selectedDate},
+focusedDate: ${focusedDate},
 scheduleOfSelectedDate: ${scheduleOfSelectedDate},
 screenError: ${screenError},
 selectedDayHasSessions: ${selectedDayHasSessions},

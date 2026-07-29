@@ -64,7 +64,7 @@ class DriverScreen extends StatelessWidget {
             appBar: CustomAppBar(
               title: fullName,
               showPreferences: false,
-              onPop: context.router.removeLast,
+              onPop: () => context.router.maybePop(),
               onShare: stats == null
                   ? null
                   : () => ShareHelper.shareCareerCard(

@@ -224,7 +224,13 @@ class _StatusChip extends StatelessWidget {
         color: isLive ? AppTheme.red : context.colors.black,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(label, style: AppStyles.caption.copyWith(color: AppTheme.onChrome)),
+      child: Text(
+        label,
+        style: AppStyles.caption.copyWith(
+          // Live: белый на красном. Final: инверсия к `colors.black` (в dark — тёмный текст на светлом чипе).
+          color: isLive ? AppTheme.onChrome : context.colors.white,
+        ),
+      ),
     );
   }
 }

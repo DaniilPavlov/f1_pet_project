@@ -11,6 +11,7 @@ class ScaffoldWithNavBarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
+      homeIndex: 0,
       routes: const [HomeRouter(), ResultsRouter(), ScheduleRouter(), NewsRouter(), CircuitsRouter()],
       bottomNavigationBuilder: (_, tabsRouter) => NavBar(tabsRouter: tabsRouter),
     );

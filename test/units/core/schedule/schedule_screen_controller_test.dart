@@ -54,7 +54,7 @@ void main() {
     });
 
     group('onSelectDay', () {
-      test('updates selected date and shows sessions on race day', () async {
+      test('updates selected and focused date and shows sessions on race day', () async {
         final controller = ScheduleScreenController(
           l10n: AppLocalizationsRu(),
           fetchScheduleForTest: () async => ControllerFixtures.scheduleModel,
@@ -64,7 +64,23 @@ void main() {
         controller.onSelectDay(DateTime.parse('2024-05-26'), DateTime.parse('2024-05-26'));
 
         expect(controller.selectedDate, DateTime.parse('2024-05-26'));
+        expect(controller.focusedDate, DateTime.parse('2024-05-26'));
         expect(controller.selectedDayHasSessions, isTrue);
+        controller.dispose();
+      });
+
+      test('onPageChanged keeps focused month without changing selected day', () async {
+        final controller = ScheduleScreenController(
+          l10n: AppLocalizationsRu(),
+          fetchScheduleForTest: () async => ControllerFixtures.scheduleModel,
+        );
+
+        await controller.loadAllData();
+        final selected = controller.selectedDate;
+        controller.onPageChanged(DateTime.parse('2024-08-01'));
+
+        expect(controller.focusedDate, DateTime.parse('2024-08-01'));
+        expect(controller.selectedDate, selected);
         controller.dispose();
       });
 

@@ -29,10 +29,21 @@ class CustomCalendar extends StatefulWidget {
 
 /// Состояние календаря: ячейки дней и логотипы гонок.
 class _CustomCalendarState extends State<CustomCalendar> {
+  Color _logoTint({required bool isSelected, required bool isToday}) {
+    if (isToday) {
+      return AppTheme.onChrome;
+    }
+    if (isSelected) {
+      return AppTheme.chrome;
+    }
+    return context.colors.black;
+  }
+
   Widget? _makeLogoWidget(DateTime date, {bool isSelected = false, bool isToday = false}) {
     final imageAsset = widget.imagePathCallback(date);
 
     if (imageAsset != null) {
+      final tint = _logoTint(isSelected: isSelected, isToday: isToday);
       return Center(
         child: CircleAvatar(
           radius: 16,
@@ -42,8 +53,16 @@ class _CustomCalendarState extends State<CustomCalendar> {
               ? AppTheme.onChrome
               : Colors.transparent,
           child: imageAsset.isEmpty
-              ? const SizedBox(height: 24, child: Icon(Icons.home))
-              : SizedBox(height: 24, child: Image.asset(imageAsset)),
+              ? SizedBox(height: 24, child: Icon(Icons.home, color: tint))
+              : SizedBox(
+                  height: 24,
+                  child: Image.asset(
+                    imageAsset,
+                    // finish.png — монохромный флажок; car.png цветной — не перекрашиваем.
+                    color: imageAsset.endsWith('finish.png') ? tint : null,
+                    colorBlendMode: imageAsset.endsWith('finish.png') ? BlendMode.srcIn : null,
+                  ),
+                ),
         ),
       );
     }
@@ -66,7 +85,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    const textStyle = AppStyles.body;
+    final textStyle = AppStyles.body.copyWith(color: context.colors.black);
 
     return DecoratedBox(
       decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(18)), color: context.colors.shadowColor),
@@ -84,7 +103,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
         },
         onPageChanged: widget.onPageChanged,
         onDaySelected: widget.onDaySelected,
-        calendarStyle: const CalendarStyle(
+        calendarStyle: CalendarStyle(
           defaultTextStyle: textStyle,
           holidayTextStyle: textStyle,
           selectedTextStyle: textStyle,
@@ -92,7 +111,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
           cellMargin: EdgeInsets.zero,
           markerMargin: EdgeInsets.zero,
         ),
-        daysOfWeekStyle: const DaysOfWeekStyle(weekdayStyle: textStyle, weekendStyle: textStyle),
+        daysOfWeekStyle: DaysOfWeekStyle(weekdayStyle: textStyle, weekendStyle: textStyle),
         headerStyle: HeaderStyle(
           titleTextStyle: textStyle,
           formatButtonVisible: false,
@@ -101,28 +120,30 @@ class _CustomCalendarState extends State<CustomCalendar> {
           leftChevronPadding: EdgeInsets.zero,
           leftChevronIcon: const ChevronButton(icon: Icons.arrow_left),
           rightChevronIcon: const ChevronButton(icon: Icons.arrow_right, alignment: Alignment.centerRight),
-          titleTextFormatter: (date, dynamic f) {
-            final text = DateFormat.yMMMM('ru_RU').format(date);
-
-            return text.capitalize();
+          titleTextFormatter: (date, locale) {
+            final tag = locale?.toString() ?? Localizations.localeOf(context).toLanguageTag();
+            return DateFormat.yMMMM(tag).format(date).capitalize();
           },
         ),
         calendarBuilders: CalendarBuilders<dynamic>(
           selectedBuilder: (context, day, focusedDay) {
             return _makeLogoWidget(day, isSelected: true) ??
-                _makeTextWidget(day, textStyle: textStyle, isSelected: true);
+                _makeTextWidget(day, textStyle: textStyle.copyWith(color: AppTheme.chrome), isSelected: true);
           },
           outsideBuilder: (context, day, focusedDay) {
+            final muted = textStyle.copyWith(color: context.colors.textGray);
             return day.month == focusedDay.month
-                ? _makeLogoWidget(day) ?? _makeTextWidget(day, textStyle: textStyle.copyWith(color: AppTheme.onChrome))
-                : _makeTextWidget(day, textStyle: textStyle.copyWith(color: AppTheme.onChrome));
+                ? _makeLogoWidget(day) ?? _makeTextWidget(day, textStyle: muted)
+                : _makeTextWidget(day, textStyle: muted);
           },
           todayBuilder: (context, day, focusedDay) {
             return _makeLogoWidget(day, isToday: true) ??
                 _makeTextWidget(
                   day,
                   isToday: true,
-                  textStyle: textStyle.copyWith(color: day.month == focusedDay.month ? null : AppTheme.onChrome),
+                  textStyle: textStyle.copyWith(
+                    color: day.month == focusedDay.month ? AppTheme.onChrome : context.colors.textGray,
+                  ),
                 );
           },
           defaultBuilder: (context, day, focusedDay) {
@@ -149,7 +170,7 @@ class ChevronButton extends StatelessWidget {
         alignment: alignment,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Icon(icon, color: Colors.black),
+          child: Icon(icon, color: context.colors.black),
         ),
       ),
     );

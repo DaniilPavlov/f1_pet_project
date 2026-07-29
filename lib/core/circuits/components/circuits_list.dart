@@ -37,7 +37,7 @@ class _CircuitsListState extends State<CircuitsList> with AutomaticKeepAliveClie
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 24),
               child: _CircuitListTile(
                 circuit: circuit,
-                onTap: () async => context.router.navigate(CircuitRoute(circuitModel: circuit)),
+                onTap: () async => context.router.push(CircuitRoute(circuitModel: circuit)),
               ),
             );
           }, childCount: widget.circuits.length),

@@ -80,27 +80,27 @@ class ResultsScreen extends StatelessWidget {
                           children: [
                             RedBorderContainer(
                               title: context.l10n.chooseSpecificRace,
-                              onTap: () async => context.router.navigate(const RaceSearchRoute()),
+                              onTap: () async => context.router.push(const RaceSearchRoute()),
                             ),
                             const SizedBox(height: 12),
                             RedBorderContainer(
                               title: context.l10n.hallOfFameTitle,
-                              onTap: () async => context.router.navigate(const HallOfFameRoute()),
+                              onTap: () async => context.router.push(const HallOfFameRoute()),
                             ),
                             const SizedBox(height: 12),
                             RedBorderContainer(
                               title: context.l10n.h2hTitle,
-                              onTap: () async => context.router.navigate(const H2hRoute()),
+                              onTap: () async => context.router.push(const H2hRoute()),
                             ),
                             const SizedBox(height: 12),
                             RedBorderContainer(
                               title: context.l10n.h2hConstructorsTitle,
-                              onTap: () async => context.router.navigate(const H2hConstructorsRoute()),
+                              onTap: () async => context.router.push(const H2hConstructorsRoute()),
                             ),
                             const SizedBox(height: 12),
                             RedBorderContainer(
                               title: context.l10n.finishStatusTitle,
-                              onTap: () async => context.router.navigate(const FinishStatusRoute()),
+                              onTap: () async => context.router.push(const FinishStatusRoute()),
                             ),
                           ],
                         ),

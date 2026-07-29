@@ -33,7 +33,7 @@ class FinishStatusScreen extends StatelessWidget {
       )..bootstrap(),
       dispose: (_, controller) => controller.dispose(),
       child: Scaffold(
-        appBar: CustomAppBar(title: context.l10n.finishStatusTitle, onPop: context.router.removeLast),
+        appBar: CustomAppBar(title: context.l10n.finishStatusTitle, onPop: () => context.router.maybePop()),
         body: SafeArea(
           child: Observer(
             builder: (context) {

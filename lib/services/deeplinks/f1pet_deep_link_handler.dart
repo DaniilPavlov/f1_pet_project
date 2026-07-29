@@ -1,18 +1,20 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.dart';
 import 'package:f1_pet_project/core/results/constructor/repositories/constructor_catalog_repository.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
+import 'package:f1_pet_project/router/app_router.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+/// Слушает `f1pet://…` и открывает экран во вкладке с корректным nested-стеком.
 class F1PetDeepLinkHandler extends StatefulWidget {
-  const F1PetDeepLinkHandler({required this.forceUpdate, super.key});
+  const F1PetDeepLinkHandler({required this.forceUpdate, required this.router, super.key});
 
   final bool forceUpdate;
+  final AppRouter router;
 
   @override
   State<F1PetDeepLinkHandler> createState() => _F1PetDeepLinkHandlerState();
@@ -74,7 +76,16 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
             if (!mounted) {
               return;
             }
-            context.router.push(DriverRoute(driver: driver));
+            unawaited(
+              widget.router.navigate(
+                HomeRouter(
+                  children: [
+                    const HomeRoute(),
+                    DriverRoute(driver: driver),
+                  ],
+                ),
+              ),
+            );
           });
           break;
         }
@@ -90,7 +101,16 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
             if (!mounted) {
               return;
             }
-            context.router.push(ConstructorRoute(constructor: constructor));
+            unawaited(
+              widget.router.navigate(
+                HomeRouter(
+                  children: [
+                    const HomeRoute(),
+                    ConstructorRoute(constructor: constructor),
+                  ],
+                ),
+              ),
+            );
           });
           break;
         }
@@ -106,7 +126,16 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
             if (!mounted) {
               return;
             }
-            context.router.push(CircuitRoute(circuitModel: circuit));
+            unawaited(
+              widget.router.navigate(
+                CircuitsRouter(
+                  children: [
+                    const CircuitsRoute(),
+                    CircuitRoute(circuitModel: circuit),
+                  ],
+                ),
+              ),
+            );
           });
           break;
         }

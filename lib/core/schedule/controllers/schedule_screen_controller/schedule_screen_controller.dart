@@ -60,6 +60,9 @@ abstract class ScheduleScreenControllerBase with Store {
   DateTime selectedDate = DateTime.now();
 
   @observable
+  DateTime focusedDate = DateTime.now();
+
+  @observable
   ObservableList<Widget> scheduleOfSelectedDate = ObservableList<Widget>();
 
   @computed
@@ -121,7 +124,14 @@ abstract class ScheduleScreenControllerBase with Store {
   @action
   void onSelectDay(DateTime newSelectedDate, DateTime focusedDay) {
     selectedDate = newSelectedDate;
+    focusedDate = focusedDay;
     _showScheduleOfSelectedDate();
+  }
+
+  /// Сохраняет видимый месяц при свайпе/стрелках календаря.
+  @action
+  void onPageChanged(DateTime focusedDay) {
+    focusedDate = focusedDay;
   }
 
   /// Возвращает иконку для дня с гонкой или сессией, иначе null.

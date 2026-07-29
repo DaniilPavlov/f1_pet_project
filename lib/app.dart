@@ -193,7 +193,11 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           ],
           routerDelegate: _router.delegate(navigatorObservers: () => [AnalyticsNavigationObserver(_analytics)]),
           routeInformationParser: _router.defaultRouteParser(),
-          builder: (context, child) => _AppFrame(forceUpdate: _forceUpdate, child: child),
+          builder: (context, child) => _AppFrame(
+            forceUpdate: _forceUpdate,
+            router: _router,
+            child: child,
+          ),
         );
       },
     );
@@ -201,9 +205,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 }
 
 class _AppFrame extends StatelessWidget {
-  const _AppFrame({required this.forceUpdate, required this.child});
+  const _AppFrame({required this.forceUpdate, required this.router, required this.child});
 
   final bool forceUpdate;
+  final AppRouter router;
   final Widget? child;
 
   static const _breakpoints = [
@@ -236,7 +241,7 @@ class _AppFrame extends StatelessWidget {
           child: Stack(
             children: [
               content,
-              F1PetDeepLinkHandler(forceUpdate: forceUpdate),
+              F1PetDeepLinkHandler(forceUpdate: forceUpdate, router: router),
             ],
           ),
         ),

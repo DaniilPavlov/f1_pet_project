@@ -63,7 +63,7 @@ class ConstructorScreen extends StatelessWidget {
             appBar: CustomAppBar(
               title: constructor.name,
               showPreferences: false,
-              onPop: context.router.removeLast,
+              onPop: () => context.router.maybePop(),
               onShare: stats == null
                   ? null
                   : () => ShareHelper.shareCareerCard(

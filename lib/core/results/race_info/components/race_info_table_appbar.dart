@@ -50,7 +50,7 @@ class RaceInfoTableAppBar extends StatelessWidget implements PreferredSizeWidget
       child: Row(
         children: [
           Expanded(
-            flex: 110,
+            flex: 120,
             child: Text(context.l10n.driver, style: textStyle, textAlign: TextAlign.center, maxLines: 1),
           ),
           Expanded(
@@ -62,7 +62,7 @@ class RaceInfoTableAppBar extends StatelessWidget implements PreferredSizeWidget
             child: Text(context.l10n.time, style: textStyle, textAlign: TextAlign.center, maxLines: 1),
           ),
           Expanded(
-            flex: 55,
+            flex: 45,
             child: Text(context.l10n.points, style: textStyle, textAlign: TextAlign.center, maxLines: 1),
           ),
           Expanded(

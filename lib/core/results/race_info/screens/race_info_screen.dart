@@ -50,7 +50,7 @@ class RaceInfoScreen extends StatelessWidget {
             appBar: CustomAppBar(
               title: context.l10n.detailedInfo,
               showPreferences: false,
-              onPop: () => context.router.removeLast(),
+              onPop: () => context.router.maybePop(),
               onShare: canShare
                   ? () => ShareHelper.shareRaceResultsCard(
                       context: context,

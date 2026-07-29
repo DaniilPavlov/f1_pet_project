@@ -40,7 +40,7 @@ class RaceSearchScreen extends StatelessWidget {
             builder: (context) {
               final controller = context.read<RaceSearchScreenController>();
               return Scaffold(
-                appBar: CustomAppBar(title: l10n.raceSearchTitle, onPop: () => context.router.removeLast()),
+                appBar: CustomAppBar(title: l10n.raceSearchTitle, onPop: () => context.router.maybePop()),
                 body: SafeArea(
                   child: CustomScrollView(
                     controller: controller.scrollController,

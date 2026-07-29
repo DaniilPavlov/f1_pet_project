@@ -53,7 +53,7 @@ class CircuitScreen extends StatelessWidget {
         )..loadAll();
       },
       child: Scaffold(
-        appBar: CustomAppBar(title: context.l10n.circuitInfoTitle, onPop: context.router.removeLast),
+        appBar: CustomAppBar(title: context.l10n.circuitInfoTitle, onPop: () => context.router.maybePop()),
         body: SafeArea(
           child: Observer(
             builder: (context) {

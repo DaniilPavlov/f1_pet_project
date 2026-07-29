@@ -36,7 +36,7 @@ class HallOfFameScreen extends StatelessWidget {
       },
       dispose: (_, controller) => controller.dispose(),
       child: Scaffold(
-        appBar: CustomAppBar(title: context.l10n.hallOfFameTitle, onPop: context.router.removeLast),
+        appBar: CustomAppBar(title: context.l10n.hallOfFameTitle, onPop: () => context.router.maybePop()),
         body: SafeArea(
           child: Observer(
             builder: (context) {

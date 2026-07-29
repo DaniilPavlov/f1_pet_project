@@ -73,10 +73,10 @@ class RaceInfoTable extends StatelessWidget {
                 child: Table(
                   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                   columnWidths: const {
-                    0: FlexColumnWidth(1.1),
+                    0: FlexColumnWidth(1.2),
                     1: FlexColumnWidth(1.35),
                     2: FlexColumnWidth(1.15),
-                    3: FlexColumnWidth(0.55),
+                    3: FlexColumnWidth(0.45),
                     4: FlexColumnWidth(0.85),
                   },
                   children: [
@@ -103,7 +103,7 @@ class RaceInfoTable extends StatelessWidget {
         ),
         if (rowsNumber != null)
           GestureDetector(
-            onTap: () async => context.router.navigate(RaceInfoRoute(raceModel: raceModel)),
+            onTap: () async => context.router.push(RaceInfoRoute(raceModel: raceModel)),
             child: ColoredBox(
               color: context.colors.grayBG,
               child: Row(
