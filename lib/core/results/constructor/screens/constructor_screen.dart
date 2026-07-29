@@ -62,6 +62,7 @@ class ConstructorScreen extends StatelessWidget {
           return Scaffold(
             appBar: CustomAppBar(
               title: constructor.name,
+              showPreferences: false,
               onPop: context.router.removeLast,
               onShare: stats == null
                   ? null

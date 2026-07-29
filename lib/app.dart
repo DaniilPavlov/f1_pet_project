@@ -12,6 +12,7 @@ import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/router/app_router.dart';
 import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/analytics/analytics_navigation_observer.dart';
+import 'package:f1_pet_project/services/deeplinks/f1pet_deep_link_handler.dart';
 import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
 import 'package:f1_pet_project/services/home_widget/app_widget_sync_service.dart';
 import 'package:f1_pet_project/services/notifications/race_reminder_service.dart';
@@ -74,16 +75,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       return;
     }
     if (_forceUpdate) {
-      await Future.wait([
-        context.read<LocaleController>().load(),
-        context.read<ThemeController>().load(),
-      ]);
+      await Future.wait([context.read<LocaleController>().load(), context.read<ThemeController>().load()]);
       return;
     }
-    await Future.wait([
-      _startRemindersIfNeeded(),
-      _syncHomeWidgets(),
-    ]);
+    await Future.wait([_startRemindersIfNeeded(), _syncHomeWidgets()]);
   }
 
   Future<void> _onResumed() async {
@@ -96,10 +91,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     if (!mounted || _forceUpdate) {
       return;
     }
-    await Future.wait([
-      _syncReminders(remoteConfig),
-      _syncHomeWidgets(),
-    ]);
+    await Future.wait([_syncReminders(remoteConfig), _syncHomeWidgets()]);
   }
 
   Future<void> _syncHomeWidgets() async {
@@ -199,14 +191,9 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          routerDelegate: _router.delegate(
-            navigatorObservers: () => [AnalyticsNavigationObserver(_analytics)],
-          ),
+          routerDelegate: _router.delegate(navigatorObservers: () => [AnalyticsNavigationObserver(_analytics)]),
           routeInformationParser: _router.defaultRouteParser(),
-          builder: (context, child) => _AppFrame(
-            forceUpdate: _forceUpdate,
-            child: child,
-          ),
+          builder: (context, child) => _AppFrame(forceUpdate: _forceUpdate, child: child),
         );
       },
     );
@@ -246,7 +233,12 @@ class _AppFrame extends StatelessWidget {
         data: media,
         child: DefaultTextStyle(
           style: Theme.of(context).textTheme.bodyMedium!,
-          child: content,
+          child: Stack(
+            children: [
+              content,
+              F1PetDeepLinkHandler(forceUpdate: forceUpdate),
+            ],
+          ),
         ),
       ),
     );

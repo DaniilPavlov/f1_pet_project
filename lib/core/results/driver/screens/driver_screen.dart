@@ -63,6 +63,7 @@ class DriverScreen extends StatelessWidget {
           return Scaffold(
             appBar: CustomAppBar(
               title: fullName,
+              showPreferences: false,
               onPop: context.router.removeLast,
               onShare: stats == null
                   ? null

@@ -73,11 +73,11 @@ class RaceInfoTable extends StatelessWidget {
                 child: Table(
                   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                   columnWidths: const {
-                    0: FlexColumnWidth(1.15),
+                    0: FlexColumnWidth(1.1),
                     1: FlexColumnWidth(1.35),
-                    2: FlexColumnWidth(1.1),
+                    2: FlexColumnWidth(1.15),
                     3: FlexColumnWidth(0.55),
-                    4: FlexColumnWidth(0.9),
+                    4: FlexColumnWidth(0.85),
                   },
                   children: [
                     if (withPrimaryRow) raceTablePrimaryRow(context.l10n),

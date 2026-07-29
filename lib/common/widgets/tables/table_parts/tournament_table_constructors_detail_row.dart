@@ -11,7 +11,7 @@ List<Widget> tournamentTableConstructorsDetailRowChildren(ConstructorStandingsMo
     Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Text(place.toString(), style: textStyle, textAlign: TextAlign.center),
+        child: Text(place.toString(), style: textStyle, textAlign: TextAlign.center, softWrap: false),
       ),
     ),
     Center(

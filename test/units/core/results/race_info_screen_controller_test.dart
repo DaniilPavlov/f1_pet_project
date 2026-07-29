@@ -4,9 +4,7 @@ import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart
 import 'package:f1_pet_project/core/results/models/results_model.dart';
 import 'package:f1_pet_project/core/results/race_info/controllers/race_info_screen_controller/race_info_screen_controller.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../helpers/controller_fixtures.dart';
 import '../../../mobx/mobx_testing.dart';
@@ -46,40 +44,6 @@ void main() {
         verify: (store) {
           expect(store.screenError, isNotNull);
         },
-      );
-    });
-
-    group('visibility callbacks', () {
-      mobxTest(
-        'unpins race app bar when table is scrolled away',
-        build: () => RaceInfoScreenController(raceModel: ControllerFixtures.race),
-        value: (store) => store.raceAppBarPinned,
-        act: (store) {
-          store.onRaceTableVisibilityChanged(
-            const VisibilityInfo(
-              key: Key('race'),
-              size: Size(300, 400),
-              visibleBounds: Rect.fromLTWH(0, 300, 300, 100),
-            ),
-          );
-        },
-        expect: () => [true, false],
-      );
-
-      mobxTest(
-        'pins qualification app bar when table is scrolled',
-        build: () => RaceInfoScreenController(raceModel: ControllerFixtures.race),
-        value: (store) => store.qualificationAppBarPinned,
-        act: (store) {
-          store.onQualificationTableVisibilityChanged(
-            const VisibilityInfo(
-              key: Key('qualifying'),
-              size: Size(300, 400),
-              visibleBounds: Rect.fromLTWH(0, 100, 300, 200),
-            ),
-          );
-        },
-        expect: () => [false, true],
       );
     });
 

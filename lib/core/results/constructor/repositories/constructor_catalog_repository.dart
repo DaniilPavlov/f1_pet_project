@@ -14,6 +14,43 @@ class ConstructorCatalogRepository {
 
   Future<List<ConstructorModel>> loadAll() => _allConstructors();
 
+  /// Ищет конструктор по stable id (Jolpica/Ergast constructorId).
+  ///
+  /// Используется для deep link'ов вида `f1pet://constructor/<constructorId>`.
+  Future<ConstructorModel?> findByConstructorId(String constructorId) async {
+    final id = constructorId.trim();
+    if (id.isEmpty) {
+      return null;
+    }
+
+    final current = _currentCache;
+    if (current != null) {
+      for (final c in current) {
+        if (c.constructorId == id) {
+          return c;
+        }
+      }
+    }
+
+    final all = _allCache;
+    if (all != null) {
+      for (final c in all) {
+        if (c.constructorId == id) {
+          return c;
+        }
+      }
+    }
+
+    try {
+      final response = await ApiLoader.get('constructors/$id', limit: 1);
+      final constructors = _parseConstructors(response.mrData);
+      return constructors.isEmpty ? null : constructors.first;
+    } on Object catch (error, stackTrace) {
+      logger.e('ConstructorCatalogRepository.byConstructorId failed', error: error, stackTrace: stackTrace);
+      return null;
+    }
+  }
+
   Future<List<ConstructorModel>> _currentConstructors() async {
     if (_currentCache != null) {
       return _currentCache!;

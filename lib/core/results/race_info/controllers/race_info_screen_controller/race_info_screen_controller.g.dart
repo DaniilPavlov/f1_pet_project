@@ -18,86 +18,6 @@ mixin _$RaceInfoScreenController on RaceInfoScreenControllerBase, Store {
         name: 'RaceInfoScreenControllerBase.screenError',
       )).value;
 
-  late final _$raceAppBarPinnedAtom = Atom(
-    name: 'RaceInfoScreenControllerBase.raceAppBarPinned',
-    context: context,
-  );
-
-  @override
-  bool get raceAppBarPinned {
-    _$raceAppBarPinnedAtom.reportRead();
-    return super.raceAppBarPinned;
-  }
-
-  @override
-  set raceAppBarPinned(bool value) {
-    _$raceAppBarPinnedAtom.reportWrite(value, super.raceAppBarPinned, () {
-      super.raceAppBarPinned = value;
-    });
-  }
-
-  late final _$sprintAppBarPinnedAtom = Atom(
-    name: 'RaceInfoScreenControllerBase.sprintAppBarPinned',
-    context: context,
-  );
-
-  @override
-  bool get sprintAppBarPinned {
-    _$sprintAppBarPinnedAtom.reportRead();
-    return super.sprintAppBarPinned;
-  }
-
-  @override
-  set sprintAppBarPinned(bool value) {
-    _$sprintAppBarPinnedAtom.reportWrite(value, super.sprintAppBarPinned, () {
-      super.sprintAppBarPinned = value;
-    });
-  }
-
-  late final _$qualificationAppBarPinnedAtom = Atom(
-    name: 'RaceInfoScreenControllerBase.qualificationAppBarPinned',
-    context: context,
-  );
-
-  @override
-  bool get qualificationAppBarPinned {
-    _$qualificationAppBarPinnedAtom.reportRead();
-    return super.qualificationAppBarPinned;
-  }
-
-  @override
-  set qualificationAppBarPinned(bool value) {
-    _$qualificationAppBarPinnedAtom.reportWrite(
-      value,
-      super.qualificationAppBarPinned,
-      () {
-        super.qualificationAppBarPinned = value;
-      },
-    );
-  }
-
-  late final _$pitStopsAppBarPinnedAtom = Atom(
-    name: 'RaceInfoScreenControllerBase.pitStopsAppBarPinned',
-    context: context,
-  );
-
-  @override
-  bool get pitStopsAppBarPinned {
-    _$pitStopsAppBarPinnedAtom.reportRead();
-    return super.pitStopsAppBarPinned;
-  }
-
-  @override
-  set pitStopsAppBarPinned(bool value) {
-    _$pitStopsAppBarPinnedAtom.reportWrite(
-      value,
-      super.pitStopsAppBarPinned,
-      () {
-        super.pitStopsAppBarPinned = value;
-      },
-    );
-  }
-
   late final _$allDataIsLoadedAtom = Atom(
     name: 'RaceInfoScreenControllerBase.allDataIsLoaded',
     context: context,
@@ -222,71 +142,9 @@ mixin _$RaceInfoScreenController on RaceInfoScreenControllerBase, Store {
     return _$loadPitStopsAsyncAction.run(() => super.loadPitStops());
   }
 
-  late final _$RaceInfoScreenControllerBaseActionController = ActionController(
-    name: 'RaceInfoScreenControllerBase',
-    context: context,
-  );
-
-  @override
-  void onRaceTableVisibilityChanged(VisibilityInfo info) {
-    final _$actionInfo = _$RaceInfoScreenControllerBaseActionController
-        .startAction(
-          name: 'RaceInfoScreenControllerBase.onRaceTableVisibilityChanged',
-        );
-    try {
-      return super.onRaceTableVisibilityChanged(info);
-    } finally {
-      _$RaceInfoScreenControllerBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void onSprintTableVisibilityChanged(VisibilityInfo info) {
-    final _$actionInfo = _$RaceInfoScreenControllerBaseActionController
-        .startAction(
-          name: 'RaceInfoScreenControllerBase.onSprintTableVisibilityChanged',
-        );
-    try {
-      return super.onSprintTableVisibilityChanged(info);
-    } finally {
-      _$RaceInfoScreenControllerBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void onQualificationTableVisibilityChanged(VisibilityInfo info) {
-    final _$actionInfo = _$RaceInfoScreenControllerBaseActionController
-        .startAction(
-          name:
-              'RaceInfoScreenControllerBase.onQualificationTableVisibilityChanged',
-        );
-    try {
-      return super.onQualificationTableVisibilityChanged(info);
-    } finally {
-      _$RaceInfoScreenControllerBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void onPitStopsTableVisibilityChanged(VisibilityInfo info) {
-    final _$actionInfo = _$RaceInfoScreenControllerBaseActionController
-        .startAction(
-          name: 'RaceInfoScreenControllerBase.onPitStopsTableVisibilityChanged',
-        );
-    try {
-      return super.onPitStopsTableVisibilityChanged(info);
-    } finally {
-      _$RaceInfoScreenControllerBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
   @override
   String toString() {
     return '''
-raceAppBarPinned: ${raceAppBarPinned},
-sprintAppBarPinned: ${sprintAppBarPinned},
-qualificationAppBarPinned: ${qualificationAppBarPinned},
-pitStopsAppBarPinned: ${pitStopsAppBarPinned},
 allDataIsLoaded: ${allDataIsLoaded},
 sprintResults: ${sprintResults},
 qualifyingResults: ${qualifyingResults},

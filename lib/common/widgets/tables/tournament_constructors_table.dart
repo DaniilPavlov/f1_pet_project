@@ -74,10 +74,10 @@ class TournamentConstructorsTable extends StatelessWidget {
                 constraints: BoxConstraints(minWidth: constraints.maxWidth),
                 child: Table(
                   columnWidths: const {
-                    0: FractionColumnWidth(0.1),
+                    0: FixedColumnWidth(32),
                     1: FlexColumnWidth(0.37),
-                    2: FlexColumnWidth(0.15),
-                    3: FlexColumnWidth(0.23),
+                    2: FlexColumnWidth(0.16),
+                    3: FlexColumnWidth(0.17),
                     4: FlexColumnWidth(0.15),
                   },
                   defaultVerticalAlignment: TableCellVerticalAlignment.middle,

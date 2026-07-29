@@ -1,4 +1,6 @@
 PODS:
+  - app_links (7.0.0):
+    - Flutter
   - appmetrica_plugin (4.0.0):
     - AppMetricaAdSupport (~> 6.1)
     - AppMetricaCore (~> 6.1)
@@ -280,6 +282,7 @@ PODS:
   - YandexMapsMobile (4.22.0-lite)
 
 DEPENDENCIES:
+  - app_links (from `.symlinks/plugins/app_links/ios`)
   - appmetrica_plugin (from `.symlinks/plugins/appmetrica_plugin/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -345,6 +348,8 @@ SPEC REPOS:
     - YandexMapsMobile
 
 EXTERNAL SOURCES:
+  app_links:
+    :path: ".symlinks/plugins/app_links/ios"
   appmetrica_plugin:
     :path: ".symlinks/plugins/appmetrica_plugin/ios"
   firebase_analytics:
@@ -381,6 +386,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/yandex_mapkit/ios"
 
 SPEC CHECKSUMS:
+  app_links: 6d01271b3907b0ee7325c5297c75d697c4226c4d
   appmetrica_plugin: 303b3199b6802051e39665997b95c63518780b41
   AppMetricaAdSupport: beb8dd64e5db5e4788fe6794073368c790a621db
   AppMetricaCore: f8b3e3a07ba914f59bbf2cf25a3c9fec2985f760

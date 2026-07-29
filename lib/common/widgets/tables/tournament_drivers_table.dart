@@ -65,12 +65,12 @@ class TournamentDriversTable extends StatelessWidget {
                 constraints: BoxConstraints(minWidth: constraints.maxWidth),
                 child: Table(
                   columnWidths: const {
-                    0: FractionColumnWidth(0.1),
-                    1: FlexColumnWidth(0.22),
-                    2: FlexColumnWidth(0.13),
+                    0: FixedColumnWidth(32),
+                    1: FlexColumnWidth(0.24),
+                    2: FlexColumnWidth(0.11),
                     3: FlexColumnWidth(0.18),
                     4: FlexColumnWidth(0.08),
-                    5: FlexColumnWidth(0.29),
+                    5: FlexColumnWidth(0.27),
                   },
                   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                   children: [

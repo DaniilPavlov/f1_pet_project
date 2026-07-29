@@ -24,6 +24,43 @@ class DriverCatalogRepository {
     return _match(drivers, needle);
   }
 
+  /// Ищет пилота по stable id (Jolpica/Ergast driverId).
+  ///
+  /// Используется для deep link'ов вида `f1pet://driver/<driverId>`.
+  Future<DriverModel?> findByDriverId(String driverId) async {
+    final id = driverId.trim();
+    if (id.isEmpty) {
+      return null;
+    }
+
+    final current = _currentCache;
+    if (current != null) {
+      for (final d in current) {
+        if (d.driverId == id) {
+          return d;
+        }
+      }
+    }
+
+    final all = _allCache;
+    if (all != null) {
+      for (final d in all) {
+        if (d.driverId == id) {
+          return d;
+        }
+      }
+    }
+
+    try {
+      final response = await ApiLoader.get('drivers/$id', limit: 1);
+      final drivers = _parseDrivers(response.mrData);
+      return drivers.isEmpty ? null : drivers.first;
+    } on Object catch (error, stackTrace) {
+      logger.e('DriverCatalogRepository.byDriverId failed', error: error, stackTrace: stackTrace);
+      return null;
+    }
+  }
+
   Future<List<DriverModel>> _currentDrivers() async {
     if (_currentCache != null) {
       return _currentCache!;

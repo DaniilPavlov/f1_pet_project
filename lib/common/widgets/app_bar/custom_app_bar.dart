@@ -15,13 +15,14 @@ import 'package:provider/provider.dart';
 
 /// Кастомный AppBar с логотипом или заголовком и кнопкой «назад».
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({this.title, this.onPop, this.onShare, super.key});
+  const CustomAppBar({this.title, this.onPop, this.onShare, this.showPreferences = true, super.key});
   final String? title;
 
   final VoidCallback? onPop;
 
   /// Кнопка шаринга слева от переключателя темы/языка.
   final VoidCallback? onShare;
+  final bool showPreferences;
 
   @override
   Size get preferredSize => const Size.fromHeight(56);
@@ -86,49 +87,51 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                       const SizedBox(width: 8),
                     ],
-                    Observer(
-                      builder: (context) {
-                        return GestureDetector(
-                          onTap: themeController.cycle,
-                          behavior: HitTestBehavior.opaque,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                            child: Icon(
-                              themeController.preferenceIcon,
-                              size: 20,
-                              color: AppTheme.onChrome,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 8),
-                    Observer(
-                      builder: (context) {
-                        return GestureDetector(
-                          onTap: () async {
-                            await localeController.toggle();
-                            if (!context.mounted) {
-                              return;
-                            }
-                            unawaited(
-                              context.read<RaceReminderService>().sync(locale: localeController.locale),
-                            );
-                          },
-                          behavior: HitTestBehavior.opaque,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                            child: Text(
-                              localeController.localeCodeLabel,
-                              style: AppStyles.body.copyWith(
+                    if (showPreferences) ...[
+                      Observer(
+                        builder: (context) {
+                          return GestureDetector(
+                            onTap: themeController.cycle,
+                            behavior: HitTestBehavior.opaque,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                              child: Icon(
+                                themeController.preferenceIcon,
+                                size: 20,
                                 color: AppTheme.onChrome,
-                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
+                          );
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      Observer(
+                        builder: (context) {
+                          return GestureDetector(
+                            onTap: () async {
+                              await localeController.toggle();
+                              if (!context.mounted) {
+                                return;
+                              }
+                              unawaited(
+                                context.read<RaceReminderService>().sync(locale: localeController.locale),
+                              );
+                            },
+                            behavior: HitTestBehavior.opaque,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                              child: Text(
+                                localeController.localeCodeLabel,
+                                style: AppStyles.body.copyWith(
+                                  color: AppTheme.onChrome,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ],
                 ),
               ),

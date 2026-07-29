@@ -11,22 +11,13 @@ import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 part 'race_info_screen_controller.g.dart';
-
-const _appBarPinOffset = 150.0;
-
-bool _isAppBarPinned(VisibilityInfo info) =>
-    info.visibleBounds.top < info.size.height - _appBarPinOffset && info.visibleBounds.right != 0;
-
-/// Секции экрана для управления закреплением шапок таблиц.
-enum _RaceInfoSection { race, sprint, qualification, pitStops }
 
 /// MobX-контроллер детального экрана гонки.
 class RaceInfoScreenController = RaceInfoScreenControllerBase with _$RaceInfoScreenController;
 
-/// Управляет данными гонки, спринта, квалификации, пит-стопов и закреплением шапок таблиц.
+/// Управляет данными гонки, спринта, квалификации и пит-стопов.
 abstract class RaceInfoScreenControllerBase with Store {
   RaceInfoScreenControllerBase({
     required this.raceModel,
@@ -55,18 +46,6 @@ abstract class RaceInfoScreenControllerBase with Store {
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchQualifyingResultsForTest;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchPitStopsForTest;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchSprintResultsForTest;
-
-  @observable
-  bool raceAppBarPinned = true;
-
-  @observable
-  bool sprintAppBarPinned = false;
-
-  @observable
-  bool qualificationAppBarPinned = false;
-
-  @observable
-  bool pitStopsAppBarPinned = false;
 
   @observable
   bool allDataIsLoaded = false;
@@ -131,37 +110,6 @@ abstract class RaceInfoScreenControllerBase with Store {
       return true;
     } on Object {
       return true;
-    }
-  }
-
-  /// Обновляет закрепление шапки таблицы результатов при прокрутке.
-  @action
-  void onRaceTableVisibilityChanged(VisibilityInfo info) => _setAppBarPinned(_RaceInfoSection.race, info);
-
-  /// Обновляет закрепление шапки таблицы спринта при прокрутке.
-  @action
-  void onSprintTableVisibilityChanged(VisibilityInfo info) => _setAppBarPinned(_RaceInfoSection.sprint, info);
-
-  /// Обновляет закрепление шапки таблицы квалификации при прокрутке.
-  @action
-  void onQualificationTableVisibilityChanged(VisibilityInfo info) =>
-      _setAppBarPinned(_RaceInfoSection.qualification, info);
-
-  /// Обновляет закрепление шапки таблицы пит-стопов при прокрутке.
-  @action
-  void onPitStopsTableVisibilityChanged(VisibilityInfo info) => _setAppBarPinned(_RaceInfoSection.pitStops, info);
-
-  void _setAppBarPinned(_RaceInfoSection section, VisibilityInfo info) {
-    final pinned = _isAppBarPinned(info);
-    switch (section) {
-      case _RaceInfoSection.race:
-        raceAppBarPinned = pinned;
-      case _RaceInfoSection.sprint:
-        sprintAppBarPinned = pinned;
-      case _RaceInfoSection.qualification:
-        qualificationAppBarPinned = pinned;
-      case _RaceInfoSection.pitStops:
-        pitStopsAppBarPinned = pinned;
     }
   }
 
