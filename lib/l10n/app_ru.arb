@@ -15,6 +15,13 @@
   "circuitStatElevation": "Перепад",
   "homeWeekendTitle": "Уикенд",
   "homeWeekendLive": "Live",
+  "liveSessionBanner": "Идёт сессия",
+  "liveSessionBannerWithSession": "Идёт сессия · {session}",
+  "@liveSessionBannerWithSession": {
+    "placeholders": {
+      "session": { "type": "String" }
+    }
+  },
   "homeWeekendLeader": "Лидер: {name}",
   "@homeWeekendLeader": {
     "placeholders": {

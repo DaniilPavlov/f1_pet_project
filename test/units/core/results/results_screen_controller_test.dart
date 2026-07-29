@@ -37,30 +37,15 @@ void main() {
     });
 
     group('loadAllData', () {
-      test('loads last race and scoreboard', () async {
+      test('loads last race', () async {
         final controller = ResultsScreenController(
           fetchLastRaceResultsForTest: () async => ControllerFixtures.scheduleModel,
-          fetchScoreboardForTest: () async => null,
         );
 
         await controller.loadAllData();
 
         expect(controller.lastRace.isValue, isTrue);
-        expect(controller.scoreboard.isValue, isTrue);
-        expect(controller.scoreboard.value, isNull);
-      });
-    });
-
-    group('loadScoreboard', () {
-      test('keeps results usable when scoreboard fails', () async {
-        final controller = ResultsScreenController(
-          fetchScoreboardForTest: () async => throw Exception('network'),
-        );
-
-        await controller.loadScoreboard();
-
-        expect(controller.scoreboard.isValue, isTrue);
-        expect(controller.scoreboard.value, isNull);
+        expect(controller.lastRace.value?.raceName, 'Monaco Grand Prix');
       });
     });
   });

@@ -4,8 +4,12 @@ import 'package:app_links/app_links.dart';
 import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.dart';
 import 'package:f1_pet_project/core/results/constructor/repositories/constructor_catalog_repository.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
+import 'package:f1_pet_project/core/schedule/models/races_model.dart';
+import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/router/app_router.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
+import 'package:f1_pet_project/services/live_weekend/live_weekend_controller.dart';
+import 'package:f1_pet_project/services/live_weekend/live_weekend_resolver.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -55,18 +59,17 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
     if (uri.scheme != 'f1pet') {
       return;
     }
-    if (uri.pathSegments.isEmpty) {
-      return;
-    }
-
-    final id = uri.pathSegments.first;
-    if (id.isEmpty) {
+    if (uri.pathSegments.isEmpty && uri.host != 'race') {
       return;
     }
 
     switch (uri.host) {
       case 'driver':
         {
+          final id = uri.pathSegments.isEmpty ? '' : uri.pathSegments.first;
+          if (id.isEmpty) {
+            return;
+          }
           final driver = await context.read<DriverCatalogRepository>().findByDriverId(id);
           if (driver == null || !mounted) {
             return;
@@ -92,6 +95,10 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
 
       case 'constructor':
         {
+          final id = uri.pathSegments.isEmpty ? '' : uri.pathSegments.first;
+          if (id.isEmpty) {
+            return;
+          }
           final constructor = await context.read<ConstructorCatalogRepository>().findByConstructorId(id);
           if (constructor == null || !mounted) {
             return;
@@ -117,6 +124,10 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
 
       case 'circuit':
         {
+          final id = uri.pathSegments.isEmpty ? '' : uri.pathSegments.first;
+          if (id.isEmpty) {
+            return;
+          }
           final circuit = await context.read<CircuitsRepository>().findByCircuitId(id);
           if (circuit == null || !mounted) {
             return;
@@ -140,9 +151,58 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
           break;
         }
 
+      case 'race':
+        {
+          final segment = uri.pathSegments.isEmpty ? '' : uri.pathSegments.first;
+          if (segment != 'live') {
+            return;
+          }
+          final race = await _resolveLiveRace();
+          if (!mounted) {
+            return;
+          }
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) {
+              return;
+            }
+            unawaited(_navigateToLiveRace(race));
+          });
+          break;
+        }
+
       default:
         return;
     }
+  }
+
+  Future<RacesModel?> _resolveLiveRace() async {
+    final liveWeekend = context.read<LiveWeekendController>();
+    final scheduleRepository = context.read<ScheduleRepository>();
+    if (!liveWeekend.scoreboard.isValue) {
+      await liveWeekend.loadScoreboard();
+    }
+    if (!mounted) {
+      return null;
+    }
+    final schedule = await scheduleRepository.getSchedule();
+    return LiveWeekendResolver.resolve(
+      races: schedule.schedule.raceTable.races,
+      scoreboard: liveWeekend.scoreboard.value,
+    );
+  }
+
+  Future<void> _navigateToLiveRace(RacesModel? race) {
+    if (race == null) {
+      return widget.router.navigate(const ResultsRouter(children: [ResultsRoute()]));
+    }
+    return widget.router.navigate(
+      ResultsRouter(
+        children: [
+          const ResultsRoute(),
+          RaceInfoRoute(raceModel: race),
+        ],
+      ),
+    );
   }
 
   @override

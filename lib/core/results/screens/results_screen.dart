@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
-import 'package:f1_pet_project/common/repositories/espn/espn_scoreboard_repository.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
@@ -14,6 +13,7 @@ import 'package:f1_pet_project/core/results/controllers/results_screen_controlle
 import 'package:f1_pet_project/core/results/repositories/results_repository.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:f1_pet_project/services/live_weekend/live_weekend_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -28,16 +28,16 @@ class ResultsScreen extends StatelessWidget {
     return Provider<ResultsScreenController>(
       create: (context) => ResultsScreenController(
         resultsRepository: context.read<ResultsRepository>(),
-        scoreboardRepository: context.read<EspnScoreboardRepository>(),
+        liveWeekend: context.read<LiveWeekendController>(),
         dataRefresh: context.read<AppDataRefresh>(),
       )..loadAllData(),
-      dispose: (_, controller) => controller.dispose(),
       child: Scaffold(
         appBar: const CustomAppBar(),
         body: SafeArea(
           child: Observer(
             builder: (context) {
               final controller = context.read<ResultsScreenController>();
+              final liveWeekend = context.read<LiveWeekendController>();
               final hasRace = controller.lastRace.value != null;
               final raceFailed = !hasRace && (controller.lastRace.isError || controller.screenError != null);
 
@@ -48,10 +48,12 @@ class ResultsScreen extends StatelessWidget {
                   physics: const AlwaysScrollableScrollPhysics(),
                   scrollBehavior: AntiGlowBehavior(),
                   slivers: [
-                    SliverToBoxAdapter(
-                      child: WeekendScoreboardSection(
-                        scoreboard: controller.scoreboard,
-                        locale: Localizations.localeOf(context),
+                    Observer(
+                      builder: (context) => SliverToBoxAdapter(
+                        child: WeekendScoreboardSection(
+                          scoreboard: liveWeekend.scoreboard,
+                          locale: Localizations.localeOf(context),
+                        ),
                       ),
                     ),
                     SliverToBoxAdapter(

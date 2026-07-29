@@ -15,6 +15,13 @@
   "circuitStatElevation": "Elevation",
   "homeWeekendTitle": "Race weekend",
   "homeWeekendLive": "Live",
+  "liveSessionBanner": "Session live",
+  "liveSessionBannerWithSession": "Session live · {session}",
+  "@liveSessionBannerWithSession": {
+    "placeholders": {
+      "session": { "type": "String" }
+    }
+  },
   "homeWeekendLeader": "Leader: {name}",
   "@homeWeekendLeader": {
     "placeholders": {

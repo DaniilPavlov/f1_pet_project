@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/common/widgets/live_session_banner.dart';
 import 'package:f1_pet_project/common/widgets/nav_bar/navbar.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,15 @@ class ScaffoldWithNavBarScreen extends StatelessWidget {
     return AutoTabsScaffold(
       homeIndex: 0,
       routes: const [HomeRouter(), ResultsRouter(), ScheduleRouter(), NewsRouter(), CircuitsRouter()],
-      bottomNavigationBuilder: (_, tabsRouter) => NavBar(tabsRouter: tabsRouter),
+      bottomNavigationBuilder: (_, tabsRouter) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            LiveSessionBanner(onTap: () => tabsRouter.setActiveIndex(1)),
+            NavBar(tabsRouter: tabsRouter),
+          ],
+        );
+      },
     );
   }
 }

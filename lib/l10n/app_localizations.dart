@@ -188,6 +188,18 @@ abstract class AppLocalizations {
   /// **'Live'**
   String get homeWeekendLive;
 
+  /// No description provided for @liveSessionBanner.
+  ///
+  /// In ru, this message translates to:
+  /// **'Идёт сессия'**
+  String get liveSessionBanner;
+
+  /// No description provided for @liveSessionBannerWithSession.
+  ///
+  /// In ru, this message translates to:
+  /// **'Идёт сессия · {session}'**
+  String liveSessionBannerWithSession(String session);
+
   /// No description provided for @homeWeekendLeader.
   ///
   /// In ru, this message translates to:

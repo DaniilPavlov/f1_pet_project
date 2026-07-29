@@ -54,6 +54,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeWeekendLive => 'Live';
 
   @override
+  String get liveSessionBanner => 'Session live';
+
+  @override
+  String liveSessionBannerWithSession(String session) {
+    return 'Session live · $session';
+  }
+
+  @override
   String homeWeekendLeader(String name) {
     return 'Leader: $name';
   }
