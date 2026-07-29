@@ -130,6 +130,7 @@ class H2hScreen extends StatelessWidget {
                                       .trim(),
                               statsA: comparison.value!.statsA,
                               statsB: comparison.value!.statsB,
+                              timeline: comparison.value!.timeline,
                               season: comparison.value!.season,
                             ),
                         ],

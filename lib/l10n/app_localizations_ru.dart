@@ -278,6 +278,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get h2hConstructorsEmpty => 'Конструкторы не найдены';
 
   @override
+  String get h2hPointsTimelineTitle => 'Очки по раундам';
+
+  @override
+  String get h2hPointsTimelineSubtitle =>
+      'Накопленные очки чемпионата (гонка + спринт)';
+
+  @override
+  String get h2hPointsTimelineEmpty => 'Нет результатов гонок для сравнения';
+
+  @override
   String get selectConstructor => 'Выберите конструктора';
 
   @override

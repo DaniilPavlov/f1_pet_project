@@ -3,6 +3,8 @@ import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/utils/helpers/text_editing_controller_extension.dart';
 import 'package:f1_pet_project/core/results/constructor/repositories/constructor_catalog_repository.dart';
+import 'package:f1_pet_project/core/results/h2h/models/h2h_entity_compare_data.dart';
+import 'package:f1_pet_project/core/results/h2h/models/h2h_points_timeline.dart';
 import 'package:f1_pet_project/core/results/h2h/models/h2h_stats.dart';
 import 'package:f1_pet_project/core/results/h2h/repositories/h2h_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
@@ -22,6 +24,7 @@ class H2hConstructorsCompareResult {
     required this.constructorB,
     required this.statsA,
     required this.statsB,
+    required this.timeline,
     this.season,
   });
 
@@ -29,6 +32,7 @@ class H2hConstructorsCompareResult {
   final ConstructorModel constructorB;
   final H2hStats statsA;
   final H2hStats statsB;
+  final H2hPointsTimeline timeline;
 
   /// `null` — сравнение за карьеру.
   final String? season;
@@ -47,7 +51,12 @@ abstract class H2hConstructorsScreenControllerBase with Store {
     AppDataRefresh? dataRefresh,
     AnalyticsGateway? analytics,
     @visibleForTesting
-    Future<H2hStats> Function({required String constructorId, String? season})? fetchStatsForTest,
+    Future<H2hLoadedCompare> Function({
+      required String constructorIdA,
+      required String constructorIdB,
+      String? season,
+    })?
+    compareForTest,
     @visibleForTesting
     Future<List<ConstructorModel>> Function()? loadCurrentConstructorsForTest,
     @visibleForTesting
@@ -55,7 +64,7 @@ abstract class H2hConstructorsScreenControllerBase with Store {
   }) : _h2hRepository = h2hRepository,
        _dataRefresh = dataRefresh,
        _analytics = analytics ?? const NoOpAnalyticsGateway(),
-       _fetchStatsForTest = fetchStatsForTest,
+       _compareForTest = compareForTest,
        _loadCurrentConstructors = loadCurrentConstructorsForTest ?? constructorCatalogRepository!.loadCurrent,
        _loadAllConstructors = loadAllConstructorsForTest ?? constructorCatalogRepository!.loadAll {
     yearController = TextEditingController();
@@ -65,7 +74,12 @@ abstract class H2hConstructorsScreenControllerBase with Store {
   final H2hRepository? _h2hRepository;
   final AppDataRefresh? _dataRefresh;
   final AnalyticsGateway _analytics;
-  final Future<H2hStats> Function({required String constructorId, String? season})? _fetchStatsForTest;
+  final Future<H2hLoadedCompare> Function({
+    required String constructorIdA,
+    required String constructorIdB,
+    String? season,
+  })?
+  _compareForTest;
   final Future<List<ConstructorModel>> Function() _loadCurrentConstructors;
   final Future<List<ConstructorModel>> Function() _loadAllConstructors;
 
@@ -202,7 +216,7 @@ abstract class H2hConstructorsScreenControllerBase with Store {
     _resetComparison();
   }
 
-  /// Параллельно грузит метрики обоих конструкторов и кладёт результат в [comparison].
+  /// Последовательно грузит обоих конструкторов (глобальный API throttle ~3 req/s).
   @action
   Future<void> compare() async {
     if (!canCompare) {
@@ -214,15 +228,17 @@ abstract class H2hConstructorsScreenControllerBase with Store {
 
     await runAsyncLoad<H2hConstructorsCompareResult, H2hConstructorsCompareResult?>(
       fetch: () async {
-        final stats = await Future.wait([
-          _fetchStats(constructorId: a.constructorId, season: season),
-          _fetchStats(constructorId: b.constructorId, season: season),
-        ]);
+        final loaded = await _compare(
+          constructorIdA: a.constructorId,
+          constructorIdB: b.constructorId,
+          season: season,
+        );
         return H2hConstructorsCompareResult(
           constructorA: a,
           constructorB: b,
-          statsA: stats[0],
-          statsB: stats[1],
+          statsA: loaded.statsA,
+          statsB: loaded.statsB,
+          timeline: loaded.timeline,
           season: season,
         );
       },
@@ -255,11 +271,23 @@ abstract class H2hConstructorsScreenControllerBase with Store {
     comparison = const AsyncValue.value();
   }
 
-  Future<H2hStats> _fetchStats({required String constructorId, String? season}) {
-    final forTest = _fetchStatsForTest;
+  Future<H2hLoadedCompare> _compare({
+    required String constructorIdA,
+    required String constructorIdB,
+    String? season,
+  }) {
+    final forTest = _compareForTest;
     if (forTest != null) {
-      return forTest(constructorId: constructorId, season: season);
+      return forTest(
+        constructorIdA: constructorIdA,
+        constructorIdB: constructorIdB,
+        season: season,
+      );
     }
-    return _h2hRepository!.constructorStats(constructorId: constructorId, season: season);
+    return _h2hRepository!.compareConstructors(
+      constructorIdA: constructorIdA,
+      constructorIdB: constructorIdB,
+      season: season,
+    );
   }
 }

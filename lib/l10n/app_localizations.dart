@@ -602,6 +602,24 @@ abstract class AppLocalizations {
   /// **'Конструкторы не найдены'**
   String get h2hConstructorsEmpty;
 
+  /// No description provided for @h2hPointsTimelineTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Очки по раундам'**
+  String get h2hPointsTimelineTitle;
+
+  /// No description provided for @h2hPointsTimelineSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Накопленные очки чемпионата (гонка + спринт)'**
+  String get h2hPointsTimelineSubtitle;
+
+  /// No description provided for @h2hPointsTimelineEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет результатов гонок для сравнения'**
+  String get h2hPointsTimelineEmpty;
+
   /// No description provided for @selectConstructor.
   ///
   /// In ru, this message translates to:

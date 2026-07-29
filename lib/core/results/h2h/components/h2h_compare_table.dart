@@ -2,16 +2,19 @@ import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/core/results/h2h/components/h2h_points_chart.dart';
+import 'package:f1_pet_project/core/results/h2h/models/h2h_points_timeline.dart';
 import 'package:f1_pet_project/core/results/h2h/models/h2h_stats.dart';
 import 'package:flutter/material.dart';
 
-/// Таблица сравнения метрик двух участников H2H.
+/// Сравнение H2H: график накопленных очков + краткие метрики.
 class H2hCompareTable extends StatelessWidget {
   const H2hCompareTable({
     required this.nameA,
     required this.nameB,
     required this.statsA,
     required this.statsB,
+    required this.timeline,
     this.season,
     super.key,
   });
@@ -20,10 +23,13 @@ class H2hCompareTable extends StatelessWidget {
   final String nameB;
   final H2hStats statsA;
   final H2hStats statsB;
+  final H2hPointsTimeline timeline;
   final String? season;
 
   @override
   Widget build(BuildContext context) {
+    final colorA = AppTheme.red;
+    final colorB = context.colors.black;
     final rows = [
       (context.l10n.careerStatRaces, statsA.races, statsB.races),
       (context.l10n.wins, statsA.wins, statsB.wins),
@@ -33,6 +39,10 @@ class H2hCompareTable extends StatelessWidget {
     final semanticsRows = [
       for (final (label, a, b) in rows) '$label: $nameA $a, $nameB $b',
     ];
+    final last = timeline.points.isEmpty ? null : timeline.points.last;
+    final pointsSemantics = last == null
+        ? null
+        : '${context.l10n.points}: $nameA ${_fmt(last.cumulativeA)}, $nameB ${_fmt(last.cumulativeB)}';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,6 +65,13 @@ class H2hCompareTable extends StatelessWidget {
                     label: context.l10n.seasonLabel(season!),
                     child: const SizedBox(width: 1, height: 1),
                   ),
+                Semantics(
+                  header: true,
+                  label: context.l10n.h2hPointsTimelineTitle,
+                  child: const SizedBox(width: 1, height: 1),
+                ),
+                if (pointsSemantics != null)
+                  Semantics(label: pointsSemantics, child: const SizedBox(width: 1, height: 1)),
                 for (final row in semanticsRows)
                   Semantics(label: row, child: const SizedBox(width: 1, height: 1)),
               ],
@@ -62,52 +79,88 @@ class H2hCompareTable extends StatelessWidget {
           ),
         ),
         ExcludeSemantics(
-          child: LayoutBuilder(
-            builder: (context, constraints) => SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                child: Column(
-                  children: [
-                  if (season != null) ...[
-                    Text(
-                      context.l10n.seasonLabel(season!),
-                      style: AppStyles.caption.copyWith(color: context.colors.textGray),
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                  Row(
-                    children: [
-                      const SizedBox(width: 100),
-                      Expanded(
-                        child: Text(
-                          nameA,
-                          style: AppStyles.body.copyWith(fontWeight: FontWeight.w600),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          nameB,
-                          style: AppStyles.body.copyWith(fontWeight: FontWeight.w600),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  for (final (label, a, b) in rows) ...[
-                    _CompareRow(label: label, valueA: a, valueB: b),
-                    Divider(height: 1, color: context.colors.strokeGray),
-                  ],
-                  ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (season != null) ...[
+                Text(
+                  context.l10n.seasonLabel(season!),
+                  style: AppStyles.caption.copyWith(color: context.colors.textGray),
                 ),
+                const SizedBox(height: 12),
+              ],
+              Text(
+                context.l10n.h2hPointsTimelineTitle,
+                style: AppStyles.body.copyWith(fontWeight: FontWeight.w600),
               ),
-            ),
+              const SizedBox(height: 4),
+              Text(
+                context.l10n.h2hPointsTimelineSubtitle,
+                style: AppStyles.caption.copyWith(color: context.colors.textGray),
+              ),
+              const SizedBox(height: 16),
+              if (timeline.isEmpty)
+                Text(
+                  context.l10n.h2hPointsTimelineEmpty,
+                  style: AppStyles.body.copyWith(color: context.colors.textGray),
+                )
+              else ...[
+                H2hPointsChart(
+                  timeline: timeline,
+                  colorA: colorA,
+                  colorB: colorB,
+                ),
+                const SizedBox(height: 12),
+                H2hPointsChartLegend(
+                  nameA: nameA,
+                  nameB: nameB,
+                  pointsA: last!.cumulativeA,
+                  pointsB: last.cumulativeB,
+                  colorA: colorA,
+                  colorB: colorB,
+                ),
+              ],
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  const SizedBox(width: 100),
+                  Expanded(
+                    child: Text(
+                      nameA,
+                      style: AppStyles.body.copyWith(fontWeight: FontWeight.w600),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      nameB,
+                      style: AppStyles.body.copyWith(fontWeight: FontWeight.w600),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              for (final (label, a, b) in rows) ...[
+                _CompareRow(label: label, valueA: a, valueB: b),
+                Divider(height: 1, color: context.colors.strokeGray),
+              ],
+            ],
           ),
         ),
       ],
     );
+  }
+
+  static String _fmt(double value) {
+    if (value == value.roundToDouble()) {
+      return value.toInt().toString();
+    }
+    return value.toStringAsFixed(1);
   }
 }
 

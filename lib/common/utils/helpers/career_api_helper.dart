@@ -1,16 +1,53 @@
+import 'dart:async';
+
 import 'package:f1_pet_project/common/models/career/career_race_result.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/data/models/baseResponse/base_response_model.dart';
 import 'package:f1_pet_project/services/api_loader.dart';
+import 'package:flutter/foundation.dart';
 
-/// Хелперы карьерных запросов к Jolpica (throttle ≤4 req/s, пагинация).
+/// Хелперы карьерных запросов к Jolpica (глобальный throttle ~3 req/s, пагинация).
 abstract class CareerApiHelper {
-  static const minGap = Duration(milliseconds: 500);
+  /// Интервал между стартами запросов (3 req/s). Общий для всех вызовов.
+  static const minGap = Duration(milliseconds: 334);
 
   /// Jolpica/Ergast обычно режут [limit] до 100.
   static const maxPageSize = 100;
 
-  /// Последовательные GET с интервалом ≥[minGap] между стартами.
+  static DateTime? _globalLastStart;
+  static Future<void> _tail = Future<void>.value();
+
+  /// Сброс очереди (только для тестов).
+  @visibleForTesting
+  static void resetThrottleForTest() {
+    _globalLastStart = null;
+    _tail = Future<void>.value();
+  }
+
+  /// Ставит [action] в глобальную очередь с паузой ≥[minGap] между стартами.
+  static Future<T> runThrottled<T>(Future<T> Function() action) {
+    final done = Completer<T>();
+    _tail = _tail.then((_) async {
+      try {
+        final last = _globalLastStart;
+        if (last != null) {
+          final elapsed = DateTime.now().difference(last);
+          if (elapsed < minGap) {
+            await Future<void>.delayed(minGap - elapsed);
+          }
+        }
+        _globalLastStart = DateTime.now();
+        done.complete(await action());
+      } on Object catch (e, st) {
+        done.completeError(e, st);
+      }
+    });
+    // Не даём ошибке одного запроса оборвать очередь.
+    _tail = _tail.catchError((Object _) {});
+    return done.future;
+  }
+
+  /// Последовательные GET через [runThrottled].
   /// [limits] — лимит на каждый path; иначе везде [limit].
   static Future<List<BaseResponseModel>> getThrottled(
     List<String> paths, {
@@ -19,24 +56,14 @@ abstract class CareerApiHelper {
   }) async {
     assert(limits == null || limits.length == paths.length, 'limits must match paths');
     final responses = <BaseResponseModel>[];
-    DateTime? lastStart;
-
     for (var i = 0; i < paths.length; i++) {
-      if (lastStart != null) {
-        final elapsed = DateTime.now().difference(lastStart);
-        if (elapsed < minGap) {
-          await Future<void>.delayed(minGap - elapsed);
-        }
-      }
-      lastStart = DateTime.now();
       final pathLimit = limits?[i] ?? limit;
-      responses.add(await ApiLoader.get(paths[i], limit: pathLimit));
+      responses.add(await runThrottled(() => ApiLoader.get(paths[i], limit: pathLimit)));
     }
-
     return responses;
   }
 
-  /// Все страницы endpoint’а (limit ≤ [maxPageSize]), с throttle между запросами.
+  /// Все страницы endpoint’а (limit ≤ [maxPageSize]), через глобальный throttle.
   static Future<List<BaseResponseModel>> fetchAllPages(
     String path, {
     int pageSize = maxPageSize,
@@ -44,17 +71,11 @@ abstract class CareerApiHelper {
     final size = pageSize.clamp(1, maxPageSize);
     final pages = <BaseResponseModel>[];
     var offset = 0;
-    DateTime? lastStart;
 
     while (true) {
-      if (lastStart != null) {
-        final elapsed = DateTime.now().difference(lastStart);
-        if (elapsed < minGap) {
-          await Future<void>.delayed(minGap - elapsed);
-        }
-      }
-      lastStart = DateTime.now();
-      final response = await ApiLoader.get(path, limit: size, offset: offset);
+      final response = await runThrottled(
+        () => ApiLoader.get(path, limit: size, offset: offset),
+      );
       pages.add(response);
 
       final pageRaces = _raceCount(response);

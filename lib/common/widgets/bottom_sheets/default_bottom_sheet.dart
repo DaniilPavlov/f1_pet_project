@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/widgets/bottom_sheets/bottom_sheet_track.dart';
 import 'package:flutter/material.dart';
 
@@ -18,12 +19,10 @@ class DefaultBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Material(
+      color: context.colors.white,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
       clipBehavior: Clip.hardEdge,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-      ),
       child: Stack(
         children: [
           Column(
@@ -35,14 +34,13 @@ class DefaultBottomSheet extends StatelessWidget {
               ),
             ],
           ),
-          Positioned(
+          const Positioned(
             left: 0,
             top: 0,
             right: 0,
-            child: Container(
-              color: Colors.transparent,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: const Center(child: BottomSheetTrack()),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: Center(child: BottomSheetTrack()),
             ),
           ),
         ],

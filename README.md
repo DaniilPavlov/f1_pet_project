@@ -146,7 +146,7 @@ f1pet://race/live
 ## Features
 
 - **Home** — current season driver and constructor standings
-- **Results** — weekend scoreboard (live polling), latest race, race search, hall of fame, H2H (drivers / constructors), finish statuses
+- **Results** — weekend scoreboard (live polling), latest race, race search, hall of fame, H2H (drivers / constructors) with points-by-round chart, finish statuses
 - **Live race mode** — app-wide session banner while ESPN status is live; deep link `f1pet://race/live` → Race Info
 - **Calendar** — monthly calendar with session times; on empty days shows next GP card (layout + countdown); local reminders 30 min before
 - **News** — F1 headlines from ESPN

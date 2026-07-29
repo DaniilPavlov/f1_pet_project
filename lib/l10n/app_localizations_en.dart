@@ -278,6 +278,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get h2hConstructorsEmpty => 'No constructors found';
 
   @override
+  String get h2hPointsTimelineTitle => 'Points by round';
+
+  @override
+  String get h2hPointsTimelineSubtitle =>
+      'Cumulative championship points (race + sprint)';
+
+  @override
+  String get h2hPointsTimelineEmpty => 'No race results for this comparison';
+
+  @override
   String get selectConstructor => 'Select a constructor';
 
   @override

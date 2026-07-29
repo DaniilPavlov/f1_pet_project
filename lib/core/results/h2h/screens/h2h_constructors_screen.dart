@@ -126,6 +126,7 @@ class H2hConstructorsScreen extends StatelessWidget {
                               nameB: comparison.value!.constructorB.name,
                               statsA: comparison.value!.statsA,
                               statsB: comparison.value!.statsB,
+                              timeline: comparison.value!.timeline,
                               season: comparison.value!.season,
                             ),
                         ],
