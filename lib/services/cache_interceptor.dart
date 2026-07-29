@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:f1_pet_project/common/utils/loggers/logger.dart';
+import 'package:f1_pet_project/services/cache/prefs_json_store.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,7 +18,7 @@ class CacheInterceptor extends Interceptor {
 
   static const _diskPrefix = 'jolpica_http_cache_v1:';
 
-  final _memory = <Uri, Response<dynamic>>{};
+  final _memory = <Uri, ({Response<dynamic> response, DateTime cachedAt})>{};
   var _preferNetwork = false;
 
   void invalidate() => _preferNetwork = true;
@@ -36,17 +37,18 @@ class CacheInterceptor extends Interceptor {
     }
 
     final cached = _memory[options.uri];
-    if (cached != null) {
-      handler.resolve(cached);
+    if (cached != null && isSameCalendarDay(cached.cachedAt)) {
+      handler.resolve(cached.response);
       return;
     }
+    _memory.remove(options.uri);
 
     unawaited(_serveFromDiskOrContinue(options, handler));
   }
 
   @override
   void onResponse(Response<dynamic> response, ResponseInterceptorHandler handler) {
-    _memory[response.requestOptions.uri] = response;
+    _memory[response.requestOptions.uri] = (response: response, cachedAt: DateTime.now());
     unawaited(_writeDisk(response.requestOptions.uri, response));
     handler.next(response);
   }
@@ -66,7 +68,7 @@ class CacheInterceptor extends Interceptor {
   ) async {
     final disk = await _readDisk(options);
     if (disk != null) {
-      _memory[options.uri] = disk;
+      _memory[options.uri] = (response: disk, cachedAt: DateTime.now());
       handler.resolve(disk);
       return;
     }
@@ -75,9 +77,9 @@ class CacheInterceptor extends Interceptor {
 
   Future<void> _serveCacheOnError(DioException err, ErrorInterceptorHandler handler) async {
     final uri = err.requestOptions.uri;
-    final cached = _memory[uri] ?? await _readDisk(err.requestOptions);
+    final cached = _memory[uri]?.response ?? await _readDisk(err.requestOptions, allowStale: true);
     if (cached != null) {
-      _memory[uri] = cached;
+      _memory[uri] = (response: cached, cachedAt: DateTime.now());
       if (kDebugMode) {
         logger.d('CacheInterceptor: offline cache for ${err.requestOptions.path}');
       }
@@ -87,7 +89,7 @@ class CacheInterceptor extends Interceptor {
     handler.next(err);
   }
 
-  Future<Response<dynamic>?> _readDisk(RequestOptions options) async {
+  Future<Response<dynamic>?> _readDisk(RequestOptions options, {bool allowStale = false}) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final raw = prefs.getString('$_diskPrefix${options.uri}');
@@ -95,6 +97,10 @@ class CacheInterceptor extends Interceptor {
         return null;
       }
       final map = jsonDecode(raw) as Map<String, dynamic>;
+      final cachedAt = DateTime.tryParse(map['cachedAt'] as String? ?? '')?.toLocal();
+      if (!allowStale && !isSameCalendarDay(cachedAt)) {
+        return null;
+      }
       return Response<dynamic>(
         requestOptions: options,
         data: map['data'],
@@ -116,6 +122,7 @@ class CacheInterceptor extends Interceptor {
       await prefs.setString(
         '$_diskPrefix$uri',
         jsonEncode(<String, dynamic>{
+          'cachedAt': DateTime.now().toIso8601String(),
           'statusCode': response.statusCode ?? 200,
           'data': data,
         }),

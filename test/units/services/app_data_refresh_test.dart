@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:f1_pet_project/common/repositories/espn/espn_scoreboard_repository.dart';
 import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
+import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
 import 'package:f1_pet_project/core/news/repositories/news_repository.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
@@ -13,6 +14,7 @@ void main() {
   group('AppDataRefresh', () {
     test('clearAll invalidates caches without wiping them', () async {
       final requestHandler = _TrackingRequestHandler();
+      final standings = _TrackingStandingsRepository();
       final schedule = _TrackingScheduleRepository();
       final seasons = _TrackingSeasonsRepository();
       final news = _TrackingNewsRepository();
@@ -20,6 +22,7 @@ void main() {
 
       await AppDataRefresh(
         requestHandler: requestHandler,
+        standingsRepository: standings,
         scheduleRepository: schedule,
         seasonsRepository: seasons,
         newsRepository: news,
@@ -27,6 +30,7 @@ void main() {
       ).clearAll();
 
       expect(requestHandler.invalidated, isTrue);
+      expect(standings.invalidated, isTrue);
       expect(schedule.invalidated, isTrue);
       expect(seasons.invalidated, isTrue);
       expect(news.invalidated, isTrue);
@@ -40,6 +44,13 @@ class _TrackingRequestHandler extends RequestHandler {
 
   @override
   void invalidateCache() => invalidated = true;
+}
+
+class _TrackingStandingsRepository extends CurrentStandingsRepository {
+  bool invalidated = false;
+
+  @override
+  void invalidate() => invalidated = true;
 }
 
 class _TrackingScheduleRepository extends ScheduleRepository {

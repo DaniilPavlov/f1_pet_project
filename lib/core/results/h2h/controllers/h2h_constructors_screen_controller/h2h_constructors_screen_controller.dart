@@ -7,6 +7,8 @@ import 'package:f1_pet_project/core/results/h2h/models/h2h_stats.dart';
 import 'package:f1_pet_project/core/results/h2h/repositories/h2h_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
+import 'package:f1_pet_project/services/analytics/analytics_event.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
@@ -43,6 +45,7 @@ abstract class H2hConstructorsScreenControllerBase with Store {
     H2hRepository? h2hRepository,
     ConstructorCatalogRepository? constructorCatalogRepository,
     AppDataRefresh? dataRefresh,
+    AnalyticsGateway? analytics,
     @visibleForTesting
     Future<H2hStats> Function({required String constructorId, String? season})? fetchStatsForTest,
     @visibleForTesting
@@ -51,6 +54,7 @@ abstract class H2hConstructorsScreenControllerBase with Store {
     Future<List<ConstructorModel>> Function()? loadAllConstructorsForTest,
   }) : _h2hRepository = h2hRepository,
        _dataRefresh = dataRefresh,
+       _analytics = analytics ?? const NoOpAnalyticsGateway(),
        _fetchStatsForTest = fetchStatsForTest,
        _loadCurrentConstructors = loadCurrentConstructorsForTest ?? constructorCatalogRepository!.loadCurrent,
        _loadAllConstructors = loadAllConstructorsForTest ?? constructorCatalogRepository!.loadAll {
@@ -60,6 +64,7 @@ abstract class H2hConstructorsScreenControllerBase with Store {
   final SeasonsRepository? seasonsRepository;
   final H2hRepository? _h2hRepository;
   final AppDataRefresh? _dataRefresh;
+  final AnalyticsGateway _analytics;
   final Future<H2hStats> Function({required String constructorId, String? season})? _fetchStatsForTest;
   final Future<List<ConstructorModel>> Function() _loadCurrentConstructors;
   final Future<List<ConstructorModel>> Function() _loadAllConstructors;
@@ -226,6 +231,14 @@ abstract class H2hConstructorsScreenControllerBase with Store {
       onSuccess: (data) {
         if (data != null) {
           comparison = comparison.toValue(data);
+          _analytics.log(
+            H2hConstructorsCompared(
+              constructorA: a.name,
+              constructorB: b.name,
+              season: season,
+              scopeMode: season == null ? 'career' : 'season',
+            ),
+          );
         }
       },
     );

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
-import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
 import 'package:f1_pet_project/services/cache/prefs_json_store.dart';
 import 'package:f1_pet_project/services/http/app_dio.dart';
@@ -25,10 +24,7 @@ class EspnScoreboardRepository {
 
   EspnScoreboardEvent? get peek => _cache;
 
-  bool get isFresh =>
-      _hasValue &&
-      _cachedAt != null &&
-      DateTime.now().difference(_cachedAt!) < StaticData.espnScoreboardCacheTtl;
+  bool get isFresh => _hasValue && isSameCalendarDay(_cachedAt);
 
   Future<EspnScoreboardEvent?> loadEvent({bool forceRefresh = false}) async {
     if (!forceRefresh && isFresh) {
@@ -41,10 +37,10 @@ class EspnScoreboardRepository {
     await _ensureDisk();
 
     if (!forceRefresh && _hasValue) {
-      if (!isFresh) {
-        unawaited(_refreshSilently());
+      if (isFresh) {
+        return _cache;
       }
-      return _cache;
+      return _runInFlight(_fetch);
     }
 
     return _runInFlight(_fetch);
@@ -72,14 +68,6 @@ class EspnScoreboardRepository {
     _cache = _eventFrom(stored.data);
     _cachedAt = stored.cachedAt;
     _hasValue = true;
-  }
-
-  Future<void> _refreshSilently() async {
-    try {
-      await _fetch();
-    } on Object catch (error, stackTrace) {
-      logger.w('EspnScoreboardRepository: silent refresh failed', error: error, stackTrace: stackTrace);
-    }
   }
 
   Future<EspnScoreboardEvent?> _runInFlight(Future<EspnScoreboardEvent?> Function() fetch) async {

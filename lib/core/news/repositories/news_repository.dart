@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
-import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
 import 'package:f1_pet_project/services/cache/prefs_json_store.dart';
@@ -44,10 +43,10 @@ class NewsRepository {
     await _ensureDisk();
 
     if (!forceRefresh && _cache != null) {
-      if (!isFresh) {
-        unawaited(_refreshSilently());
+      if (isFresh) {
+        return _cache!;
       }
-      return _cache!;
+      return _runInFlight(_fetch);
     }
 
     return _runInFlight(_fetch);
@@ -73,14 +72,6 @@ class NewsRepository {
     }
     _cache = _parse(stored.data);
     _cachedAt = stored.cachedAt;
-  }
-
-  Future<void> _refreshSilently() async {
-    try {
-      await _fetch();
-    } on Object catch (error, stackTrace) {
-      logger.w('NewsRepository: silent refresh failed', error: error, stackTrace: stackTrace);
-    }
   }
 
   Future<List<NewsArticleModel>> _runInFlight(Future<List<NewsArticleModel>> Function() fetch) async {

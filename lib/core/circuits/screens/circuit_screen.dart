@@ -20,6 +20,8 @@ import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.da
 import 'package:f1_pet_project/core/circuits/stats/circuit_layout_assets.dart';
 import 'package:f1_pet_project/core/circuits/stats/circuit_stats_repository.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
+import 'package:f1_pet_project/services/analytics/analytics_event.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -35,13 +37,21 @@ class CircuitScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      create: (context) => CircuitScreenController(
-        circuit: circuitModel,
-        statsRepository: context.read<CircuitStatsRepository>(),
-        circuitsRepository: context.read<CircuitsRepository>(),
-        wikipediaRepository: context.read<WikipediaPageImageRepository>(),
-        dataRefresh: context.read<AppDataRefresh>(),
-      )..loadAll(),
+      create: (context) {
+        context.read<AnalyticsGateway>().log(
+              CircuitOpened(
+                circuitId: circuitModel.circuitId,
+                circuitName: circuitModel.circuitName,
+              ),
+            );
+        return CircuitScreenController(
+          circuit: circuitModel,
+          statsRepository: context.read<CircuitStatsRepository>(),
+          circuitsRepository: context.read<CircuitsRepository>(),
+          wikipediaRepository: context.read<WikipediaPageImageRepository>(),
+          dataRefresh: context.read<AppDataRefresh>(),
+        )..loadAll();
+      },
       child: Scaffold(
         appBar: CustomAppBar(title: context.l10n.circuitInfoTitle, onPop: context.router.removeLast),
         body: SafeArea(

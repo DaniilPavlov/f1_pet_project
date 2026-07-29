@@ -21,6 +21,8 @@ import 'package:f1_pet_project/core/results/constructor/repositories/constructor
 import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
 import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
+import 'package:f1_pet_project/services/analytics/analytics_event.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -37,13 +39,21 @@ class ConstructorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      create: (context) => ConstructorScreenController(
-        constructor: constructor,
-        currentDrivers: currentDrivers,
-        espnMediaRepository: context.read<EspnMediaRepository>(),
-        careerRepository: context.read<ConstructorCareerRepository>(),
-        dataRefresh: context.read<AppDataRefresh>(),
-      )..loadAll(),
+      create: (context) {
+        context.read<AnalyticsGateway>().log(
+              ConstructorOpened(
+                constructorId: constructor.constructorId,
+                constructorName: constructor.name,
+              ),
+            );
+        return ConstructorScreenController(
+          constructor: constructor,
+          currentDrivers: currentDrivers,
+          espnMediaRepository: context.read<EspnMediaRepository>(),
+          careerRepository: context.read<ConstructorCareerRepository>(),
+          dataRefresh: context.read<AppDataRefresh>(),
+        )..loadAll();
+      },
       child: Observer(
         builder: (context) {
           final controller = context.read<ConstructorScreenController>();

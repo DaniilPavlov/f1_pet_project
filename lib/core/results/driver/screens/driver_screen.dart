@@ -22,6 +22,8 @@ import 'package:f1_pet_project/core/results/driver/repositories/driver_career_re
 import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
 import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
+import 'package:f1_pet_project/services/analytics/analytics_event.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -41,13 +43,18 @@ class DriverScreen extends StatelessWidget {
     final fullName = '${driver.givenName} ${driver.familyName}';
 
     return Provider(
-      create: (context) => DriverScreenController(
-        driver: driver,
-        currentConstructors: currentConstructors,
-        espnMediaRepository: context.read<EspnMediaRepository>(),
-        careerRepository: context.read<DriverCareerRepository>(),
-        dataRefresh: context.read<AppDataRefresh>(),
-      )..loadAll(),
+      create: (context) {
+        context.read<AnalyticsGateway>().log(
+              DriverOpened(driverId: driver.driverId, driverName: fullName),
+            );
+        return DriverScreenController(
+          driver: driver,
+          currentConstructors: currentConstructors,
+          espnMediaRepository: context.read<EspnMediaRepository>(),
+          careerRepository: context.read<DriverCareerRepository>(),
+          dataRefresh: context.read<AppDataRefresh>(),
+        )..loadAll();
+      },
       child: Observer(
         builder: (context) {
           final controller = context.read<DriverScreenController>();

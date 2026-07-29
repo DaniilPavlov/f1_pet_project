@@ -5,8 +5,11 @@ import 'package:f1_pet_project/common/widgets/share/share_career_card.dart';
 import 'package:f1_pet_project/common/widgets/share/share_race_results_card.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
+import 'package:f1_pet_project/services/analytics/analytics_event.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Шаринг карьеры и результатов гонки картинкой.
@@ -17,6 +20,7 @@ abstract class ShareHelper {
     required String title,
     required CareerStats<dynamic> stats,
   }) {
+    context.read<AnalyticsGateway>().log(const ShareTapped(contentType: 'career_card'));
     return _shareWidgetImage(
       context: context,
       fileName: 'f1_career_${DateTime.now().millisecondsSinceEpoch}.png',
@@ -29,6 +33,7 @@ abstract class ShareHelper {
     required AppLocalizations l10n,
     required RacesModel race,
   }) {
+    context.read<AnalyticsGateway>().log(const ShareTapped(contentType: 'race_results'));
     return _shareWidgetImage(
       context: context,
       fileName: 'f1_race_${race.season}_${race.round}.png',

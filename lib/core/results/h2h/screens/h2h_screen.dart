@@ -14,6 +14,7 @@ import 'package:f1_pet_project/core/results/h2h/components/h2h_compare_table.dar
 import 'package:f1_pet_project/core/results/h2h/components/h2h_filters_card.dart';
 import 'package:f1_pet_project/core/results/h2h/controllers/h2h_screen_controller/h2h_screen_controller.dart';
 import 'package:f1_pet_project/core/results/h2h/repositories/h2h_repository.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -32,6 +33,7 @@ class H2hScreen extends StatelessWidget {
         h2hRepository: context.read<H2hRepository>(),
         driverCatalogRepository: context.read<DriverCatalogRepository>(),
         dataRefresh: context.read<AppDataRefresh>(),
+        analytics: context.read<AnalyticsGateway>(),
       )..bootstrap(),
       dispose: (_, controller) => controller.dispose(),
       child: Scaffold(

@@ -7,6 +7,8 @@ import 'package:f1_pet_project/core/results/repositories/race_weekend_repository
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
+import 'package:f1_pet_project/services/analytics/analytics_event.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
@@ -20,9 +22,11 @@ abstract class RaceSearchScreenControllerBase with Store {
   RaceSearchScreenControllerBase({
     required this.l10n,
     RaceWeekendRepository? raceWeekendRepository,
+    AnalyticsGateway? analytics,
     @visibleForTesting
     Future<ScheduleModel> Function({required String year, required String round})? fetchRaceResultsForTest,
   }) : _raceWeekendRepository = raceWeekendRepository,
+       _analytics = analytics ?? const NoOpAnalyticsGateway(),
        _fetchRaceResultsForTest = fetchRaceResultsForTest {
     yearController = TextEditingController();
     raceDisplayController = TextEditingController();
@@ -31,6 +35,7 @@ abstract class RaceSearchScreenControllerBase with Store {
 
   final AppLocalizations l10n;
   final RaceWeekendRepository? _raceWeekendRepository;
+  final AnalyticsGateway _analytics;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchRaceResultsForTest;
 
   late final TextEditingController yearController;
@@ -97,6 +102,7 @@ abstract class RaceSearchScreenControllerBase with Store {
         errorMessage = '';
         if (data!.raceTable.races.isNotEmpty) {
           searchedRace = searchedRace.toValue(data.raceTable.races[0]);
+          _analytics.log(RaceSearched(query: '${yearController.text} R${roundController.text}'));
           Future<void>.delayed(const Duration(milliseconds: 100), scrollController.animateToBottom);
         } else {
           searchedRace = const AsyncValue.value();

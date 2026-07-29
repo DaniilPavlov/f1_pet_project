@@ -52,6 +52,14 @@ class PrefsJsonStore {
   }
 }
 
+bool isSameCalendarDay(DateTime? value, {DateTime? now}) {
+  if (value == null) {
+    return false;
+  }
+  final current = now ?? DateTime.now();
+  return value.year == current.year && value.month == current.month && value.day == current.day;
+}
+
 /// Дневной JSON-кэш (валиден только в текущий календарный день).
 class DayPrefsJsonStore {
   const DayPrefsJsonStore({required this.dataKey, required this.dateKey});

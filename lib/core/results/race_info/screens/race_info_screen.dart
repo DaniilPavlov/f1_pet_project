@@ -18,6 +18,8 @@ import 'package:f1_pet_project/core/results/race_info/controllers/race_info_scre
 import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
+import 'package:f1_pet_project/services/analytics/analytics_event.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -34,12 +36,21 @@ class RaceInfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<RaceInfoScreenController>(
-      create: (context) => RaceInfoScreenController(
-        raceModel: raceModel,
-        scheduleRepository: context.read<ScheduleRepository>(),
-        raceWeekendRepository: context.read<RaceWeekendRepository>(),
-        dataRefresh: context.read<AppDataRefresh>(),
-      )..loadAllData(),
+      create: (context) {
+        context.read<AnalyticsGateway>().log(
+              RaceOpened(
+                raceName: raceModel.raceName,
+                season: raceModel.season,
+                round: raceModel.round,
+              ),
+            );
+        return RaceInfoScreenController(
+          raceModel: raceModel,
+          scheduleRepository: context.read<ScheduleRepository>(),
+          raceWeekendRepository: context.read<RaceWeekendRepository>(),
+          dataRefresh: context.read<AppDataRefresh>(),
+        )..loadAllData();
+      },
       child: Observer(
         builder: (context) {
           final controller = context.read<RaceInfoScreenController>();

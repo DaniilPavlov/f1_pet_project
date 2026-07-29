@@ -9,6 +9,7 @@ import 'package:f1_pet_project/core/results/race_search/components/search_fields
 import 'package:f1_pet_project/core/results/race_search/components/search_result_section.dart';
 import 'package:f1_pet_project/core/results/race_search/controllers/race_search_screen_controller/race_search_screen_controller.dart';
 import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,7 @@ class RaceSearchScreen extends StatelessWidget {
           create: (context) => RaceSearchScreenController(
             l10n: l10n,
             raceWeekendRepository: context.read<RaceWeekendRepository>(),
+            analytics: context.read<AnalyticsGateway>(),
           ),
           dispose: (_, controller) => controller.dispose(),
           child: Builder(

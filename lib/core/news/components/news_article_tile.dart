@@ -4,8 +4,11 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/trusted_url.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
+import 'package:f1_pet_project/services/analytics/analytics_event.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 /// Плитка статьи: превью, заголовок, описание; тап открывает ESPN.
 class NewsArticleTile extends StatelessWidget {
@@ -23,7 +26,10 @@ class NewsArticleTile extends StatelessWidget {
     final hasMeta = (byline != null && byline.isNotEmpty) || published != null;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => Utils.openUrl(rawUrl: article.webUrl, externalApplication: true),
+      onTap: () {
+        context.read<AnalyticsGateway>().log(NewsOpened(headline: article.headline));
+        Utils.openUrl(rawUrl: article.webUrl, externalApplication: true);
+      },
       child: Container(
         width: double.infinity,
         clipBehavior: Clip.antiAlias,

@@ -21,6 +21,7 @@ import 'package:f1_pet_project/core/results/hall_of_fame/repositories/season_sta
 import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:f1_pet_project/core/results/repositories/results_repository.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/api_loader.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:f1_pet_project/services/appmetrica/appmetrica_bootstrap.dart';
@@ -39,11 +40,14 @@ Future<void> main() async {
   final remoteConfig = await bootstrapFirebase();
   await bootstrapAppMetrica();
 
+  const AnalyticsGateway analytics = AppAnalyticsGateway();
+
   final requestHandler = RequestHandler();
   ApiLoader.configure(requestHandler);
 
   final scheduleRepository = ScheduleRepository();
   final seasonsRepository = SeasonsRepository();
+  final standingsRepository = CurrentStandingsRepository();
   final driverCatalogRepository = DriverCatalogRepository();
   final constructorCatalogRepository = ConstructorCatalogRepository();
   final wikipediaRepository = WikipediaPageImageRepository();
@@ -64,7 +68,7 @@ Future<void> main() async {
         Provider<ScheduleRepository>.value(value: scheduleRepository),
         Provider<SeasonsRepository>.value(value: seasonsRepository),
         Provider(create: (_) => CircuitStatsRepository()),
-        Provider(create: (_) => const CurrentStandingsRepository()),
+        Provider<CurrentStandingsRepository>.value(value: standingsRepository),
         Provider(create: (_) => const ResultsRepository()),
         Provider(create: (_) => const RaceWeekendRepository()),
         Provider(create: (_) => const CircuitsRepository()),
@@ -82,12 +86,14 @@ Future<void> main() async {
         Provider(
           create: (_) => AppDataRefresh(
             requestHandler: requestHandler,
+            standingsRepository: standingsRepository,
             scheduleRepository: scheduleRepository,
             seasonsRepository: seasonsRepository,
             newsRepository: newsRepository,
             scoreboardRepository: scoreboardRepository,
           ),
         ),
+        Provider<AnalyticsGateway>.value(value: analytics),
         Provider<RemoteConfigService>.value(value: remoteConfig),
         Provider(
           create: (_) => RaceReminderService(
@@ -98,7 +104,7 @@ Future<void> main() async {
         Provider(
           create: (_) => AppWidgetSyncService(
             scheduleRepository: scheduleRepository,
-            standingsRepository: const CurrentStandingsRepository(),
+            standingsRepository: standingsRepository,
           ),
         ),
       ],

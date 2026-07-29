@@ -10,6 +10,8 @@ import 'package:f1_pet_project/common/utils/theme/theme_controller.dart';
 import 'package:f1_pet_project/common/widgets/force_update_screen.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/router/app_router.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
+import 'package:f1_pet_project/services/analytics/analytics_navigation_observer.dart';
 import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
 import 'package:f1_pet_project/services/home_widget/app_widget_sync_service.dart';
 import 'package:f1_pet_project/services/notifications/race_reminder_service.dart';
@@ -29,9 +31,21 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> with WidgetsBindingObserver {
-  final _router = AppRouter();
+  late final AppRouter _router;
+  late final AnalyticsGateway _analytics;
   var _remindersReady = false;
+  var _routerInitialized = false;
   var _forceUpdate = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_routerInitialized) {
+      _analytics = context.read<AnalyticsGateway>();
+      _router = AppRouter();
+      _routerInitialized = true;
+    }
+  }
 
   @override
   void initState() {
@@ -185,7 +199,9 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          routerDelegate: _router.delegate(),
+          routerDelegate: _router.delegate(
+            navigatorObservers: () => [AnalyticsNavigationObserver(_analytics)],
+          ),
           routeInformationParser: _router.defaultRouteParser(),
           builder: (context, child) => _AppFrame(
             forceUpdate: _forceUpdate,

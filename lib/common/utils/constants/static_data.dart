@@ -15,7 +15,7 @@ class StaticData {
 
   /// TTL in-memory кэша ESPN (повторное открытие экранов в рамках сессии).
   static const espnScoreboardCacheTtl = Duration(minutes: 5);
-  static const espnNewsCacheTtl = Duration(minutes: 15);
+  static const espnNewsCacheTtl = Duration(hours: 1);
 
   /// Интервал live-обновления scoreboard, пока сессия `in`.
   static const espnScoreboardPollInterval = Duration(seconds: 30);

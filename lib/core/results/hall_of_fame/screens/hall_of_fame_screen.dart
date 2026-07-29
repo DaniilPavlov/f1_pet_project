@@ -11,6 +11,8 @@ import 'package:f1_pet_project/common/widgets/tables/tournament_tables_section.d
 import 'package:f1_pet_project/common/widgets/text_fields/season_picker_field.dart';
 import 'package:f1_pet_project/core/results/hall_of_fame/controllers/hall_of_fame_screen_controller/hall_of_fame_screen_controller.dart';
 import 'package:f1_pet_project/core/results/hall_of_fame/repositories/season_standings_repository.dart';
+import 'package:f1_pet_project/services/analytics/analytics_event.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -24,11 +26,14 @@ class HallOfFameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<HallOfFameScreenController>(
-      create: (context) => HallOfFameScreenController(
-        seasonsRepository: context.read<SeasonsRepository>(),
-        standingsRepository: context.read<SeasonStandingsRepository>(),
-        dataRefresh: context.read<AppDataRefresh>(),
-      )..bootstrap(),
+      create: (context) {
+        context.read<AnalyticsGateway>().log(const HallOfFameOpened());
+        return HallOfFameScreenController(
+          seasonsRepository: context.read<SeasonsRepository>(),
+          standingsRepository: context.read<SeasonStandingsRepository>(),
+          dataRefresh: context.read<AppDataRefresh>(),
+        )..bootstrap();
+      },
       dispose: (_, controller) => controller.dispose(),
       child: Scaffold(
         appBar: CustomAppBar(title: context.l10n.hallOfFameTitle, onPop: context.router.removeLast),
