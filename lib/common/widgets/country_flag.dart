@@ -25,8 +25,12 @@ class CountryFlag extends StatelessWidget {
     if (code != null) {
       final emoji = CountryFlagCodes.toEmoji(code);
       return Semantics(
+        container: true,
+        image: true,
         label: raw.isEmpty ? code : raw,
-        child: Text(emoji, style: TextStyle(fontSize: fontSize, height: 1)),
+        child: ExcludeSemantics(
+          child: Text(emoji, style: TextStyle(fontSize: fontSize, height: 1)),
+        ),
       );
     }
 
@@ -34,10 +38,15 @@ class CountryFlag extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Text(
-      raw,
-      style: fallbackStyle ?? AppStyles.caption.copyWith(color: context.colors.textGray),
-      textAlign: TextAlign.center,
+    return Semantics(
+      label: raw,
+      child: ExcludeSemantics(
+        child: Text(
+          raw,
+          style: fallbackStyle ?? AppStyles.caption.copyWith(color: context.colors.textGray),
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }

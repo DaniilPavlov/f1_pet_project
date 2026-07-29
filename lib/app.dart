@@ -243,7 +243,7 @@ class _AppFrame extends StatelessWidget {
         systemNavigationBarIconBrightness: Brightness.light,
       ),
       child: MediaQuery(
-        data: media.copyWith(textScaler: media.textScaler.clamp(maxScaleFactor: 1.2)),
+        data: media,
         child: DefaultTextStyle(
           style: Theme.of(context).textTheme.bodyMedium!,
           child: content,

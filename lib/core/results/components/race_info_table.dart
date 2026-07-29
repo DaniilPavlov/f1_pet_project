@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_adjacent_string_concatenation
+
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
@@ -30,36 +32,74 @@ class RaceInfoTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final rows = results ?? raceModel.results ?? const <ResultsModel>[];
     final fastest = fastestLapTime ?? RacesModel.fastestLapAmong(rows);
+    final semanticsRows = [
+      for (final result in rows)
+        '${context.l10n.driver}: ${result.driver.givenName} ${result.driver.familyName}. ' +
+            '${context.l10n.constructor}: ${result.constructor.name}. ' +
+            '${context.l10n.time}: ${result.displayTimeOrStatus}. ' +
+            '${context.l10n.points}: ${result.points}. ' +
+            '${context.l10n.bestLap}: ' +
+            // ignore: unnecessary_string_interpolations
+            '${result.fastestLap == null ? context.l10n.none : result.fastestLap!.time.time}',
+    ];
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Table(
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          columnWidths: const {
-            0: FlexColumnWidth(1.15),
-            1: FlexColumnWidth(1.35),
-            2: FlexColumnWidth(1.1),
-            3: FlexColumnWidth(0.55),
-            4: FlexColumnWidth(0.9),
-          },
-          children: [
-            if (withPrimaryRow) raceTablePrimaryRow(context.l10n),
-            ...List.generate(rowsNumber ?? rows.length, (i) {
-              final result = rows[i];
-              return TableRow(
-                decoration: BoxDecoration(
-                  color: i.isOdd ? context.colors.grayBG : Colors.transparent,
-                  border: Border(bottom: BorderSide(color: context.colors.strokeGray)),
+        Visibility(
+          visible: false,
+          maintainState: true,
+          maintainAnimation: true,
+          maintainSemantics: true,
+          maintainSize: true,
+          child: Column(
+            children: [
+              for (var i = 0; i < (rowsNumber ?? rows.length); i++)
+                Semantics(
+                  button: true,
+                  label: semanticsRows[i],
+                  onTap: () => context.router.push(DriverRoute(driver: rows[i].driver)),
+                  child: const SizedBox.shrink(),
                 ),
-                children: tappableDriverRowCells(
-                  context: context,
-                  driver: result.driver,
-                  children: raceTableDetailRowChildren(result, fastest, context.l10n),
+            ],
+          ),
+        ),
+        ExcludeSemantics(
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                child: Table(
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  columnWidths: const {
+                    0: FlexColumnWidth(1.15),
+                    1: FlexColumnWidth(1.35),
+                    2: FlexColumnWidth(1.1),
+                    3: FlexColumnWidth(0.55),
+                    4: FlexColumnWidth(0.9),
+                  },
+                  children: [
+                    if (withPrimaryRow) raceTablePrimaryRow(context.l10n),
+                    ...List.generate(rowsNumber ?? rows.length, (i) {
+                      final result = rows[i];
+                      return TableRow(
+                        decoration: BoxDecoration(
+                          color: i.isOdd ? context.colors.grayBG : Colors.transparent,
+                          border: Border(bottom: BorderSide(color: context.colors.strokeGray)),
+                        ),
+                        children: tappableDriverRowCells(
+                          context: context,
+                          driver: result.driver,
+                          children: raceTableDetailRowChildren(result, fastest, context.l10n),
+                        ),
+                      );
+                    }),
+                  ],
                 ),
-              );
-            }),
-          ],
+              ),
+            ),
+          ),
         ),
         if (rowsNumber != null)
           GestureDetector(

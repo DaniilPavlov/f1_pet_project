@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 /// Формирует заголовок таблицы зачёта пилотов.
 TableRow driversPrimaryRow(AppLocalizations l10n) {
   final textStyle = AppStyles.caption.copyWith(color: AppTheme.onChrome);
+  final isRu = l10n.localeName.startsWith('ru');
+  final nationalityShort = isRu ? 'Нац.' : 'Nat.';
 
   return TableRow(
     decoration: const BoxDecoration(
@@ -28,7 +30,10 @@ TableRow driversPrimaryRow(AppLocalizations l10n) {
       Center(
         child: Padding(
           padding: EdgeInsets.zero,
-          child: Text(l10n.nationality, style: textStyle),
+          child: Semantics(
+            label: l10n.nationality,
+            child: Text(nationalityShort, style: textStyle),
+          ),
         ),
       ),
       Center(

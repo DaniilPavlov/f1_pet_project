@@ -30,32 +30,82 @@ class H2hCompareTable extends StatelessWidget {
       (context.l10n.careerStatPodiums, statsA.podiums, statsB.podiums),
       (context.l10n.careerStatPoles, statsA.poles, statsB.poles),
     ];
+    final semanticsRows = [
+      for (final (label, a, b) in rows) '$label: $nameA $a, $nameB $b',
+    ];
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (season != null) ...[
-          Text(
-            context.l10n.seasonLabel(season!),
-            style: AppStyles.caption.copyWith(color: context.colors.textGray),
+        Visibility(
+          visible: false,
+          maintainState: true,
+          maintainAnimation: true,
+          maintainSemantics: true,
+          maintainSize: true,
+          child: Semantics(
+            container: true,
+            liveRegion: true,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (season != null)
+                  Semantics(
+                    header: true,
+                    label: context.l10n.seasonLabel(season!),
+                    child: const SizedBox(width: 1, height: 1),
+                  ),
+                for (final row in semanticsRows)
+                  Semantics(label: row, child: const SizedBox(width: 1, height: 1)),
+              ],
+            ),
           ),
-          const SizedBox(height: 12),
-        ],
-        Row(
-          children: [
-            const SizedBox(width: 100),
-            Expanded(
-              child: Text(nameA, style: AppStyles.body.copyWith(fontWeight: FontWeight.w600), textAlign: TextAlign.center),
-            ),
-            Expanded(
-              child: Text(nameB, style: AppStyles.body.copyWith(fontWeight: FontWeight.w600), textAlign: TextAlign.center),
-            ),
-          ],
         ),
-        const SizedBox(height: 12),
-        for (final (label, a, b) in rows) ...[
-          _CompareRow(label: label, valueA: a, valueB: b),
-          Divider(height: 1, color: context.colors.strokeGray),
-        ],
+        ExcludeSemantics(
+          child: LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                child: Column(
+                  children: [
+                  if (season != null) ...[
+                    Text(
+                      context.l10n.seasonLabel(season!),
+                      style: AppStyles.caption.copyWith(color: context.colors.textGray),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  Row(
+                    children: [
+                      const SizedBox(width: 100),
+                      Expanded(
+                        child: Text(
+                          nameA,
+                          style: AppStyles.body.copyWith(fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          nameB,
+                          style: AppStyles.body.copyWith(fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  for (final (label, a, b) in rows) ...[
+                    _CompareRow(label: label, valueA: a, valueB: b),
+                    Divider(height: 1, color: context.colors.strokeGray),
+                  ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
