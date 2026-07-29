@@ -49,5 +49,21 @@ void main() {
         expect: () => [0, 1],
       );
     });
+
+    test('refreshAll reloads circuits', () async {
+      var calls = 0;
+      final controller = CircuitsScreenController(
+        fetchCircuitsForTest: () async {
+          calls++;
+          return ControllerFixtures.circuitsModel;
+        },
+      );
+
+      await controller.refreshAll();
+
+      expect(calls, 1);
+      expect(controller.circuits.isValue, isTrue);
+      controller.dispose();
+    });
   });
 }

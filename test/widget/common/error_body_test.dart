@@ -2,7 +2,7 @@ import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../helpers/pump_app.dart';
+import '../../helpers/pump_app.dart';
 
 void main() {
   group('ErrorBody', () {
@@ -52,7 +52,7 @@ void main() {
       );
       await tester.pumpForGolden();
 
-      await expectLater(find.byType(ErrorBody), matchesGoldenFile('goldens/error_body.png'));
+      await expectLater(find.byType(ErrorBody), matchesGoldenFile('../goldens/error_body.png'));
     });
   });
 }

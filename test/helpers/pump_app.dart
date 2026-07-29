@@ -11,6 +11,9 @@ extension PumpApp on WidgetTester {
     ThemeData? theme,
     Size surfaceSize = const Size(390, 844),
     bool wrapInScaffold = true,
+
+    /// Оборачивает [MaterialApp] (например Provider выше navigator для modal sheets).
+    Widget Function(Widget app)? wrapApp,
   }) async {
     await binding.setSurfaceSize(surfaceSize);
     addTearDown(() => binding.setSurfaceSize(null));
@@ -20,16 +23,19 @@ extension PumpApp on WidgetTester {
     addTearDown(view.resetPhysicalSize);
     addTearDown(view.resetDevicePixelRatio);
 
-    await pumpWidget(
-      MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: theme ?? AppThemeData.light(),
-        locale: locale,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: wrapInScaffold ? Scaffold(body: widget) : widget,
-      ),
+    Widget app = MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: theme ?? AppThemeData.light(),
+      locale: locale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: wrapInScaffold ? Scaffold(body: widget) : widget,
     );
+    if (wrapApp != null) {
+      app = wrapApp(app);
+    }
+
+    await pumpWidget(app);
     await pump();
   }
 

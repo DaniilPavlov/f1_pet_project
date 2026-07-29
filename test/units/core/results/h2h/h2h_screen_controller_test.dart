@@ -8,6 +8,7 @@ import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../helpers/controller_fixtures.dart';
+import '../../../../helpers/fake_repositories.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -38,13 +39,14 @@ void main() {
 
   group('H2hScreenController', () {
     test('compare loads stats and timeline for both drivers', () async {
-      final controller = H2hScreenController(
-        loadCurrentDriversForTest: () async => [ControllerFixtures.driver, driverB],
-        loadAllDriversForTest: () async => [ControllerFixtures.driver, driverB],
-        compareForTest: ({required driverIdA, required driverIdB, season}) async => loaded,
-      )
-        ..setDriverA(ControllerFixtures.driver)
-        ..setDriverB(driverB);
+      final controller =
+          H2hScreenController(
+              loadCurrentDriversForTest: () async => [ControllerFixtures.driver, driverB],
+              loadAllDriversForTest: () async => [ControllerFixtures.driver, driverB],
+              compareForTest: ({required driverIdA, required driverIdB, season}) async => loaded,
+            )
+            ..setDriverA(ControllerFixtures.driver)
+            ..setDriverB(driverB);
 
       await controller.compare();
 
@@ -58,25 +60,174 @@ void main() {
 
     test('refreshComparison retries after clear (forTest path)', () async {
       var calls = 0;
-      final controller = H2hScreenController(
-        loadCurrentDriversForTest: () async => [ControllerFixtures.driver, driverB],
-        loadAllDriversForTest: () async => [ControllerFixtures.driver, driverB],
-        compareForTest: ({required driverIdA, required driverIdB, season}) async {
-          calls++;
-          if (calls <= 1) {
-            throw ResponseParseException('fail');
-          }
-          return loaded;
-        },
-      )
-        ..setDriverA(ControllerFixtures.driver)
-        ..setDriverB(driverB);
+      final controller =
+          H2hScreenController(
+              loadCurrentDriversForTest: () async => [ControllerFixtures.driver, driverB],
+              loadAllDriversForTest: () async => [ControllerFixtures.driver, driverB],
+              compareForTest: ({required driverIdA, required driverIdB, season}) async {
+                calls++;
+                if (calls <= 1) {
+                  throw ResponseParseException('fail');
+                }
+                return loaded;
+              },
+            )
+            ..setDriverA(ControllerFixtures.driver)
+            ..setDriverB(driverB);
 
       await controller.compare();
       expect(controller.comparison.isError, isTrue);
 
       await controller.refreshComparison();
       expect(controller.comparison.isValue, isTrue);
+      controller.dispose();
+    });
+
+    test('canCompare requires distinct drivers', () {
+      final controller = H2hScreenController(
+        loadCurrentDriversForTest: () async => [ControllerFixtures.driver],
+        loadAllDriversForTest: () async => [ControllerFixtures.driver],
+        compareForTest: ({required driverIdA, required driverIdB, season}) async => loaded,
+      )..setDriverA(ControllerFixtures.driver);
+
+      expect(controller.canCompare, isFalse);
+
+      controller.setDriverB(ControllerFixtures.driver);
+      expect(controller.canCompare, isFalse);
+
+      controller.setDriverB(driverB);
+      expect(controller.canCompare, isTrue);
+      controller.dispose();
+    });
+
+    test('season scope blocks compare until season is known', () {
+      final controller =
+          H2hScreenController(
+              loadCurrentDriversForTest: () async => [ControllerFixtures.driver, driverB],
+              loadAllDriversForTest: () async => [ControllerFixtures.driver, driverB],
+              compareForTest: ({required driverIdA, required driverIdB, season}) async => loaded,
+            )
+            ..setDriverA(ControllerFixtures.driver)
+            ..setDriverB(driverB)
+            ..setScopeMode(1);
+
+      expect(controller.isSeasonScope, isTrue);
+      expect(controller.canCompare, isFalse);
+
+      controller.latestSeason = '2024';
+      expect(controller.canCompare, isTrue);
+      expect(controller.selectedSeason, '2024');
+      controller.dispose();
+    });
+
+    test('loadDriversForPicker respects currentDriversOnly', () async {
+      final current = [ControllerFixtures.driver];
+      final all = [ControllerFixtures.driver, driverB];
+      final controller = H2hScreenController(
+        loadCurrentDriversForTest: () async => current,
+        loadAllDriversForTest: () async => all,
+        compareForTest: ({required driverIdA, required driverIdB, season}) async => loaded,
+      );
+
+      expect(await controller.loadDriversForPicker(), current);
+
+      controller.setCurrentDriversOnly(false);
+      expect(await controller.loadDriversForPicker(), all);
+      expect(controller.driverA, isNull);
+      expect(controller.driverB, isNull);
+      controller.dispose();
+    });
+
+    test('filters reset comparison and year picker mode', () async {
+      final controller =
+          H2hScreenController(
+              loadCurrentDriversForTest: () async => [ControllerFixtures.driver, driverB],
+              loadAllDriversForTest: () async => [ControllerFixtures.driver, driverB],
+              compareForTest: ({required driverIdA, required driverIdB, season}) async => loaded,
+            )
+            ..setDriverA(ControllerFixtures.driver)
+            ..setDriverB(driverB);
+
+      await controller.compare();
+      expect(controller.comparison.isValue, isTrue);
+
+      controller.setScopeMode(1);
+      expect(controller.comparison.value, isNull);
+      expect(controller.showYearPicker, isFalse);
+
+      controller.setUseCurrentSeason(false);
+      expect(controller.showYearPicker, isTrue);
+
+      controller.yearController.text = '2024';
+      controller.onSeasonChanged();
+      expect(controller.seasonSelected, isTrue);
+      expect(controller.selectedSeason, '2024');
+
+      controller
+        ..setScopeMode(1) // no-op
+        ..setUseCurrentSeason(false) // no-op
+        ..dispose();
+    });
+
+    test('bootstrap loads latest season years', () async {
+      final controller = H2hScreenController(
+        seasonsRepository: FakeSeasonsRepository(years: ['2025', '2024']),
+        loadCurrentDriversForTest: () async => [ControllerFixtures.driver],
+        loadAllDriversForTest: () async => [ControllerFixtures.driver],
+        compareForTest: ({required driverIdA, required driverIdB, season}) async => loaded,
+      );
+
+      await controller.bootstrap();
+
+      expect(controller.latestSeason, '2025');
+      expect(controller.yearController.text, '2025');
+      expect(controller.seasonSelected, isTrue);
+      controller.dispose();
+    });
+
+    test('bootstrap ignores seasons repository failures', () async {
+      final controller = H2hScreenController(
+        seasonsRepository: FakeSeasonsRepository(throwOnLoad: true),
+        loadCurrentDriversForTest: () async => [ControllerFixtures.driver],
+        loadAllDriversForTest: () async => [ControllerFixtures.driver],
+        compareForTest: ({required driverIdA, required driverIdB, season}) async => loaded,
+      );
+
+      await controller.bootstrap();
+
+      expect(controller.latestSeason, isEmpty);
+      controller.dispose();
+    });
+
+    test('compare no-ops when canCompare is false', () async {
+      var calls = 0;
+      final controller = H2hScreenController(
+        loadCurrentDriversForTest: () async => [ControllerFixtures.driver],
+        loadAllDriversForTest: () async => [ControllerFixtures.driver],
+        compareForTest: ({required driverIdA, required driverIdB, season}) async {
+          calls++;
+          return loaded;
+        },
+      )..setDriverA(ControllerFixtures.driver);
+
+      await controller.compare();
+      expect(calls, 0);
+      controller.dispose();
+    });
+
+    test('screenError exposes compare failure', () async {
+      final controller = H2hScreenController(
+        loadCurrentDriversForTest: () async => [ControllerFixtures.driver, driverB],
+        loadAllDriversForTest: () async => [ControllerFixtures.driver, driverB],
+        compareForTest: ({required driverIdA, required driverIdB, season}) async {
+          throw ResponseParseException('boom');
+        },
+      )
+        ..setDriverA(ControllerFixtures.driver)
+        ..setDriverB(driverB);
+
+      await controller.compare();
+      expect(controller.screenError, isNotNull);
       controller.dispose();
     });
   });

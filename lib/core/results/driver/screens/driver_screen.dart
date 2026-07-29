@@ -25,6 +25,7 @@ import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:f1_pet_project/services/analytics/analytics_event.dart';
 import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:f1_pet_project/services/deeplinks/f1pet_deep_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
@@ -72,6 +73,7 @@ class DriverScreen extends StatelessWidget {
                       l10n: context.l10n,
                       title: fullName,
                       stats: stats,
+                      deepLink: F1PetDeepLinks.driver(driver.driverId),
                     ),
             ),
             body: SafeArea(

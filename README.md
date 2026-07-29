@@ -37,7 +37,7 @@ Same idea, other stacks:
 | Codegen | json_serializable, mobx_codegen, auto_route_generator, envied |
 | Map | Yandex MapKit |
 | Backend | Firebase (Core, Analytics, Crashlytics, Remote Config), AppMetrica |
-| Tests | unit (controllers) + widget/golden (`test/widget/`) |
+| Tests | unit + widget/golden (`test/units/`, `test/widget/`, shared `test/helpers/`) |
 
 ## Architecture
 
@@ -68,8 +68,9 @@ f1_pet_project/
 ├── tool/ci/
 ├── assets/
 ├── test/
-│   ├── units/
-│   └── widget/      # + goldens/
+│   ├── helpers/     # fixtures, fakes, pumpApp / screen smoke
+│   ├── units/       # mirrors lib/ (common, core, services)
+│   └── widget/      # common, home, results, schedule, circuits, screens, misc + goldens/
 ├── android/ / ios/
 └── .github/workflows/
 ```
@@ -112,8 +113,13 @@ Remote Config: `local_notifications_enabled` (bool), `min_app_version` (string).
 
 | Workflow | When | What |
 |----------|------|------|
-| `ci.yml` | push / PR → `master` | analyze, test |
+| `ci.yml` | push / PR → `master` | analyze, test, coverage gate (≥87%, excl. generated/l10n) |
 | `release.yml` | tag `v*` | APK + GitHub Release |
+
+```bash
+flutter test --coverage
+dart run tool/ci/check_coverage.dart   # same gate as CI; raise --min as coverage grows
+```
 
 ```bash
 # bump pubspec `version: name+code` (code must increase), then:

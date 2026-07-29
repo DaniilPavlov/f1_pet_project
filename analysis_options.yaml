@@ -1,1 +1,4 @@
+analyzer:
+  errors:
+    avoid_redundant_argument_values: ignore
 include: package:meykuless_lint_rules/rules.yaml

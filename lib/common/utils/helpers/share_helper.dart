@@ -19,12 +19,14 @@ abstract class ShareHelper {
     required AppLocalizations l10n,
     required String title,
     required CareerStats<dynamic> stats,
+    Uri? deepLink,
   }) {
     context.read<AnalyticsGateway>().log(const ShareTapped(contentType: 'career_card'));
     return _shareWidgetImage(
       context: context,
       fileName: 'f1_career_${DateTime.now().millisecondsSinceEpoch}.png',
       child: ShareCareerCard(l10n: l10n, title: title, stats: stats),
+      text: deepLink?.toString(),
     );
   }
 
@@ -45,6 +47,7 @@ abstract class ShareHelper {
     required BuildContext context,
     required String fileName,
     required Widget child,
+    String? text,
   }) async {
     final overlay = Overlay.maybeOf(context);
     if (overlay == null) {
@@ -91,6 +94,7 @@ abstract class ShareHelper {
       final box = context.findRenderObject() as RenderBox?;
       await SharePlus.instance.share(
         ShareParams(
+          text: text,
           files: [
             XFile.fromData(bytes, mimeType: 'image/png', name: fileName),
           ],
