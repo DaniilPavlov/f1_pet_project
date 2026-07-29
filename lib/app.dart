@@ -11,6 +11,7 @@ import 'package:f1_pet_project/common/widgets/force_update_screen.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/router/app_router.dart';
 import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
+import 'package:f1_pet_project/services/home_widget/app_widget_sync_service.dart';
 import 'package:f1_pet_project/services/notifications/race_reminder_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,7 +66,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       ]);
       return;
     }
-    await _startRemindersIfNeeded();
+    await Future.wait([
+      _startRemindersIfNeeded(),
+      _syncHomeWidgets(),
+    ]);
   }
 
   Future<void> _onResumed() async {
@@ -78,7 +82,21 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     if (!mounted || _forceUpdate) {
       return;
     }
-    await _syncReminders(remoteConfig);
+    await Future.wait([
+      _syncReminders(remoteConfig),
+      _syncHomeWidgets(),
+    ]);
+  }
+
+  Future<void> _syncHomeWidgets() async {
+    if (!PlatformCapabilities.hasHomeWidgets || !mounted) {
+      return;
+    }
+    try {
+      await context.read<AppWidgetSyncService>().sync();
+    } on Object catch (error, stackTrace) {
+      logger.e('App home widget sync failed', error: error, stackTrace: stackTrace);
+    }
   }
 
   Future<void> _refreshForceUpdateGate() async {

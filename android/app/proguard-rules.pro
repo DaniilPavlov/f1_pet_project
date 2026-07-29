@@ -22,3 +22,9 @@
 
 # Flutter deferred components / Play Core (not used in this app)
 -dontwarn com.google.android.play.core.**
+
+# AppWidget providers
+-keep class com.example.f1_pet_project.NextGpWidgetProvider { *; }
+-keep class com.example.f1_pet_project.StandingsWidgetProvider { *; }
+-keep class com.example.f1_pet_project.WidgetDataStore { *; }
+-keep class com.example.f1_pet_project.WidgetUpdater { *; }

@@ -8,6 +8,11 @@ abstract final class PlatformCapabilities {
   /// Локальные push-напоминания о сессиях — только Android/iOS.
   static bool get hasLocalNotifications => !kIsWeb;
 
+  /// Android / iOS home screen widgets (MethodChannel + AppWidget / WidgetKit).
+  static bool get hasHomeWidgets =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS);
+
   /// Метка `system` для User-Agent / headers Jolpica.
   static String get systemLabel {
     if (kIsWeb) {

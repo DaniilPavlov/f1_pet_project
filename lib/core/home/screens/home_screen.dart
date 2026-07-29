@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
@@ -9,6 +12,7 @@ import 'package:f1_pet_project/common/widgets/tables/tournament_tables_section.d
 import 'package:f1_pet_project/core/home/controllers/home_screen_controller/home_screen_controller.dart';
 import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:f1_pet_project/services/home_widget/app_widget_sync_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -21,10 +25,17 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<HomeScreenController>(
-      create: (context) => HomeScreenController(
-        standingsRepository: context.read<CurrentStandingsRepository>(),
-        dataRefresh: context.read<AppDataRefresh>(),
-      )..loadAllData(),
+      create: (context) {
+        final controller = HomeScreenController(
+          standingsRepository: context.read<CurrentStandingsRepository>(),
+          dataRefresh: context.read<AppDataRefresh>(),
+        );
+        final widgets = PlatformCapabilities.hasHomeWidgets ? context.read<AppWidgetSyncService>() : null;
+        unawaited(
+          controller.loadAllData().then((_) => widgets?.sync()),
+        );
+        return controller;
+      },
       child: Scaffold(
         appBar: const CustomAppBar(),
         body: SafeArea(
@@ -39,7 +50,7 @@ class HomeScreen extends StatelessWidget {
               }
               if (controller.screenError != null && !hasData) {
                 return ErrorBody(
-                  onTap: controller.refreshAll,
+                  onTap: () => _refresh(context, controller),
                   title: controller.screenError!.title,
                   subtitle: controller.screenError!.subtitle,
                 );
@@ -47,7 +58,7 @@ class HomeScreen extends StatelessWidget {
 
               return RefreshIndicator(
                 color: AppTheme.red,
-                onRefresh: controller.refreshAll,
+                onRefresh: () => _refresh(context, controller),
                 child: CustomScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   scrollBehavior: AntiGlowBehavior(),
@@ -70,5 +81,12 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _refresh(BuildContext context, HomeScreenController controller) async {
+    await controller.refreshAll();
+    if (PlatformCapabilities.hasHomeWidgets && context.mounted) {
+      await context.read<AppWidgetSyncService>().sync();
+    }
   }
 }

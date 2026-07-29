@@ -15,6 +15,14 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+
+		A1F10001F1WIDGET00000010 /* F1WidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F10001F1WIDGET00000004 /* F1WidgetsBundle.swift */; };
+		A1F10001F1WIDGET00000011 /* NextGpWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F10001F1WIDGET00000005 /* NextGpWidget.swift */; };
+		A1F10001F1WIDGET00000012 /* StandingsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F10001F1WIDGET00000006 /* StandingsWidget.swift */; };
+		A1F10001F1WIDGET0000002C /* F1WidgetStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F10001F1WIDGET0000002B /* F1WidgetStyle.swift */; };
+		A1F10001F1WIDGET00000013 /* WidgetSharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F10001F1WIDGET00000007 /* WidgetSharedStore.swift */; };
+		A1F10001F1WIDGET00000014 /* WidgetSharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F10001F1WIDGET00000007 /* WidgetSharedStore.swift */; };
+		A1F10001F1WIDGET00000015 /* F1Widgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A1F10001F1WIDGET00000001 /* F1Widgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,6 +34,18 @@
 			files = (
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+
+		A1F10001F1WIDGET00000026 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A1F10001F1WIDGET00000015 /* F1Widgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -49,7 +69,36 @@
 		F48BF040232C4B2896BC792C /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F86B70E2A4B0FEE9358FD021 /* GoogleService-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Runner/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FB47F04D33C6CF1309C41D40 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
+
+		A1F10001F1WIDGET00000001 /* F1Widgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = F1Widgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1F10001F1WIDGET00000004 /* F1WidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = F1WidgetsBundle.swift; sourceTree = "<group>"; };
+		A1F10001F1WIDGET00000005 /* NextGpWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextGpWidget.swift; sourceTree = "<group>"; };
+		A1F10001F1WIDGET00000006 /* StandingsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsWidget.swift; sourceTree = "<group>"; };
+		A1F10001F1WIDGET0000002B /* F1WidgetStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = F1WidgetStyle.swift; sourceTree = "<group>"; };
+		A1F10001F1WIDGET00000007 /* WidgetSharedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSharedStore.swift; sourceTree = "<group>"; };
+		A1F10001F1WIDGET00000008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A1F10001F1WIDGET00000009 /* F1Widgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = F1Widgets.entitlements; sourceTree = "<group>"; };
+		A1F10001F1WIDGET0000000A /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+
+/* Begin PBXContainerItemProxy section */
+		A1F10001F1WIDGET00000024 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A1F10001F1WIDGET00000020;
+			remoteInfo = F1Widgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		A1F10001F1WIDGET00000025 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A1F10001F1WIDGET00000020 /* F1Widgets */;
+			targetProxy = A1F10001F1WIDGET00000024 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		97C146EB1CF9000F007C117D /* Frameworks */ = {
@@ -57,6 +106,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				670591919EC3CEA7C925BB8E /* Pods_Runner.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+
+		A1F10001F1WIDGET00000022 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +155,8 @@
 			children = (
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
+				A1F10001F1WIDGET00000002 /* F1Widgets */,
+				A1F10001F1WIDGET00000003 /* Shared */,
 				97C146EF1CF9000F007C117D /* Products */,
 				583B996398ADAE8954713F56 /* Pods */,
 				7735F7CAE8DF32DD9D670663 /* Frameworks */,
@@ -109,6 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
+				A1F10001F1WIDGET00000001 /* F1Widgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -124,8 +184,31 @@
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
+				A1F10001F1WIDGET0000000A /* Runner.entitlements */,
 			);
 			path = Runner;
+			sourceTree = "<group>";
+		};
+
+		A1F10001F1WIDGET00000002 /* F1Widgets */ = {
+			isa = PBXGroup;
+			children = (
+				A1F10001F1WIDGET00000004 /* F1WidgetsBundle.swift */,
+				A1F10001F1WIDGET00000005 /* NextGpWidget.swift */,
+				A1F10001F1WIDGET00000006 /* StandingsWidget.swift */,
+				A1F10001F1WIDGET0000002B /* F1WidgetStyle.swift */,
+				A1F10001F1WIDGET00000008 /* Info.plist */,
+				A1F10001F1WIDGET00000009 /* F1Widgets.entitlements */,
+			);
+			path = F1Widgets;
+			sourceTree = "<group>";
+		};
+		A1F10001F1WIDGET00000003 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				A1F10001F1WIDGET00000007 /* WidgetSharedStore.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,6 +224,7 @@
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
+				A1F10001F1WIDGET00000026 /* Embed Foundation Extensions */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				239A487A193491401A556CAA /* [CP] Embed Pods Frameworks */,
 				535EB804F6EB56CC66FCF82B /* [CP] Copy Pods Resources */,
@@ -148,11 +232,30 @@
 			buildRules = (
 			);
 			dependencies = (
+				A1F10001F1WIDGET00000025 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
+		};
+
+		A1F10001F1WIDGET00000020 /* F1Widgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1F10001F1WIDGET00000027 /* Build configuration list for PBXNativeTarget "F1Widgets" */;
+			buildPhases = (
+				A1F10001F1WIDGET00000021 /* Sources */,
+				A1F10001F1WIDGET00000022 /* Frameworks */,
+				A1F10001F1WIDGET00000023 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = F1Widgets;
+			productName = F1Widgets;
+			productReference = A1F10001F1WIDGET00000001 /* F1Widgets.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -166,6 +269,9 @@
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 1100;
+					};
+					A1F10001F1WIDGET00000020 = {
+						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
@@ -183,6 +289,7 @@
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
+				A1F10001F1WIDGET00000020 /* F1Widgets */,
 			);
 		};
 /* End PBXProject section */
@@ -197,6 +304,14 @@
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 				72CBD145913B74E75B97A318 /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+
+		A1F10001F1WIDGET00000023 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,7 +412,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				A1F10001F1WIDGET00000014 /* WidgetSharedStore.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+
+		A1F10001F1WIDGET00000021 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1F10001F1WIDGET00000010 /* F1WidgetsBundle.swift in Sources */,
+				A1F10001F1WIDGET00000011 /* NextGpWidget.swift in Sources */,
+				A1F10001F1WIDGET00000012 /* StandingsWidget.swift in Sources */,
+				A1F10001F1WIDGET0000002C /* F1WidgetStyle.swift in Sources */,
+				A1F10001F1WIDGET00000013 /* WidgetSharedStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,6 +507,7 @@
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
@@ -506,6 +636,7 @@
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
@@ -528,6 +659,7 @@
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
@@ -543,6 +675,82 @@
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
+		};
+
+		A1F10001F1WIDGET00000028 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = F1Widgets/F1Widgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = F1Widgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.f1PetProject.F1Widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A1F10001F1WIDGET00000029 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = F1Widgets/F1Widgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = F1Widgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.f1PetProject.F1Widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A1F10001F1WIDGET0000002A /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = F1Widgets/F1Widgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = F1Widgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.f1PetProject.F1Widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Profile;
 		};
 /* End XCBuildConfiguration section */
 
@@ -563,6 +771,17 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+
+		A1F10001F1WIDGET00000027 /* Build configuration list for PBXNativeTarget "F1Widgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1F10001F1WIDGET00000028 /* Debug */,
+				A1F10001F1WIDGET00000029 /* Release */,
+				A1F10001F1WIDGET0000002A /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

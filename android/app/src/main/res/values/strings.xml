@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_next_gp_title">Next GP</string>
+    <string name="widget_next_gp_description">Countdown to the next Grand Prix weekend</string>
+    <string name="widget_next_gp_days_label">DAYS</string>
+    <string name="widget_next_gp_time_label">H : M : S</string>
+    <string name="widget_next_gp_started">Session started</string>
+
+    <string name="widget_standings_title">Standings</string>
+    <string name="widget_standings_description">Current drivers championship top 3</string>
+    <string name="widget_standings_subtitle">%1$s · R%2$s</string>
+
+    <string name="widget_open_app">Open F1 App to load data</string>
+</resources>

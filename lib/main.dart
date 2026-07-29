@@ -26,6 +26,7 @@ import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:f1_pet_project/services/appmetrica/appmetrica_bootstrap.dart';
 import 'package:f1_pet_project/services/firebase/firebase_bootstrap.dart';
 import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
+import 'package:f1_pet_project/services/home_widget/app_widget_sync_service.dart';
 import 'package:f1_pet_project/services/http/app_dio.dart';
 import 'package:f1_pet_project/services/notifications/race_reminder_service.dart';
 import 'package:f1_pet_project/services/request_handler.dart';
@@ -92,6 +93,12 @@ Future<void> main() async {
           create: (_) => RaceReminderService(
             scheduleRepository: scheduleRepository,
             remoteConfig: remoteConfig,
+          ),
+        ),
+        Provider(
+          create: (_) => AppWidgetSyncService(
+            scheduleRepository: scheduleRepository,
+            standingsRepository: const CurrentStandingsRepository(),
           ),
         ),
       ],
