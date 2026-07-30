@@ -10,4 +10,8 @@ abstract class F1PetDeepLinks {
   static Uri circuit(String circuitId) => Uri(scheme: scheme, host: 'circuit', pathSegments: [circuitId]);
 
   static Uri raceLive() => Uri(scheme: scheme, host: 'race', pathSegments: const ['live']);
+
+  /// Конкретный уикенд: `f1pet://race/<season>/<round>` (тап по reminder).
+  static Uri race(String season, String round) =>
+      Uri(scheme: scheme, host: 'race', pathSegments: [season, round]);
 }

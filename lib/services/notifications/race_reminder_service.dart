@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
 import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
@@ -6,6 +8,7 @@ import 'package:f1_pet_project/core/schedule/models/race_date_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
+import 'package:f1_pet_project/services/deeplinks/f1pet_deep_links.dart';
 import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -19,6 +22,9 @@ import 'package:timezone/timezone.dart' as tz;
 /// ближайших сессий; при старте / resume / смене локали пересобирается.
 /// Флаг Remote Config [RemoteConfigService.localNotificationsEnabledKey]
 /// запрещает создание (и снимает уже запланированные).
+///
+/// Payload — `f1pet://race/<season>/<round>`; тапы отдаются в [notificationTaps]
+/// и открывают Schedule (или Results, если уикенд уже live).
 class RaceReminderService {
   RaceReminderService({
     required ScheduleRepository scheduleRepository,
@@ -48,6 +54,12 @@ class RaceReminderService {
   final ScheduleRepository _scheduleRepository;
   final RemoteConfigService _remoteConfig;
   final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
+  final _tapController = StreamController<Uri>.broadcast();
+
+  var _initialized = false;
+
+  /// Тапы по reminder (и cold-start launch). Слушает [F1PetDeepLinkHandler].
+  Stream<Uri> get notificationTaps => _tapController.stream;
 
   bool get _notificationsAllowed =>
       PlatformCapabilities.hasLocalNotifications && _remoteConfig.localNotificationsEnabled;
@@ -60,6 +72,10 @@ class RaceReminderService {
     tz_data.initializeTimeZones();
     await _configureLocalTimezone();
 
+    if (_initialized) {
+      return;
+    }
+
     const androidSettings = AndroidInitializationSettings(_androidIcon);
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: false,
@@ -68,9 +84,12 @@ class RaceReminderService {
     );
     await _plugin.initialize(
       settings: const InitializationSettings(android: androidSettings, iOS: iosSettings),
+      onDidReceiveNotificationResponse: _onNotificationResponse,
     );
 
     await _ensureAndroidChannel();
+    await _emitLaunchDetailsIfNeeded();
+    _initialized = true;
   }
 
   /// Запрос разрешений уведомлений / exact alarms.
@@ -115,6 +134,38 @@ class RaceReminderService {
     } on Object catch (error, stackTrace) {
       logger.e('RaceReminderService.sync failed', error: error, stackTrace: stackTrace);
     }
+  }
+
+  void _onNotificationResponse(NotificationResponse response) {
+    _emitPayload(response.payload);
+  }
+
+  Future<void> _emitLaunchDetailsIfNeeded() async {
+    final details = await _plugin.getNotificationAppLaunchDetails();
+    if (details?.didNotificationLaunchApp != true) {
+      return;
+    }
+    _emitPayload(details?.notificationResponse?.payload);
+  }
+
+  void _emitPayload(String? payload) {
+    final uri = parseTapPayload(payload);
+    if (uri == null || _tapController.isClosed) {
+      return;
+    }
+    _tapController.add(uri);
+  }
+
+  /// Парсит payload reminder в deep link. Публичный для unit-тестов.
+  static Uri? parseTapPayload(String? payload) {
+    if (payload == null || payload.isEmpty) {
+      return null;
+    }
+    final uri = Uri.tryParse(payload);
+    if (uri == null || uri.scheme != F1PetDeepLinks.scheme || uri.host != 'race') {
+      return null;
+    }
+    return uri;
   }
 
   Future<void> _configureLocalTimezone() async {
@@ -167,6 +218,7 @@ class RaceReminderService {
             id: _notificationId(race.season, race.round, typeKey),
             activityTitle: activityTitle,
             grandPrixName: race.raceName,
+            payload: F1PetDeepLinks.race(race.season, race.round).toString(),
             startLocal: localStart,
             notifyAt: notifyAt,
           ),
@@ -191,7 +243,7 @@ class RaceReminderService {
           scheduledDate: scheduledDate,
           notificationDetails: _notificationDetails,
           androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-          payload: item.grandPrixName,
+          payload: item.payload,
         );
       } on Object catch (error) {
         logger.w('RaceReminderService: exact failed for ${item.id}, try alarmClock', error: error);
@@ -203,7 +255,7 @@ class RaceReminderService {
             scheduledDate: scheduledDate,
             notificationDetails: _notificationDetails,
             androidScheduleMode: AndroidScheduleMode.alarmClock,
-            payload: item.grandPrixName,
+            payload: item.payload,
           );
         } on Object catch (alarmClockError) {
           logger.w('RaceReminderService: alarmClock failed for ${item.id}, fallback inexact', error: alarmClockError);
@@ -214,7 +266,7 @@ class RaceReminderService {
             scheduledDate: scheduledDate,
             notificationDetails: _notificationDetails,
             androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-            payload: item.grandPrixName,
+            payload: item.payload,
           );
         }
       }
@@ -231,6 +283,7 @@ class _PlannedReminder {
     required this.id,
     required this.activityTitle,
     required this.grandPrixName,
+    required this.payload,
     required this.startLocal,
     required this.notifyAt,
   });
@@ -238,6 +291,7 @@ class _PlannedReminder {
   final int id;
   final String activityTitle;
   final String grandPrixName;
+  final String payload;
   final DateTime startLocal;
   final DateTime notifyAt;
 }

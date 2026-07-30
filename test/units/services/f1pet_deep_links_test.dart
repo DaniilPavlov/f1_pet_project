@@ -18,5 +18,9 @@ void main() {
     test('raceLive builds f1pet://race/live', () {
       expect(F1PetDeepLinks.raceLive().toString(), 'f1pet://race/live');
     });
+
+    test('race builds f1pet://race/<season>/<round>', () {
+      expect(F1PetDeepLinks.race('2026', '12').toString(), 'f1pet://race/2026/12');
+    });
   });
 }
