@@ -458,6 +458,54 @@ abstract class AppLocalizations {
   /// **'Зал славы'**
   String get hallOfFameTitle;
 
+  /// No description provided for @seasonRewindTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перемотка сезона'**
+  String get seasonRewindTitle;
+
+  /// No description provided for @seasonRewindSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Гонка таблиц: standings после каждого раунда'**
+  String get seasonRewindSubtitle;
+
+  /// No description provided for @seasonRewindEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'В этом сезоне ещё нет завершённых этапов'**
+  String get seasonRewindEmpty;
+
+  /// No description provided for @seasonRewindPlay.
+  ///
+  /// In ru, this message translates to:
+  /// **'Воспроизвести'**
+  String get seasonRewindPlay;
+
+  /// No description provided for @seasonRewindPause.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пауза'**
+  String get seasonRewindPause;
+
+  /// No description provided for @seasonRewindRaceOf.
+  ///
+  /// In ru, this message translates to:
+  /// **'{index} / {total}'**
+  String seasonRewindRaceOf(int index, int total);
+
+  /// No description provided for @seasonRewindChartHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все участники по очкам — двигайте слайдер или нажмите Play'**
+  String get seasonRewindChartHint;
+
+  /// No description provided for @seasonRewindLoadError.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить standings для этого раунда'**
+  String get seasonRewindLoadError;
+
   /// No description provided for @h2hTitle.
   ///
   /// In ru, this message translates to:

@@ -9,14 +9,16 @@ part of 'driver_standings_model.dart';
 DriverStandingsModel _$DriverStandingsModelFromJson(
   Map<String, dynamic> json,
 ) => DriverStandingsModel(
-  constructors: (json['Constructors'] as List<dynamic>)
-      .map((e) => ConstructorModel.fromJson(e as Map<String, dynamic>))
-      .toList(),
+  constructors:
+      (json['Constructors'] as List<dynamic>?)
+          ?.map((e) => ConstructorModel.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      [],
   driver: DriverModel.fromJson(json['Driver'] as Map<String, dynamic>),
-  points: json['points'] as String,
-  wins: json['wins'] as String,
-  positionText: json['positionText'] as String,
-  position: json['position'] as String,
+  points: json['points'] as String? ?? '0',
+  wins: json['wins'] as String? ?? '0',
+  positionText: json['positionText'] as String? ?? '',
+  position: json['position'] as String? ?? '',
 );
 
 Map<String, dynamic> _$DriverStandingsModelToJson(

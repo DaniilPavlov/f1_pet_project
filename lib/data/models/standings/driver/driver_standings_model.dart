@@ -25,12 +25,17 @@ class DriverStandingsModel {
       Error.throwWithStackTrace(ResponseParseException('DriverStandingsModel: $e'), StackTrace.current);
     }
   }
+
+  @JsonKey(defaultValue: '')
   final String position;
+  @JsonKey(defaultValue: '')
   final String positionText;
+  @JsonKey(defaultValue: '0')
   final String points;
+  @JsonKey(defaultValue: '0')
   final String wins;
   @JsonKey(name: 'Driver')
   final DriverModel driver;
-  @JsonKey(name: 'Constructors')
+  @JsonKey(name: 'Constructors', defaultValue: [])
   final List<ConstructorModel> constructors;
 }

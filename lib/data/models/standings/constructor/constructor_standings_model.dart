@@ -23,9 +23,14 @@ class ConstructorStandingsModel {
       Error.throwWithStackTrace(ResponseParseException('ConstructorStandingsModel: $e'), StackTrace.current);
     }
   }
+
+  @JsonKey(defaultValue: '')
   final String position;
+  @JsonKey(defaultValue: '')
   final String positionText;
+  @JsonKey(defaultValue: '0')
   final String points;
+  @JsonKey(defaultValue: '0')
   final String wins;
   @JsonKey(name: 'Constructor')
   final ConstructorModel constructor;

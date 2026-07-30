@@ -174,6 +174,14 @@ final class HallOfFameOpened extends AnalyticsEvent {
   String get name => 'hall_of_fame_opened';
 }
 
+/// Пользователь открыл Season Rewind.
+final class SeasonRewindOpened extends AnalyticsEvent {
+  const SeasonRewindOpened();
+
+  @override
+  String get name => 'season_rewind_opened';
+}
+
 /// Пользователь поделился карточкой (race results / career).
 final class ShareTapped extends AnalyticsEvent {
   const ShareTapped({required this.contentType});

@@ -9,11 +9,11 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i17;
-import 'package:collection/collection.dart' as _i22;
+import 'package:auto_route/auto_route.dart' as _i18;
+import 'package:collection/collection.dart' as _i23;
 import 'package:f1_pet_project/common/widgets/scaffold_with_navbar_screen.dart'
     as _i15;
-import 'package:f1_pet_project/core/circuits/models/circuit_model.dart' as _i18;
+import 'package:f1_pet_project/core/circuits/models/circuit_model.dart' as _i19;
 import 'package:f1_pet_project/core/circuits/screens/circuit_screen.dart'
     as _i1;
 import 'package:f1_pet_project/core/circuits/screens/circuits_screen.dart'
@@ -37,23 +37,25 @@ import 'package:f1_pet_project/core/results/race_search/screens/race_search_scre
     as _i13;
 import 'package:f1_pet_project/core/results/screens/results_screen.dart'
     as _i14;
-import 'package:f1_pet_project/core/schedule/models/races_model.dart' as _i23;
+import 'package:f1_pet_project/core/results/season_rewind/screens/season_rewind_screen.dart'
+    as _i17;
+import 'package:f1_pet_project/core/schedule/models/races_model.dart' as _i24;
 import 'package:f1_pet_project/core/schedule/screens/schedule_screen.dart'
     as _i16;
 import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart'
-    as _i20;
-import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart'
     as _i21;
+import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart'
+    as _i22;
 import 'package:f1_pet_project/router/nested_router_screens.dart' as _i2;
-import 'package:flutter/material.dart' as _i19;
+import 'package:flutter/material.dart' as _i20;
 
 /// generated route for
 /// [_i1.CircuitScreen]
-class CircuitRoute extends _i17.PageRouteInfo<CircuitRouteArgs> {
+class CircuitRoute extends _i18.PageRouteInfo<CircuitRouteArgs> {
   CircuitRoute({
-    required _i18.CircuitModel circuitModel,
-    _i19.Key? key,
-    List<_i17.PageRouteInfo>? children,
+    required _i19.CircuitModel circuitModel,
+    _i20.Key? key,
+    List<_i18.PageRouteInfo>? children,
   }) : super(
          CircuitRoute.name,
          args: CircuitRouteArgs(circuitModel: circuitModel, key: key),
@@ -62,7 +64,7 @@ class CircuitRoute extends _i17.PageRouteInfo<CircuitRouteArgs> {
 
   static const String name = 'CircuitRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<CircuitRouteArgs>();
@@ -74,9 +76,9 @@ class CircuitRoute extends _i17.PageRouteInfo<CircuitRouteArgs> {
 class CircuitRouteArgs {
   const CircuitRouteArgs({required this.circuitModel, this.key});
 
-  final _i18.CircuitModel circuitModel;
+  final _i19.CircuitModel circuitModel;
 
-  final _i19.Key? key;
+  final _i20.Key? key;
 
   @override
   String toString() {
@@ -96,13 +98,13 @@ class CircuitRouteArgs {
 
 /// generated route for
 /// [_i2.CircuitsRouterScreen]
-class CircuitsRouter extends _i17.PageRouteInfo<void> {
-  const CircuitsRouter({List<_i17.PageRouteInfo>? children})
+class CircuitsRouter extends _i18.PageRouteInfo<void> {
+  const CircuitsRouter({List<_i18.PageRouteInfo>? children})
     : super(CircuitsRouter.name, initialChildren: children);
 
   static const String name = 'CircuitsRouter';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i2.CircuitsRouterScreen();
@@ -112,13 +114,13 @@ class CircuitsRouter extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.CircuitsScreen]
-class CircuitsRoute extends _i17.PageRouteInfo<void> {
-  const CircuitsRoute({List<_i17.PageRouteInfo>? children})
+class CircuitsRoute extends _i18.PageRouteInfo<void> {
+  const CircuitsRoute({List<_i18.PageRouteInfo>? children})
     : super(CircuitsRoute.name, initialChildren: children);
 
   static const String name = 'CircuitsRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i3.CircuitsScreen();
@@ -128,12 +130,12 @@ class CircuitsRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.ConstructorScreen]
-class ConstructorRoute extends _i17.PageRouteInfo<ConstructorRouteArgs> {
+class ConstructorRoute extends _i18.PageRouteInfo<ConstructorRouteArgs> {
   ConstructorRoute({
-    required _i20.ConstructorModel constructor,
-    List<_i21.DriverModel> currentDrivers = const [],
-    _i19.Key? key,
-    List<_i17.PageRouteInfo>? children,
+    required _i21.ConstructorModel constructor,
+    List<_i22.DriverModel> currentDrivers = const [],
+    _i20.Key? key,
+    List<_i18.PageRouteInfo>? children,
   }) : super(
          ConstructorRoute.name,
          args: ConstructorRouteArgs(
@@ -146,7 +148,7 @@ class ConstructorRoute extends _i17.PageRouteInfo<ConstructorRouteArgs> {
 
   static const String name = 'ConstructorRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<ConstructorRouteArgs>();
@@ -166,11 +168,11 @@ class ConstructorRouteArgs {
     this.key,
   });
 
-  final _i20.ConstructorModel constructor;
+  final _i21.ConstructorModel constructor;
 
-  final List<_i21.DriverModel> currentDrivers;
+  final List<_i22.DriverModel> currentDrivers;
 
-  final _i19.Key? key;
+  final _i20.Key? key;
 
   @override
   String toString() {
@@ -182,7 +184,7 @@ class ConstructorRouteArgs {
     if (identical(this, other)) return true;
     if (other is! ConstructorRouteArgs) return false;
     return constructor == other.constructor &&
-        const _i22.ListEquality<_i21.DriverModel>().equals(
+        const _i23.ListEquality<_i22.DriverModel>().equals(
           currentDrivers,
           other.currentDrivers,
         ) &&
@@ -192,18 +194,18 @@ class ConstructorRouteArgs {
   @override
   int get hashCode =>
       constructor.hashCode ^
-      const _i22.ListEquality<_i21.DriverModel>().hash(currentDrivers) ^
+      const _i23.ListEquality<_i22.DriverModel>().hash(currentDrivers) ^
       key.hashCode;
 }
 
 /// generated route for
 /// [_i5.DriverScreen]
-class DriverRoute extends _i17.PageRouteInfo<DriverRouteArgs> {
+class DriverRoute extends _i18.PageRouteInfo<DriverRouteArgs> {
   DriverRoute({
-    required _i21.DriverModel driver,
-    List<_i20.ConstructorModel> currentConstructors = const [],
-    _i19.Key? key,
-    List<_i17.PageRouteInfo>? children,
+    required _i22.DriverModel driver,
+    List<_i21.ConstructorModel> currentConstructors = const [],
+    _i20.Key? key,
+    List<_i18.PageRouteInfo>? children,
   }) : super(
          DriverRoute.name,
          args: DriverRouteArgs(
@@ -216,7 +218,7 @@ class DriverRoute extends _i17.PageRouteInfo<DriverRouteArgs> {
 
   static const String name = 'DriverRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<DriverRouteArgs>();
@@ -236,11 +238,11 @@ class DriverRouteArgs {
     this.key,
   });
 
-  final _i21.DriverModel driver;
+  final _i22.DriverModel driver;
 
-  final List<_i20.ConstructorModel> currentConstructors;
+  final List<_i21.ConstructorModel> currentConstructors;
 
-  final _i19.Key? key;
+  final _i20.Key? key;
 
   @override
   String toString() {
@@ -252,7 +254,7 @@ class DriverRouteArgs {
     if (identical(this, other)) return true;
     if (other is! DriverRouteArgs) return false;
     return driver == other.driver &&
-        const _i22.ListEquality<_i20.ConstructorModel>().equals(
+        const _i23.ListEquality<_i21.ConstructorModel>().equals(
           currentConstructors,
           other.currentConstructors,
         ) &&
@@ -262,7 +264,7 @@ class DriverRouteArgs {
   @override
   int get hashCode =>
       driver.hashCode ^
-      const _i22.ListEquality<_i20.ConstructorModel>().hash(
+      const _i23.ListEquality<_i21.ConstructorModel>().hash(
         currentConstructors,
       ) ^
       key.hashCode;
@@ -270,13 +272,13 @@ class DriverRouteArgs {
 
 /// generated route for
 /// [_i6.FinishStatusScreen]
-class FinishStatusRoute extends _i17.PageRouteInfo<void> {
-  const FinishStatusRoute({List<_i17.PageRouteInfo>? children})
+class FinishStatusRoute extends _i18.PageRouteInfo<void> {
+  const FinishStatusRoute({List<_i18.PageRouteInfo>? children})
     : super(FinishStatusRoute.name, initialChildren: children);
 
   static const String name = 'FinishStatusRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i6.FinishStatusScreen();
@@ -286,13 +288,13 @@ class FinishStatusRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i7.H2hConstructorsScreen]
-class H2hConstructorsRoute extends _i17.PageRouteInfo<void> {
-  const H2hConstructorsRoute({List<_i17.PageRouteInfo>? children})
+class H2hConstructorsRoute extends _i18.PageRouteInfo<void> {
+  const H2hConstructorsRoute({List<_i18.PageRouteInfo>? children})
     : super(H2hConstructorsRoute.name, initialChildren: children);
 
   static const String name = 'H2hConstructorsRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i7.H2hConstructorsScreen();
@@ -302,13 +304,13 @@ class H2hConstructorsRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i8.H2hScreen]
-class H2hRoute extends _i17.PageRouteInfo<void> {
-  const H2hRoute({List<_i17.PageRouteInfo>? children})
+class H2hRoute extends _i18.PageRouteInfo<void> {
+  const H2hRoute({List<_i18.PageRouteInfo>? children})
     : super(H2hRoute.name, initialChildren: children);
 
   static const String name = 'H2hRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i8.H2hScreen();
@@ -318,13 +320,13 @@ class H2hRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i9.HallOfFameScreen]
-class HallOfFameRoute extends _i17.PageRouteInfo<void> {
-  const HallOfFameRoute({List<_i17.PageRouteInfo>? children})
+class HallOfFameRoute extends _i18.PageRouteInfo<void> {
+  const HallOfFameRoute({List<_i18.PageRouteInfo>? children})
     : super(HallOfFameRoute.name, initialChildren: children);
 
   static const String name = 'HallOfFameRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i9.HallOfFameScreen();
@@ -334,13 +336,13 @@ class HallOfFameRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.HomeRouterScreen]
-class HomeRouter extends _i17.PageRouteInfo<void> {
-  const HomeRouter({List<_i17.PageRouteInfo>? children})
+class HomeRouter extends _i18.PageRouteInfo<void> {
+  const HomeRouter({List<_i18.PageRouteInfo>? children})
     : super(HomeRouter.name, initialChildren: children);
 
   static const String name = 'HomeRouter';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i2.HomeRouterScreen();
@@ -350,13 +352,13 @@ class HomeRouter extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i10.HomeScreen]
-class HomeRoute extends _i17.PageRouteInfo<void> {
-  const HomeRoute({List<_i17.PageRouteInfo>? children})
+class HomeRoute extends _i18.PageRouteInfo<void> {
+  const HomeRoute({List<_i18.PageRouteInfo>? children})
     : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i10.HomeScreen();
@@ -366,13 +368,13 @@ class HomeRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.NewsRouterScreen]
-class NewsRouter extends _i17.PageRouteInfo<void> {
-  const NewsRouter({List<_i17.PageRouteInfo>? children})
+class NewsRouter extends _i18.PageRouteInfo<void> {
+  const NewsRouter({List<_i18.PageRouteInfo>? children})
     : super(NewsRouter.name, initialChildren: children);
 
   static const String name = 'NewsRouter';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i2.NewsRouterScreen();
@@ -382,13 +384,13 @@ class NewsRouter extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i11.NewsScreen]
-class NewsRoute extends _i17.PageRouteInfo<void> {
-  const NewsRoute({List<_i17.PageRouteInfo>? children})
+class NewsRoute extends _i18.PageRouteInfo<void> {
+  const NewsRoute({List<_i18.PageRouteInfo>? children})
     : super(NewsRoute.name, initialChildren: children);
 
   static const String name = 'NewsRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i11.NewsScreen();
@@ -398,11 +400,11 @@ class NewsRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i12.RaceInfoScreen]
-class RaceInfoRoute extends _i17.PageRouteInfo<RaceInfoRouteArgs> {
+class RaceInfoRoute extends _i18.PageRouteInfo<RaceInfoRouteArgs> {
   RaceInfoRoute({
-    required _i23.RacesModel raceModel,
-    _i19.Key? key,
-    List<_i17.PageRouteInfo>? children,
+    required _i24.RacesModel raceModel,
+    _i20.Key? key,
+    List<_i18.PageRouteInfo>? children,
   }) : super(
          RaceInfoRoute.name,
          args: RaceInfoRouteArgs(raceModel: raceModel, key: key),
@@ -411,7 +413,7 @@ class RaceInfoRoute extends _i17.PageRouteInfo<RaceInfoRouteArgs> {
 
   static const String name = 'RaceInfoRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<RaceInfoRouteArgs>();
@@ -423,9 +425,9 @@ class RaceInfoRoute extends _i17.PageRouteInfo<RaceInfoRouteArgs> {
 class RaceInfoRouteArgs {
   const RaceInfoRouteArgs({required this.raceModel, this.key});
 
-  final _i23.RacesModel raceModel;
+  final _i24.RacesModel raceModel;
 
-  final _i19.Key? key;
+  final _i20.Key? key;
 
   @override
   String toString() {
@@ -445,13 +447,13 @@ class RaceInfoRouteArgs {
 
 /// generated route for
 /// [_i13.RaceSearchScreen]
-class RaceSearchRoute extends _i17.PageRouteInfo<void> {
-  const RaceSearchRoute({List<_i17.PageRouteInfo>? children})
+class RaceSearchRoute extends _i18.PageRouteInfo<void> {
+  const RaceSearchRoute({List<_i18.PageRouteInfo>? children})
     : super(RaceSearchRoute.name, initialChildren: children);
 
   static const String name = 'RaceSearchRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i13.RaceSearchScreen();
@@ -461,13 +463,13 @@ class RaceSearchRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.ResultsRouterScreen]
-class ResultsRouter extends _i17.PageRouteInfo<void> {
-  const ResultsRouter({List<_i17.PageRouteInfo>? children})
+class ResultsRouter extends _i18.PageRouteInfo<void> {
+  const ResultsRouter({List<_i18.PageRouteInfo>? children})
     : super(ResultsRouter.name, initialChildren: children);
 
   static const String name = 'ResultsRouter';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i2.ResultsRouterScreen();
@@ -477,13 +479,13 @@ class ResultsRouter extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i14.ResultsScreen]
-class ResultsRoute extends _i17.PageRouteInfo<void> {
-  const ResultsRoute({List<_i17.PageRouteInfo>? children})
+class ResultsRoute extends _i18.PageRouteInfo<void> {
+  const ResultsRoute({List<_i18.PageRouteInfo>? children})
     : super(ResultsRoute.name, initialChildren: children);
 
   static const String name = 'ResultsRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i14.ResultsScreen();
@@ -493,13 +495,13 @@ class ResultsRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i15.ScaffoldWithNavBarScreen]
-class ScaffoldWithNavBarRoute extends _i17.PageRouteInfo<void> {
-  const ScaffoldWithNavBarRoute({List<_i17.PageRouteInfo>? children})
+class ScaffoldWithNavBarRoute extends _i18.PageRouteInfo<void> {
+  const ScaffoldWithNavBarRoute({List<_i18.PageRouteInfo>? children})
     : super(ScaffoldWithNavBarRoute.name, initialChildren: children);
 
   static const String name = 'ScaffoldWithNavBarRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i15.ScaffoldWithNavBarScreen();
@@ -509,13 +511,13 @@ class ScaffoldWithNavBarRoute extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.ScheduleRouterScreen]
-class ScheduleRouter extends _i17.PageRouteInfo<void> {
-  const ScheduleRouter({List<_i17.PageRouteInfo>? children})
+class ScheduleRouter extends _i18.PageRouteInfo<void> {
+  const ScheduleRouter({List<_i18.PageRouteInfo>? children})
     : super(ScheduleRouter.name, initialChildren: children);
 
   static const String name = 'ScheduleRouter';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i2.ScheduleRouterScreen();
@@ -525,16 +527,32 @@ class ScheduleRouter extends _i17.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i16.ScheduleScreen]
-class ScheduleRoute extends _i17.PageRouteInfo<void> {
-  const ScheduleRoute({List<_i17.PageRouteInfo>? children})
+class ScheduleRoute extends _i18.PageRouteInfo<void> {
+  const ScheduleRoute({List<_i18.PageRouteInfo>? children})
     : super(ScheduleRoute.name, initialChildren: children);
 
   static const String name = 'ScheduleRoute';
 
-  static _i17.PageInfo page = _i17.PageInfo(
+  static _i18.PageInfo page = _i18.PageInfo(
     name,
     builder: (data) {
       return const _i16.ScheduleScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [_i17.SeasonRewindScreen]
+class SeasonRewindRoute extends _i18.PageRouteInfo<void> {
+  const SeasonRewindRoute({List<_i18.PageRouteInfo>? children})
+    : super(SeasonRewindRoute.name, initialChildren: children);
+
+  static const String name = 'SeasonRewindRoute';
+
+  static _i18.PageInfo page = _i18.PageInfo(
+    name,
+    builder: (data) {
+      return const _i17.SeasonRewindScreen();
     },
   );
 }

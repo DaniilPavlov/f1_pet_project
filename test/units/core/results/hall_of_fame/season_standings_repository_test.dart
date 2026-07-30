@@ -27,5 +27,26 @@ void main() {
         ['2024/driverStandings', '2024/constructorStandings'],
       );
     });
+
+    test('loads standings after a specific round', () async {
+      final handler = FakeRequestHandler(
+        responses: {
+          '2024/5/driverStandings': {'MRData': JolpicaFixtures.driversStandingsMrData()},
+          '2024/5/constructorStandings': {'MRData': JolpicaFixtures.constructorsStandingsMrData()},
+        },
+      );
+      ApiLoader.configure(handler);
+      const repo = SeasonStandingsRepository();
+
+      final drivers = await repo.drivers(year: '2024', round: '5');
+      final constructors = await repo.constructors(year: '2024', round: '5');
+
+      expect(drivers.standingsTable.standingsLists, isNotEmpty);
+      expect(constructors.standingsTable.standingsLists, isNotEmpty);
+      expect(
+        handler.calls.map((c) => c.path),
+        ['2024/5/driverStandings', '2024/5/constructorStandings'],
+      );
+    });
   });
 }

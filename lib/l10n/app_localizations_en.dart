@@ -204,6 +204,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hallOfFameTitle => 'Hall of Fame';
 
   @override
+  String get seasonRewindTitle => 'Season Rewind';
+
+  @override
+  String get seasonRewindSubtitle =>
+      'Bar-chart race through championship standings';
+
+  @override
+  String get seasonRewindEmpty => 'No completed rounds in this season yet';
+
+  @override
+  String get seasonRewindPlay => 'Play';
+
+  @override
+  String get seasonRewindPause => 'Pause';
+
+  @override
+  String seasonRewindRaceOf(int index, int total) {
+    return '$index / $total';
+  }
+
+  @override
+  String get seasonRewindChartHint =>
+      'Full standings by points — scrub or hit Play';
+
+  @override
+  String get seasonRewindLoadError => 'Could not load standings for this round';
+
+  @override
   String get h2hTitle => 'H2H · Drivers';
 
   @override

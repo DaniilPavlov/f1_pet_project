@@ -3,13 +3,13 @@
 //
 // Usage:
 //   dart run tool/ci/check_coverage.dart
-//   dart run tool/ci/check_coverage.dart --min 87 --path coverage/lcov.info
+//   dart run tool/ci/check_coverage.dart --min 80 --path coverage/lcov.info
 //
 // Excludes generated / i18n noise by default so the gate tracks hand-written code.
 
 import 'dart:io';
 
-const _defaultMin = 75.0;
+const _defaultMin =80.0;
 const _defaultPath = 'coverage/lcov.info';
 
 const _excludeSuffixes = <String>[

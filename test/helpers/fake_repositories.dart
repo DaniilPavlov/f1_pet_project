@@ -266,10 +266,11 @@ class FakeFinishStatusRepository extends FinishStatusRepository {
 
 class FakeSeasonStandingsRepository extends SeasonStandingsRepository {
   @override
-  Future<StandingsModel> drivers({required String year}) async => ControllerFixtures.driversStandingsModel;
+  Future<StandingsModel> drivers({required String year, String? round}) async =>
+      ControllerFixtures.driversStandingsModel;
 
   @override
-  Future<StandingsModel> constructors({required String year}) async =>
+  Future<StandingsModel> constructors({required String year, String? round}) async =>
       ControllerFixtures.constructorsStandingsModel;
 }
 

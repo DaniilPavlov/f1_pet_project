@@ -9,8 +9,8 @@ part of 'constructor_model.dart';
 ConstructorModel _$ConstructorModelFromJson(Map<String, dynamic> json) =>
     ConstructorModel(
       constructorId: json['constructorId'] as String,
-      url: json['url'] as String,
-      nationality: json['nationality'] as String,
+      url: json['url'] as String? ?? '',
+      nationality: json['nationality'] as String? ?? '',
       name: json['name'] as String,
     );
 

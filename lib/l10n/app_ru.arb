@@ -95,6 +95,20 @@
   "raceSearchInfo": "Выберите сезон, затем гонку из списка.",
   "raceNotFound": "По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.",
   "hallOfFameTitle": "Зал славы",
+  "seasonRewindTitle": "Перемотка сезона",
+  "seasonRewindSubtitle": "Гонка таблиц: standings после каждого раунда",
+  "seasonRewindEmpty": "В этом сезоне ещё нет завершённых этапов",
+  "seasonRewindPlay": "Воспроизвести",
+  "seasonRewindPause": "Пауза",
+  "seasonRewindRaceOf": "{index} / {total}",
+  "@seasonRewindRaceOf": {
+    "placeholders": {
+      "index": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "seasonRewindChartHint": "Все участники по очкам — двигайте слайдер или нажмите Play",
+  "seasonRewindLoadError": "Не удалось загрузить standings для этого раунда",
   "h2hTitle": "H2H · Пилоты",
   "h2hSubtitle": "Сравните двух пилотов с фильтрами периода и списка",
   "h2hDriverA": "Пилот 1",

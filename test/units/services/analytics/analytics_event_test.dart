@@ -86,6 +86,8 @@ void main() {
       expect(const NewsOpened(headline: 'Title').params, {'headline': 'Title'});
       expect(const HallOfFameOpened().name, 'hall_of_fame_opened');
       expect(const HallOfFameOpened().params, isEmpty);
+      expect(const SeasonRewindOpened().name, 'season_rewind_opened');
+      expect(const SeasonRewindOpened().params, isEmpty);
       expect(const ShareTapped(contentType: 'career_card').name, 'share_tapped');
       expect(const ShareTapped(contentType: 'career_card').params, {'content_type': 'career_card'});
       expect(const ThemeChanged(theme: 'dark').name, 'theme_changed');

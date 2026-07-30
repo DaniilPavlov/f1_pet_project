@@ -6,6 +6,7 @@ import 'package:f1_pet_project/core/results/h2h/screens/h2h_screen.dart';
 import 'package:f1_pet_project/core/results/hall_of_fame/screens/hall_of_fame_screen.dart';
 import 'package:f1_pet_project/core/results/race_info/screens/race_info_screen.dart';
 import 'package:f1_pet_project/core/results/race_search/screens/race_search_screen.dart';
+import 'package:f1_pet_project/core/results/season_rewind/screens/season_rewind_screen.dart';
 import 'package:f1_pet_project/l10n/app_localizations_en.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -60,6 +61,16 @@ void main() {
       expect(find.byType(HallOfFameScreen), findsOneWidget);
       expect(find.text(AppLocalizationsEn().hallOfFameTitle), findsOneWidget);
       expect(find.textContaining('Verstappen'), findsWidgets);
+    });
+
+    testWidgets('SeasonRewindScreen shows scrubber and standings', (tester) async {
+      await tester.pumpScreenSmoke(const SeasonRewindScreen());
+
+      expect(find.byType(SeasonRewindScreen), findsOneWidget);
+      expect(find.text(AppLocalizationsEn().seasonRewindTitle), findsOneWidget);
+      expect(find.textContaining('Monaco'), findsWidgets);
+      expect(find.textContaining('Verstappen'), findsWidgets);
+      expect(find.text(AppLocalizationsEn().seasonRewindChartHint), findsOneWidget);
     });
 
     testWidgets('RaceInfoScreen loads race details', (tester) async {

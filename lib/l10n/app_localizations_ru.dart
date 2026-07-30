@@ -204,6 +204,35 @@ class AppLocalizationsRu extends AppLocalizations {
   String get hallOfFameTitle => 'Зал славы';
 
   @override
+  String get seasonRewindTitle => 'Перемотка сезона';
+
+  @override
+  String get seasonRewindSubtitle =>
+      'Гонка таблиц: standings после каждого раунда';
+
+  @override
+  String get seasonRewindEmpty => 'В этом сезоне ещё нет завершённых этапов';
+
+  @override
+  String get seasonRewindPlay => 'Воспроизвести';
+
+  @override
+  String get seasonRewindPause => 'Пауза';
+
+  @override
+  String seasonRewindRaceOf(int index, int total) {
+    return '$index / $total';
+  }
+
+  @override
+  String get seasonRewindChartHint =>
+      'Все участники по очкам — двигайте слайдер или нажмите Play';
+
+  @override
+  String get seasonRewindLoadError =>
+      'Не удалось загрузить standings для этого раунда';
+
+  @override
   String get h2hTitle => 'H2H · Пилоты';
 
   @override

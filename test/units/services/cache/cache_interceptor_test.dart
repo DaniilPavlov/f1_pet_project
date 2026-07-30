@@ -31,7 +31,7 @@ void main() {
       expect(request.nextCalled, isFalse);
     });
 
-    test('invalidate forces network then offline falls back to cache', () async {
+    test('invalidate forces one network pass then cache works again', () async {
       final cache = CacheInterceptor();
       final opts = options('current/drivers.json');
       final response = ok(opts, {'ok': true});
@@ -44,6 +44,11 @@ void main() {
       final afterInvalidate = _RequestHandler();
       cache.onRequest(opts, afterInvalidate);
       expect(afterInvalidate.nextCalled, isTrue);
+
+      // Второй запрос после «принудительного» прохода снова может взять memory cache.
+      final second = _RequestHandler();
+      cache.onRequest(opts, second);
+      expect(second.resolved, isNotNull);
 
       final err = DioException(requestOptions: opts, type: DioExceptionType.connectionError);
       final errorHandler = _ErrorHandler();
