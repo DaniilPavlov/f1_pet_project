@@ -1,8 +1,10 @@
 import 'dart:ui' as ui;
 
 import 'package:f1_pet_project/common/models/career/career_stats.dart';
+import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
 import 'package:f1_pet_project/common/widgets/share/share_career_card.dart';
 import 'package:f1_pet_project/common/widgets/share/share_race_results_card.dart';
+import 'package:f1_pet_project/common/widgets/share/share_weekend_summary_card.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/services/analytics/analytics_event.dart';
@@ -12,19 +14,21 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-/// Шаринг карьеры и результатов гонки картинкой.
+/// Шаринг карьеры, результатов гонки и сводки уикенда картинкой.
 abstract class ShareHelper {
   static Future<void> shareCareerCard({
     required BuildContext context,
     required AppLocalizations l10n,
     required String title,
     required CareerStats<dynamic> stats,
+    Uri? deepLink,
   }) {
     context.read<AnalyticsGateway>().log(const ShareTapped(contentType: 'career_card'));
     return _shareWidgetImage(
       context: context,
       fileName: 'f1_career_${DateTime.now().millisecondsSinceEpoch}.png',
       child: ShareCareerCard(l10n: l10n, title: title, stats: stats),
+      text: deepLink?.toString(),
     );
   }
 
@@ -41,10 +45,45 @@ abstract class ShareHelper {
     );
   }
 
+  static Future<void> shareWeekendSummary({
+    required BuildContext context,
+    required AppLocalizations l10n,
+    required EspnScoreboardEvent event,
+    required Locale locale,
+  }) {
+    context.read<AnalyticsGateway>().log(const ShareTapped(contentType: 'weekend_summary'));
+    final slug = (event.shortName.isNotEmpty ? event.shortName : event.name).toLowerCase().replaceAll(
+      RegExp('[^a-z0-9]+'),
+      '_',
+    );
+    return _shareWidgetImage(
+      context: context,
+      fileName: 'f1_weekend_${slug}_${DateTime.now().millisecondsSinceEpoch}.png',
+      child: ShareWeekendSummaryCard(l10n: l10n, event: event, locale: locale),
+    );
+  }
+
+  /// Шарит только deep link (без картинки) — например экран трассы.
+  static Future<void> shareDeepLink({
+    required BuildContext context,
+    required Uri deepLink,
+    required String contentType,
+  }) async {
+    context.read<AnalyticsGateway>().log(ShareTapped(contentType: contentType));
+    final box = context.findRenderObject() as RenderBox?;
+    await SharePlus.instance.share(
+      ShareParams(
+        text: deepLink.toString(),
+        sharePositionOrigin: box == null ? null : box.localToGlobal(Offset.zero) & box.size,
+      ),
+    );
+  }
+
   static Future<void> _shareWidgetImage({
     required BuildContext context,
     required String fileName,
     required Widget child,
+    String? text,
   }) async {
     final overlay = Overlay.maybeOf(context);
     if (overlay == null) {
@@ -59,10 +98,7 @@ abstract class ShareHelper {
         top: 0,
         child: Material(
           type: MaterialType.transparency,
-          child: RepaintBoundary(
-            key: boundaryKey,
-            child: child,
-          ),
+          child: RepaintBoundary(key: boundaryKey, child: child),
         ),
       ),
     );
@@ -91,9 +127,8 @@ abstract class ShareHelper {
       final box = context.findRenderObject() as RenderBox?;
       await SharePlus.instance.share(
         ShareParams(
-          files: [
-            XFile.fromData(bytes, mimeType: 'image/png', name: fileName),
-          ],
+          text: text,
+          files: [XFile.fromData(bytes, mimeType: 'image/png', name: fileName)],
           sharePositionOrigin: box == null ? null : box.localToGlobal(Offset.zero) & box.size,
         ),
       );

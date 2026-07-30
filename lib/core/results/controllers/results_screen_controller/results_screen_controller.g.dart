@@ -17,13 +17,6 @@ mixin _$ResultsScreenController on ResultsScreenControllerBase, Store {
         () => super.screenError,
         name: 'ResultsScreenControllerBase.screenError',
       )).value;
-  Computed<bool>? _$isScoreboardLiveComputed;
-
-  @override
-  bool get isScoreboardLive => (_$isScoreboardLiveComputed ??= Computed<bool>(
-    () => super.isScoreboardLive,
-    name: 'ResultsScreenControllerBase.isScoreboardLive',
-  )).value;
 
   late final _$lastRaceAtom = Atom(
     name: 'ResultsScreenControllerBase.lastRace',
@@ -40,24 +33,6 @@ mixin _$ResultsScreenController on ResultsScreenControllerBase, Store {
   set lastRace(AsyncValue<RacesModel> value) {
     _$lastRaceAtom.reportWrite(value, super.lastRace, () {
       super.lastRace = value;
-    });
-  }
-
-  late final _$scoreboardAtom = Atom(
-    name: 'ResultsScreenControllerBase.scoreboard',
-    context: context,
-  );
-
-  @override
-  AsyncValue<EspnScoreboardEvent?> get scoreboard {
-    _$scoreboardAtom.reportRead();
-    return super.scoreboard;
-  }
-
-  @override
-  set scoreboard(AsyncValue<EspnScoreboardEvent?> value) {
-    _$scoreboardAtom.reportWrite(value, super.scoreboard, () {
-      super.scoreboard = value;
     });
   }
 
@@ -93,25 +68,11 @@ mixin _$ResultsScreenController on ResultsScreenControllerBase, Store {
     );
   }
 
-  late final _$loadScoreboardAsyncAction = AsyncAction(
-    'ResultsScreenControllerBase.loadScoreboard',
-    context: context,
-  );
-
-  @override
-  Future<void> loadScoreboard({bool forceRefresh = false}) {
-    return _$loadScoreboardAsyncAction.run(
-      () => super.loadScoreboard(forceRefresh: forceRefresh),
-    );
-  }
-
   @override
   String toString() {
     return '''
 lastRace: ${lastRace},
-scoreboard: ${scoreboard},
-screenError: ${screenError},
-isScoreboardLive: ${isScoreboardLive}
+screenError: ${screenError}
     ''';
   }
 }

@@ -54,6 +54,14 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeWeekendLive => 'Live';
 
   @override
+  String get liveSessionBanner => 'Идёт сессия';
+
+  @override
+  String liveSessionBannerWithSession(String session) {
+    return 'Идёт сессия · $session';
+  }
+
+  @override
   String homeWeekendLeader(String name) {
     return 'Лидер: $name';
   }
@@ -196,6 +204,35 @@ class AppLocalizationsRu extends AppLocalizations {
   String get hallOfFameTitle => 'Зал славы';
 
   @override
+  String get seasonRewindTitle => 'Перемотка сезона';
+
+  @override
+  String get seasonRewindSubtitle =>
+      'Гонка таблиц: standings после каждого раунда';
+
+  @override
+  String get seasonRewindEmpty => 'В этом сезоне ещё нет завершённых этапов';
+
+  @override
+  String get seasonRewindPlay => 'Воспроизвести';
+
+  @override
+  String get seasonRewindPause => 'Пауза';
+
+  @override
+  String seasonRewindRaceOf(int index, int total) {
+    return '$index / $total';
+  }
+
+  @override
+  String get seasonRewindChartHint =>
+      'Все участники по очкам — двигайте слайдер или нажмите Play';
+
+  @override
+  String get seasonRewindLoadError =>
+      'Не удалось загрузить standings для этого раунда';
+
+  @override
   String get h2hTitle => 'H2H · Пилоты';
 
   @override
@@ -270,6 +307,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get h2hConstructorsEmpty => 'Конструкторы не найдены';
 
   @override
+  String get h2hPointsTimelineTitle => 'Очки по раундам';
+
+  @override
+  String get h2hPointsTimelineSubtitle =>
+      'Накопленные очки чемпионата (гонка + спринт)';
+
+  @override
+  String get h2hPointsTimelineEmpty => 'Нет результатов гонок для сравнения';
+
+  @override
   String get selectConstructor => 'Выберите конструктора';
 
   @override
@@ -292,6 +339,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String shareAndMore(int count) {
     return '…и ещё $count';
   }
+
+  @override
+  String get shareWeekendSummary => 'Поделиться сводкой уикенда';
+
+  @override
+  String get shareWeekendPodium => 'Подиум';
 
   @override
   String get selectDriver => 'Выберите пилота';

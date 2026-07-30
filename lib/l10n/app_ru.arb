@@ -15,6 +15,13 @@
   "circuitStatElevation": "Перепад",
   "homeWeekendTitle": "Уикенд",
   "homeWeekendLive": "Live",
+  "liveSessionBanner": "Идёт сессия",
+  "liveSessionBannerWithSession": "Идёт сессия · {session}",
+  "@liveSessionBannerWithSession": {
+    "placeholders": {
+      "session": { "type": "String" }
+    }
+  },
   "homeWeekendLeader": "Лидер: {name}",
   "@homeWeekendLeader": {
     "placeholders": {
@@ -88,6 +95,20 @@
   "raceSearchInfo": "Выберите сезон, затем гонку из списка.",
   "raceNotFound": "По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.",
   "hallOfFameTitle": "Зал славы",
+  "seasonRewindTitle": "Перемотка сезона",
+  "seasonRewindSubtitle": "Гонка таблиц: standings после каждого раунда",
+  "seasonRewindEmpty": "В этом сезоне ещё нет завершённых этапов",
+  "seasonRewindPlay": "Воспроизвести",
+  "seasonRewindPause": "Пауза",
+  "seasonRewindRaceOf": "{index} / {total}",
+  "@seasonRewindRaceOf": {
+    "placeholders": {
+      "index": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "seasonRewindChartHint": "Все участники по очкам — двигайте слайдер или нажмите Play",
+  "seasonRewindLoadError": "Не удалось загрузить standings для этого раунда",
   "h2hTitle": "H2H · Пилоты",
   "h2hSubtitle": "Сравните двух пилотов с фильтрами периода и списка",
   "h2hDriverA": "Пилот 1",
@@ -112,6 +133,9 @@
   "h2hAllConstructors": "Все",
   "h2hSearchConstructor": "Название",
   "h2hConstructorsEmpty": "Конструкторы не найдены",
+  "h2hPointsTimelineTitle": "Очки по раундам",
+  "h2hPointsTimelineSubtitle": "Накопленные очки чемпионата (гонка + спринт)",
+  "h2hPointsTimelineEmpty": "Нет результатов гонок для сравнения",
   "selectConstructor": "Выберите конструктора",
   "constructorsLoadError": "Не удалось загрузить конструкторов",
   "finishStatusTitle": "Статусы финиша",
@@ -124,6 +148,8 @@
       "count": { "type": "int" }
     }
   },
+  "shareWeekendSummary": "Поделиться сводкой уикенда",
+  "shareWeekendPodium": "Подиум",
   "selectDriver": "Выберите пилота",
   "driversLoadError": "Не удалось загрузить пилотов",
   "onMap": "На карте",

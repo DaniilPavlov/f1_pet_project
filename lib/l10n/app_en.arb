@@ -15,6 +15,13 @@
   "circuitStatElevation": "Elevation",
   "homeWeekendTitle": "Race weekend",
   "homeWeekendLive": "Live",
+  "liveSessionBanner": "Session live",
+  "liveSessionBannerWithSession": "Session live · {session}",
+  "@liveSessionBannerWithSession": {
+    "placeholders": {
+      "session": { "type": "String" }
+    }
+  },
   "homeWeekendLeader": "Leader: {name}",
   "@homeWeekendLeader": {
     "placeholders": {
@@ -73,6 +80,20 @@
   "raceSearchInfo": "Pick a season, then a race from the list.",
   "raceNotFound": "No races found for your query. Check the entered data and try again.",
   "hallOfFameTitle": "Hall of Fame",
+  "seasonRewindTitle": "Season Rewind",
+  "seasonRewindSubtitle": "Bar-chart race through championship standings",
+  "seasonRewindEmpty": "No completed rounds in this season yet",
+  "seasonRewindPlay": "Play",
+  "seasonRewindPause": "Pause",
+  "seasonRewindRaceOf": "{index} / {total}",
+  "@seasonRewindRaceOf": {
+    "placeholders": {
+      "index": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "seasonRewindChartHint": "Full standings by points — scrub or hit Play",
+  "seasonRewindLoadError": "Could not load standings for this round",
   "h2hTitle": "H2H · Drivers",
   "h2hSubtitle": "Compare two drivers with filters for period and driver list",
   "h2hDriverA": "Driver 1",
@@ -97,6 +118,9 @@
   "h2hAllConstructors": "All",
   "h2hSearchConstructor": "Name",
   "h2hConstructorsEmpty": "No constructors found",
+  "h2hPointsTimelineTitle": "Points by round",
+  "h2hPointsTimelineSubtitle": "Cumulative championship points (race + sprint)",
+  "h2hPointsTimelineEmpty": "No race results for this comparison",
   "selectConstructor": "Select a constructor",
   "constructorsLoadError": "Could not load constructors",
   "finishStatusTitle": "Finish statuses",
@@ -109,6 +133,8 @@
       "count": { "type": "int" }
     }
   },
+  "shareWeekendSummary": "Share weekend summary",
+  "shareWeekendPodium": "Podium",
   "selectDriver": "Select a driver",
   "driversLoadError": "Could not load drivers",
   "onMap": "On map",

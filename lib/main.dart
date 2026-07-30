@@ -29,6 +29,7 @@ import 'package:f1_pet_project/services/firebase/firebase_bootstrap.dart';
 import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
 import 'package:f1_pet_project/services/home_widget/app_widget_sync_service.dart';
 import 'package:f1_pet_project/services/http/app_dio.dart';
+import 'package:f1_pet_project/services/live_weekend/live_weekend_controller.dart';
 import 'package:f1_pet_project/services/notifications/race_reminder_service.dart';
 import 'package:f1_pet_project/services/request_handler.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +81,10 @@ Future<void> main() async {
         Provider<DriverCatalogRepository>.value(value: driverCatalogRepository),
         Provider<ConstructorCatalogRepository>.value(value: constructorCatalogRepository),
         Provider<EspnScoreboardRepository>.value(value: scoreboardRepository),
+        Provider(
+          create: (_) => LiveWeekendController(scoreboardRepository: scoreboardRepository)..loadScoreboard(),
+          dispose: (_, controller) => controller.dispose(),
+        ),
         Provider<NewsRepository>.value(value: newsRepository),
         Provider<EspnMediaRepository>.value(value: mediaRepository),
         Provider<WikipediaPageImageRepository>.value(value: wikipediaRepository),

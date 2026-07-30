@@ -3,8 +3,8 @@ import 'package:f1_pet_project/common/widgets/tables/tournament_drivers_table.da
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../helpers/pump_app.dart';
-import '../helpers/widget_fixtures.dart';
+import '../../helpers/pump_app.dart';
+import '../../helpers/widget_fixtures.dart';
 
 void main() {
   group('TournamentDriversTable', () {
@@ -38,7 +38,7 @@ void main() {
 
       await expectLater(
         find.byType(TournamentDriversTable),
-        matchesGoldenFile('goldens/tournament_drivers_table.png'),
+        matchesGoldenFile('../goldens/tournament_drivers_table.png'),
       );
     });
   });
@@ -72,7 +72,7 @@ void main() {
 
       await expectLater(
         find.byType(TournamentConstructorsTable),
-        matchesGoldenFile('goldens/tournament_constructors_table.png'),
+        matchesGoldenFile('../goldens/tournament_constructors_table.png'),
       );
     });
   });

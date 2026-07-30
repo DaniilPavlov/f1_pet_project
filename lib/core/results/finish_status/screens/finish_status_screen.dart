@@ -68,7 +68,13 @@ class FinishStatusScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
                             if (controller.statuses.isLoading)
-                              const ListRowsShimmer(rowCount: 8, padding: EdgeInsets.zero)
+                              const ListRowsShimmer(
+                                rowCount: 8,
+                                padding: EdgeInsets.zero,
+                                rowHeight: 20,
+                                rowRadius: 4,
+                                rowGap: 20,
+                              )
                             else if (controller.statuses.isError)
                               ErrorBody(
                                 onTap: controller.refreshAll,

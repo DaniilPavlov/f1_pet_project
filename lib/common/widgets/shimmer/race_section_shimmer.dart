@@ -51,7 +51,7 @@ class LastRaceSectionShimmer extends StatelessWidget {
   }
 }
 
-/// Скелет детального экрана гонки.
+/// Скелет детального экрана гонки: header + race / quali / pits.
 class RaceInfoShimmer extends StatelessWidget {
   const RaceInfoShimmer({super.key});
 
@@ -70,16 +70,30 @@ class RaceInfoShimmer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const ShimmerTextLine(height: 20, width: 200, bottomGap: 14),
-              const ShimmerTextLine(width: 140, bottomGap: 24),
-              const ShimmerTextLine(height: 16, width: 100, bottomGap: 14),
-              for (var i = 0; i < 8; i++) ...[const ShimmerSkeleton(height: 36, bottomPadding: 12)],
-              const SizedBox(height: 12),
-              const ShimmerTextLine(height: 16, width: 120, bottomGap: 14),
-              for (var i = 0; i < 6; i++) ...[const ShimmerSkeleton(height: 36, bottomPadding: 12)],
+              const ShimmerTextLine(width: 140, bottomGap: 8),
+              const ShimmerTextLine(width: 100, bottomGap: 24),
+              _section(titleWidth: 72, rowCount: 8),
+              const SizedBox(height: StaticData.defaultVerticalPadding),
+              _section(titleWidth: 110, rowCount: 6),
+              const SizedBox(height: StaticData.defaultVerticalPadding),
+              _section(titleWidth: 90, rowCount: 5),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  static Widget _section({required double titleWidth, required int rowCount}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ShimmerTextLine(height: 16, width: titleWidth, bottomGap: 10),
+        const ShimmerSkeleton(height: 28, radius: 4, bottomPadding: 12),
+        for (var i = 0; i < rowCount; i++) ...[
+          const ShimmerSkeleton(height: 36, bottomPadding: 12),
+        ],
+      ],
     );
   }
 }

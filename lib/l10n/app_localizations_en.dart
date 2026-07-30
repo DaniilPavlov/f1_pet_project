@@ -54,6 +54,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeWeekendLive => 'Live';
 
   @override
+  String get liveSessionBanner => 'Session live';
+
+  @override
+  String liveSessionBannerWithSession(String session) {
+    return 'Session live · $session';
+  }
+
+  @override
   String homeWeekendLeader(String name) {
     return 'Leader: $name';
   }
@@ -196,6 +204,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hallOfFameTitle => 'Hall of Fame';
 
   @override
+  String get seasonRewindTitle => 'Season Rewind';
+
+  @override
+  String get seasonRewindSubtitle =>
+      'Bar-chart race through championship standings';
+
+  @override
+  String get seasonRewindEmpty => 'No completed rounds in this season yet';
+
+  @override
+  String get seasonRewindPlay => 'Play';
+
+  @override
+  String get seasonRewindPause => 'Pause';
+
+  @override
+  String seasonRewindRaceOf(int index, int total) {
+    return '$index / $total';
+  }
+
+  @override
+  String get seasonRewindChartHint =>
+      'Full standings by points — scrub or hit Play';
+
+  @override
+  String get seasonRewindLoadError => 'Could not load standings for this round';
+
+  @override
   String get h2hTitle => 'H2H · Drivers';
 
   @override
@@ -270,6 +306,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get h2hConstructorsEmpty => 'No constructors found';
 
   @override
+  String get h2hPointsTimelineTitle => 'Points by round';
+
+  @override
+  String get h2hPointsTimelineSubtitle =>
+      'Cumulative championship points (race + sprint)';
+
+  @override
+  String get h2hPointsTimelineEmpty => 'No race results for this comparison';
+
+  @override
   String get selectConstructor => 'Select a constructor';
 
   @override
@@ -292,6 +338,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String shareAndMore(int count) {
     return '…and $count more';
   }
+
+  @override
+  String get shareWeekendSummary => 'Share weekend summary';
+
+  @override
+  String get shareWeekendPodium => 'Podium';
 
   @override
   String get selectDriver => 'Select a driver';

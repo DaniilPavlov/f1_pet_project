@@ -4,6 +4,7 @@ import 'package:f1_pet_project/data/models/standings/standings_lists_model.dart'
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../helpers/controller_fixtures.dart';
+import '../../../../helpers/fake_repositories.dart';
 import '../../../../mobx/mobx_testing.dart';
 
 void main() {
@@ -58,7 +59,54 @@ void main() {
 
         expect(controller.driversStandings.isValue, isTrue);
         expect(controller.constructorsStandings.isValue, isTrue);
+        controller.dispose();
       });
+    });
+
+    test('bootstrap sets year from seasons and loads data', () async {
+      final controller = HallOfFameScreenController(
+        seasonsRepository: FakeSeasonsRepository(years: ['2024', '2023']),
+        fetchDriversStandingsForTest: (_) async => ControllerFixtures.driversStandingsModel,
+        fetchConstructorsStandingsForTest: (_) async => ControllerFixtures.constructorsStandingsModel,
+      );
+
+      await controller.bootstrap();
+
+      expect(controller.yearController.text, '2024');
+      expect(controller.driversStandings.isValue, isTrue);
+      expect(controller.constructorsStandings.isValue, isTrue);
+      controller.dispose();
+    });
+
+    test('refreshAll reloads both tables', () async {
+      var calls = 0;
+      final controller = HallOfFameScreenController(
+        fetchDriversStandingsForTest: (_) async {
+          calls++;
+          return ControllerFixtures.driversStandingsModel;
+        },
+        fetchConstructorsStandingsForTest: (_) async {
+          calls++;
+          return ControllerFixtures.constructorsStandingsModel;
+        },
+      );
+
+      await controller.refreshAll();
+
+      expect(calls, 2);
+      expect(controller.driversStandings.isValue, isTrue);
+      controller.dispose();
+    });
+
+    test('screenError when drivers standings fail', () async {
+      final controller = HallOfFameScreenController(
+        fetchDriversStandingsForTest: (_) async => throw Exception('drivers down'),
+        fetchConstructorsStandingsForTest: (_) async => ControllerFixtures.constructorsStandingsModel,
+      );
+
+      await controller.loadDriversStandings(year: '2024');
+      expect(controller.screenError, isNotNull);
+      controller.dispose();
     });
   });
 }

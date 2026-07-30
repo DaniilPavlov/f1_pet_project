@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/widgets/text_fields/race_picker_field.dart';
 import 'package:f1_pet_project/core/results/race_search/controllers/race_search_screen_controller/race_search_screen_controller.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
@@ -97,6 +98,30 @@ void main() {
           isA<AsyncValue<RacesModel?>>().having((e) => e.status, 'status', AsyncStatus.error),
         ],
       );
+    });
+
+    test('onSeasonSelected clears race and updates selectedSeason', () {
+      final controller = RaceSearchScreenController(l10n: AppLocalizationsRu())
+        ..yearController.text = '2024'
+        ..roundController.text = '5'
+        ..raceDisplayController.text = 'Monaco'
+        ..onSeasonSelected();
+
+      expect(controller.selectedSeason, '2024');
+      expect(controller.roundController.text, isEmpty);
+      expect(controller.raceDisplayController.text, isEmpty);
+      expect(controller.fieldsInputted, isFalse);
+      controller.dispose();
+    });
+
+    test('onRacePicked fills round and validates fields', () {
+      final controller = RaceSearchScreenController(l10n: AppLocalizationsRu())
+        ..yearController.text = '2024'
+        ..onRacePicked(const RacePick(round: '7', title: 'Monaco'));
+
+      expect(controller.roundController.text, '7');
+      expect(controller.fieldsInputted, isTrue);
+      controller.dispose();
     });
   });
 }

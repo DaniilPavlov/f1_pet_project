@@ -5,7 +5,8 @@ import 'package:f1_pet_project/common/widgets/shimmer/tournament_tables_shimmer.
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../helpers/pump_app.dart';
+import '../../helpers/pump_app.dart';
+
 
 void main() {
   group('TournamentTablesShimmer', () {
@@ -32,7 +33,7 @@ void main() {
 
       await expectLater(
         find.byType(TournamentTablesShimmer),
-        matchesGoldenFile('goldens/tournament_tables_shimmer.png'),
+        matchesGoldenFile('../goldens/tournament_tables_shimmer.png'),
       );
     });
   });
@@ -58,7 +59,16 @@ void main() {
       );
       await tester.pumpForGolden();
 
-      await expectLater(find.byType(ListRowsShimmer), matchesGoldenFile('goldens/list_rows_shimmer.png'));
+      await expectLater(find.byType(ListRowsShimmer), matchesGoldenFile('../goldens/list_rows_shimmer.png'));
+    });
+  });
+
+  group('CircuitsShimmer', () {
+    testWidgets('builds circuit card skeletons', (tester) async {
+      await tester.pumpApp(const CircuitsShimmer());
+
+      expect(find.byType(CircuitsShimmer), findsOneWidget);
+      expect(find.byType(ScreenShimmer), findsWidgets);
     });
   });
 }

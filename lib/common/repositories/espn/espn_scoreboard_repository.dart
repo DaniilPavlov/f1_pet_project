@@ -199,15 +199,16 @@ class EspnScoreboardRepository {
   }
 
   String _statusDetail(Map<String, dynamic>? statusMap) {
+    // description — «Final» / «Scheduled» / «In Progress»; shortDetail часто с EDT.
+    final description = (statusMap?['description'] as String?)?.trim();
+    if (description != null && description.isNotEmpty) {
+      return description;
+    }
     final shortDetail = (statusMap?['shortDetail'] as String?)?.trim();
     if (shortDetail != null && shortDetail.isNotEmpty) {
       return shortDetail;
     }
-    final detail = (statusMap?['detail'] as String?)?.trim();
-    if (detail != null && detail.isNotEmpty) {
-      return detail;
-    }
-    return (statusMap?['description'] as String?)?.trim() ?? '';
+    return (statusMap?['detail'] as String?)?.trim() ?? '';
   }
 
   DateTime? _parseDate(String? raw) {

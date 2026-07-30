@@ -10,6 +10,7 @@ final AutoRoute resultsRoute = AutoRoute(
     AutoRoute(path: 'race_info', page: RaceInfoRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
     AutoRoute(path: 'race_search', page: RaceSearchRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
     AutoRoute(path: 'hall_of_fame', page: HallOfFameRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
+    AutoRoute(path: 'season_rewind', page: SeasonRewindRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
     AutoRoute(path: 'h2h', page: H2hRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
     AutoRoute(path: 'h2h_constructors', page: H2hConstructorsRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
     AutoRoute(path: 'finish_status', page: FinishStatusRoute.page, meta: const <String, bool>{'hideBottomNav': false}),

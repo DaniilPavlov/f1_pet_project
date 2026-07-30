@@ -37,7 +37,7 @@ Same idea, other stacks:
 | Codegen | json_serializable, mobx_codegen, auto_route_generator, envied |
 | Map | Yandex MapKit |
 | Backend | Firebase (Core, Analytics, Crashlytics, Remote Config), AppMetrica |
-| Tests | unit (controllers) + widget/golden (`test/widget/`) |
+| Tests | unit + widget/golden (`test/units/`, `test/widget/`, shared `test/helpers/`) |
 
 ## Architecture
 
@@ -48,7 +48,7 @@ Same idea, other stacks:
 - **Cache** — Jolpica: `CacheInterceptor` (memory + prefs). ESPN/schedule/seasons: `PrefsJsonStore` / `DayPrefsJsonStore`.
 - **Theme** — `ThemeController` + `AppThemeData` / `AppColors` (light & dark).
 - **Analytics** — typed `AnalyticsEvent` + `AnalyticsGateway` (Firebase + AppMetrica); route observer for screens.
-- **Deep links** — `F1PetDeepLinkHandler` (`f1pet://driver|constructor|circuit/<id>`).
+- **Deep links** — `F1PetDeepLinkHandler` (`f1pet://driver|constructor|circuit/<id>`, `f1pet://race/live`).
 - **Home widgets (Android)** — standings top-3 + next GP countdown; synced via method channel.
 - **Firebase** — `bootstrapFirebase()` in `main`. Client configs **gitignored**; CI uses `tool/ci` stubs.
 - **AppMetrica** — `bootstrapAppMetrica()` from `.env` (envied).
@@ -68,8 +68,9 @@ f1_pet_project/
 ├── tool/ci/
 ├── assets/
 ├── test/
-│   ├── units/
-│   └── widget/      # + goldens/
+│   ├── helpers/     # fixtures, fakes, pumpApp / screen smoke
+│   ├── units/       # mirrors lib/ (common, core, services)
+│   └── widget/      # common, home, results, schedule, circuits, screens, misc + goldens/
 ├── android/ / ios/
 └── .github/workflows/
 ```
@@ -112,8 +113,13 @@ Remote Config: `local_notifications_enabled` (bool), `min_app_version` (string).
 
 | Workflow | When | What |
 |----------|------|------|
-| `ci.yml` | push / PR → `master` | analyze, test |
+| `ci.yml` | push / PR → `master` | analyze, test, coverage gate (≥80%, excl. generated/l10n) |
 | `release.yml` | tag `v*` | APK + GitHub Release |
+
+```bash
+flutter test --coverage
+dart run tool/ci/check_coverage.dart   # same gate as CI; raise --min as coverage grows
+```
 
 ```bash
 # bump pubspec `version: name+code` (code must increase), then:
@@ -140,12 +146,14 @@ flutter analyze && flutter test
 f1pet://driver/<driverId>
 f1pet://constructor/<constructorId>
 f1pet://circuit/<circuitId>
+f1pet://race/live
 ```
 
 ## Features
 
 - **Home** — current season driver and constructor standings
-- **Results** — weekend scoreboard, latest race, race search, hall of fame, H2H (drivers / constructors), finish statuses
+- **Results** — weekend scoreboard (live polling), latest race, race search, hall of fame, season rewind (animated racing-bar standings by round), H2H (drivers / constructors) with points-by-round chart, finish statuses
+- **Live race mode** — app-wide session banner while ESPN status is live; deep link `f1pet://race/live` → Race Info
 - **Calendar** — monthly calendar with session times; on empty days shows next GP card (layout + countdown); local reminders 30 min before
 - **News** — F1 headlines from ESPN
 - **Circuits** — list and map with pins/clusters, track layouts, length/laps/turns/speed/elevation, Wikipedia, winners history

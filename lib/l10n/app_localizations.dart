@@ -188,6 +188,18 @@ abstract class AppLocalizations {
   /// **'Live'**
   String get homeWeekendLive;
 
+  /// No description provided for @liveSessionBanner.
+  ///
+  /// In ru, this message translates to:
+  /// **'Идёт сессия'**
+  String get liveSessionBanner;
+
+  /// No description provided for @liveSessionBannerWithSession.
+  ///
+  /// In ru, this message translates to:
+  /// **'Идёт сессия · {session}'**
+  String liveSessionBannerWithSession(String session);
+
   /// No description provided for @homeWeekendLeader.
   ///
   /// In ru, this message translates to:
@@ -446,6 +458,54 @@ abstract class AppLocalizations {
   /// **'Зал славы'**
   String get hallOfFameTitle;
 
+  /// No description provided for @seasonRewindTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перемотка сезона'**
+  String get seasonRewindTitle;
+
+  /// No description provided for @seasonRewindSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Гонка таблиц: standings после каждого раунда'**
+  String get seasonRewindSubtitle;
+
+  /// No description provided for @seasonRewindEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'В этом сезоне ещё нет завершённых этапов'**
+  String get seasonRewindEmpty;
+
+  /// No description provided for @seasonRewindPlay.
+  ///
+  /// In ru, this message translates to:
+  /// **'Воспроизвести'**
+  String get seasonRewindPlay;
+
+  /// No description provided for @seasonRewindPause.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пауза'**
+  String get seasonRewindPause;
+
+  /// No description provided for @seasonRewindRaceOf.
+  ///
+  /// In ru, this message translates to:
+  /// **'{index} / {total}'**
+  String seasonRewindRaceOf(int index, int total);
+
+  /// No description provided for @seasonRewindChartHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все участники по очкам — двигайте слайдер или нажмите Play'**
+  String get seasonRewindChartHint;
+
+  /// No description provided for @seasonRewindLoadError.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось загрузить standings для этого раунда'**
+  String get seasonRewindLoadError;
+
   /// No description provided for @h2hTitle.
   ///
   /// In ru, this message translates to:
@@ -590,6 +650,24 @@ abstract class AppLocalizations {
   /// **'Конструкторы не найдены'**
   String get h2hConstructorsEmpty;
 
+  /// No description provided for @h2hPointsTimelineTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Очки по раундам'**
+  String get h2hPointsTimelineTitle;
+
+  /// No description provided for @h2hPointsTimelineSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Накопленные очки чемпионата (гонка + спринт)'**
+  String get h2hPointsTimelineSubtitle;
+
+  /// No description provided for @h2hPointsTimelineEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет результатов гонок для сравнения'**
+  String get h2hPointsTimelineEmpty;
+
   /// No description provided for @selectConstructor.
   ///
   /// In ru, this message translates to:
@@ -631,6 +709,18 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'…и ещё {count}'**
   String shareAndMore(int count);
+
+  /// No description provided for @shareWeekendSummary.
+  ///
+  /// In ru, this message translates to:
+  /// **'Поделиться сводкой уикенда'**
+  String get shareWeekendSummary;
+
+  /// No description provided for @shareWeekendPodium.
+  ///
+  /// In ru, this message translates to:
+  /// **'Подиум'**
+  String get shareWeekendPodium;
 
   /// No description provided for @selectDriver.
   ///

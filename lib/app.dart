@@ -15,6 +15,7 @@ import 'package:f1_pet_project/services/analytics/analytics_navigation_observer.
 import 'package:f1_pet_project/services/deeplinks/f1pet_deep_link_handler.dart';
 import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
 import 'package:f1_pet_project/services/home_widget/app_widget_sync_service.dart';
+import 'package:f1_pet_project/services/live_weekend/live_weekend_controller.dart';
 import 'package:f1_pet_project/services/notifications/race_reminder_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -64,6 +65,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) {
+      return;
+    }
+    context.read<LiveWeekendController>().onAppLifecycleChanged(state);
     if (state == AppLifecycleState.resumed) {
       unawaited(_onResumed());
     }

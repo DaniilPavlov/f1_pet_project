@@ -32,6 +32,8 @@ class CacheInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     // GoF Behavioral Chain of Responsibility — либо отвечаем из кэша, либо next().
     if (_preferNetwork) {
+      // Один «принудительный» сетевой проход после invalidate, дальше снова кэш.
+      _preferNetwork = false;
       handler.next(options);
       return;
     }

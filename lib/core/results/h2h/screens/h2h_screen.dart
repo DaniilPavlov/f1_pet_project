@@ -7,7 +7,7 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
-import 'package:f1_pet_project/common/widgets/shimmer/list_rows_shimmer.dart';
+import 'package:f1_pet_project/common/widgets/shimmer/h2h_compare_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/driver_picker_field.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
 import 'package:f1_pet_project/core/results/h2h/components/h2h_compare_table.dart';
@@ -111,8 +111,8 @@ class H2hScreen extends StatelessWidget {
                           const SizedBox(height: 24),
                           if (comparison.isLoading)
                             const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 24),
-                              child: ListRowsShimmer(rowCount: 4, padding: EdgeInsets.zero),
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              child: H2hCompareShimmer(),
                             )
                           else if (comparison.isError)
                             ErrorBody(
@@ -130,6 +130,7 @@ class H2hScreen extends StatelessWidget {
                                       .trim(),
                               statsA: comparison.value!.statsA,
                               statsB: comparison.value!.statsB,
+                              timeline: comparison.value!.timeline,
                               season: comparison.value!.season,
                             ),
                         ],

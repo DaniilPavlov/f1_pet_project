@@ -77,5 +77,25 @@ void main() {
         expect(controller.currentConstructors.isValue, isTrue);
       });
     });
+
+    test('refreshAll reloads both tables', () async {
+      var calls = 0;
+      final controller = HomeScreenController(
+        fetchCurrentDriversStandingsForTest: () async {
+          calls++;
+          return ControllerFixtures.driversStandingsModel;
+        },
+        fetchCurrentConstructorsStandingsForTest: () async {
+          calls++;
+          return ControllerFixtures.constructorsStandingsModel;
+        },
+      );
+
+      await controller.refreshAll();
+
+      expect(calls, 2);
+      expect(controller.currentDrivers.isValue, isTrue);
+      expect(controller.currentConstructors.isValue, isTrue);
+    });
   });
 }

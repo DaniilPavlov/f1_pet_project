@@ -2,8 +2,8 @@ import 'package:f1_pet_project/core/results/components/race_info_table.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../helpers/pump_app.dart';
-import '../helpers/widget_fixtures.dart';
+import '../../helpers/pump_app.dart';
+import '../../helpers/widget_fixtures.dart';
 
 void main() {
   group('RaceInfoTable', () {
@@ -47,7 +47,7 @@ void main() {
       );
       await tester.pumpForGolden();
 
-      await expectLater(find.byType(RaceInfoTable), matchesGoldenFile('goldens/race_info_table.png'));
+      await expectLater(find.byType(RaceInfoTable), matchesGoldenFile('../goldens/race_info_table.png'));
     });
   });
 }

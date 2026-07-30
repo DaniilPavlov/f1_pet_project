@@ -2,6 +2,7 @@ import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/share_helper.dart';
 import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
@@ -32,8 +33,24 @@ class WeekendScoreboardSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(context.l10n.homeWeekendTitle, style: AppStyles.h1),
-            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(context.l10n.homeWeekendTitle, style: AppStyles.h1),
+                ),
+                IconButton(
+                  tooltip: context.l10n.shareWeekendSummary,
+                  onPressed: () => ShareHelper.shareWeekendSummary(
+                    context: context,
+                    l10n: context.l10n,
+                    event: event,
+                    locale: locale,
+                  ),
+                  icon: Icon(Icons.ios_share, size: 20, color: context.colors.black),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
             _ScoreboardCard(event: event, locale: locale),
           ],
         ),
@@ -82,7 +99,7 @@ class _ScoreboardCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              _StatusChip(event: event, highlighted: highlighted),
+              _StatusChip(event: event, highlighted: highlighted, dateFormat: dateFormat),
             ],
           ),
           if (event.circuitName != null && event.circuitName!.isNotEmpty) ...[
@@ -175,16 +192,15 @@ class _ScoreboardCard extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          session.date == null ? session.statusDetail : dateFormat.format(session.date!),
+                          session.date == null ? '' : dateFormat.format(session.date!),
                           style: AppStyles.caption.copyWith(color: context.colors.textGray),
                         ),
                       ),
-                      Text(
-                        session.statusDetail,
-                        style: AppStyles.caption.copyWith(
-                          color: session.isLive ? AppTheme.red : context.colors.textGray,
+                      if (session.isLive)
+                        Text(
+                          context.l10n.homeWeekendLive,
+                          style: AppStyles.caption.copyWith(color: AppTheme.red),
                         ),
-                      ),
                       const SizedBox(width: 4),
                       Icon(Icons.chevron_right, size: 16, color: context.colors.textGray.withValues(alpha: 0.8)),
                     ],
@@ -200,21 +216,22 @@ class _ScoreboardCard extends StatelessWidget {
 }
 
 class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.event, required this.highlighted});
+  const _StatusChip({
+    required this.event,
+    required this.highlighted,
+    required this.dateFormat,
+  });
 
   final EspnScoreboardEvent event;
   final EspnScoreboardSession? highlighted;
+  final DateFormat dateFormat;
 
   @override
   Widget build(BuildContext context) {
     final isLive = event.isLive || (highlighted?.isLive ?? false);
-    final label = isLive
-        ? context.l10n.homeWeekendLive
-        : ((highlighted?.statusDetail.isNotEmpty ?? false)
-            ? highlighted!.statusDetail
-            : event.statusDetail);
+    final label = _label(context, isLive: isLive);
 
-    if (label.isEmpty) {
+    if (label == null || label.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -232,5 +249,24 @@ class _StatusChip extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String? _label(BuildContext context, {required bool isLive}) {
+    if (isLive) {
+      return context.l10n.homeWeekendLive;
+    }
+
+    // ESPN shortDetail часто приходит как "8/21 - 6:30 AM EDT" — не показываем.
+    final raw = (highlighted?.statusDetail.isNotEmpty ?? false) ? highlighted!.statusDetail : event.statusDetail;
+    if (raw.isNotEmpty && !looksLikeEspnScheduleClock(raw)) {
+      return raw;
+    }
+
+    final date = highlighted?.date ?? event.startDate;
+    if (date != null) {
+      return dateFormat.format(date);
+    }
+
+    return null;
   }
 }

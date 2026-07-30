@@ -9,8 +9,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 /// HTTP-клиент Jolpica через Dio (один экземпляр на приложение).
 class RequestHandler {
-  RequestHandler() {
-    _dio = AppDio.jolpica();
+  RequestHandler({Dio? dio}) {
+    _dio = dio ?? AppDio.jolpica();
     _dio.interceptors.add(_cache);
   }
 
