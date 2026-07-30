@@ -1,0 +1,14 @@
+---
+description: Unit, widget, golden, and MobX test conventions
+globs: test/**/*.dart
+alwaysApply: false
+---
+
+# Testing
+
+- **Layout**: `test/units/` mirrors `lib/`; widgets/goldens under `test/widget/`; shared fakes/fixtures in `test/helpers/`.
+- **MobX**: use `mobxTest` from `test/mobx/mobx_testing.dart` — assert on reaction streams via `value` / `act` / `expect` / `verify`, not only final fields.
+- **Fixtures**: reuse `ControllerFixtures`, `jolpica_fixtures`, `fake_repositories`, `FakeRequestHandler`, `pumpApp` / `screen_smoke` instead of inventing one-off doubles.
+- **Widget / golden**: prefer existing smoke helpers; if goldens fail, fix intentional UI changes and update goldens — do not delete failure artifacts blindly.
+- **Before claiming done** (when changing behavior): `flutter analyze` and targeted `flutter test` on touched paths. Coverage gate: `dart run tool/ci/check_coverage.dart` (same idea as CI).
+- Do not weaken tests or lower the coverage gate to make green CI.

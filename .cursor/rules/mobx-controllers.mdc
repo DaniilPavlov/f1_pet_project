@@ -1,0 +1,26 @@
+---
+description: MobX screen controller conventions
+globs: lib/**/controllers/**/*.dart
+alwaysApply: false
+---
+
+# MobX controllers
+
+```dart
+// ✅ existing pattern
+class FooScreenController = FooScreenControllerBase with _$FooScreenController;
+
+abstract class FooScreenControllerBase with Store {
+  // optional repo + @visibleForTesting fetch overrides
+  @observable
+  AsyncValue<T> data = const AsyncValue.loading();
+
+  @action
+  Future<void> load() async { /* … */ }
+}
+```
+
+- Keep `part '….g.dart';` next to the controller; regenerate after `@observable` / `@action` / `@computed` changes.
+- Prefer `AsyncValue` / existing helpers (`async_load_helper`, `mobx_async_value`) over ad-hoc loading flags.
+- Expose test seams via `@visibleForTesting` callbacks or injectable repositories — do not reach into private network code from tests.
+- Controllers orchestrate state; parsing and HTTP live in repositories / models.
