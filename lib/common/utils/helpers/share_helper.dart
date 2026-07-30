@@ -43,6 +43,22 @@ abstract class ShareHelper {
     );
   }
 
+  /// Шарит только deep link (без картинки) — например экран трассы.
+  static Future<void> shareDeepLink({
+    required BuildContext context,
+    required Uri deepLink,
+    required String contentType,
+  }) async {
+    context.read<AnalyticsGateway>().log(ShareTapped(contentType: contentType));
+    final box = context.findRenderObject() as RenderBox?;
+    await SharePlus.instance.share(
+      ShareParams(
+        text: deepLink.toString(),
+        sharePositionOrigin: box == null ? null : box.localToGlobal(Offset.zero) & box.size,
+      ),
+    );
+  }
+
   static Future<void> _shareWidgetImage({
     required BuildContext context,
     required String fileName,

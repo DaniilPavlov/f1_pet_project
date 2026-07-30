@@ -141,5 +141,32 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('share'), findsOneWidget);
     });
+
+    testWidgets('shareDeepLink completes', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppThemeData.light(),
+          home: Provider<AnalyticsGateway>.value(
+            value: const NoOpAnalyticsGateway(),
+            child: Scaffold(
+              body: Builder(
+                builder: (context) => TextButton(
+                  onPressed: () => ShareHelper.shareDeepLink(
+                    context: context,
+                    deepLink: Uri.parse('f1pet://circuit/monza'),
+                    contentType: 'circuit',
+                  ),
+                  child: const Text('share'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('share'));
+      await tester.pumpAndSettle();
+      expect(find.text('share'), findsOneWidget);
+    });
   });
 }

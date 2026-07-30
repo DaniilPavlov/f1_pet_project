@@ -24,6 +24,7 @@ import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:f1_pet_project/services/analytics/analytics_event.dart';
 import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:f1_pet_project/services/deeplinks/f1pet_deep_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -71,6 +72,7 @@ class ConstructorScreen extends StatelessWidget {
                       l10n: context.l10n,
                       title: constructor.name,
                       stats: stats,
+                      deepLink: F1PetDeepLinks.constructor(constructor.constructorId),
                     ),
             ),
             body: SafeArea(

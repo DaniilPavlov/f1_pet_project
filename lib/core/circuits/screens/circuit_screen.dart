@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/repositories/wikipedia/wikipedia_page_image_repository.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
+import 'package:f1_pet_project/common/utils/helpers/share_helper.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
@@ -23,6 +24,7 @@ import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:f1_pet_project/services/analytics/analytics_event.dart';
 import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:f1_pet_project/services/deeplinks/f1pet_deep_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -53,7 +55,16 @@ class CircuitScreen extends StatelessWidget {
         )..loadAll();
       },
       child: Scaffold(
-        appBar: CustomAppBar(title: context.l10n.circuitInfoTitle, onPop: () => context.router.maybePop()),
+        appBar: CustomAppBar(
+          title: context.l10n.circuitInfoTitle,
+          showPreferences: false,
+          onPop: () => context.router.maybePop(),
+          onShare: () => ShareHelper.shareDeepLink(
+            context: context,
+            deepLink: F1PetDeepLinks.circuit(circuitModel.circuitId),
+            contentType: 'circuit',
+          ),
+        ),
         body: SafeArea(
           child: Observer(
             builder: (context) {
