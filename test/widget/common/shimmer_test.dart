@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/pump_app.dart';
 
+
 void main() {
   group('TournamentTablesShimmer', () {
     testWidgets('builds shimmer skeleton tree', (tester) async {
@@ -59,6 +60,15 @@ void main() {
       await tester.pumpForGolden();
 
       await expectLater(find.byType(ListRowsShimmer), matchesGoldenFile('../goldens/list_rows_shimmer.png'));
+    });
+  });
+
+  group('CircuitsShimmer', () {
+    testWidgets('builds circuit card skeletons', (tester) async {
+      await tester.pumpApp(const CircuitsShimmer());
+
+      expect(find.byType(CircuitsShimmer), findsOneWidget);
+      expect(find.byType(ScreenShimmer), findsWidgets);
     });
   });
 }

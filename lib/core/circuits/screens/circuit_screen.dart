@@ -14,7 +14,7 @@ import 'package:f1_pet_project/common/widgets/circuits/circuit_layout_image.dart
 import 'package:f1_pet_project/common/widgets/circuits/circuit_stats_grid.dart';
 import 'package:f1_pet_project/common/widgets/country_flag.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
-import 'package:f1_pet_project/common/widgets/shimmer/career_screen_shimmer.dart';
+import 'package:f1_pet_project/common/widgets/shimmer/circuit_screen_shimmer.dart';
 import 'package:f1_pet_project/core/circuits/controllers/circuit_screen_controller/circuit_screen_controller.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
 import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.dart';
@@ -74,7 +74,7 @@ class CircuitScreen extends StatelessWidget {
                 return ErrorBody(onTap: controller.refreshAll, title: error.title, subtitle: error.subtitle);
               }
               if (!controller.isLoaded) {
-                return const CareerScreenShimmer();
+                return const CircuitScreenShimmer();
               }
 
               final wins = controller.winners.value!;

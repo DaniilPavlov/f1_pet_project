@@ -1,6 +1,9 @@
 import 'package:f1_pet_project/common/widgets/career/network_hero_photo.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/career_screen_shimmer.dart';
+import 'package:f1_pet_project/common/widgets/shimmer/circuit_screen_shimmer.dart';
+import 'package:f1_pet_project/common/widgets/shimmer/h2h_compare_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/race_section_shimmer.dart';
+import 'package:f1_pet_project/common/widgets/shimmer/season_rewind_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -14,6 +17,30 @@ void main() {
 
       await tester.pumpApp(const CareerScreenShimmer(showPhoto: false));
       expect(find.byType(CareerScreenShimmer), findsOneWidget);
+    });
+  });
+
+  group('CircuitScreenShimmer', () {
+    testWidgets('renders circuit skeleton', (tester) async {
+      await tester.pumpApp(const CircuitScreenShimmer());
+      expect(find.byType(CircuitScreenShimmer), findsOneWidget);
+    });
+  });
+
+  group('SeasonRewindShimmer', () {
+    testWidgets('renders with and without scrubber', (tester) async {
+      await tester.pumpApp(const SingleChildScrollView(child: SeasonRewindShimmer()));
+      expect(find.byType(SeasonRewindShimmer), findsOneWidget);
+
+      await tester.pumpApp(const SingleChildScrollView(child: SeasonRewindShimmer(showScrubber: false)));
+      expect(find.byType(SeasonRewindShimmer), findsOneWidget);
+    });
+  });
+
+  group('H2hCompareShimmer', () {
+    testWidgets('renders compare skeleton', (tester) async {
+      await tester.pumpApp(const SingleChildScrollView(child: H2hCompareShimmer()));
+      expect(find.byType(H2hCompareShimmer), findsOneWidget);
     });
   });
 

@@ -7,7 +7,7 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
-import 'package:f1_pet_project/common/widgets/shimmer/tournament_tables_shimmer.dart';
+import 'package:f1_pet_project/common/widgets/shimmer/season_rewind_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/season_picker_field.dart';
 import 'package:f1_pet_project/core/results/hall_of_fame/repositories/season_standings_repository.dart';
 import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
@@ -92,7 +92,7 @@ class SeasonRewindScreen extends StatelessWidget {
                       ),
                     ),
                     if (racesLoading)
-                      const SliverToBoxAdapter(child: TournamentTablesShimmer(showHeader: false))
+                      const SliverToBoxAdapter(child: SeasonRewindShimmer())
                     else if (!hasRaces)
                       SliverFillRemaining(
                         hasScrollBody: false,
@@ -131,7 +131,7 @@ class SeasonRewindScreen extends StatelessWidget {
                         ),
                       ),
                       if (standingsLoading && !controller.hasChartData)
-                        const SliverToBoxAdapter(child: TournamentTablesShimmer(showHeader: false))
+                        const SliverToBoxAdapter(child: SeasonRewindShimmer(showScrubber: false))
                       else if (controller.hasChartData)
                         SliverToBoxAdapter(
                           child: SeasonRewindChartsSection(
