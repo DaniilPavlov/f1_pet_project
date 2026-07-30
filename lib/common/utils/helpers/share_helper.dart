@@ -1,8 +1,10 @@
 import 'dart:ui' as ui;
 
 import 'package:f1_pet_project/common/models/career/career_stats.dart';
+import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
 import 'package:f1_pet_project/common/widgets/share/share_career_card.dart';
 import 'package:f1_pet_project/common/widgets/share/share_race_results_card.dart';
+import 'package:f1_pet_project/common/widgets/share/share_weekend_summary_card.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/services/analytics/analytics_event.dart';
@@ -12,7 +14,7 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-/// Шаринг карьеры и результатов гонки картинкой.
+/// Шаринг карьеры, результатов гонки и сводки уикенда картинкой.
 abstract class ShareHelper {
   static Future<void> shareCareerCard({
     required BuildContext context,
@@ -40,6 +42,24 @@ abstract class ShareHelper {
       context: context,
       fileName: 'f1_race_${race.season}_${race.round}.png',
       child: ShareRaceResultsCard(l10n: l10n, race: race),
+    );
+  }
+
+  static Future<void> shareWeekendSummary({
+    required BuildContext context,
+    required AppLocalizations l10n,
+    required EspnScoreboardEvent event,
+    required Locale locale,
+  }) {
+    context.read<AnalyticsGateway>().log(const ShareTapped(contentType: 'weekend_summary'));
+    final slug = (event.shortName.isNotEmpty ? event.shortName : event.name).toLowerCase().replaceAll(
+      RegExp('[^a-z0-9]+'),
+      '_',
+    );
+    return _shareWidgetImage(
+      context: context,
+      fileName: 'f1_weekend_${slug}_${DateTime.now().millisecondsSinceEpoch}.png',
+      child: ShareWeekendSummaryCard(l10n: l10n, event: event, locale: locale),
     );
   }
 
@@ -78,10 +98,7 @@ abstract class ShareHelper {
         top: 0,
         child: Material(
           type: MaterialType.transparency,
-          child: RepaintBoundary(
-            key: boundaryKey,
-            child: child,
-          ),
+          child: RepaintBoundary(key: boundaryKey, child: child),
         ),
       ),
     );
@@ -111,9 +128,7 @@ abstract class ShareHelper {
       await SharePlus.instance.share(
         ShareParams(
           text: text,
-          files: [
-            XFile.fromData(bytes, mimeType: 'image/png', name: fileName),
-          ],
+          files: [XFile.fromData(bytes, mimeType: 'image/png', name: fileName)],
           sharePositionOrigin: box == null ? null : box.localToGlobal(Offset.zero) & box.size,
         ),
       );

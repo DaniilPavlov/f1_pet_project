@@ -88,3 +88,11 @@ class EspnScoreboardResultEntry {
   final String? country;
   final bool isWinner;
 }
+
+/// ESPN schedule shortDetail вида `8/21 - 6:30 AM EDT`.
+bool looksLikeEspnScheduleClock(String value) {
+  return RegExp(
+    r'(\b(EDT|EST|PDT|PST|CET|BST)\b)|(\b(AM|PM)\b)|(\d{1,2}/\d{1,2})',
+    caseSensitive: false,
+  ).hasMatch(value);
+}

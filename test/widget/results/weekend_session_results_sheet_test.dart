@@ -23,7 +23,26 @@ void main() {
       );
 
       expect(find.text(AppLocalizationsEn().weekendSessionResultsEmpty), findsOneWidget);
-      expect(find.text('Final'), findsOneWidget);
+      expect(find.text('Final'), findsNothing);
+    });
+
+    testWidgets('shows device-local session date when available', (tester) async {
+      await tester.pumpApp(
+        SizedBox(
+          height: 500,
+          child: WeekendSessionResultsSheet(
+            session: EspnScoreboardSession(
+              abbreviation: 'Q',
+              statusState: 'pre',
+              statusDetail: '8/21 - 6:30 AM EDT',
+              date: DateTime(2024, 8, 21, 14, 30),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.textContaining('EDT'), findsNothing);
+      expect(find.textContaining('14:30'), findsOneWidget);
     });
 
     testWidgets('lists result rows', (tester) async {

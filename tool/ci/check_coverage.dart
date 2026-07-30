@@ -9,24 +9,14 @@
 
 import 'dart:io';
 
-const _defaultMin =80.0;
+const _defaultMin = 80.0;
 const _defaultPath = 'coverage/lcov.info';
 
-const _excludeSuffixes = <String>[
-  '.g.dart',
-  '.gr.dart',
-  '.freezed.dart',
-  '.mocks.dart',
-];
+const _excludeSuffixes = <String>['.g.dart', '.gr.dart', '.freezed.dart', '.mocks.dart'];
 
-const _excludePathParts = <String>[
-  '/l10n/',
-];
+const _excludePathParts = <String>['/l10n/'];
 
-const _excludeBasenames = <String>{
-  'firebase_options.dart',
-  'main.dart',
-};
+const _excludeBasenames = <String>{'firebase_options.dart', 'main.dart'};
 
 void main(List<String> args) {
   final options = _parseArgs(args);
@@ -53,9 +43,7 @@ void main(List<String> args) {
     exit(1);
   }
 
-  stdout.writeln(
-    'Coverage gate passed (≥ ${options.min.toStringAsFixed(0)}%).',
-  );
+  stdout.writeln('Coverage gate passed (≥ ${options.min.toStringAsFixed(0)}%).');
 }
 
 class _Options {
@@ -66,11 +54,7 @@ class _Options {
 }
 
 class _Summary {
-  const _Summary({
-    required this.hit,
-    required this.found,
-    required this.excludedFiles,
-  });
+  const _Summary({required this.hit, required this.found, required this.excludedFiles});
 
   final int hit;
   final int found;

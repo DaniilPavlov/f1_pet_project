@@ -341,6 +341,12 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get shareWeekendSummary => 'Поделиться сводкой уикенда';
+
+  @override
+  String get shareWeekendPodium => 'Подиум';
+
+  @override
   String get selectDriver => 'Выберите пилота';
 
   @override

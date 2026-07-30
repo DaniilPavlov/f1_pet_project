@@ -87,4 +87,13 @@ void main() {
       expect(session.hasResults, isTrue);
     });
   });
+
+  group('looksLikeEspnScheduleClock', () {
+    test('detects ESPN EDT shortDetail and ignores status labels', () {
+      expect(looksLikeEspnScheduleClock('8/21 - 6:30 AM EDT'), isTrue);
+      expect(looksLikeEspnScheduleClock('Final'), isFalse);
+      expect(looksLikeEspnScheduleClock('Scheduled'), isFalse);
+      expect(looksLikeEspnScheduleClock('In Progress'), isFalse);
+    });
+  });
 }

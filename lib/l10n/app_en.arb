@@ -133,6 +133,8 @@
       "count": { "type": "int" }
     }
   },
+  "shareWeekendSummary": "Share weekend summary",
+  "shareWeekendPodium": "Podium",
   "selectDriver": "Select a driver",
   "driversLoadError": "Could not load drivers",
   "onMap": "On map",

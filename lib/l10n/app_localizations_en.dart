@@ -340,6 +340,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get shareWeekendSummary => 'Share weekend summary';
+
+  @override
+  String get shareWeekendPodium => 'Podium';
+
+  @override
   String get selectDriver => 'Select a driver';
 
   @override

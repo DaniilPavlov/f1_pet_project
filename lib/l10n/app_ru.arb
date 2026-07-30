@@ -148,6 +148,8 @@
       "count": { "type": "int" }
     }
   },
+  "shareWeekendSummary": "Поделиться сводкой уикенда",
+  "shareWeekendPodium": "Подиум",
   "selectDriver": "Выберите пилота",
   "driversLoadError": "Не удалось загрузить пилотов",
   "onMap": "На карте",

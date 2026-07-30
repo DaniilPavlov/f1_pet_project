@@ -1,8 +1,11 @@
 import 'package:f1_pet_project/common/models/career/career_stats.dart';
+import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
 import 'package:f1_pet_project/common/widgets/share/share_career_card.dart';
 import 'package:f1_pet_project/common/widgets/share/share_race_results_card.dart';
+import 'package:f1_pet_project/common/widgets/share/share_weekend_summary_card.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/l10n/app_localizations_en.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/controller_fixtures.dart';
@@ -69,6 +72,51 @@ void main() {
       );
 
       expect(find.text(l10n.shareNoResults), findsOneWidget);
+    });
+  });
+
+  group('ShareWeekendSummaryCard', () {
+    testWidgets('shows sessions and podium', (tester) async {
+      const event = EspnScoreboardEvent(
+        name: 'Monaco Grand Prix',
+        shortName: 'MON',
+        statusState: 'post',
+        statusDetail: 'Final',
+        circuitName: 'Circuit de Monaco',
+        circuitCity: 'Monte Carlo',
+        circuitCountry: 'Monaco',
+        sessions: [
+          EspnScoreboardSession(
+            abbreviation: 'Q',
+            statusState: 'post',
+            statusDetail: 'Final',
+            leaderName: 'Charles Leclerc',
+            isWinner: true,
+          ),
+          EspnScoreboardSession(
+            abbreviation: 'Race',
+            statusState: 'post',
+            statusDetail: 'Final',
+            leaderName: 'Max Verstappen',
+            isWinner: true,
+            results: [
+              EspnScoreboardResultEntry(position: 1, displayName: 'Max Verstappen', isWinner: true),
+              EspnScoreboardResultEntry(position: 2, displayName: 'Charles Leclerc'),
+              EspnScoreboardResultEntry(position: 3, displayName: 'Lando Norris'),
+            ],
+          ),
+        ],
+      );
+
+      await tester.pumpApp(
+        ShareWeekendSummaryCard(l10n: l10n, event: event, locale: const Locale('en')),
+      );
+
+      expect(find.text('MON'), findsOneWidget);
+      expect(find.text('Circuit de Monaco'), findsOneWidget);
+      expect(find.text(l10n.shareWeekendPodium), findsOneWidget);
+      expect(find.text('Max Verstappen'), findsWidgets);
+      expect(find.text('Lando Norris'), findsOneWidget);
     });
   });
 }

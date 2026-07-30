@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/models/career/career_stats.dart';
+import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
 import 'package:f1_pet_project/common/utils/helpers/share_helper.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme_data.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
@@ -126,6 +127,52 @@ void main() {
                     context: context,
                     l10n: AppLocalizations.of(context),
                     race: ControllerFixtures.race,
+                  ),
+                  child: const Text('share'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('share'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pumpAndSettle();
+      expect(find.text('share'), findsOneWidget);
+    });
+
+    testWidgets('shareWeekendSummary completes with overlay present', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppThemeData.light(),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Provider<AnalyticsGateway>.value(
+            value: const NoOpAnalyticsGateway(),
+            child: Scaffold(
+              body: Builder(
+                builder: (context) => TextButton(
+                  onPressed: () => ShareHelper.shareWeekendSummary(
+                    context: context,
+                    l10n: AppLocalizations.of(context),
+                    locale: const Locale('en'),
+                    event: const EspnScoreboardEvent(
+                      name: 'Monaco Grand Prix',
+                      shortName: 'MON',
+                      statusState: 'post',
+                      statusDetail: 'Final',
+                      sessions: [
+                        EspnScoreboardSession(
+                          abbreviation: 'Race',
+                          statusState: 'post',
+                          statusDetail: 'Final',
+                          leaderName: 'Max Verstappen',
+                          isWinner: true,
+                        ),
+                      ],
+                    ),
                   ),
                   child: const Text('share'),
                 ),

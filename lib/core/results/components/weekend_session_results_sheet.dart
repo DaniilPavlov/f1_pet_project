@@ -10,6 +10,7 @@ import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_r
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 /// Нижний лист с протоколом сессии уикенда (ESPN).
@@ -70,9 +71,18 @@ class _WeekendSessionResultsSheetState extends State<WeekendSessionResultsSheet>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(context.l10n.weekendSessionResultsTitle(session.abbreviation), style: AppStyles.h2),
-            if (session.statusDetail.isNotEmpty) ...[
+            if (session.date != null) ...[
               const SizedBox(height: 4),
-              Text(session.statusDetail, style: AppStyles.caption.copyWith(color: context.colors.textGray)),
+              Text(
+                DateFormat.MMMd(Localizations.localeOf(context).toLanguageTag()).add_Hm().format(session.date!),
+                style: AppStyles.caption.copyWith(color: context.colors.textGray),
+              ),
+            ] else if (session.isLive) ...[
+              const SizedBox(height: 4),
+              Text(
+                context.l10n.homeWeekendLive,
+                style: AppStyles.caption.copyWith(color: AppTheme.red),
+              ),
             ],
             const SizedBox(height: 16),
             Expanded(

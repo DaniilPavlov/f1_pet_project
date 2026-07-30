@@ -710,6 +710,18 @@ abstract class AppLocalizations {
   /// **'…и ещё {count}'**
   String shareAndMore(int count);
 
+  /// No description provided for @shareWeekendSummary.
+  ///
+  /// In ru, this message translates to:
+  /// **'Поделиться сводкой уикенда'**
+  String get shareWeekendSummary;
+
+  /// No description provided for @shareWeekendPodium.
+  ///
+  /// In ru, this message translates to:
+  /// **'Подиум'**
+  String get shareWeekendPodium;
+
   /// No description provided for @selectDriver.
   ///
   /// In ru, this message translates to:
