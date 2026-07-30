@@ -21,6 +21,9 @@ migrate_working_dir/
 # VS Code (локальные настройки; launch.json можно закоммитить при необходимости)
 .vscode/*
 
+# Cursor (local agent rules / project MCP — do not commit)
+.cursor/
+
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
