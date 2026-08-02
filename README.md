@@ -15,7 +15,8 @@ Same idea, other stacks:
 ## Screenshots
 
 <p>
-  <img src="docs/screenshots/01_home.png" width="180" alt="Home" />
+  <img src="docs/screenshots/01_home_1.png" width="180" alt="Home standings" />
+  <img src="docs/screenshots/01_home_2.png" width="180" alt="Home news" />
   <img src="docs/screenshots/02_results.png" width="180" alt="Results" />
   <img src="docs/screenshots/03_schedule.png" width="180" alt="Schedule" />
   <img src="docs/screenshots/04_predictor.png" width="180" alt="Predictor" />
@@ -24,6 +25,8 @@ Same idea, other stacks:
   <img src="docs/screenshots/07_driver.png" width="180" alt="Driver" />
   <img src="docs/screenshots/08_widgets.png" width="180" alt="Home widgets" />
   <img src="docs/screenshots/09_profile.png" width="180" alt="Profile" />
+  <img src="docs/screenshots/10_rewind.png" width="180" alt="Season rewind" />
+  <img src="docs/screenshots/11_h2h_drivers.png" width="180" alt="H2H drivers" />
 </p>
 
 ## Stack
