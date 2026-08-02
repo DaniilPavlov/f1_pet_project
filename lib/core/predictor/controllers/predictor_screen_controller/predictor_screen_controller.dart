@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:f1_pet_project/common/localization/error_copy.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
+import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_season.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_season_summary.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_store.dart';
@@ -11,14 +13,15 @@ import 'package:f1_pet_project/core/predictor/repositories/predictor_repository.
 import 'package:f1_pet_project/core/predictor/services/predictor_lock.dart';
 import 'package:f1_pet_project/core/predictor/services/predictor_score_service.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
-import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
-import 'package:f1_pet_project/core/results/models/results_model.dart';
 import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
 import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
+import 'package:f1_pet_project/data/models/standings/driver/driver_standings_model.dart';
+import 'package:f1_pet_project/data/models/standings/standings_model.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
@@ -29,6 +32,22 @@ part 'predictor_screen_controller.g.dart';
 bool hasUsableDriverCode(DriverModel driver) {
   final code = driver.code?.trim();
   return code != null && code.isNotEmpty && code.toLowerCase() != 'none';
+}
+
+/// Стартовый порядок предикта: места в чемпионате, затем остальные из ростера.
+///
+/// Используется при первом создании драфта уикенда ([PredictorScreenController]).
+List<String> defaultPredictorOrder({
+  required List<String> rosterIds,
+  required List<String> championshipOrder,
+}) {
+  if (championshipOrder.isEmpty) {
+    return List<String>.from(rosterIds);
+  }
+  final rosterSet = rosterIds.toSet();
+  final ranked = championshipOrder.where(rosterSet.contains).toList();
+  final missing = rosterIds.where((id) => !ranked.contains(id));
+  return [...ranked, ...missing];
 }
 
 /// Какая сетка сейчас редактируется.
@@ -43,10 +62,12 @@ abstract class PredictorScreenControllerBase with Store {
     required PredictorRepository predictorRepository,
     ScheduleRepository? scheduleRepository,
     DriverCatalogRepository? driverCatalogRepository,
+    CurrentStandingsRepository? standingsRepository,
     RaceWeekendRepository? raceWeekendRepository,
     AppDataRefresh? dataRefresh,
     @visibleForTesting Future<ScheduleModel> Function()? fetchScheduleForTest,
     @visibleForTesting Future<List<DriverModel>> Function()? loadDriversForTest,
+    @visibleForTesting Future<StandingsModel> Function()? fetchDriverStandingsForTest,
     @visibleForTesting
     Future<ScheduleModel> Function({required String year, required String round})? fetchQualifyingForTest,
     @visibleForTesting
@@ -61,23 +82,30 @@ abstract class PredictorScreenControllerBase with Store {
        ),
        _predictorRepository = predictorRepository,
        _scheduleRepository = scheduleRepository,
+       _standingsRepository = standingsRepository,
        _raceWeekendRepository = raceWeekendRepository ?? const RaceWeekendRepository(),
        _dataRefresh = dataRefresh,
        _fetchScheduleForTest = fetchScheduleForTest,
        _loadDrivers = loadDriversForTest ?? driverCatalogRepository!.loadCurrent,
+       _fetchDriverStandingsForTest = fetchDriverStandingsForTest,
        _fetchQualifyingForTest = fetchQualifyingForTest,
        _fetchRaceResultsForTest = fetchRaceResultsForTest;
 
   final PredictorRepository _predictorRepository;
   final ScheduleRepository? _scheduleRepository;
+  final CurrentStandingsRepository? _standingsRepository;
   final RaceWeekendRepository _raceWeekendRepository;
   final AppDataRefresh? _dataRefresh;
   final Future<ScheduleModel> Function()? _fetchScheduleForTest;
   final Future<List<DriverModel>> Function() _loadDrivers;
+  final Future<StandingsModel> Function()? _fetchDriverStandingsForTest;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchQualifyingForTest;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchRaceResultsForTest;
 
   Timer? _ticker;
+
+  /// season+round текущего драфта — чтобы при смене upcomingRace перезагрузить порядок.
+  String? _boundDraftKey;
 
   @observable
   AsyncValue<List<RacesModel>> races = const AsyncValue.loading();
@@ -85,8 +113,20 @@ abstract class PredictorScreenControllerBase with Store {
   @observable
   AsyncValue<List<DriverModel>> drivers = const AsyncValue.loading();
 
+  /// Текущая команда пилота из driver standings (`driverId` → constructor).
+  @observable
+  ObservableMap<String, ConstructorModel> constructorsByDriverId = ObservableMap();
+
+  /// Порядок пилотов по текущему чемпионату (P1 → Pn).
+  @observable
+  ObservableList<String> championshipDriverOrder = ObservableList<String>();
+
   @observable
   PredictorStore store = PredictorStore.empty();
+
+  /// Загрузка / ошибка Firestore-store предиктов.
+  @observable
+  AsyncValue<PredictorStore> predictions = const AsyncValue.loading();
 
   @observable
   DateTime now = DateTime.now();
@@ -104,7 +144,7 @@ abstract class PredictorScreenControllerBase with Store {
   ObservableList<String> draftRaceOrder = ObservableList<String>();
 
   @computed
-  CustomException? get screenError => firstException([races, drivers]);
+  CustomException? get screenError => firstException([races, drivers, predictions]);
 
   @computed
   String? get seasonYear {
@@ -219,12 +259,13 @@ abstract class PredictorScreenControllerBase with Store {
     _ticker = null;
   }
 
-  /// Первичная загрузка расписания, ростера и локального store.
+  /// Первичная загрузка расписания, ростера, команд и store.
   @action
   Future<void> load() async {
     allDataIsLoaded = false;
-    await Future.wait([_loadSchedule(), _loadDriversList()]);
-    store = await _predictorRepository.load();
+    predictions = const AsyncValue.loading();
+    await Future.wait([_loadSchedule(), _loadDriversList(), _loadConstructorsByDriver()]);
+    await _loadPredictionsStore();
 
     if (screenError == null) {
       await _ensureCurrentDraft();
@@ -235,6 +276,30 @@ abstract class PredictorScreenControllerBase with Store {
     allDataIsLoaded = screenError == null;
   }
 
+  @action
+  Future<void> _loadPredictionsStore() async {
+    try {
+      final loaded = await _predictorRepository.load();
+      store = loaded;
+      predictions = predictions.toValue(loaded);
+    } on Object catch (e, st) {
+      predictions = predictions.toErrorFrom(
+        CustomException(
+          title: ErrorCopy.unexpectedError,
+          subtitle: ErrorCopy.errorRetrySubtitle,
+          parentException: e is Exception ? e : null,
+          stackTrace: st,
+        ),
+      );
+    }
+  }
+
+  /// Переключает вкладку квалификации / гонки.
+  @action
+  void selectGrid(PredictorGridKind kind) {
+    selectedGrid = kind;
+  }
+
   /// Pull-to-refresh: сброс API-кэшей, предикты не трогаем.
   @action
   Future<void> refreshAll() async {
@@ -242,11 +307,7 @@ abstract class PredictorScreenControllerBase with Store {
     await load();
   }
 
-  @action
-  void selectGrid(PredictorGridKind kind) {
-    selectedGrid = kind;
-  }
-
+  /// Drag-reorder: remove + insert (сдвигает соседей). Для точечной смены места — [moveDraftTo].
   @action
   Future<void> reorderDraft({required int oldIndex, required int newIndex}) async {
     if (isLocked || oldIndex == newIndex) {
@@ -258,6 +319,39 @@ abstract class PredictorScreenControllerBase with Store {
     await _persistDraft();
   }
 
+  /// Меняет местами пилотов на [fromIndex] и [toIndex] (0 = P1).
+  /// Остальные позиции не сдвигаются.
+  @action
+  Future<void> moveDraftTo({required int fromIndex, required int toIndex}) async {
+    if (isLocked || fromIndex == toIndex) {
+      return;
+    }
+    final list = selectedGrid == PredictorGridKind.qualifying ? draftQualifyingOrder : draftRaceOrder;
+    if (fromIndex < 0 || fromIndex >= list.length) {
+      return;
+    }
+    final target = toIndex.clamp(0, list.length - 1);
+    if (fromIndex == target) {
+      return;
+    }
+    final temp = list[fromIndex];
+    list[fromIndex] = list[target];
+    list[target] = temp;
+    await _persistDraft();
+  }
+
+  /// Копирует текущий предикт квалификации в гонку.
+  @action
+  Future<void> copyQualifyingToRace() async {
+    if (isLocked || draftQualifyingOrder.isEmpty) {
+      return;
+    }
+    draftRaceOrder
+      ..clear()
+      ..addAll(draftQualifyingOrder);
+    await _persistDraft();
+  }
+
   @action
   Future<void> _ensureCurrentDraft() async {
     final race = upcomingRace;
@@ -265,20 +359,26 @@ abstract class PredictorScreenControllerBase with Store {
     if (race == null || roster == null || roster.isEmpty) {
       draftQualifyingOrder.clear();
       draftRaceOrder.clear();
+      _boundDraftKey = null;
       return;
     }
 
     final year = race.season;
     final existing = store.weekend(year: year, round: race.round);
     final rosterIds = roster.map((d) => d.driverId).toList();
+    _boundDraftKey = '${race.season}_${race.round}';
 
     if (existing == null) {
+      final initial = defaultPredictorOrder(
+        rosterIds: rosterIds,
+        championshipOrder: championshipDriverOrder,
+      );
       draftQualifyingOrder
         ..clear()
-        ..addAll(rosterIds);
+        ..addAll(initial);
       draftRaceOrder
         ..clear()
-        ..addAll(rosterIds);
+        ..addAll(initial);
       await _persistDraft(raceName: race.raceName, round: race.round, year: year);
       return;
     }
@@ -338,6 +438,8 @@ abstract class PredictorScreenControllerBase with Store {
       qualiPoints: previous?.qualiPoints,
       racePoints: previous?.racePoints,
       scoredAt: previous?.scoredAt,
+      actualQualifyingOrder: previous?.actualQualifyingOrder,
+      actualRaceOrder: previous?.actualRaceOrder,
     );
     store = await _predictorRepository.saveWeekend(year: y, weekend: weekend);
   }
@@ -357,8 +459,7 @@ abstract class PredictorScreenControllerBase with Store {
     var changed = false;
     for (final weekend in season.weekends.values) {
       final scored = await _scoreWeekend(year: year, weekend: weekend);
-      if (scored != null &&
-          (scored.qualiPoints != weekend.qualiPoints || scored.racePoints != weekend.racePoints)) {
+      if (scored != null && _weekendScoreChanged(weekend, scored)) {
         nextStore = nextStore.upsertWeekend(year: year, weekend: scored);
         changed = true;
       }
@@ -388,35 +489,59 @@ abstract class PredictorScreenControllerBase with Store {
       return null;
     }
 
-    List<QualifyingResultsModel>? qualiList;
-    List<ResultsModel>? raceList;
+    var qualiActual = _nonEmpty(weekend.actualQualifyingOrder);
+    var raceActual = _nonEmpty(weekend.actualRaceOrder);
 
-    try {
-      final qualiModel = await _fetchQualifying(year: year, round: weekend.round);
-      qualiList = qualiModel.raceTable.races.isEmpty
-          ? null
-          : qualiModel.raceTable.races.first.qualifyingResults;
-    } on Object {
-      qualiList = null;
+    if (qualiActual == null) {
+      try {
+        final qualiModel = await _fetchQualifying(year: year, round: weekend.round);
+        final list = qualiModel.raceTable.races.isEmpty
+            ? null
+            : qualiModel.raceTable.races.first.qualifyingResults;
+        if (list != null && list.isNotEmpty) {
+          qualiActual = PredictorScoreService.qualifyingActualOrder(list);
+        }
+      } on Object {
+        qualiActual = null;
+      }
     }
 
-    try {
-      final raceModel = await _fetchRaceResults(year: year, round: weekend.round);
-      raceList = raceModel.raceTable.races.isEmpty ? null : raceModel.raceTable.races.first.results;
-    } on Object {
-      raceList = null;
+    if (raceActual == null) {
+      try {
+        final raceModel = await _fetchRaceResults(year: year, round: weekend.round);
+        final list = raceModel.raceTable.races.isEmpty ? null : raceModel.raceTable.races.first.results;
+        if (list != null && list.isNotEmpty) {
+          raceActual = PredictorScoreService.raceActualOrder(list);
+        }
+      } on Object {
+        raceActual = null;
+      }
     }
 
-    if ((qualiList == null || qualiList.isEmpty) && (raceList == null || raceList.isEmpty)) {
+    if (qualiActual == null && raceActual == null) {
       return null;
     }
 
     return PredictorScoreService.applyResults(
       weekend: weekend,
-      qualifyingResults: qualiList,
-      raceResults: raceList,
+      actualQualifyingOrder: qualiActual,
+      actualRaceOrder: raceActual,
       now: now,
     );
+  }
+
+  static List<String>? _nonEmpty(List<String>? list) {
+    if (list == null || list.isEmpty) {
+      return null;
+    }
+    return list;
+  }
+
+  static bool _weekendScoreChanged(PredictorWeekendPrediction before, PredictorWeekendPrediction after) {
+    return before.qualiPoints != after.qualiPoints ||
+        before.racePoints != after.racePoints ||
+        !listEquals(before.actualQualifyingOrder, after.actualQualifyingOrder) ||
+        !listEquals(before.actualRaceOrder, after.actualRaceOrder);
   }
 
   void _startTicker() {
@@ -431,6 +556,10 @@ abstract class PredictorScreenControllerBase with Store {
     final wasLocked = raceBefore == null || PredictorLock.isLocked(raceBefore, now);
     now = DateTime.now();
     final race = upcomingRace;
+    final nextKey = race == null ? null : '${race.season}_${race.round}';
+    if (nextKey != _boundDraftKey) {
+      unawaited(_ensureCurrentDraft());
+    }
     if (race != null && !wasLocked && PredictorLock.isLocked(race, now)) {
       unawaited(_onBecameLocked(race));
     }
@@ -472,6 +601,40 @@ abstract class PredictorScreenControllerBase with Store {
     );
   }
 
+  /// Карта команд и порядок чемпионата из current driver standings
+  /// (не блокирует UI при ошибке).
+  @action
+  Future<void> _loadConstructorsByDriver() async {
+    if (_standingsRepository == null && _fetchDriverStandingsForTest == null) {
+      constructorsByDriverId = ObservableMap();
+      championshipDriverOrder = ObservableList();
+      return;
+    }
+    try {
+      final standings = await _fetchDriverStandings();
+      final lists = standings.standingsTable.standingsLists;
+      if (lists.isEmpty) {
+        constructorsByDriverId = ObservableMap();
+        championshipDriverOrder = ObservableList();
+        return;
+      }
+      final rows = [...(lists.first.driverStandings ?? const <DriverStandingsModel>[])]
+        ..sort((a, b) {
+          final pa = int.tryParse(a.position) ?? 999;
+          final pb = int.tryParse(b.position) ?? 999;
+          return pa.compareTo(pb);
+        });
+      constructorsByDriverId = ObservableMap.of({
+        for (final row in rows)
+          if (row.constructors.isNotEmpty) row.driver.driverId: row.constructors.first,
+      });
+      championshipDriverOrder = ObservableList.of(rows.map((row) => row.driver.driverId));
+    } on Object {
+      constructorsByDriverId = ObservableMap();
+      championshipDriverOrder = ObservableList();
+    }
+  }
+
   /// Только пилоты с реальным трёхбуквенным кодом (без `none`).
   static List<DriverModel> _withDriverCode(List<DriverModel> list) {
     return list.where(hasUsableDriverCode).toList();
@@ -484,6 +647,18 @@ abstract class PredictorScreenControllerBase with Store {
     }
     final result = await _scheduleRepository!.getSchedule();
     return result.schedule;
+  }
+
+  Future<StandingsModel> _fetchDriverStandings() async {
+    final forTest = _fetchDriverStandingsForTest;
+    if (forTest != null) {
+      return forTest();
+    }
+    final repo = _standingsRepository;
+    if (repo == null) {
+      throw StateError('Provide standingsRepository or fetchDriverStandingsForTest');
+    }
+    return repo.drivers();
   }
 
   Future<ScheduleModel> _fetchQualifying({required String year, required String round}) {

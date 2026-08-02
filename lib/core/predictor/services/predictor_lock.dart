@@ -1,7 +1,7 @@
 import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 
-/// Правила блокировки правок предиктора (за час до основной квали).
+/// Policy: блокировка правок предиктора (за час до основной квалификации).
 abstract final class PredictorLock {
   static const lead = Duration(hours: 1);
 

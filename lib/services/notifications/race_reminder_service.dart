@@ -105,6 +105,14 @@ class RaceReminderService {
     await ios?.requestPermissions(alert: true, badge: true, sound: true);
   }
 
+  /// Снимает все запланированные reminders.
+  Future<void> cancelAll() async {
+    if (!PlatformCapabilities.hasLocalNotifications) {
+      return;
+    }
+    await _plugin.cancelAll();
+  }
+
   /// Подтягивает расписание и планирует ближайшие уведомления.
   Future<void> sync({required Locale locale}) async {
     if (!PlatformCapabilities.hasLocalNotifications) {

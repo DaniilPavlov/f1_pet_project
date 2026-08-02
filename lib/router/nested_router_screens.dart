@@ -24,8 +24,8 @@ class NewsRouterScreen extends AutoRouter {
   const NewsRouterScreen({super.key});
 }
 
-/// Вложенный роутер раздела «Предиктор».
-@RoutePage(name: 'PredictorRouter')
-class PredictorRouterScreen extends AutoRouter {
-  const PredictorRouterScreen({super.key});
+/// Вложенный роутер раздела «Профиль».
+@RoutePage(name: 'ProfileRouter')
+class ProfileRouterScreen extends AutoRouter {
+  const ProfileRouterScreen({super.key});
 }

@@ -1,4 +1,4 @@
-/// Локальное предсказание на один уикенд (quali + race).
+/// Предсказание на один уикенд (quali + race) + кэш фактических порядков.
 class PredictorWeekendPrediction {
   const PredictorWeekendPrediction({
     required this.round,
@@ -9,6 +9,8 @@ class PredictorWeekendPrediction {
     this.qualiPoints,
     this.racePoints,
     this.scoredAt,
+    this.actualQualifyingOrder,
+    this.actualRaceOrder,
   });
 
   factory PredictorWeekendPrediction.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,10 @@ class PredictorWeekendPrediction {
       qualiPoints: json['qualiPoints'] as int?,
       racePoints: json['racePoints'] as int?,
       scoredAt: DateTime.tryParse(json['scoredAt'] as String? ?? ''),
+      actualQualifyingOrder: (json['actualQualifyingOrder'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      actualRaceOrder: (json['actualRaceOrder'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
   }
 
@@ -34,6 +40,12 @@ class PredictorWeekendPrediction {
   final int? qualiPoints;
   final int? racePoints;
   final DateTime? scoredAt;
+
+  /// Закэшированный факт квалификации (чтобы не парсить Jolpica повторно).
+  final List<String>? actualQualifyingOrder;
+
+  /// Закэшированный факт гонки.
+  final List<String>? actualRaceOrder;
 
   int get totalPoints => (qualiPoints ?? 0) + (racePoints ?? 0);
 
@@ -48,6 +60,8 @@ class PredictorWeekendPrediction {
     int? qualiPoints,
     int? racePoints,
     DateTime? scoredAt,
+    List<String>? actualQualifyingOrder,
+    List<String>? actualRaceOrder,
     bool clearLockedAt = false,
   }) {
     return PredictorWeekendPrediction(
@@ -59,6 +73,8 @@ class PredictorWeekendPrediction {
       qualiPoints: qualiPoints ?? this.qualiPoints,
       racePoints: racePoints ?? this.racePoints,
       scoredAt: scoredAt ?? this.scoredAt,
+      actualQualifyingOrder: actualQualifyingOrder ?? this.actualQualifyingOrder,
+      actualRaceOrder: actualRaceOrder ?? this.actualRaceOrder,
     );
   }
 
@@ -71,5 +87,7 @@ class PredictorWeekendPrediction {
     if (qualiPoints != null) 'qualiPoints': qualiPoints,
     if (racePoints != null) 'racePoints': racePoints,
     if (scoredAt != null) 'scoredAt': scoredAt!.toIso8601String(),
+    if (actualQualifyingOrder != null) 'actualQualifyingOrder': actualQualifyingOrder,
+    if (actualRaceOrder != null) 'actualRaceOrder': actualRaceOrder,
   };
 }

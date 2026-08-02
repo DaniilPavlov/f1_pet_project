@@ -132,6 +132,50 @@ mixin _$PredictorScreenController on PredictorScreenControllerBase, Store {
     });
   }
 
+  late final _$constructorsByDriverIdAtom = Atom(
+    name: 'PredictorScreenControllerBase.constructorsByDriverId',
+    context: context,
+  );
+
+  @override
+  ObservableMap<String, ConstructorModel> get constructorsByDriverId {
+    _$constructorsByDriverIdAtom.reportRead();
+    return super.constructorsByDriverId;
+  }
+
+  @override
+  set constructorsByDriverId(ObservableMap<String, ConstructorModel> value) {
+    _$constructorsByDriverIdAtom.reportWrite(
+      value,
+      super.constructorsByDriverId,
+      () {
+        super.constructorsByDriverId = value;
+      },
+    );
+  }
+
+  late final _$championshipDriverOrderAtom = Atom(
+    name: 'PredictorScreenControllerBase.championshipDriverOrder',
+    context: context,
+  );
+
+  @override
+  ObservableList<String> get championshipDriverOrder {
+    _$championshipDriverOrderAtom.reportRead();
+    return super.championshipDriverOrder;
+  }
+
+  @override
+  set championshipDriverOrder(ObservableList<String> value) {
+    _$championshipDriverOrderAtom.reportWrite(
+      value,
+      super.championshipDriverOrder,
+      () {
+        super.championshipDriverOrder = value;
+      },
+    );
+  }
+
   late final _$storeAtom = Atom(
     name: 'PredictorScreenControllerBase.store',
     context: context,
@@ -147,6 +191,24 @@ mixin _$PredictorScreenController on PredictorScreenControllerBase, Store {
   set store(PredictorStore value) {
     _$storeAtom.reportWrite(value, super.store, () {
       super.store = value;
+    });
+  }
+
+  late final _$predictionsAtom = Atom(
+    name: 'PredictorScreenControllerBase.predictions',
+    context: context,
+  );
+
+  @override
+  AsyncValue<PredictorStore> get predictions {
+    _$predictionsAtom.reportRead();
+    return super.predictions;
+  }
+
+  @override
+  set predictions(AsyncValue<PredictorStore> value) {
+    _$predictionsAtom.reportWrite(value, super.predictions, () {
+      super.predictions = value;
     });
   }
 
@@ -254,6 +316,18 @@ mixin _$PredictorScreenController on PredictorScreenControllerBase, Store {
     return _$loadAsyncAction.run(() => super.load());
   }
 
+  late final _$_loadPredictionsStoreAsyncAction = AsyncAction(
+    'PredictorScreenControllerBase._loadPredictionsStore',
+    context: context,
+  );
+
+  @override
+  Future<void> _loadPredictionsStore() {
+    return _$_loadPredictionsStoreAsyncAction.run(
+      () => super._loadPredictionsStore(),
+    );
+  }
+
   late final _$refreshAllAsyncAction = AsyncAction(
     'PredictorScreenControllerBase.refreshAll',
     context: context,
@@ -273,6 +347,30 @@ mixin _$PredictorScreenController on PredictorScreenControllerBase, Store {
   Future<void> reorderDraft({required int oldIndex, required int newIndex}) {
     return _$reorderDraftAsyncAction.run(
       () => super.reorderDraft(oldIndex: oldIndex, newIndex: newIndex),
+    );
+  }
+
+  late final _$moveDraftToAsyncAction = AsyncAction(
+    'PredictorScreenControllerBase.moveDraftTo',
+    context: context,
+  );
+
+  @override
+  Future<void> moveDraftTo({required int fromIndex, required int toIndex}) {
+    return _$moveDraftToAsyncAction.run(
+      () => super.moveDraftTo(fromIndex: fromIndex, toIndex: toIndex),
+    );
+  }
+
+  late final _$copyQualifyingToRaceAsyncAction = AsyncAction(
+    'PredictorScreenControllerBase.copyQualifyingToRace',
+    context: context,
+  );
+
+  @override
+  Future<void> copyQualifyingToRace() {
+    return _$copyQualifyingToRaceAsyncAction.run(
+      () => super.copyQualifyingToRace(),
     );
   }
 
@@ -328,6 +426,18 @@ mixin _$PredictorScreenController on PredictorScreenControllerBase, Store {
     return _$_loadDriversListAsyncAction.run(() => super._loadDriversList());
   }
 
+  late final _$_loadConstructorsByDriverAsyncAction = AsyncAction(
+    'PredictorScreenControllerBase._loadConstructorsByDriver',
+    context: context,
+  );
+
+  @override
+  Future<void> _loadConstructorsByDriver() {
+    return _$_loadConstructorsByDriverAsyncAction.run(
+      () => super._loadConstructorsByDriver(),
+    );
+  }
+
   late final _$PredictorScreenControllerBaseActionController = ActionController(
     name: 'PredictorScreenControllerBase',
     context: context,
@@ -360,7 +470,10 @@ mixin _$PredictorScreenController on PredictorScreenControllerBase, Store {
     return '''
 races: ${races},
 drivers: ${drivers},
+constructorsByDriverId: ${constructorsByDriverId},
+championshipDriverOrder: ${championshipDriverOrder},
 store: ${store},
+predictions: ${predictions},
 now: ${now},
 allDataIsLoaded: ${allDataIsLoaded},
 selectedGrid: ${selectedGrid},

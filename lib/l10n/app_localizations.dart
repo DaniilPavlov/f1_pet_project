@@ -134,6 +134,282 @@ abstract class AppLocalizations {
   /// **'Предикт'**
   String get navPredictor;
 
+  /// No description provided for @navProfile.
+  ///
+  /// In ru, this message translates to:
+  /// **'Профиль'**
+  String get navProfile;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Профиль'**
+  String get profileTitle;
+
+  /// No description provided for @profileAccountSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Аккаунт'**
+  String get profileAccountSection;
+
+  /// No description provided for @profileSignedInAs.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы вошли как {email}'**
+  String profileSignedInAs(String email);
+
+  /// No description provided for @profileNotSignedIn.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вы не авторизованы'**
+  String get profileNotSignedIn;
+
+  /// No description provided for @profileSignIn.
+  ///
+  /// In ru, this message translates to:
+  /// **'Войти'**
+  String get profileSignIn;
+
+  /// No description provided for @profileSignOut.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выйти'**
+  String get profileSignOut;
+
+  /// No description provided for @profileRegister.
+  ///
+  /// In ru, this message translates to:
+  /// **'Зарегистрироваться'**
+  String get profileRegister;
+
+  /// No description provided for @profilePredictorSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Предиктор'**
+  String get profilePredictorSection;
+
+  /// No description provided for @profilePredictorOpen.
+  ///
+  /// In ru, this message translates to:
+  /// **'Открыть предиктор'**
+  String get profilePredictorOpen;
+
+  /// No description provided for @profilePredictorRequiresAuth.
+  ///
+  /// In ru, this message translates to:
+  /// **'Войдите, чтобы пользоваться предиктором'**
+  String get profilePredictorRequiresAuth;
+
+  /// No description provided for @profilePredictorRequiresVerification.
+  ///
+  /// In ru, this message translates to:
+  /// **'Подтвердите email, чтобы пользоваться предиктором'**
+  String get profilePredictorRequiresVerification;
+
+  /// No description provided for @profileEmailNotVerified.
+  ///
+  /// In ru, this message translates to:
+  /// **'Мы отправили ссылку для подтверждения на вашу почту'**
+  String get profileEmailNotVerified;
+
+  /// No description provided for @profileResendVerification.
+  ///
+  /// In ru, this message translates to:
+  /// **'Отправить ещё раз'**
+  String get profileResendVerification;
+
+  /// No description provided for @profileRefreshVerification.
+  ///
+  /// In ru, this message translates to:
+  /// **'Я подтвердил'**
+  String get profileRefreshVerification;
+
+  /// No description provided for @profileVerificationSent.
+  ///
+  /// In ru, this message translates to:
+  /// **'Письмо отправлено'**
+  String get profileVerificationSent;
+
+  /// No description provided for @profileStillNotVerified.
+  ///
+  /// In ru, this message translates to:
+  /// **'Email ещё не подтверждён'**
+  String get profileStillNotVerified;
+
+  /// No description provided for @profileEmailVerified.
+  ///
+  /// In ru, this message translates to:
+  /// **'Email подтверждён'**
+  String get profileEmailVerified;
+
+  /// No description provided for @profileAppearanceSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Внешний вид'**
+  String get profileAppearanceSection;
+
+  /// No description provided for @profileTheme.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тема'**
+  String get profileTheme;
+
+  /// No description provided for @profileLanguage.
+  ///
+  /// In ru, this message translates to:
+  /// **'Язык'**
+  String get profileLanguage;
+
+  /// No description provided for @profileNotificationsSection.
+  ///
+  /// In ru, this message translates to:
+  /// **'Уведомления'**
+  String get profileNotificationsSection;
+
+  /// No description provided for @profileRaceReminders.
+  ///
+  /// In ru, this message translates to:
+  /// **'Напоминания о сессиях'**
+  String get profileRaceReminders;
+
+  /// No description provided for @profileRaceRemindersSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'За 30 минут до старта'**
+  String get profileRaceRemindersSubtitle;
+
+  /// No description provided for @profileRaceRemindersDisabledByRemote.
+  ///
+  /// In ru, this message translates to:
+  /// **'Напоминания отключены удалённо'**
+  String get profileRaceRemindersDisabledByRemote;
+
+  /// No description provided for @authSignInTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вход'**
+  String get authSignInTitle;
+
+  /// No description provided for @authRegisterTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Регистрация'**
+  String get authRegisterTitle;
+
+  /// No description provided for @authEmailLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Email'**
+  String get authEmailLabel;
+
+  /// No description provided for @authPasswordLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пароль'**
+  String get authPasswordLabel;
+
+  /// No description provided for @authNoAccount.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет аккаунта? Зарегистрироваться'**
+  String get authNoAccount;
+
+  /// No description provided for @authHaveAccount.
+  ///
+  /// In ru, this message translates to:
+  /// **'Уже есть аккаунт? Войти'**
+  String get authHaveAccount;
+
+  /// No description provided for @authForgotPassword.
+  ///
+  /// In ru, this message translates to:
+  /// **'Забыли пароль?'**
+  String get authForgotPassword;
+
+  /// No description provided for @authPasswordResetSent.
+  ///
+  /// In ru, this message translates to:
+  /// **'Письмо для сброса пароля отправлено'**
+  String get authPasswordResetSent;
+
+  /// No description provided for @authErrorEmptyFields.
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите email и пароль'**
+  String get authErrorEmptyFields;
+
+  /// No description provided for @authErrorEmptyEmail.
+  ///
+  /// In ru, this message translates to:
+  /// **'Введите email'**
+  String get authErrorEmptyEmail;
+
+  /// No description provided for @authErrorInvalidEmail.
+  ///
+  /// In ru, this message translates to:
+  /// **'Некорректный email'**
+  String get authErrorInvalidEmail;
+
+  /// No description provided for @authErrorUserDisabled.
+  ///
+  /// In ru, this message translates to:
+  /// **'Аккаунт отключён'**
+  String get authErrorUserDisabled;
+
+  /// No description provided for @authErrorUserNotFound.
+  ///
+  /// In ru, this message translates to:
+  /// **'Аккаунт с таким email не найден'**
+  String get authErrorUserNotFound;
+
+  /// No description provided for @authErrorWrongPassword.
+  ///
+  /// In ru, this message translates to:
+  /// **'Неверный пароль'**
+  String get authErrorWrongPassword;
+
+  /// No description provided for @authErrorInvalidCredential.
+  ///
+  /// In ru, this message translates to:
+  /// **'Неверный email или пароль'**
+  String get authErrorInvalidCredential;
+
+  /// No description provided for @authErrorEmailInUse.
+  ///
+  /// In ru, this message translates to:
+  /// **'Email уже используется'**
+  String get authErrorEmailInUse;
+
+  /// No description provided for @authErrorWeakPassword.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пароль: минимум 8 символов, буква и цифра'**
+  String get authErrorWeakPassword;
+
+  /// No description provided for @authErrorDisposableEmail.
+  ///
+  /// In ru, this message translates to:
+  /// **'Временные email-адреса не допускаются'**
+  String get authErrorDisposableEmail;
+
+  /// No description provided for @authErrorTooManyRequests.
+  ///
+  /// In ru, this message translates to:
+  /// **'Слишком много попыток. Попробуйте позже'**
+  String get authErrorTooManyRequests;
+
+  /// No description provided for @authErrorNetwork.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ошибка сети. Проверьте соединение'**
+  String get authErrorNetwork;
+
+  /// No description provided for @authErrorGeneric.
+  ///
+  /// In ru, this message translates to:
+  /// **'Что-то пошло не так. Попробуйте ещё раз'**
+  String get authErrorGeneric;
+
   /// No description provided for @predictorTitle.
   ///
   /// In ru, this message translates to:
@@ -175,6 +451,24 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Нет ближайшей гонки для предикта'**
   String get predictorNoUpcoming;
+
+  /// No description provided for @predictorMoveToTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Поставить {driver}'**
+  String predictorMoveToTitle(String driver);
+
+  /// No description provided for @predictorMoveToHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Обмен с этой позицией — остальные не сдвигаются'**
+  String get predictorMoveToHint;
+
+  /// No description provided for @predictorCopyQualifyingToRace.
+  ///
+  /// In ru, this message translates to:
+  /// **'Установить как в квалификации'**
+  String get predictorCopyQualifyingToRace;
 
   /// No description provided for @predictorHistoryTitle.
   ///

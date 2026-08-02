@@ -96,6 +96,10 @@ abstract class PredictorWeekendDetailControllerBase with Store {
   Future<void> _loadQualifying() async {
     await runAsyncLoad<List<String>, PredictorSessionCompare>(
       fetch: () async {
+        final cached = weekend.actualQualifyingOrder;
+        if (cached != null && cached.isNotEmpty) {
+          return cached;
+        }
         try {
           final model = await _fetchQualifying(year: season, round: weekend.round);
           final results = model.raceTable.races.isEmpty
@@ -123,6 +127,10 @@ abstract class PredictorWeekendDetailControllerBase with Store {
   Future<void> _loadRace() async {
     await runAsyncLoad<List<String>, PredictorSessionCompare>(
       fetch: () async {
+        final cached = weekend.actualRaceOrder;
+        if (cached != null && cached.isNotEmpty) {
+          return cached;
+        }
         try {
           final model = await _fetchRaceResults(year: season, round: weekend.round);
           final results = model.raceTable.races.isEmpty

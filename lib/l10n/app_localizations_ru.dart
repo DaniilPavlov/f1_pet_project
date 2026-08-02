@@ -27,6 +27,153 @@ class AppLocalizationsRu extends AppLocalizations {
   String get navPredictor => 'Предикт';
 
   @override
+  String get navProfile => 'Профиль';
+
+  @override
+  String get profileTitle => 'Профиль';
+
+  @override
+  String get profileAccountSection => 'Аккаунт';
+
+  @override
+  String profileSignedInAs(String email) {
+    return 'Вы вошли как $email';
+  }
+
+  @override
+  String get profileNotSignedIn => 'Вы не авторизованы';
+
+  @override
+  String get profileSignIn => 'Войти';
+
+  @override
+  String get profileSignOut => 'Выйти';
+
+  @override
+  String get profileRegister => 'Зарегистрироваться';
+
+  @override
+  String get profilePredictorSection => 'Предиктор';
+
+  @override
+  String get profilePredictorOpen => 'Открыть предиктор';
+
+  @override
+  String get profilePredictorRequiresAuth =>
+      'Войдите, чтобы пользоваться предиктором';
+
+  @override
+  String get profilePredictorRequiresVerification =>
+      'Подтвердите email, чтобы пользоваться предиктором';
+
+  @override
+  String get profileEmailNotVerified =>
+      'Мы отправили ссылку для подтверждения на вашу почту';
+
+  @override
+  String get profileResendVerification => 'Отправить ещё раз';
+
+  @override
+  String get profileRefreshVerification => 'Я подтвердил';
+
+  @override
+  String get profileVerificationSent => 'Письмо отправлено';
+
+  @override
+  String get profileStillNotVerified => 'Email ещё не подтверждён';
+
+  @override
+  String get profileEmailVerified => 'Email подтверждён';
+
+  @override
+  String get profileAppearanceSection => 'Внешний вид';
+
+  @override
+  String get profileTheme => 'Тема';
+
+  @override
+  String get profileLanguage => 'Язык';
+
+  @override
+  String get profileNotificationsSection => 'Уведомления';
+
+  @override
+  String get profileRaceReminders => 'Напоминания о сессиях';
+
+  @override
+  String get profileRaceRemindersSubtitle => 'За 30 минут до старта';
+
+  @override
+  String get profileRaceRemindersDisabledByRemote =>
+      'Напоминания отключены удалённо';
+
+  @override
+  String get authSignInTitle => 'Вход';
+
+  @override
+  String get authRegisterTitle => 'Регистрация';
+
+  @override
+  String get authEmailLabel => 'Email';
+
+  @override
+  String get authPasswordLabel => 'Пароль';
+
+  @override
+  String get authNoAccount => 'Нет аккаунта? Зарегистрироваться';
+
+  @override
+  String get authHaveAccount => 'Уже есть аккаунт? Войти';
+
+  @override
+  String get authForgotPassword => 'Забыли пароль?';
+
+  @override
+  String get authPasswordResetSent => 'Письмо для сброса пароля отправлено';
+
+  @override
+  String get authErrorEmptyFields => 'Введите email и пароль';
+
+  @override
+  String get authErrorEmptyEmail => 'Введите email';
+
+  @override
+  String get authErrorInvalidEmail => 'Некорректный email';
+
+  @override
+  String get authErrorUserDisabled => 'Аккаунт отключён';
+
+  @override
+  String get authErrorUserNotFound => 'Аккаунт с таким email не найден';
+
+  @override
+  String get authErrorWrongPassword => 'Неверный пароль';
+
+  @override
+  String get authErrorInvalidCredential => 'Неверный email или пароль';
+
+  @override
+  String get authErrorEmailInUse => 'Email уже используется';
+
+  @override
+  String get authErrorWeakPassword =>
+      'Пароль: минимум 8 символов, буква и цифра';
+
+  @override
+  String get authErrorDisposableEmail =>
+      'Временные email-адреса не допускаются';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Слишком много попыток. Попробуйте позже';
+
+  @override
+  String get authErrorNetwork => 'Ошибка сети. Проверьте соединение';
+
+  @override
+  String get authErrorGeneric => 'Что-то пошло не так. Попробуйте ещё раз';
+
+  @override
   String get predictorTitle => 'Предиктор';
 
   @override
@@ -51,6 +198,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get predictorNoUpcoming => 'Нет ближайшей гонки для предикта';
+
+  @override
+  String predictorMoveToTitle(String driver) {
+    return 'Поставить $driver';
+  }
+
+  @override
+  String get predictorMoveToHint =>
+      'Обмен с этой позицией — остальные не сдвигаются';
+
+  @override
+  String get predictorCopyQualifyingToRace => 'Установить как в квалификации';
 
   @override
   String get predictorHistoryTitle => 'История сезона';

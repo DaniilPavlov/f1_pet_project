@@ -55,7 +55,7 @@ void main() {
             Provider<ThemeController>.value(value: theme),
           ],
           child: Scaffold(
-            appBar: const CustomAppBar(title: 'Home'),
+            appBar: const CustomAppBar(title: 'Home', showPreferences: true),
             body: const SizedBox.shrink(),
           ),
         ),

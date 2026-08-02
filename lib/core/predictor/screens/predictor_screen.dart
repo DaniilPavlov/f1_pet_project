@@ -10,8 +10,11 @@ import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/containers/red_border_container.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
+import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
+import 'package:f1_pet_project/core/predictor/components/predictor_auth_gate.dart';
 import 'package:f1_pet_project/core/predictor/components/predictor_driver_tile.dart';
 import 'package:f1_pet_project/core/predictor/components/predictor_history_tile.dart';
+import 'package:f1_pet_project/core/predictor/components/predictor_position_picker.dart';
 import 'package:f1_pet_project/core/predictor/components/predictor_weekend_header.dart';
 import 'package:f1_pet_project/core/predictor/controllers/predictor_screen_controller/predictor_screen_controller.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_season_summary.dart';
@@ -34,46 +37,50 @@ class PredictorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localeController = context.read<LocaleController>();
+    return PredictorAuthGate(
+      child: Observer(
+        builder: (context) {
+          final localeCode = context.read<LocaleController>().locale.languageCode;
 
-    return Observer(
-      builder: (context) {
-        final localeCode = localeController.locale.languageCode;
+          return Provider<PredictorScreenController>(
+            key: ValueKey('predictor_$localeCode'),
+            create: (context) => PredictorScreenController(
+              predictorRepository: context.read<PredictorRepository>(),
+              scheduleRepository: context.read<ScheduleRepository>(),
+              driverCatalogRepository: context.read<DriverCatalogRepository>(),
+              standingsRepository: context.read<CurrentStandingsRepository>(),
+              raceWeekendRepository: context.read<RaceWeekendRepository>(),
+              dataRefresh: context.read<AppDataRefresh>(),
+            )..load(),
+            dispose: (_, controller) => controller.dispose(),
+            child: Scaffold(
+              appBar: CustomAppBar(
+                title: context.l10n.predictorTitle,
+                onPop: () => context.router.maybePop(),
+              ),
+              body: SafeArea(
+                child: Observer(
+                  builder: (context) {
+                    final controller = context.read<PredictorScreenController>();
+                    if (controller.screenError != null) {
+                      return ErrorBody(
+                        onTap: controller.refreshAll,
+                        title: controller.screenError!.title,
+                        subtitle: controller.screenError!.subtitle,
+                      );
+                    }
+                    if (!controller.allDataIsLoaded) {
+                      return const CustomLoadingIndicator();
+                    }
 
-        return Provider<PredictorScreenController>(
-          key: ValueKey('predictor_$localeCode'),
-          create: (context) => PredictorScreenController(
-            predictorRepository: context.read<PredictorRepository>(),
-            scheduleRepository: context.read<ScheduleRepository>(),
-            driverCatalogRepository: context.read<DriverCatalogRepository>(),
-            raceWeekendRepository: context.read<RaceWeekendRepository>(),
-            dataRefresh: context.read<AppDataRefresh>(),
-          )..load(),
-          dispose: (_, controller) => controller.dispose(),
-          child: Scaffold(
-            appBar: CustomAppBar(title: context.l10n.predictorTitle),
-            body: SafeArea(
-              child: Observer(
-                builder: (context) {
-                  final controller = context.read<PredictorScreenController>();
-                  if (controller.screenError != null) {
-                    return ErrorBody(
-                      onTap: controller.refreshAll,
-                      title: controller.screenError!.title,
-                      subtitle: controller.screenError!.subtitle,
-                    );
-                  }
-                  if (!controller.allDataIsLoaded) {
-                    return const CustomLoadingIndicator();
-                  }
-
-                  return _PredictorBody(controller: controller);
-                },
+                    return _PredictorBody(controller: controller);
+                  },
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
@@ -97,6 +104,7 @@ class _PredictorBody extends StatelessWidget {
             ? controller.draftQualifyingOrder
             : controller.draftRaceOrder;
         final byId = controller.driversById;
+        final constructorsById = controller.constructorsByDriverId;
         final prediction = controller.currentPrediction;
         final waitingResults = locked &&
             prediction != null &&
@@ -187,6 +195,33 @@ class _PredictorBody extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (selectedGrid == PredictorGridKind.race && !locked)
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(
+                        StaticData.defaultHorizontalPadding,
+                        0,
+                        StaticData.defaultHorizontalPadding,
+                        8,
+                      ),
+                      sliver: SliverToBoxAdapter(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton(
+                            onPressed: controller.copyQualifyingToRace,
+                            style: TextButton.styleFrom(
+                              foregroundColor: AppTheme.red,
+                              padding: EdgeInsets.zero,
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Text(
+                              context.l10n.predictorCopyQualifyingToRace,
+                              style: AppStyles.caption.copyWith(color: AppTheme.red),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   if (prediction != null &&
                       (prediction.qualiPoints != null || prediction.racePoints != null))
                     SliverPadding(
@@ -226,7 +261,25 @@ class _PredictorBody extends StatelessWidget {
                           key: ValueKey('${selectedGrid.name}_$id'),
                           index: index,
                           driver: driver,
+                          constructor: constructorsById[id],
                           enabled: !locked,
+                          onTap: locked
+                              ? null
+                              : () async {
+                                  final label = (driver.code?.isNotEmpty ?? false)
+                                      ? driver.code!
+                                      : driver.familyName;
+                                  final toIndex = await showPredictorPositionPicker(
+                                    context: context,
+                                    itemCount: order.length,
+                                    currentIndex: index,
+                                    driverLabel: label,
+                                  );
+                                  if (toIndex == null || !context.mounted) {
+                                    return;
+                                  }
+                                  await controller.moveDraftTo(fromIndex: index, toIndex: toIndex);
+                                },
                         );
                       },
                     ),

@@ -56,6 +56,28 @@ void main() {
     });
   });
 
+  group('defaultPredictorOrder', () {
+    test('orders by championship then appends missing roster drivers', () {
+      expect(
+        defaultPredictorOrder(
+          rosterIds: const ['a', 'b', 'c', 'd'],
+          championshipOrder: const ['c', 'a'],
+        ),
+        ['c', 'a', 'b', 'd'],
+      );
+    });
+
+    test('falls back to roster when standings empty', () {
+      expect(
+        defaultPredictorOrder(
+          rosterIds: const ['a', 'b'],
+          championshipOrder: const [],
+        ),
+        ['a', 'b'],
+      );
+    });
+  });
+
   group('PredictorLock', () {
     RacesModel copyRace({RaceDateModel? qualifying}) {
       final base = ControllerFixtures.race;

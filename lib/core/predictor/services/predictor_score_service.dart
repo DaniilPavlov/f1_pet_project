@@ -2,7 +2,7 @@ import 'package:f1_pet_project/core/predictor/models/predictor_weekend_predictio
 import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
 import 'package:f1_pet_project/core/results/models/results_model.dart';
 
-/// Подсчёт очков предиктора: 1 очко за совпадение места.
+/// Strategy (статический scoring): 1 очко за точное совпадение места.
 abstract final class PredictorScoreService {
   /// Сравнивает предсказанный порядок с фактическим (индекс 0 = 1 место).
   static int scoreOrders({
@@ -42,27 +42,40 @@ abstract final class PredictorScoreService {
   }
 
   /// Обновляет очки уикенда по доступным результатам (пересчёт из предикта).
+  ///
+  /// Также кэширует [PredictorWeekendPrediction.actualQualifyingOrder] /
+  /// [PredictorWeekendPrediction.actualRaceOrder].
   static PredictorWeekendPrediction applyResults({
     required PredictorWeekendPrediction weekend,
     List<QualifyingResultsModel>? qualifyingResults,
     List<ResultsModel>? raceResults,
+    List<String>? actualQualifyingOrder,
+    List<String>? actualRaceOrder,
     DateTime? now,
   }) {
     var next = weekend;
     final scoredAt = now ?? DateTime.now();
 
-    if (qualifyingResults != null && qualifyingResults.isNotEmpty) {
-      final actual = qualifyingActualOrder(qualifyingResults);
+    final qualiActual =
+        actualQualifyingOrder ??
+        (qualifyingResults != null && qualifyingResults.isNotEmpty
+            ? qualifyingActualOrder(qualifyingResults)
+            : null);
+    if (qualiActual != null && qualiActual.isNotEmpty) {
       next = next.copyWith(
-        qualiPoints: scoreOrders(predicted: weekend.qualifyingOrder, actualByPosition: actual),
+        qualiPoints: scoreOrders(predicted: weekend.qualifyingOrder, actualByPosition: qualiActual),
+        actualQualifyingOrder: qualiActual,
         scoredAt: scoredAt,
       );
     }
 
-    if (raceResults != null && raceResults.isNotEmpty) {
-      final actual = raceActualOrder(raceResults);
+    final raceActual =
+        actualRaceOrder ??
+        (raceResults != null && raceResults.isNotEmpty ? raceActualOrder(raceResults) : null);
+    if (raceActual != null && raceActual.isNotEmpty) {
       next = next.copyWith(
-        racePoints: scoreOrders(predicted: weekend.raceOrder, actualByPosition: actual),
+        racePoints: scoreOrders(predicted: weekend.raceOrder, actualByPosition: raceActual),
+        actualRaceOrder: raceActual,
         scoredAt: scoredAt,
       );
     }

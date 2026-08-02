@@ -27,6 +27,151 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navPredictor => 'Predict';
 
   @override
+  String get navProfile => 'Profile';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get profileAccountSection => 'Account';
+
+  @override
+  String profileSignedInAs(String email) {
+    return 'Signed in as $email';
+  }
+
+  @override
+  String get profileNotSignedIn => 'Not signed in';
+
+  @override
+  String get profileSignIn => 'Sign in';
+
+  @override
+  String get profileSignOut => 'Sign out';
+
+  @override
+  String get profileRegister => 'Create account';
+
+  @override
+  String get profilePredictorSection => 'Predictor';
+
+  @override
+  String get profilePredictorOpen => 'Open predictor';
+
+  @override
+  String get profilePredictorRequiresAuth => 'Sign in to use the predictor';
+
+  @override
+  String get profilePredictorRequiresVerification =>
+      'Confirm your email to use the predictor';
+
+  @override
+  String get profileEmailNotVerified =>
+      'We sent a confirmation link to your email';
+
+  @override
+  String get profileResendVerification => 'Resend email';
+
+  @override
+  String get profileRefreshVerification => 'I\'ve confirmed';
+
+  @override
+  String get profileVerificationSent => 'Confirmation email sent';
+
+  @override
+  String get profileStillNotVerified => 'Email is still not confirmed';
+
+  @override
+  String get profileEmailVerified => 'Email confirmed';
+
+  @override
+  String get profileAppearanceSection => 'Appearance';
+
+  @override
+  String get profileTheme => 'Theme';
+
+  @override
+  String get profileLanguage => 'Language';
+
+  @override
+  String get profileNotificationsSection => 'Notifications';
+
+  @override
+  String get profileRaceReminders => 'Race reminders';
+
+  @override
+  String get profileRaceRemindersSubtitle => '30 minutes before sessions';
+
+  @override
+  String get profileRaceRemindersDisabledByRemote =>
+      'Reminders are disabled remotely';
+
+  @override
+  String get authSignInTitle => 'Sign in';
+
+  @override
+  String get authRegisterTitle => 'Create account';
+
+  @override
+  String get authEmailLabel => 'Email';
+
+  @override
+  String get authPasswordLabel => 'Password';
+
+  @override
+  String get authNoAccount => 'No account? Register';
+
+  @override
+  String get authHaveAccount => 'Already have an account? Sign in';
+
+  @override
+  String get authForgotPassword => 'Forgot password?';
+
+  @override
+  String get authPasswordResetSent => 'Password reset email sent';
+
+  @override
+  String get authErrorEmptyFields => 'Enter email and password';
+
+  @override
+  String get authErrorEmptyEmail => 'Enter email';
+
+  @override
+  String get authErrorInvalidEmail => 'Invalid email';
+
+  @override
+  String get authErrorUserDisabled => 'This account is disabled';
+
+  @override
+  String get authErrorUserNotFound => 'No account with this email';
+
+  @override
+  String get authErrorWrongPassword => 'Wrong password';
+
+  @override
+  String get authErrorInvalidCredential => 'Wrong email or password';
+
+  @override
+  String get authErrorEmailInUse => 'Email is already in use';
+
+  @override
+  String get authErrorWeakPassword =>
+      'Password: at least 8 characters, with a letter and a number';
+
+  @override
+  String get authErrorDisposableEmail =>
+      'Temporary email addresses are not allowed';
+
+  @override
+  String get authErrorTooManyRequests => 'Too many attempts. Try later';
+
+  @override
+  String get authErrorNetwork => 'Network error. Check connection';
+
+  @override
+  String get authErrorGeneric => 'Something went wrong. Try again';
+
+  @override
   String get predictorTitle => 'Predictor';
 
   @override
@@ -51,6 +196,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get predictorNoUpcoming => 'No upcoming race to predict';
+
+  @override
+  String predictorMoveToTitle(String driver) {
+    return 'Place $driver';
+  }
+
+  @override
+  String get predictorMoveToHint => 'Swap with that position — others stay put';
+
+  @override
+  String get predictorCopyQualifyingToRace => 'Set same as qualifying';
 
   @override
   String get predictorHistoryTitle => 'Season history';

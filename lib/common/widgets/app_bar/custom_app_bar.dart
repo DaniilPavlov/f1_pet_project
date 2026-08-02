@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 
 /// Кастомный AppBar с логотипом или заголовком и кнопкой «назад».
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({this.title, this.onPop, this.onShare, this.showPreferences = true, super.key});
+  const CustomAppBar({this.title, this.onPop, this.onShare, this.showPreferences = false, super.key});
   final String? title;
 
   final VoidCallback? onPop;

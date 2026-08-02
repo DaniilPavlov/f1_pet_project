@@ -5,6 +5,9 @@ import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
 
 /// Корневой scaffold с нижней навигацией и вкладками.
+///
+/// Meta `hideBottomNav: true` на вложенном маршруте скрывает баннер + NavBar
+/// (например экраны входа / регистрации в Profile).
 @RoutePage()
 class ScaffoldWithNavBarScreen extends StatelessWidget {
   const ScaffoldWithNavBarScreen({super.key});
@@ -18,15 +21,24 @@ class ScaffoldWithNavBarScreen extends StatelessWidget {
         ResultsRouter(),
         ScheduleRouter(),
         NewsRouter(),
-        PredictorRouter(),
+        ProfileRouter(),
       ],
       bottomNavigationBuilder: (_, tabsRouter) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            LiveSessionBanner(onTap: () => tabsRouter.setActiveIndex(1)),
-            NavBar(tabsRouter: tabsRouter),
-          ],
+        return ListenableBuilder(
+          listenable: tabsRouter,
+          builder: (context, _) {
+            final hideNav = tabsRouter.topRoute.meta['hideBottomNav'] == true;
+            if (hideNav) {
+              return const SizedBox.shrink();
+            }
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                LiveSessionBanner(onTap: () => tabsRouter.setActiveIndex(1)),
+                NavBar(tabsRouter: tabsRouter),
+              ],
+            );
+          },
         );
       },
     );

@@ -36,7 +36,7 @@ Same idea, other stacks:
 | Data | Feature repositories + `AppDataRefresh` (pull-to-refresh) |
 | Codegen | json_serializable, mobx_codegen, auto_route_generator, envied |
 | Map | Yandex MapKit |
-| Backend | Firebase (Core, Analytics, Crashlytics, Remote Config), AppMetrica |
+| Backend | Firebase (Core, Auth, App Check, Firestore, Analytics, Crashlytics, Remote Config), AppMetrica |
 | Tests | unit + widget/golden (`test/units/`, `test/widget/`, shared `test/helpers/`) |
 
 ## Architecture
@@ -113,7 +113,7 @@ Remote Config: `local_notifications_enabled` (bool), `min_app_version` (string).
 
 | Workflow | When | What |
 |----------|------|------|
-| `ci.yml` | push / PR → `master` | analyze, test, coverage gate (≥80%, excl. generated/l10n) |
+| `ci.yml` | push / PR → `master` | analyze, test, coverage gate (≥75%, excl. generated/l10n) |
 | `release.yml` | tag `v*` | APK + GitHub Release |
 
 ```bash

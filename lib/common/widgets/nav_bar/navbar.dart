@@ -14,7 +14,7 @@ class NavBar extends StatelessWidget {
   const NavBar({this.tabsRouter, super.key});
   final TabsRouter? tabsRouter;
 
-  static const _tabNames = ['home', 'results', 'schedule', 'news', 'predictor'];
+  static const _tabNames = ['home', 'results', 'schedule', 'news', 'profile'];
 
   void _switchTab(BuildContext context, int index) {
     final router = tabsRouter;
@@ -71,7 +71,7 @@ class NavBar extends StatelessWidget {
                 ),
                 NavBarItem(
                   imageAsset: Assets.navBar.helmet,
-                  title: context.l10n.navPredictor,
+                  title: context.l10n.navProfile,
                   isSelected: tabsRouter?.activeIndex == 4,
                   onPressed: () => _switchTab(context, 4),
                   iconSize: 26,

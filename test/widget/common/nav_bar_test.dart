@@ -40,7 +40,7 @@ void main() {
       expect(find.text(l10n.navResults), findsOneWidget);
       expect(find.text(l10n.navCalendar), findsOneWidget);
       expect(find.text(l10n.navNews), findsOneWidget);
-      expect(find.text(l10n.navPredictor), findsOneWidget);
+      expect(find.text(l10n.navProfile), findsOneWidget);
       expect(find.text(l10n.navCircuits), findsNothing);
 
       for (final label in [
@@ -48,7 +48,7 @@ void main() {
         l10n.navResults,
         l10n.navCalendar,
         l10n.navNews,
-        l10n.navPredictor,
+        l10n.navProfile,
       ]) {
         await tester.tap(find.text(label));
         await tester.pump();
@@ -59,7 +59,7 @@ void main() {
         'results',
         'schedule',
         'news',
-        'predictor',
+        'profile',
       ]);
     });
   });

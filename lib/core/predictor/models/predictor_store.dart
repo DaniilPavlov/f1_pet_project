@@ -1,12 +1,13 @@
 import 'package:f1_pet_project/core/predictor/models/predictor_season.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_weekend_prediction.dart';
 
-/// Корневой локальный документ предиктора (все сезоны).
+/// Агрегат всех сезонов предиктора в памяти (Firestore хранит по сезонам).
 class PredictorStore {
   const PredictorStore({required this.seasons});
 
   factory PredictorStore.empty() => const PredictorStore(seasons: {});
 
+  /// Разбор единого JSON (тесты / legacy); runtime грузит сезоны по одному.
   factory PredictorStore.fromJson(Map<String, dynamic> json) {
     final rawSeasons = json['seasons'];
     final seasons = <String, PredictorSeason>{};
@@ -23,12 +24,15 @@ class PredictorStore {
 
   final Map<String, PredictorSeason> seasons;
 
+  /// Сезон по году или `null`.
   PredictorSeason? season(String year) => seasons[year];
 
+  /// Уикенд сезона по round или `null`.
   PredictorWeekendPrediction? weekend({required String year, required String round}) {
     return seasons[year]?.weekends[round];
   }
 
+  /// Иммутабельно вставляет/заменяет уикенд в сезоне.
   PredictorStore upsertWeekend({
     required String year,
     required PredictorWeekendPrediction weekend,

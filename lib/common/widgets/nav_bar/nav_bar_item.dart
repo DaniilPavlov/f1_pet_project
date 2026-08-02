@@ -7,16 +7,18 @@ import 'package:flutter/material.dart';
 /// Элемент нижней навигации с иконкой и подписью.
 class NavBarItem extends StatelessWidget {
   const NavBarItem({
-    required this.imageAsset,
     required this.title,
+    this.imageAsset,
+    this.icon,
     this.isSelected = false,
     this.onPressed,
     this.iconSize = _defaultIconSize,
     this.edgeCropScale = _defaultEdgeCropScale,
     super.key,
-  });
+  }) : assert(imageAsset != null || icon != null, 'Provide imageAsset or icon');
 
-  final String imageAsset;
+  final String? imageAsset;
+  final IconData? icon;
   final String title;
   final VoidCallback? onPressed;
   final bool isSelected;
@@ -52,20 +54,22 @@ class NavBarItem extends StatelessWidget {
               SizedBox(
                 width: iconSize,
                 height: iconSize,
-                child: ClipRect(
-                  child: Transform.scale(
-                    scale: edgeCropScale,
-                    child: Image.asset(
-                      imageAsset,
-                      width: iconSize,
-                      height: iconSize,
-                      fit: BoxFit.contain,
-                      color: color,
-                      colorBlendMode: BlendMode.srcIn,
-                      gaplessPlayback: true,
-                    ),
-                  ),
-                ),
+                child: icon != null
+                    ? Icon(icon, size: iconSize * 0.9, color: color)
+                    : ClipRect(
+                        child: Transform.scale(
+                          scale: edgeCropScale,
+                          child: Image.asset(
+                            imageAsset!,
+                            width: iconSize,
+                            height: iconSize,
+                            fit: BoxFit.contain,
+                            color: color,
+                            colorBlendMode: BlendMode.srcIn,
+                            gaplessPlayback: true,
+                          ),
+                        ),
+                      ),
               ),
               const SizedBox(height: 4),
               Text(
