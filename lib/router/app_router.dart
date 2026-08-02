@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:f1_pet_project/router/home_route.dart';
-import 'package:f1_pet_project/router/news_route.dart';
+import 'package:f1_pet_project/router/predictor_route.dart';
 import 'package:f1_pet_project/router/profile_route.dart';
 import 'package:f1_pet_project/router/results_route.dart';
 import 'package:f1_pet_project/router/schedule_route.dart';
@@ -15,7 +15,7 @@ class AppRouter extends RootStackRouter {
       path: '/',
       page: ScaffoldWithNavBarRoute.page,
       initial: true,
-      children: [homeRoute, resultsRoute, scheduleRoute, newsRoute, profileRoute],
+      children: [homeRoute, resultsRoute, scheduleRoute, predictorRoute, profileRoute],
     ),
   ];
 

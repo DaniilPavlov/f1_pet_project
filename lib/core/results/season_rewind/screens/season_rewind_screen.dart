@@ -119,7 +119,6 @@ class SeasonRewindScreen extends StatelessWidget {
                             selectedIndex: controller.selectedRoundIndex,
                             isPlaying: controller.isPlaying,
                             canPlay: controller.canPlay,
-                            isLoadingStandings: standingsLoading,
                             onDragStart: controller.stopPlayback,
                             onCommitRound: (index) {
                               controller

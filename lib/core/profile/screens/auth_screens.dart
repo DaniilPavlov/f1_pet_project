@@ -3,6 +3,7 @@ import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart';
@@ -13,6 +14,7 @@ import 'package:f1_pet_project/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 /// Экран входа по email/password.
@@ -60,18 +62,25 @@ class AuthRegisterScreen extends StatelessWidget {
 class _AuthForm extends StatelessWidget {
   const _AuthForm({required this.isRegister});
 
+  /// Высота [BlackButton]: vertical padding 12×2 + [AppStyles.h3] fontSize 25.
+  static const _authPrimaryButtonHeight = 49.0;
+
   final bool isRegister;
 
   @override
   Widget build(BuildContext context) {
     final controller = context.read<AuthController>();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: StaticData.defaultHorizontalPadding, vertical: 16),
-      child: Observer(
-        builder: (context) {
-          final error = authErrorMessage(context.l10n, controller.errorKey);
-          return SingleChildScrollView(
+    return Observer(
+      builder: (context) {
+        final error = authErrorMessage(context.l10n, controller.errorKey);
+        final loading = controller.isLoading;
+        return Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: StaticData.defaultHorizontalPadding,
+            vertical: 16,
+          ),
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -80,6 +89,7 @@ class _AuthForm extends StatelessWidget {
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   onChanged: controller.setEmail,
+                  disabled: loading,
                 ),
                 const SizedBox(height: 12),
                 CustomTextField(
@@ -87,12 +97,16 @@ class _AuthForm extends StatelessWidget {
                   obscureText: true,
                   textInputAction: TextInputAction.done,
                   onChanged: controller.setPassword,
-                  onSubmit: (_) async {
-                    final ok = isRegister ? await controller.register() : await controller.signIn();
-                    if (ok && context.mounted) {
-                      context.router.popUntilRouteWithName(ProfileRoute.name);
-                    }
-                  },
+                  disabled: loading,
+                  onSubmit: loading
+                      ? null
+                      : (_) async {
+                          FocusScope.of(context).unfocus();
+                          final ok = isRegister ? await controller.register() : await controller.signIn();
+                          if (ok && context.mounted) {
+                            context.router.popUntilRouteWithName(ProfileRoute.name);
+                          }
+                        },
                 ),
                 if (error.isNotEmpty) ...[
                   const SizedBox(height: 8),
@@ -103,9 +117,10 @@ class _AuthForm extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: controller.isLoading
+                      onPressed: loading
                           ? null
                           : () async {
+                              FocusScope.of(context).unfocus();
                               final ok = await controller.sendPasswordReset();
                               if (!context.mounted) {
                                 return;
@@ -122,19 +137,32 @@ class _AuthForm extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: 12),
-                BlackButton(
-                  text: isRegister ? context.l10n.profileRegister : context.l10n.profileSignIn,
-                  isDisabled: controller.isLoading,
-                  onTap: () async {
-                    final ok = isRegister ? await controller.register() : await controller.signIn();
-                    if (ok && context.mounted) {
-                      context.router.popUntilRouteWithName(ProfileRoute.name);
-                    }
-                  },
-                ),
+                if (loading)
+                  SizedBox(
+                    height: _authPrimaryButtonHeight,
+                    child: Center(
+                      child: LoadingAnimationWidget.twistingDots(
+                        leftDotColor: context.colors.black,
+                        rightDotColor: AppTheme.red,
+                        size: 28,
+                      ),
+                    ),
+                  )
+                else
+                  BlackButton(
+                    text: isRegister ? context.l10n.profileRegister : context.l10n.profileSignIn,
+                    isDisabled: false,
+                    onTap: () async {
+                      FocusScope.of(context).unfocus();
+                      final ok = isRegister ? await controller.register() : await controller.signIn();
+                      if (ok && context.mounted) {
+                        context.router.popUntilRouteWithName(ProfileRoute.name);
+                      }
+                    },
+                  ),
                 const SizedBox(height: 16),
                 TextButton(
-                  onPressed: controller.isLoading
+                  onPressed: loading
                       ? null
                       : () {
                           if (isRegister) {
@@ -151,9 +179,9 @@ class _AuthForm extends StatelessWidget {
                 ),
               ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 part 'notifications_preference_controller.g.dart';
 
-/// Observer (MobX): пользовательский флаг локальных race reminders поверх Remote Config.
+/// Observer (MobX): пользовательские флаги локальных race reminders поверх Remote Config.
 class NotificationsPreferenceController = NotificationsPreferenceControllerBase
     with _$NotificationsPreferenceController;
 
@@ -22,8 +22,11 @@ abstract class NotificationsPreferenceControllerBase with Store {
        _remoteConfig = remoteConfig,
        _analytics = analytics;
 
-  /// Ключ SharedPreferences для user-toggle.
+  /// Ключ SharedPreferences для user-toggle сессий.
   static const prefsKey = 'race_reminders_user_enabled';
+
+  /// Ключ SharedPreferences: напоминания о free practice (FP1–FP3).
+  static const practicePrefsKey = 'race_reminders_practice_enabled';
 
   final RaceReminderService _reminders;
   final RemoteConfigService _remoteConfig;
@@ -32,6 +35,10 @@ abstract class NotificationsPreferenceControllerBase with Store {
   /// Локальный выбор пользователя (независимо от Remote Config).
   @observable
   bool userEnabled = true;
+
+  /// Напоминания о практиках (имеет смысл только при [effectivelyEnabled]).
+  @observable
+  bool practiceRemindersEnabled = true;
 
   /// Prefs уже прочитаны.
   @observable
@@ -45,15 +52,24 @@ abstract class NotificationsPreferenceControllerBase with Store {
   @computed
   bool get effectivelyEnabled => remoteAllows && userEnabled;
 
-  /// Можно ли трогать switch в UI.
+  /// Можно ли трогать главный switch в UI.
   @computed
   bool get canToggle => remoteAllows;
+
+  /// Можно ли трогать switch практик (только когда сессионные reminders включены).
+  @computed
+  bool get canTogglePractice => effectivelyEnabled;
+
+  /// Значение switch практик в UI: выключен, если выключены reminders в целом.
+  @computed
+  bool get practiceRemindersEffectivelyEnabled => effectivelyEnabled && practiceRemindersEnabled;
 
   /// Читает prefs при старте.
   @action
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     userEnabled = prefs.getBool(prefsKey) ?? true;
+    practiceRemindersEnabled = prefs.getBool(practicePrefsKey) ?? true;
     isLoaded = true;
   }
 
@@ -71,9 +87,31 @@ abstract class NotificationsPreferenceControllerBase with Store {
     if (enabled) {
       await _reminders.init();
       await _reminders.requestPermissions();
-      await _reminders.sync(locale: locale);
+      await resync(locale: locale);
     } else {
       await _reminders.cancelAll();
     }
+  }
+
+  /// Вкл/выкл напоминаний о практиках (игнорируется, если сессии выключены).
+  @action
+  Future<void> setPracticeRemindersEnabled({required bool enabled, required Locale locale}) async {
+    if (!effectivelyEnabled) {
+      return;
+    }
+    practiceRemindersEnabled = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(practicePrefsKey, enabled);
+    _analytics.log(PracticeReminderToggled(enabled: enabled));
+    await resync(locale: locale);
+  }
+
+  /// Пересобирает расписание с учётом флага практик.
+  Future<void> resync({required Locale locale}) async {
+    if (!effectivelyEnabled) {
+      await _reminders.cancelAll();
+      return;
+    }
+    await _reminders.sync(locale: locale, includePractices: practiceRemindersEnabled);
   }
 }

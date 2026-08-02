@@ -32,6 +32,22 @@ mixin _$NotificationsPreferenceController
     () => super.canToggle,
     name: 'NotificationsPreferenceControllerBase.canToggle',
   )).value;
+  Computed<bool>? _$canTogglePracticeComputed;
+
+  @override
+  bool get canTogglePractice => (_$canTogglePracticeComputed ??= Computed<bool>(
+    () => super.canTogglePractice,
+    name: 'NotificationsPreferenceControllerBase.canTogglePractice',
+  )).value;
+  Computed<bool>? _$practiceRemindersEffectivelyEnabledComputed;
+
+  @override
+  bool get practiceRemindersEffectivelyEnabled =>
+      (_$practiceRemindersEffectivelyEnabledComputed ??= Computed<bool>(
+        () => super.practiceRemindersEffectivelyEnabled,
+        name:
+            'NotificationsPreferenceControllerBase.practiceRemindersEffectivelyEnabled',
+      )).value;
 
   late final _$userEnabledAtom = Atom(
     name: 'NotificationsPreferenceControllerBase.userEnabled',
@@ -49,6 +65,28 @@ mixin _$NotificationsPreferenceController
     _$userEnabledAtom.reportWrite(value, super.userEnabled, () {
       super.userEnabled = value;
     });
+  }
+
+  late final _$practiceRemindersEnabledAtom = Atom(
+    name: 'NotificationsPreferenceControllerBase.practiceRemindersEnabled',
+    context: context,
+  );
+
+  @override
+  bool get practiceRemindersEnabled {
+    _$practiceRemindersEnabledAtom.reportRead();
+    return super.practiceRemindersEnabled;
+  }
+
+  @override
+  set practiceRemindersEnabled(bool value) {
+    _$practiceRemindersEnabledAtom.reportWrite(
+      value,
+      super.practiceRemindersEnabled,
+      () {
+        super.practiceRemindersEnabled = value;
+      },
+    );
   }
 
   late final _$isLoadedAtom = Atom(
@@ -91,14 +129,32 @@ mixin _$NotificationsPreferenceController
     );
   }
 
+  late final _$setPracticeRemindersEnabledAsyncAction = AsyncAction(
+    'NotificationsPreferenceControllerBase.setPracticeRemindersEnabled',
+    context: context,
+  );
+
+  @override
+  Future<void> setPracticeRemindersEnabled({
+    required bool enabled,
+    required Locale locale,
+  }) {
+    return _$setPracticeRemindersEnabledAsyncAction.run(
+      () => super.setPracticeRemindersEnabled(enabled: enabled, locale: locale),
+    );
+  }
+
   @override
   String toString() {
     return '''
 userEnabled: ${userEnabled},
+practiceRemindersEnabled: ${practiceRemindersEnabled},
 isLoaded: ${isLoaded},
 remoteAllows: ${remoteAllows},
 effectivelyEnabled: ${effectivelyEnabled},
-canToggle: ${canToggle}
+canToggle: ${canToggle},
+canTogglePractice: ${canTogglePractice},
+practiceRemindersEffectivelyEnabled: ${practiceRemindersEffectivelyEnabled}
     ''';
   }
 }

@@ -22,6 +22,7 @@ enum PredictorDetailSession { qualifying, race }
 class PredictorWeekendDetailController = PredictorWeekendDetailControllerBase
     with _$PredictorWeekendDetailController;
 
+/// Загружает actuals квалификации/гонки и строит [PredictorSessionCompare].
 abstract class PredictorWeekendDetailControllerBase with Store {
   PredictorWeekendDetailControllerBase({
     required this.season,

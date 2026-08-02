@@ -17,6 +17,21 @@ mixin _$NewsScreenController on NewsScreenControllerBase, Store {
         () => super.screenError,
         name: 'NewsScreenControllerBase.screenError',
       )).value;
+  Computed<List<NewsArticleModel>>? _$visibleArticlesComputed;
+
+  @override
+  List<NewsArticleModel> get visibleArticles =>
+      (_$visibleArticlesComputed ??= Computed<List<NewsArticleModel>>(
+        () => super.visibleArticles,
+        name: 'NewsScreenControllerBase.visibleArticles',
+      )).value;
+  Computed<bool>? _$canRevealMoreComputed;
+
+  @override
+  bool get canRevealMore => (_$canRevealMoreComputed ??= Computed<bool>(
+    () => super.canRevealMore,
+    name: 'NewsScreenControllerBase.canRevealMore',
+  )).value;
 
   late final _$articlesAtom = Atom(
     name: 'NewsScreenControllerBase.articles',
@@ -33,6 +48,24 @@ mixin _$NewsScreenController on NewsScreenControllerBase, Store {
   set articles(AsyncValue<List<NewsArticleModel>> value) {
     _$articlesAtom.reportWrite(value, super.articles, () {
       super.articles = value;
+    });
+  }
+
+  late final _$visibleCountAtom = Atom(
+    name: 'NewsScreenControllerBase.visibleCount',
+    context: context,
+  );
+
+  @override
+  int get visibleCount {
+    _$visibleCountAtom.reportRead();
+    return super.visibleCount;
+  }
+
+  @override
+  set visibleCount(int value) {
+    _$visibleCountAtom.reportWrite(value, super.visibleCount, () {
+      super.visibleCount = value;
     });
   }
 
@@ -58,11 +91,31 @@ mixin _$NewsScreenController on NewsScreenControllerBase, Store {
     return _$refreshAllAsyncAction.run(() => super.refreshAll());
   }
 
+  late final _$NewsScreenControllerBaseActionController = ActionController(
+    name: 'NewsScreenControllerBase',
+    context: context,
+  );
+
+  @override
+  void revealMore() {
+    final _$actionInfo = _$NewsScreenControllerBaseActionController.startAction(
+      name: 'NewsScreenControllerBase.revealMore',
+    );
+    try {
+      return super.revealMore();
+    } finally {
+      _$NewsScreenControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 articles: ${articles},
-screenError: ${screenError}
+visibleCount: ${visibleCount},
+screenError: ${screenError},
+visibleArticles: ${visibleArticles},
+canRevealMore: ${canRevealMore}
     ''';
   }
 }

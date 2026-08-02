@@ -9,30 +9,29 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i23;
-import 'package:collection/collection.dart' as _i28;
+import 'package:auto_route/auto_route.dart' as _i22;
+import 'package:collection/collection.dart' as _i27;
 import 'package:f1_pet_project/common/widgets/scaffold_with_navbar_screen.dart'
-    as _i20;
-import 'package:f1_pet_project/core/circuits/models/circuit_model.dart' as _i24;
+    as _i19;
+import 'package:f1_pet_project/core/circuits/models/circuit_model.dart' as _i23;
 import 'package:f1_pet_project/core/circuits/screens/circuit_screen.dart'
     as _i2;
 import 'package:f1_pet_project/core/circuits/screens/circuits_screen.dart'
     as _i3;
 import 'package:f1_pet_project/core/home/screens/home_screen.dart' as _i11;
-import 'package:f1_pet_project/core/news/screens/news_screen.dart' as _i12;
 import 'package:f1_pet_project/core/predictor/models/predictor_season.dart'
-    as _i29;
+    as _i28;
 import 'package:f1_pet_project/core/predictor/models/predictor_weekend_prediction.dart'
-    as _i30;
+    as _i29;
 import 'package:f1_pet_project/core/predictor/screens/predictor_screen.dart'
-    as _i13;
+    as _i12;
 import 'package:f1_pet_project/core/predictor/screens/predictor_season_history_screen.dart'
-    as _i14;
+    as _i13;
 import 'package:f1_pet_project/core/predictor/screens/predictor_weekend_detail_screen.dart'
-    as _i15;
+    as _i14;
 import 'package:f1_pet_project/core/profile/screens/auth_screens.dart' as _i1;
 import 'package:f1_pet_project/core/profile/screens/profile_screen.dart'
-    as _i16;
+    as _i15;
 import 'package:f1_pet_project/core/results/constructor/screens/constructor_screen.dart'
     as _i4;
 import 'package:f1_pet_project/core/results/driver/screens/driver_screen.dart'
@@ -45,32 +44,32 @@ import 'package:f1_pet_project/core/results/h2h/screens/h2h_screen.dart' as _i8;
 import 'package:f1_pet_project/core/results/hall_of_fame/screens/hall_of_fame_screen.dart'
     as _i9;
 import 'package:f1_pet_project/core/results/race_info/screens/race_info_screen.dart'
-    as _i17;
+    as _i16;
 import 'package:f1_pet_project/core/results/race_search/screens/race_search_screen.dart'
-    as _i18;
+    as _i17;
 import 'package:f1_pet_project/core/results/screens/results_screen.dart'
-    as _i19;
+    as _i18;
 import 'package:f1_pet_project/core/results/season_rewind/screens/season_rewind_screen.dart'
-    as _i22;
-import 'package:f1_pet_project/core/schedule/models/races_model.dart' as _i31;
-import 'package:f1_pet_project/core/schedule/screens/schedule_screen.dart'
     as _i21;
+import 'package:f1_pet_project/core/schedule/models/races_model.dart' as _i30;
+import 'package:f1_pet_project/core/schedule/screens/schedule_screen.dart'
+    as _i20;
 import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart'
-    as _i26;
+    as _i25;
 import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart'
-    as _i27;
+    as _i26;
 import 'package:f1_pet_project/router/nested_router_screens.dart' as _i10;
-import 'package:flutter/material.dart' as _i25;
+import 'package:flutter/material.dart' as _i24;
 
 /// generated route for
 /// [_i1.AuthRegisterScreen]
-class AuthRegisterRoute extends _i23.PageRouteInfo<void> {
-  const AuthRegisterRoute({List<_i23.PageRouteInfo>? children})
+class AuthRegisterRoute extends _i22.PageRouteInfo<void> {
+  const AuthRegisterRoute({List<_i22.PageRouteInfo>? children})
     : super(AuthRegisterRoute.name, initialChildren: children);
 
   static const String name = 'AuthRegisterRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i1.AuthRegisterScreen();
@@ -80,13 +79,13 @@ class AuthRegisterRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i1.AuthSignInScreen]
-class AuthSignInRoute extends _i23.PageRouteInfo<void> {
-  const AuthSignInRoute({List<_i23.PageRouteInfo>? children})
+class AuthSignInRoute extends _i22.PageRouteInfo<void> {
+  const AuthSignInRoute({List<_i22.PageRouteInfo>? children})
     : super(AuthSignInRoute.name, initialChildren: children);
 
   static const String name = 'AuthSignInRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i1.AuthSignInScreen();
@@ -96,11 +95,11 @@ class AuthSignInRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.CircuitScreen]
-class CircuitRoute extends _i23.PageRouteInfo<CircuitRouteArgs> {
+class CircuitRoute extends _i22.PageRouteInfo<CircuitRouteArgs> {
   CircuitRoute({
-    required _i24.CircuitModel circuitModel,
-    _i25.Key? key,
-    List<_i23.PageRouteInfo>? children,
+    required _i23.CircuitModel circuitModel,
+    _i24.Key? key,
+    List<_i22.PageRouteInfo>? children,
   }) : super(
          CircuitRoute.name,
          args: CircuitRouteArgs(circuitModel: circuitModel, key: key),
@@ -109,7 +108,7 @@ class CircuitRoute extends _i23.PageRouteInfo<CircuitRouteArgs> {
 
   static const String name = 'CircuitRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<CircuitRouteArgs>();
@@ -121,9 +120,9 @@ class CircuitRoute extends _i23.PageRouteInfo<CircuitRouteArgs> {
 class CircuitRouteArgs {
   const CircuitRouteArgs({required this.circuitModel, this.key});
 
-  final _i24.CircuitModel circuitModel;
+  final _i23.CircuitModel circuitModel;
 
-  final _i25.Key? key;
+  final _i24.Key? key;
 
   @override
   String toString() {
@@ -143,13 +142,13 @@ class CircuitRouteArgs {
 
 /// generated route for
 /// [_i3.CircuitsScreen]
-class CircuitsRoute extends _i23.PageRouteInfo<void> {
-  const CircuitsRoute({List<_i23.PageRouteInfo>? children})
+class CircuitsRoute extends _i22.PageRouteInfo<void> {
+  const CircuitsRoute({List<_i22.PageRouteInfo>? children})
     : super(CircuitsRoute.name, initialChildren: children);
 
   static const String name = 'CircuitsRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i3.CircuitsScreen();
@@ -159,12 +158,12 @@ class CircuitsRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.ConstructorScreen]
-class ConstructorRoute extends _i23.PageRouteInfo<ConstructorRouteArgs> {
+class ConstructorRoute extends _i22.PageRouteInfo<ConstructorRouteArgs> {
   ConstructorRoute({
-    required _i26.ConstructorModel constructor,
-    List<_i27.DriverModel> currentDrivers = const [],
-    _i25.Key? key,
-    List<_i23.PageRouteInfo>? children,
+    required _i25.ConstructorModel constructor,
+    List<_i26.DriverModel> currentDrivers = const [],
+    _i24.Key? key,
+    List<_i22.PageRouteInfo>? children,
   }) : super(
          ConstructorRoute.name,
          args: ConstructorRouteArgs(
@@ -177,7 +176,7 @@ class ConstructorRoute extends _i23.PageRouteInfo<ConstructorRouteArgs> {
 
   static const String name = 'ConstructorRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<ConstructorRouteArgs>();
@@ -197,11 +196,11 @@ class ConstructorRouteArgs {
     this.key,
   });
 
-  final _i26.ConstructorModel constructor;
+  final _i25.ConstructorModel constructor;
 
-  final List<_i27.DriverModel> currentDrivers;
+  final List<_i26.DriverModel> currentDrivers;
 
-  final _i25.Key? key;
+  final _i24.Key? key;
 
   @override
   String toString() {
@@ -213,7 +212,7 @@ class ConstructorRouteArgs {
     if (identical(this, other)) return true;
     if (other is! ConstructorRouteArgs) return false;
     return constructor == other.constructor &&
-        const _i28.ListEquality<_i27.DriverModel>().equals(
+        const _i27.ListEquality<_i26.DriverModel>().equals(
           currentDrivers,
           other.currentDrivers,
         ) &&
@@ -223,18 +222,18 @@ class ConstructorRouteArgs {
   @override
   int get hashCode =>
       constructor.hashCode ^
-      const _i28.ListEquality<_i27.DriverModel>().hash(currentDrivers) ^
+      const _i27.ListEquality<_i26.DriverModel>().hash(currentDrivers) ^
       key.hashCode;
 }
 
 /// generated route for
 /// [_i5.DriverScreen]
-class DriverRoute extends _i23.PageRouteInfo<DriverRouteArgs> {
+class DriverRoute extends _i22.PageRouteInfo<DriverRouteArgs> {
   DriverRoute({
-    required _i27.DriverModel driver,
-    List<_i26.ConstructorModel> currentConstructors = const [],
-    _i25.Key? key,
-    List<_i23.PageRouteInfo>? children,
+    required _i26.DriverModel driver,
+    List<_i25.ConstructorModel> currentConstructors = const [],
+    _i24.Key? key,
+    List<_i22.PageRouteInfo>? children,
   }) : super(
          DriverRoute.name,
          args: DriverRouteArgs(
@@ -247,7 +246,7 @@ class DriverRoute extends _i23.PageRouteInfo<DriverRouteArgs> {
 
   static const String name = 'DriverRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<DriverRouteArgs>();
@@ -267,11 +266,11 @@ class DriverRouteArgs {
     this.key,
   });
 
-  final _i27.DriverModel driver;
+  final _i26.DriverModel driver;
 
-  final List<_i26.ConstructorModel> currentConstructors;
+  final List<_i25.ConstructorModel> currentConstructors;
 
-  final _i25.Key? key;
+  final _i24.Key? key;
 
   @override
   String toString() {
@@ -283,7 +282,7 @@ class DriverRouteArgs {
     if (identical(this, other)) return true;
     if (other is! DriverRouteArgs) return false;
     return driver == other.driver &&
-        const _i28.ListEquality<_i26.ConstructorModel>().equals(
+        const _i27.ListEquality<_i25.ConstructorModel>().equals(
           currentConstructors,
           other.currentConstructors,
         ) &&
@@ -293,7 +292,7 @@ class DriverRouteArgs {
   @override
   int get hashCode =>
       driver.hashCode ^
-      const _i28.ListEquality<_i26.ConstructorModel>().hash(
+      const _i27.ListEquality<_i25.ConstructorModel>().hash(
         currentConstructors,
       ) ^
       key.hashCode;
@@ -301,13 +300,13 @@ class DriverRouteArgs {
 
 /// generated route for
 /// [_i6.FinishStatusScreen]
-class FinishStatusRoute extends _i23.PageRouteInfo<void> {
-  const FinishStatusRoute({List<_i23.PageRouteInfo>? children})
+class FinishStatusRoute extends _i22.PageRouteInfo<void> {
+  const FinishStatusRoute({List<_i22.PageRouteInfo>? children})
     : super(FinishStatusRoute.name, initialChildren: children);
 
   static const String name = 'FinishStatusRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i6.FinishStatusScreen();
@@ -317,13 +316,13 @@ class FinishStatusRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i7.H2hConstructorsScreen]
-class H2hConstructorsRoute extends _i23.PageRouteInfo<void> {
-  const H2hConstructorsRoute({List<_i23.PageRouteInfo>? children})
+class H2hConstructorsRoute extends _i22.PageRouteInfo<void> {
+  const H2hConstructorsRoute({List<_i22.PageRouteInfo>? children})
     : super(H2hConstructorsRoute.name, initialChildren: children);
 
   static const String name = 'H2hConstructorsRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i7.H2hConstructorsScreen();
@@ -333,13 +332,13 @@ class H2hConstructorsRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i8.H2hScreen]
-class H2hRoute extends _i23.PageRouteInfo<void> {
-  const H2hRoute({List<_i23.PageRouteInfo>? children})
+class H2hRoute extends _i22.PageRouteInfo<void> {
+  const H2hRoute({List<_i22.PageRouteInfo>? children})
     : super(H2hRoute.name, initialChildren: children);
 
   static const String name = 'H2hRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i8.H2hScreen();
@@ -349,13 +348,13 @@ class H2hRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i9.HallOfFameScreen]
-class HallOfFameRoute extends _i23.PageRouteInfo<void> {
-  const HallOfFameRoute({List<_i23.PageRouteInfo>? children})
+class HallOfFameRoute extends _i22.PageRouteInfo<void> {
+  const HallOfFameRoute({List<_i22.PageRouteInfo>? children})
     : super(HallOfFameRoute.name, initialChildren: children);
 
   static const String name = 'HallOfFameRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i9.HallOfFameScreen();
@@ -365,13 +364,13 @@ class HallOfFameRoute extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i10.HomeRouterScreen]
-class HomeRouter extends _i23.PageRouteInfo<void> {
-  const HomeRouter({List<_i23.PageRouteInfo>? children})
+class HomeRouter extends _i22.PageRouteInfo<void> {
+  const HomeRouter({List<_i22.PageRouteInfo>? children})
     : super(HomeRouter.name, initialChildren: children);
 
   static const String name = 'HomeRouter';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i10.HomeRouterScreen();
@@ -381,13 +380,13 @@ class HomeRouter extends _i23.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i11.HomeScreen]
-class HomeRoute extends _i23.PageRouteInfo<void> {
-  const HomeRoute({List<_i23.PageRouteInfo>? children})
+class HomeRoute extends _i22.PageRouteInfo<void> {
+  const HomeRoute({List<_i22.PageRouteInfo>? children})
     : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i11.HomeScreen();
@@ -396,61 +395,45 @@ class HomeRoute extends _i23.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i10.NewsRouterScreen]
-class NewsRouter extends _i23.PageRouteInfo<void> {
-  const NewsRouter({List<_i23.PageRouteInfo>? children})
-    : super(NewsRouter.name, initialChildren: children);
+/// [_i10.PredictorRouterScreen]
+class PredictorRouter extends _i22.PageRouteInfo<void> {
+  const PredictorRouter({List<_i22.PageRouteInfo>? children})
+    : super(PredictorRouter.name, initialChildren: children);
 
-  static const String name = 'NewsRouter';
+  static const String name = 'PredictorRouter';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
-      return const _i10.NewsRouterScreen();
+      return const _i10.PredictorRouterScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i12.NewsScreen]
-class NewsRoute extends _i23.PageRouteInfo<void> {
-  const NewsRoute({List<_i23.PageRouteInfo>? children})
-    : super(NewsRoute.name, initialChildren: children);
-
-  static const String name = 'NewsRoute';
-
-  static _i23.PageInfo page = _i23.PageInfo(
-    name,
-    builder: (data) {
-      return const _i12.NewsScreen();
-    },
-  );
-}
-
-/// generated route for
-/// [_i13.PredictorScreen]
-class PredictorRoute extends _i23.PageRouteInfo<void> {
-  const PredictorRoute({List<_i23.PageRouteInfo>? children})
+/// [_i12.PredictorScreen]
+class PredictorRoute extends _i22.PageRouteInfo<void> {
+  const PredictorRoute({List<_i22.PageRouteInfo>? children})
     : super(PredictorRoute.name, initialChildren: children);
 
   static const String name = 'PredictorRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
-      return const _i13.PredictorScreen();
+      return const _i12.PredictorScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i14.PredictorSeasonHistoryScreen]
+/// [_i13.PredictorSeasonHistoryScreen]
 class PredictorSeasonHistoryRoute
-    extends _i23.PageRouteInfo<PredictorSeasonHistoryRouteArgs> {
+    extends _i22.PageRouteInfo<PredictorSeasonHistoryRouteArgs> {
   PredictorSeasonHistoryRoute({
-    required _i29.PredictorSeason season,
-    _i25.Key? key,
-    List<_i23.PageRouteInfo>? children,
+    required _i28.PredictorSeason season,
+    _i24.Key? key,
+    List<_i22.PageRouteInfo>? children,
   }) : super(
          PredictorSeasonHistoryRoute.name,
          args: PredictorSeasonHistoryRouteArgs(season: season, key: key),
@@ -459,11 +442,11 @@ class PredictorSeasonHistoryRoute
 
   static const String name = 'PredictorSeasonHistoryRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<PredictorSeasonHistoryRouteArgs>();
-      return _i14.PredictorSeasonHistoryScreen(
+      return _i13.PredictorSeasonHistoryScreen(
         season: args.season,
         key: args.key,
       );
@@ -474,9 +457,9 @@ class PredictorSeasonHistoryRoute
 class PredictorSeasonHistoryRouteArgs {
   const PredictorSeasonHistoryRouteArgs({required this.season, this.key});
 
-  final _i29.PredictorSeason season;
+  final _i28.PredictorSeason season;
 
-  final _i25.Key? key;
+  final _i24.Key? key;
 
   @override
   String toString() {
@@ -495,14 +478,14 @@ class PredictorSeasonHistoryRouteArgs {
 }
 
 /// generated route for
-/// [_i15.PredictorWeekendDetailScreen]
+/// [_i14.PredictorWeekendDetailScreen]
 class PredictorWeekendDetailRoute
-    extends _i23.PageRouteInfo<PredictorWeekendDetailRouteArgs> {
+    extends _i22.PageRouteInfo<PredictorWeekendDetailRouteArgs> {
   PredictorWeekendDetailRoute({
     required String season,
-    required _i30.PredictorWeekendPrediction weekend,
-    _i25.Key? key,
-    List<_i23.PageRouteInfo>? children,
+    required _i29.PredictorWeekendPrediction weekend,
+    _i24.Key? key,
+    List<_i22.PageRouteInfo>? children,
   }) : super(
          PredictorWeekendDetailRoute.name,
          args: PredictorWeekendDetailRouteArgs(
@@ -515,11 +498,11 @@ class PredictorWeekendDetailRoute
 
   static const String name = 'PredictorWeekendDetailRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<PredictorWeekendDetailRouteArgs>();
-      return _i15.PredictorWeekendDetailScreen(
+      return _i14.PredictorWeekendDetailScreen(
         season: args.season,
         weekend: args.weekend,
         key: args.key,
@@ -537,9 +520,9 @@ class PredictorWeekendDetailRouteArgs {
 
   final String season;
 
-  final _i30.PredictorWeekendPrediction weekend;
+  final _i29.PredictorWeekendPrediction weekend;
 
-  final _i25.Key? key;
+  final _i24.Key? key;
 
   @override
   String toString() {
@@ -561,13 +544,13 @@ class PredictorWeekendDetailRouteArgs {
 
 /// generated route for
 /// [_i10.ProfileRouterScreen]
-class ProfileRouter extends _i23.PageRouteInfo<void> {
-  const ProfileRouter({List<_i23.PageRouteInfo>? children})
+class ProfileRouter extends _i22.PageRouteInfo<void> {
+  const ProfileRouter({List<_i22.PageRouteInfo>? children})
     : super(ProfileRouter.name, initialChildren: children);
 
   static const String name = 'ProfileRouter';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i10.ProfileRouterScreen();
@@ -576,28 +559,28 @@ class ProfileRouter extends _i23.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i16.ProfileScreen]
-class ProfileRoute extends _i23.PageRouteInfo<void> {
-  const ProfileRoute({List<_i23.PageRouteInfo>? children})
+/// [_i15.ProfileScreen]
+class ProfileRoute extends _i22.PageRouteInfo<void> {
+  const ProfileRoute({List<_i22.PageRouteInfo>? children})
     : super(ProfileRoute.name, initialChildren: children);
 
   static const String name = 'ProfileRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
-      return const _i16.ProfileScreen();
+      return const _i15.ProfileScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i17.RaceInfoScreen]
-class RaceInfoRoute extends _i23.PageRouteInfo<RaceInfoRouteArgs> {
+/// [_i16.RaceInfoScreen]
+class RaceInfoRoute extends _i22.PageRouteInfo<RaceInfoRouteArgs> {
   RaceInfoRoute({
-    required _i31.RacesModel raceModel,
-    _i25.Key? key,
-    List<_i23.PageRouteInfo>? children,
+    required _i30.RacesModel raceModel,
+    _i24.Key? key,
+    List<_i22.PageRouteInfo>? children,
   }) : super(
          RaceInfoRoute.name,
          args: RaceInfoRouteArgs(raceModel: raceModel, key: key),
@@ -606,11 +589,11 @@ class RaceInfoRoute extends _i23.PageRouteInfo<RaceInfoRouteArgs> {
 
   static const String name = 'RaceInfoRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<RaceInfoRouteArgs>();
-      return _i17.RaceInfoScreen(raceModel: args.raceModel, key: args.key);
+      return _i16.RaceInfoScreen(raceModel: args.raceModel, key: args.key);
     },
   );
 }
@@ -618,9 +601,9 @@ class RaceInfoRoute extends _i23.PageRouteInfo<RaceInfoRouteArgs> {
 class RaceInfoRouteArgs {
   const RaceInfoRouteArgs({required this.raceModel, this.key});
 
-  final _i31.RacesModel raceModel;
+  final _i30.RacesModel raceModel;
 
-  final _i25.Key? key;
+  final _i24.Key? key;
 
   @override
   String toString() {
@@ -639,30 +622,30 @@ class RaceInfoRouteArgs {
 }
 
 /// generated route for
-/// [_i18.RaceSearchScreen]
-class RaceSearchRoute extends _i23.PageRouteInfo<void> {
-  const RaceSearchRoute({List<_i23.PageRouteInfo>? children})
+/// [_i17.RaceSearchScreen]
+class RaceSearchRoute extends _i22.PageRouteInfo<void> {
+  const RaceSearchRoute({List<_i22.PageRouteInfo>? children})
     : super(RaceSearchRoute.name, initialChildren: children);
 
   static const String name = 'RaceSearchRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
-      return const _i18.RaceSearchScreen();
+      return const _i17.RaceSearchScreen();
     },
   );
 }
 
 /// generated route for
 /// [_i10.ResultsRouterScreen]
-class ResultsRouter extends _i23.PageRouteInfo<void> {
-  const ResultsRouter({List<_i23.PageRouteInfo>? children})
+class ResultsRouter extends _i22.PageRouteInfo<void> {
+  const ResultsRouter({List<_i22.PageRouteInfo>? children})
     : super(ResultsRouter.name, initialChildren: children);
 
   static const String name = 'ResultsRouter';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i10.ResultsRouterScreen();
@@ -671,46 +654,46 @@ class ResultsRouter extends _i23.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i19.ResultsScreen]
-class ResultsRoute extends _i23.PageRouteInfo<void> {
-  const ResultsRoute({List<_i23.PageRouteInfo>? children})
+/// [_i18.ResultsScreen]
+class ResultsRoute extends _i22.PageRouteInfo<void> {
+  const ResultsRoute({List<_i22.PageRouteInfo>? children})
     : super(ResultsRoute.name, initialChildren: children);
 
   static const String name = 'ResultsRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
-      return const _i19.ResultsScreen();
+      return const _i18.ResultsScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i20.ScaffoldWithNavBarScreen]
-class ScaffoldWithNavBarRoute extends _i23.PageRouteInfo<void> {
-  const ScaffoldWithNavBarRoute({List<_i23.PageRouteInfo>? children})
+/// [_i19.ScaffoldWithNavBarScreen]
+class ScaffoldWithNavBarRoute extends _i22.PageRouteInfo<void> {
+  const ScaffoldWithNavBarRoute({List<_i22.PageRouteInfo>? children})
     : super(ScaffoldWithNavBarRoute.name, initialChildren: children);
 
   static const String name = 'ScaffoldWithNavBarRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
-      return const _i20.ScaffoldWithNavBarScreen();
+      return const _i19.ScaffoldWithNavBarScreen();
     },
   );
 }
 
 /// generated route for
 /// [_i10.ScheduleRouterScreen]
-class ScheduleRouter extends _i23.PageRouteInfo<void> {
-  const ScheduleRouter({List<_i23.PageRouteInfo>? children})
+class ScheduleRouter extends _i22.PageRouteInfo<void> {
+  const ScheduleRouter({List<_i22.PageRouteInfo>? children})
     : super(ScheduleRouter.name, initialChildren: children);
 
   static const String name = 'ScheduleRouter';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
       return const _i10.ScheduleRouterScreen();
@@ -719,33 +702,33 @@ class ScheduleRouter extends _i23.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i21.ScheduleScreen]
-class ScheduleRoute extends _i23.PageRouteInfo<void> {
-  const ScheduleRoute({List<_i23.PageRouteInfo>? children})
+/// [_i20.ScheduleScreen]
+class ScheduleRoute extends _i22.PageRouteInfo<void> {
+  const ScheduleRoute({List<_i22.PageRouteInfo>? children})
     : super(ScheduleRoute.name, initialChildren: children);
 
   static const String name = 'ScheduleRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
-      return const _i21.ScheduleScreen();
+      return const _i20.ScheduleScreen();
     },
   );
 }
 
 /// generated route for
-/// [_i22.SeasonRewindScreen]
-class SeasonRewindRoute extends _i23.PageRouteInfo<void> {
-  const SeasonRewindRoute({List<_i23.PageRouteInfo>? children})
+/// [_i21.SeasonRewindScreen]
+class SeasonRewindRoute extends _i22.PageRouteInfo<void> {
+  const SeasonRewindRoute({List<_i22.PageRouteInfo>? children})
     : super(SeasonRewindRoute.name, initialChildren: children);
 
   static const String name = 'SeasonRewindRoute';
 
-  static _i23.PageInfo page = _i23.PageInfo(
+  static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
-      return const _i22.SeasonRewindScreen();
+      return const _i21.SeasonRewindScreen();
     },
   );
 }

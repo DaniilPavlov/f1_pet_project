@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 
-/// Маршрут вкладки «Профиль» (+ auth и предиктор).
+/// Маршрут вкладки «Профиль» (+ auth).
 ///
 /// `hideBottomNav: true` на sign-in/register — читает [ScaffoldWithNavBarScreen].
 final AutoRoute profileRoute = AutoRoute(
@@ -11,16 +11,5 @@ final AutoRoute profileRoute = AutoRoute(
     AutoRoute(path: '', page: ProfileRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
     AutoRoute(path: 'sign-in', page: AuthSignInRoute.page, meta: const <String, bool>{'hideBottomNav': true}),
     AutoRoute(path: 'register', page: AuthRegisterRoute.page, meta: const <String, bool>{'hideBottomNav': true}),
-    AutoRoute(path: 'predictor', page: PredictorRoute.page, meta: const <String, bool>{'hideBottomNav': false}),
-    AutoRoute(
-      path: 'predictor/season',
-      page: PredictorSeasonHistoryRoute.page,
-      meta: const <String, bool>{'hideBottomNav': false},
-    ),
-    AutoRoute(
-      path: 'predictor/weekend',
-      page: PredictorWeekendDetailRoute.page,
-      meta: const <String, bool>{'hideBottomNav': false},
-    ),
   ],
 );

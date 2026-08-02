@@ -150,7 +150,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     try {
       await reminders.init();
       await reminders.requestPermissions();
-      await reminders.sync(locale: localeController.locale);
+      await reminders.sync(
+        locale: localeController.locale,
+        includePractices: notificationPrefs.practiceRemindersEnabled,
+      );
       _remindersReady = true;
     } on Object catch (error, stackTrace) {
       logger.e('App reminders bootstrap failed', error: error, stackTrace: stackTrace);
@@ -170,7 +173,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       return;
     }
     if (_remindersReady) {
-      await reminders.sync(locale: locale);
+      await reminders.sync(
+        locale: locale,
+        includePractices: notificationPrefs.practiceRemindersEnabled,
+      );
     } else {
       await _startRemindersIfNeeded();
     }

@@ -116,12 +116,6 @@ abstract class AppLocalizations {
   /// **'Календарь'**
   String get navCalendar;
 
-  /// No description provided for @navNews.
-  ///
-  /// In ru, this message translates to:
-  /// **'Новости'**
-  String get navNews;
-
   /// No description provided for @navCircuits.
   ///
   /// In ru, this message translates to:
@@ -139,6 +133,18 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Профиль'**
   String get navProfile;
+
+  /// No description provided for @homeHeadlinesTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Новости'**
+  String get homeHeadlinesTitle;
+
+  /// No description provided for @homeScrollToNews.
+  ///
+  /// In ru, this message translates to:
+  /// **'К новостям'**
+  String get homeScrollToNews;
 
   /// No description provided for @profileTitle.
   ///
@@ -181,18 +187,6 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Зарегистрироваться'**
   String get profileRegister;
-
-  /// No description provided for @profilePredictorSection.
-  ///
-  /// In ru, this message translates to:
-  /// **'Предиктор'**
-  String get profilePredictorSection;
-
-  /// No description provided for @profilePredictorOpen.
-  ///
-  /// In ru, this message translates to:
-  /// **'Открыть предиктор'**
-  String get profilePredictorOpen;
 
   /// No description provided for @profilePredictorRequiresAuth.
   ///
@@ -283,6 +277,18 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Напоминания отключены удалённо'**
   String get profileRaceRemindersDisabledByRemote;
+
+  /// No description provided for @profilePracticeReminders.
+  ///
+  /// In ru, this message translates to:
+  /// **'Напоминания о практиках'**
+  String get profilePracticeReminders;
+
+  /// No description provided for @profilePracticeRemindersSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'FP1, FP2, FP3'**
+  String get profilePracticeRemindersSubtitle;
 
   /// No description provided for @authSignInTitle.
   ///
@@ -529,12 +535,6 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'{year} · {points} {points, plural, one{очко} few{очка} many{очков} other{очков}} · {races} {races, plural, one{гонка} few{гонки} many{гонок} other{гонок}}'**
   String predictorSeasonButton(String year, int points, int races);
-
-  /// No description provided for @newsTitle.
-  ///
-  /// In ru, this message translates to:
-  /// **'Новости'**
-  String get newsTitle;
 
   /// No description provided for @newsEmpty.
   ///

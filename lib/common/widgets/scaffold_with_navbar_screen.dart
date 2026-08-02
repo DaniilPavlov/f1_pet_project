@@ -20,7 +20,7 @@ class ScaffoldWithNavBarScreen extends StatelessWidget {
         HomeRouter(),
         ResultsRouter(),
         ScheduleRouter(),
-        NewsRouter(),
+        PredictorRouter(),
         ProfileRouter(),
       ],
       bottomNavigationBuilder: (_, tabsRouter) {

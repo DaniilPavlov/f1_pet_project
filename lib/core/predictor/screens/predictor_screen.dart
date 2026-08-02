@@ -38,6 +38,7 @@ class PredictorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PredictorAuthGate(
+      asTabRoot: true,
       child: Observer(
         builder: (context) {
           final localeCode = context.read<LocaleController>().locale.languageCode;
@@ -54,10 +55,7 @@ class PredictorScreen extends StatelessWidget {
             )..load(),
             dispose: (_, controller) => controller.dispose(),
             child: Scaffold(
-              appBar: CustomAppBar(
-                title: context.l10n.predictorTitle,
-                onPop: () => context.router.maybePop(),
-              ),
+              appBar: CustomAppBar(title: context.l10n.predictorTitle),
               body: SafeArea(
                 child: Observer(
                   builder: (context) {
@@ -209,14 +207,14 @@ class _PredictorBody extends StatelessWidget {
                           child: TextButton(
                             onPressed: controller.copyQualifyingToRace,
                             style: TextButton.styleFrom(
-                              foregroundColor: AppTheme.red,
+                              foregroundColor: context.colors.black,
                               padding: EdgeInsets.zero,
                               minimumSize: Size.zero,
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
                             child: Text(
                               context.l10n.predictorCopyQualifyingToRace,
-                              style: AppStyles.caption.copyWith(color: AppTheme.red),
+                              style: AppStyles.caption.copyWith(color: context.colors.black),
                             ),
                           ),
                         ),

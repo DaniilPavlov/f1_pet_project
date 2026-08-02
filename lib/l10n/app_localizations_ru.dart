@@ -18,9 +18,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get navCalendar => 'Календарь';
 
   @override
-  String get navNews => 'Новости';
-
-  @override
   String get navCircuits => 'Трассы';
 
   @override
@@ -28,6 +25,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get navProfile => 'Профиль';
+
+  @override
+  String get homeHeadlinesTitle => 'Новости';
+
+  @override
+  String get homeScrollToNews => 'К новостям';
 
   @override
   String get profileTitle => 'Профиль';
@@ -51,12 +54,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get profileRegister => 'Зарегистрироваться';
-
-  @override
-  String get profilePredictorSection => 'Предиктор';
-
-  @override
-  String get profilePredictorOpen => 'Открыть предиктор';
 
   @override
   String get profilePredictorRequiresAuth =>
@@ -106,6 +103,12 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get profileRaceRemindersDisabledByRemote =>
       'Напоминания отключены удалённо';
+
+  @override
+  String get profilePracticeReminders => 'Напоминания о практиках';
+
+  @override
+  String get profilePracticeRemindersSubtitle => 'FP1, FP2, FP3';
 
   @override
   String get authSignInTitle => 'Вход';
@@ -262,9 +265,6 @@ class AppLocalizationsRu extends AppLocalizations {
     );
     return '$year · $points $_temp0 · $races $_temp1';
   }
-
-  @override
-  String get newsTitle => 'Новости';
 
   @override
   String get newsEmpty => 'Новостей пока нет';

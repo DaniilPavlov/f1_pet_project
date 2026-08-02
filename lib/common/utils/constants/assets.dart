@@ -15,7 +15,6 @@ final class NavBarAssets {
   String get racingCar => 'assets/nav_bar/racing-car.png';
   String get lights => 'assets/nav_bar/lights.png';
   String get trophy => 'assets/nav_bar/trophy.png';
-  String get circuit => 'assets/nav_bar/circuit.png';
   String get helmet => 'assets/nav_bar/helmet.png';
 }
 

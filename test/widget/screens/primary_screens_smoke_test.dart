@@ -1,7 +1,6 @@
 import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
 import 'package:f1_pet_project/core/circuits/screens/circuit_screen.dart';
 import 'package:f1_pet_project/core/home/screens/home_screen.dart';
-import 'package:f1_pet_project/core/news/screens/news_screen.dart';
 import 'package:f1_pet_project/core/results/constructor/screens/constructor_screen.dart';
 import 'package:f1_pet_project/core/results/driver/screens/driver_screen.dart';
 import 'package:f1_pet_project/core/results/screens/results_screen.dart';
@@ -28,13 +27,6 @@ void main() {
 
       expect(find.byType(HomeScreen), findsOneWidget);
       expect(find.textContaining('Verstappen'), findsWidgets);
-    });
-
-    testWidgets('NewsScreen shows articles', (tester) async {
-      await tester.pumpScreenSmoke(const NewsScreen());
-
-      expect(find.text('Headline'), findsOneWidget);
-      expect(find.text(AppLocalizationsEn().newsTitle), findsOneWidget);
     });
 
     testWidgets('ScheduleScreen builds', (tester) async {

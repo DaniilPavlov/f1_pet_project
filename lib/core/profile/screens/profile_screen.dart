@@ -9,20 +9,18 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/theme/theme_controller.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
-import 'package:f1_pet_project/common/widgets/containers/red_border_container.dart';
 import 'package:f1_pet_project/core/predictor/repositories/predictor_repository.dart';
 import 'package:f1_pet_project/core/profile/controllers/notifications_preference_controller/notifications_preference_controller.dart';
 import 'package:f1_pet_project/core/profile/utils/auth_error_l10n.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:f1_pet_project/services/auth/auth_service.dart';
-import 'package:f1_pet_project/services/notifications/race_reminder_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
-/// Вкладка профиля: аккаунт, предиктор, тема/язык, уведомления.
+/// Вкладка профиля: аккаунт, тема/язык, уведомления.
 @RoutePage()
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -113,24 +111,6 @@ class ProfileScreen extends StatelessWidget {
                       },
                     ),
                   const SizedBox(height: 28),
-                  _SectionTitle(context.l10n.profilePredictorSection),
-                  const SizedBox(height: 8),
-                  if (user == null)
-                    Text(
-                      context.l10n.profilePredictorRequiresAuth,
-                      style: AppStyles.caption.copyWith(color: context.colors.textGray),
-                    )
-                  else if (!verified)
-                    Text(
-                      context.l10n.profilePredictorRequiresVerification,
-                      style: AppStyles.caption.copyWith(color: context.colors.textGray),
-                    )
-                  else
-                    RedBorderContainer(
-                      title: context.l10n.profilePredictorOpen,
-                      onTap: () => context.router.push(const PredictorRoute()),
-                    ),
-                  const SizedBox(height: 28),
                   _SectionTitle(context.l10n.profileAppearanceSection),
                   const SizedBox(height: 8),
                   const _ThemeRow(),
@@ -202,7 +182,7 @@ class _LocaleRow extends StatelessWidget {
             }
             final prefs = context.read<NotificationsPreferenceController>();
             if (prefs.effectivelyEnabled) {
-              await context.read<RaceReminderService>().sync(locale: localeController.locale);
+              await prefs.resync(locale: localeController.locale);
             }
           },
         );
@@ -222,6 +202,7 @@ class _NotificationsRow extends StatelessWidget {
     return Observer(
       builder: (context) {
         final canToggle = prefs.canToggle;
+        final canTogglePractice = prefs.canTogglePractice;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -242,6 +223,27 @@ class _NotificationsRow extends StatelessWidget {
               onChanged: !canToggle
                   ? null
                   : (value) => prefs.setEnabled(enabled: value, locale: localeController.locale),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                context.l10n.profilePracticeReminders,
+                style: AppStyles.body.copyWith(
+                  color: canTogglePractice ? context.colors.black : context.colors.textGray,
+                ),
+              ),
+              subtitle: Text(
+                context.l10n.profilePracticeRemindersSubtitle,
+                style: AppStyles.caption.copyWith(color: context.colors.textGray),
+              ),
+              value: prefs.practiceRemindersEffectivelyEnabled,
+              activeThumbColor: AppTheme.red,
+              onChanged: !canTogglePractice
+                  ? null
+                  : (value) => prefs.setPracticeRemindersEnabled(
+                      enabled: value,
+                      locale: localeController.locale,
+                    ),
             ),
           ],
         );
