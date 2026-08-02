@@ -157,8 +157,9 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
             }
             unawaited(
               widget.router.navigate(
-                CircuitsRouter(
+                ScheduleRouter(
                   children: [
+                    const ScheduleRoute(),
                     const CircuitsRoute(),
                     CircuitRoute(circuitModel: circuit),
                   ],

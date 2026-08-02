@@ -18,14 +18,14 @@ class ScheduleRouterScreen extends AutoRouter {
   const ScheduleRouterScreen({super.key});
 }
 
-/// Вложенный роутер раздела «Новости».
-@RoutePage(name: 'NewsRouter')
-class NewsRouterScreen extends AutoRouter {
-  const NewsRouterScreen({super.key});
+/// Вложенный роутер раздела «Предиктор».
+@RoutePage(name: 'PredictorRouter')
+class PredictorRouterScreen extends AutoRouter {
+  const PredictorRouterScreen({super.key});
 }
 
-/// Вложенный роутер раздела «Трассы».
-@RoutePage(name: 'CircuitsRouter')
-class CircuitsRouterScreen extends AutoRouter {
-  const CircuitsRouterScreen({super.key});
+/// Вложенный роутер раздела «Профиль».
+@RoutePage(name: 'ProfileRouter')
+class ProfileRouterScreen extends AutoRouter {
+  const ProfileRouterScreen({super.key});
 }

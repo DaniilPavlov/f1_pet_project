@@ -11,6 +11,8 @@ import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.da
 import 'package:f1_pet_project/core/circuits/stats/circuit_stats_repository.dart';
 import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
 import 'package:f1_pet_project/core/news/repositories/news_repository.dart';
+import 'package:f1_pet_project/core/predictor/repositories/predictor_repository.dart';
+import 'package:f1_pet_project/core/profile/controllers/notifications_preference_controller/notifications_preference_controller.dart';
 import 'package:f1_pet_project/core/results/constructor/repositories/constructor_career_repository.dart';
 import 'package:f1_pet_project/core/results/constructor/repositories/constructor_catalog_repository.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_career_repository.dart';
@@ -25,6 +27,7 @@ import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/api_loader.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:f1_pet_project/services/appmetrica/appmetrica_bootstrap.dart';
+import 'package:f1_pet_project/services/auth/auth_service.dart';
 import 'package:f1_pet_project/services/firebase/firebase_bootstrap.dart';
 import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
 import 'package:f1_pet_project/services/home_widget/app_widget_sync_service.dart';
@@ -51,6 +54,8 @@ Future<void> main() async {
   final standingsRepository = CurrentStandingsRepository();
   final driverCatalogRepository = DriverCatalogRepository();
   final constructorCatalogRepository = ConstructorCatalogRepository();
+  final authService = AuthService();
+  final predictorRepository = PredictorRepository(authService: authService);
   final wikipediaRepository = WikipediaPageImageRepository();
   final espnDio = AppDio.external();
   final espnNewsDio = AppDio.external(
@@ -80,6 +85,8 @@ Future<void> main() async {
         Provider(create: (_) => const ConstructorCareerRepository()),
         Provider<DriverCatalogRepository>.value(value: driverCatalogRepository),
         Provider<ConstructorCatalogRepository>.value(value: constructorCatalogRepository),
+        Provider<AuthService>.value(value: authService),
+        Provider<PredictorRepository>.value(value: predictorRepository),
         Provider<EspnScoreboardRepository>.value(value: scoreboardRepository),
         Provider(
           create: (_) => LiveWeekendController(scoreboardRepository: scoreboardRepository)..loadScoreboard(),
@@ -104,6 +111,13 @@ Future<void> main() async {
           create: (_) => RaceReminderService(
             scheduleRepository: scheduleRepository,
             remoteConfig: remoteConfig,
+          ),
+        ),
+        Provider(
+          create: (context) => NotificationsPreferenceController(
+            reminders: context.read<RaceReminderService>(),
+            remoteConfig: remoteConfig,
+            analytics: analytics,
           ),
         ),
         Provider(

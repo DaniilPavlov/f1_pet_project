@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/utils/constants/assets.dart';
 import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
@@ -62,7 +63,7 @@ class ShareRaceResultsCard extends StatelessWidget {
           const SizedBox(height: 20),
           Row(
             children: [
-              Image.asset('assets/app_logo.png', height: 18),
+              Image.asset(Assets.appLogo, height: 18),
               const SizedBox(width: 8),
               Text('F1 App', style: AppStyles.caption.copyWith(color: AppColors.light.textGray)),
             ],

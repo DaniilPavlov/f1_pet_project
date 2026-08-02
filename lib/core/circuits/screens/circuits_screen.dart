@@ -33,7 +33,10 @@ class CircuitsScreen extends StatelessWidget {
       )..loadCircuits(),
       dispose: (_, controller) => controller.dispose(),
       child: Scaffold(
-        appBar: const CustomAppBar(),
+        appBar: CustomAppBar(
+          title: context.l10n.navCircuits,
+          onPop: () => context.router.maybePop(),
+        ),
         body: SafeArea(
           child: Observer(
             builder: (context) {

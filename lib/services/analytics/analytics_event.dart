@@ -32,7 +32,7 @@ final class ScreenView extends AnalyticsEvent {
 final class TabSwitched extends AnalyticsEvent {
   const TabSwitched({required this.tab});
 
-  /// Имя вкладки: home / results / schedule / news / circuits.
+  /// Имя вкладки: home / results / schedule / predictor / profile.
   final String tab;
 
   @override
@@ -233,6 +233,19 @@ final class RaceReminderToggled extends AnalyticsEvent {
 
   @override
   String get name => 'race_reminder_toggled';
+
+  @override
+  Map<String, Object> get params => {'enabled': enabled};
+}
+
+/// Пользователь включил / выключил напоминания о free practice.
+final class PracticeReminderToggled extends AnalyticsEvent {
+  const PracticeReminderToggled({required this.enabled});
+
+  final bool enabled;
+
+  @override
+  String get name => 'practice_reminder_toggled';
 
   @override
   Map<String, Object> get params => {'enabled': enabled};

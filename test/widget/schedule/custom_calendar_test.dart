@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/utils/constants/assets.dart';
 import 'package:f1_pet_project/common/widgets/custom_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,10 +25,10 @@ void main() {
           },
           imagePathCallback: (day) {
             if (isSameDay(day, selectedDay)) {
-              return 'assets/calendar/finish.png';
+              return Assets.calendar.finish;
             }
             if (day.day == 10) {
-              return 'assets/calendar/car.png';
+              return Assets.calendar.car;
             }
             if (day.day == 5) {
               return '';

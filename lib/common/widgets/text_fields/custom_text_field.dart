@@ -29,6 +29,7 @@ class CustomTextField extends StatefulWidget {
     this.textColor,
 
     this.readOnly = false,
+    this.obscureText = false,
     TextAlign? textAlign,
     EdgeInsets? scrollPadding,
     this.suffix,
@@ -56,6 +57,7 @@ class CustomTextField extends StatefulWidget {
   final TextAlign textAlign;
   final EdgeInsets scrollPadding;
   final bool readOnly;
+  final bool obscureText;
   final Widget? suffix;
   final BorderRadius? borderRadius;
 
@@ -123,7 +125,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     readOnly: widget.readOnly,
                     scrollPadding: widget.scrollPadding,
                     controller: widget.controller,
-                    maxLines: widget.maxLines,
+                    maxLines: widget.obscureText ? 1 : widget.maxLines,
                     keyboardType: widget.keyboardType,
                     textInputAction: widget.textInputAction,
                     onChanged: widget.onChanged,
@@ -144,6 +146,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     placeholder: widget.disabled ? null : widget.hintText,
                     enabled: !widget.disabled,
+                    obscureText: widget.obscureText,
                     placeholderStyle: AppStyles.caption.copyWith(color: context.colors.strokeGray),
                     textCapitalization: widget.textCapitalization,
                   ),
@@ -177,7 +180,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       textAlign: widget.textAlign,
                       onFieldSubmitted: widget.onSubmit,
                       focusNode: focusNode,
-                      maxLines: widget.maxLines,
+                      maxLines: widget.obscureText ? 1 : widget.maxLines,
+                      obscureText: widget.obscureText,
                       enabled: !widget.disabled,
                       decoration: InputDecoration(
                         isDense: true,

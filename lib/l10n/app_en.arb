@@ -3,9 +3,116 @@
   "navHome": "Home",
   "navResults": "Results",
   "navCalendar": "Calendar",
-  "navNews": "News",
   "navCircuits": "Circuits",
-  "newsTitle": "News",
+  "navPredictor": "Predict",
+  "navProfile": "Profile",
+  "homeHeadlinesTitle": "Headlines",
+  "homeScrollToNews": "Back to news",
+  "profileTitle": "Profile",
+  "profileAccountSection": "Account",
+  "profileSignedInAs": "Signed in as {email}",
+  "@profileSignedInAs": {
+    "placeholders": {
+      "email": { "type": "String" }
+    }
+  },
+  "profileNotSignedIn": "Not signed in",
+  "profileSignIn": "Sign in",
+  "profileSignOut": "Sign out",
+  "profileRegister": "Create account",
+  "profilePredictorRequiresAuth": "Sign in to use the predictor",
+  "profilePredictorRequiresVerification": "Confirm your email to use the predictor",
+  "profileEmailNotVerified": "We sent a confirmation link to your email",
+  "profileResendVerification": "Resend email",
+  "profileRefreshVerification": "I've confirmed",
+  "profileVerificationSent": "Confirmation email sent",
+  "profileStillNotVerified": "Email is still not confirmed",
+  "profileEmailVerified": "Email confirmed",
+  "profileAppearanceSection": "Appearance",
+  "profileTheme": "Theme",
+  "profileLanguage": "Language",
+  "profileNotificationsSection": "Notifications",
+  "profileRaceReminders": "Race reminders",
+  "profileRaceRemindersSubtitle": "30 minutes before sessions",
+  "profileRaceRemindersDisabledByRemote": "Reminders are disabled remotely",
+  "profilePracticeReminders": "Practice reminders",
+  "profilePracticeRemindersSubtitle": "FP1, FP2, FP3",
+  "authSignInTitle": "Sign in",
+  "authRegisterTitle": "Create account",
+  "authEmailLabel": "Email",
+  "authPasswordLabel": "Password",
+  "authNoAccount": "No account? Register",
+  "authHaveAccount": "Already have an account? Sign in",
+  "authForgotPassword": "Forgot password?",
+  "authPasswordResetSent": "Password reset email sent",
+  "authErrorEmptyFields": "Enter email and password",
+  "authErrorEmptyEmail": "Enter email",
+  "authErrorInvalidEmail": "Invalid email",
+  "authErrorUserDisabled": "This account is disabled",
+  "authErrorUserNotFound": "No account with this email",
+  "authErrorWrongPassword": "Wrong password",
+  "authErrorInvalidCredential": "Wrong email or password",
+  "authErrorEmailInUse": "Email is already in use",
+  "authErrorWeakPassword": "Password: at least 8 characters, with a letter and a number",
+  "authErrorDisposableEmail": "Temporary email addresses are not allowed",
+  "authErrorTooManyRequests": "Too many attempts. Try later",
+  "authErrorNetwork": "Network error. Check connection",
+  "authErrorGeneric": "Something went wrong. Try again",
+  "predictorTitle": "Predictor",
+  "predictorSeasonPoints": "{year} · {points} pts",
+  "@predictorSeasonPoints": {
+    "placeholders": {
+      "year": { "type": "String" },
+      "points": { "type": "int" }
+    }
+  },
+  "predictorLocked": "Predictions locked",
+  "predictorLockIn": "Locks in {countdown}",
+  "@predictorLockIn": {
+    "placeholders": {
+      "countdown": { "type": "String" }
+    }
+  },
+  "predictorMissingQualiTime": "Qualifying time is not available yet — edits are still open",
+  "predictorWaitingResults": "Waiting for results",
+  "predictorNoUpcoming": "No upcoming race to predict",
+  "predictorMoveToTitle": "Place {driver}",
+  "@predictorMoveToTitle": {
+    "placeholders": {
+      "driver": { "type": "String" }
+    }
+  },
+  "predictorMoveToHint": "Swap with that position — others stay put",
+  "predictorCopyQualifyingToRace": "Set same as qualifying",
+  "predictorHistoryTitle": "Season history",
+  "predictorHistoryEmpty": "No scored weekends yet",
+  "predictorWeekendPoints": "Q {quali} · R {race} · {total} pts",
+  "@predictorWeekendPoints": {
+    "placeholders": {
+      "quali": { "type": "String" },
+      "race": { "type": "String" },
+      "total": { "type": "int" }
+    }
+  },
+  "predictorPendingPoints": "—",
+  "predictorPredicted": "Predict",
+  "predictorActual": "Actual",
+  "predictorSessionPoints": "{points} pts",
+  "@predictorSessionPoints": {
+    "placeholders": {
+      "points": { "type": "int" }
+    }
+  },
+  "predictorCompareEmpty": "No positions to compare",
+  "predictorPastSeasonsTitle": "Past seasons",
+  "predictorSeasonButton": "{year} · {points} {points, plural, one{point} other{points}} · {races} {races, plural, one{race} other{races}}",
+  "@predictorSeasonButton": {
+    "placeholders": {
+      "year": { "type": "String" },
+      "points": { "type": "int" },
+      "races": { "type": "int" }
+    }
+  },
   "newsEmpty": "No news right now",
   "homeStandingsTitle": "Current season standings",
   "circuitStatLength": "Length",

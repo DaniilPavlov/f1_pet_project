@@ -18,13 +18,246 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navCalendar => 'Calendar';
 
   @override
-  String get navNews => 'News';
-
-  @override
   String get navCircuits => 'Circuits';
 
   @override
-  String get newsTitle => 'News';
+  String get navPredictor => 'Predict';
+
+  @override
+  String get navProfile => 'Profile';
+
+  @override
+  String get homeHeadlinesTitle => 'Headlines';
+
+  @override
+  String get homeScrollToNews => 'Back to news';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get profileAccountSection => 'Account';
+
+  @override
+  String profileSignedInAs(String email) {
+    return 'Signed in as $email';
+  }
+
+  @override
+  String get profileNotSignedIn => 'Not signed in';
+
+  @override
+  String get profileSignIn => 'Sign in';
+
+  @override
+  String get profileSignOut => 'Sign out';
+
+  @override
+  String get profileRegister => 'Create account';
+
+  @override
+  String get profilePredictorRequiresAuth => 'Sign in to use the predictor';
+
+  @override
+  String get profilePredictorRequiresVerification =>
+      'Confirm your email to use the predictor';
+
+  @override
+  String get profileEmailNotVerified =>
+      'We sent a confirmation link to your email';
+
+  @override
+  String get profileResendVerification => 'Resend email';
+
+  @override
+  String get profileRefreshVerification => 'I\'ve confirmed';
+
+  @override
+  String get profileVerificationSent => 'Confirmation email sent';
+
+  @override
+  String get profileStillNotVerified => 'Email is still not confirmed';
+
+  @override
+  String get profileEmailVerified => 'Email confirmed';
+
+  @override
+  String get profileAppearanceSection => 'Appearance';
+
+  @override
+  String get profileTheme => 'Theme';
+
+  @override
+  String get profileLanguage => 'Language';
+
+  @override
+  String get profileNotificationsSection => 'Notifications';
+
+  @override
+  String get profileRaceReminders => 'Race reminders';
+
+  @override
+  String get profileRaceRemindersSubtitle => '30 minutes before sessions';
+
+  @override
+  String get profileRaceRemindersDisabledByRemote =>
+      'Reminders are disabled remotely';
+
+  @override
+  String get profilePracticeReminders => 'Practice reminders';
+
+  @override
+  String get profilePracticeRemindersSubtitle => 'FP1, FP2, FP3';
+
+  @override
+  String get authSignInTitle => 'Sign in';
+
+  @override
+  String get authRegisterTitle => 'Create account';
+
+  @override
+  String get authEmailLabel => 'Email';
+
+  @override
+  String get authPasswordLabel => 'Password';
+
+  @override
+  String get authNoAccount => 'No account? Register';
+
+  @override
+  String get authHaveAccount => 'Already have an account? Sign in';
+
+  @override
+  String get authForgotPassword => 'Forgot password?';
+
+  @override
+  String get authPasswordResetSent => 'Password reset email sent';
+
+  @override
+  String get authErrorEmptyFields => 'Enter email and password';
+
+  @override
+  String get authErrorEmptyEmail => 'Enter email';
+
+  @override
+  String get authErrorInvalidEmail => 'Invalid email';
+
+  @override
+  String get authErrorUserDisabled => 'This account is disabled';
+
+  @override
+  String get authErrorUserNotFound => 'No account with this email';
+
+  @override
+  String get authErrorWrongPassword => 'Wrong password';
+
+  @override
+  String get authErrorInvalidCredential => 'Wrong email or password';
+
+  @override
+  String get authErrorEmailInUse => 'Email is already in use';
+
+  @override
+  String get authErrorWeakPassword =>
+      'Password: at least 8 characters, with a letter and a number';
+
+  @override
+  String get authErrorDisposableEmail =>
+      'Temporary email addresses are not allowed';
+
+  @override
+  String get authErrorTooManyRequests => 'Too many attempts. Try later';
+
+  @override
+  String get authErrorNetwork => 'Network error. Check connection';
+
+  @override
+  String get authErrorGeneric => 'Something went wrong. Try again';
+
+  @override
+  String get predictorTitle => 'Predictor';
+
+  @override
+  String predictorSeasonPoints(String year, int points) {
+    return '$year · $points pts';
+  }
+
+  @override
+  String get predictorLocked => 'Predictions locked';
+
+  @override
+  String predictorLockIn(String countdown) {
+    return 'Locks in $countdown';
+  }
+
+  @override
+  String get predictorMissingQualiTime =>
+      'Qualifying time is not available yet — edits are still open';
+
+  @override
+  String get predictorWaitingResults => 'Waiting for results';
+
+  @override
+  String get predictorNoUpcoming => 'No upcoming race to predict';
+
+  @override
+  String predictorMoveToTitle(String driver) {
+    return 'Place $driver';
+  }
+
+  @override
+  String get predictorMoveToHint => 'Swap with that position — others stay put';
+
+  @override
+  String get predictorCopyQualifyingToRace => 'Set same as qualifying';
+
+  @override
+  String get predictorHistoryTitle => 'Season history';
+
+  @override
+  String get predictorHistoryEmpty => 'No scored weekends yet';
+
+  @override
+  String predictorWeekendPoints(String quali, String race, int total) {
+    return 'Q $quali · R $race · $total pts';
+  }
+
+  @override
+  String get predictorPendingPoints => '—';
+
+  @override
+  String get predictorPredicted => 'Predict';
+
+  @override
+  String get predictorActual => 'Actual';
+
+  @override
+  String predictorSessionPoints(int points) {
+    return '$points pts';
+  }
+
+  @override
+  String get predictorCompareEmpty => 'No positions to compare';
+
+  @override
+  String get predictorPastSeasonsTitle => 'Past seasons';
+
+  @override
+  String predictorSeasonButton(String year, int points, int races) {
+    String _temp0 = intl.Intl.pluralLogic(
+      points,
+      locale: localeName,
+      other: 'points',
+      one: 'point',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      races,
+      locale: localeName,
+      other: 'races',
+      one: 'race',
+    );
+    return '$year · $points $_temp0 · $races $_temp1';
+  }
 
   @override
   String get newsEmpty => 'No news right now';

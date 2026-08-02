@@ -3,13 +3,15 @@ import 'package:f1_pet_project/firebase_options.dart';
 import 'package:f1_pet_project/services/firebase/crashlytics_reporting.dart';
 import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 
-/// Инициализация Firebase + Analytics + Crashlytics + Remote Config.
+/// Инициализация Firebase + App Check + Analytics + Crashlytics + Remote Config.
 Future<RemoteConfigService> bootstrapFirebase() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await _activateAppCheck();
 
   FlutterError.onError = (details) {
     if (shouldReportUncaughtErrorToCrashlytics(details.exception)) {
@@ -34,4 +36,15 @@ Future<RemoteConfigService> bootstrapFirebase() async {
   }
 
   return remoteConfig;
+}
+
+Future<void> _activateAppCheck() async {
+  try {
+    await FirebaseAppCheck.instance.activate(
+      providerAndroid: kDebugMode ? const AndroidDebugProvider() : const AndroidPlayIntegrityProvider(),
+      providerApple: kDebugMode ? const AppleDebugProvider() : const AppleAppAttestProvider(),
+    );
+  } on Object catch (error, stackTrace) {
+    logger.e('Firebase App Check activate failed', error: error, stackTrace: stackTrace);
+  }
 }

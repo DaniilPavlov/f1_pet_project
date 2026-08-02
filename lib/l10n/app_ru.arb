@@ -3,9 +3,116 @@
   "navHome": "Главная",
   "navResults": "Результаты",
   "navCalendar": "Календарь",
-  "navNews": "Новости",
   "navCircuits": "Трассы",
-  "newsTitle": "Новости",
+  "navPredictor": "Предикт",
+  "navProfile": "Профиль",
+  "homeHeadlinesTitle": "Новости",
+  "homeScrollToNews": "К новостям",
+  "profileTitle": "Профиль",
+  "profileAccountSection": "Аккаунт",
+  "profileSignedInAs": "Вы вошли как {email}",
+  "@profileSignedInAs": {
+    "placeholders": {
+      "email": { "type": "String" }
+    }
+  },
+  "profileNotSignedIn": "Вы не авторизованы",
+  "profileSignIn": "Войти",
+  "profileSignOut": "Выйти",
+  "profileRegister": "Зарегистрироваться",
+  "profilePredictorRequiresAuth": "Войдите, чтобы пользоваться предиктором",
+  "profilePredictorRequiresVerification": "Подтвердите email, чтобы пользоваться предиктором",
+  "profileEmailNotVerified": "Мы отправили ссылку для подтверждения на вашу почту",
+  "profileResendVerification": "Отправить ещё раз",
+  "profileRefreshVerification": "Я подтвердил",
+  "profileVerificationSent": "Письмо отправлено",
+  "profileStillNotVerified": "Email ещё не подтверждён",
+  "profileEmailVerified": "Email подтверждён",
+  "profileAppearanceSection": "Внешний вид",
+  "profileTheme": "Тема",
+  "profileLanguage": "Язык",
+  "profileNotificationsSection": "Уведомления",
+  "profileRaceReminders": "Напоминания о сессиях",
+  "profileRaceRemindersSubtitle": "За 30 минут до старта",
+  "profileRaceRemindersDisabledByRemote": "Напоминания отключены удалённо",
+  "profilePracticeReminders": "Напоминания о практиках",
+  "profilePracticeRemindersSubtitle": "FP1, FP2, FP3",
+  "authSignInTitle": "Вход",
+  "authRegisterTitle": "Регистрация",
+  "authEmailLabel": "Email",
+  "authPasswordLabel": "Пароль",
+  "authNoAccount": "Нет аккаунта? Зарегистрироваться",
+  "authHaveAccount": "Уже есть аккаунт? Войти",
+  "authForgotPassword": "Забыли пароль?",
+  "authPasswordResetSent": "Письмо для сброса пароля отправлено",
+  "authErrorEmptyFields": "Введите email и пароль",
+  "authErrorEmptyEmail": "Введите email",
+  "authErrorInvalidEmail": "Некорректный email",
+  "authErrorUserDisabled": "Аккаунт отключён",
+  "authErrorUserNotFound": "Аккаунт с таким email не найден",
+  "authErrorWrongPassword": "Неверный пароль",
+  "authErrorInvalidCredential": "Неверный email или пароль",
+  "authErrorEmailInUse": "Email уже используется",
+  "authErrorWeakPassword": "Пароль: минимум 8 символов, буква и цифра",
+  "authErrorDisposableEmail": "Временные email-адреса не допускаются",
+  "authErrorTooManyRequests": "Слишком много попыток. Попробуйте позже",
+  "authErrorNetwork": "Ошибка сети. Проверьте соединение",
+  "authErrorGeneric": "Что-то пошло не так. Попробуйте ещё раз",
+  "predictorTitle": "Предиктор",
+  "predictorSeasonPoints": "{year} · {points} очк.",
+  "@predictorSeasonPoints": {
+    "placeholders": {
+      "year": { "type": "String" },
+      "points": { "type": "int" }
+    }
+  },
+  "predictorLocked": "Предикты заблокированы",
+  "predictorLockIn": "Блок через {countdown}",
+  "@predictorLockIn": {
+    "placeholders": {
+      "countdown": { "type": "String" }
+    }
+  },
+  "predictorMissingQualiTime": "Время квалификации пока неизвестно — правки ещё открыты",
+  "predictorWaitingResults": "Ждём результаты",
+  "predictorNoUpcoming": "Нет ближайшей гонки для предикта",
+  "predictorMoveToTitle": "Поставить {driver}",
+  "@predictorMoveToTitle": {
+    "placeholders": {
+      "driver": { "type": "String" }
+    }
+  },
+  "predictorMoveToHint": "Обмен с этой позицией — остальные не сдвигаются",
+  "predictorCopyQualifyingToRace": "Установить как в квалификации",
+  "predictorHistoryTitle": "История сезона",
+  "predictorHistoryEmpty": "Пока нет учтённых уикендов",
+  "predictorWeekendPoints": "Q {quali} · R {race} · {total} очк.",
+  "@predictorWeekendPoints": {
+    "placeholders": {
+      "quali": { "type": "String" },
+      "race": { "type": "String" },
+      "total": { "type": "int" }
+    }
+  },
+  "predictorPendingPoints": "—",
+  "predictorPredicted": "Предикт",
+  "predictorActual": "Факт",
+  "predictorSessionPoints": "{points} очк.",
+  "@predictorSessionPoints": {
+    "placeholders": {
+      "points": { "type": "int" }
+    }
+  },
+  "predictorCompareEmpty": "Нет позиций для сравнения",
+  "predictorPastSeasonsTitle": "Прошлые сезоны",
+  "predictorSeasonButton": "{year} · {points} {points, plural, one{очко} few{очка} many{очков} other{очков}} · {races} {races, plural, one{гонка} few{гонки} many{гонок} other{гонок}}",
+  "@predictorSeasonButton": {
+    "placeholders": {
+      "year": { "type": "String" },
+      "points": { "type": "int" },
+      "races": { "type": "int" }
+    }
+  },
   "newsEmpty": "Новостей пока нет",
   "homeStandingsTitle": "Турнирная таблица текущего сезона",
   "circuitStatLength": "Длина",

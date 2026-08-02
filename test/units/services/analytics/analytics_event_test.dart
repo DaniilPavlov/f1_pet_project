@@ -96,6 +96,8 @@ void main() {
       expect(const LocaleChanged(locale: 'ru').params, {'locale': 'ru'});
       expect(const RaceReminderToggled(enabled: true).name, 'race_reminder_toggled');
       expect(const RaceReminderToggled(enabled: true).params, {'enabled': true});
+      expect(const PracticeReminderToggled(enabled: false).name, 'practice_reminder_toggled');
+      expect(const PracticeReminderToggled(enabled: false).params, {'enabled': false});
       expect(const RaceSearched(query: 'monaco').name, 'race_searched');
       expect(const RaceSearched(query: 'monaco').params, {'query': 'monaco'});
     });

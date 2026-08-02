@@ -164,20 +164,27 @@ abstract class CustomMapControllerBase with Store {
 
   @action
   void _setStreamedMapObjects(List<MapObject<dynamic>> objects) {
-    streamedMapObjects = ObservableList.of(objects);
+    // Пин пользователя всегда поверх кластеров/трасс.
+    final user = objects.where((obj) => obj.mapId == userMapId);
+    final rest = objects.where((obj) => obj.mapId != userMapId);
+    streamedMapObjects = ObservableList.of([...rest, ...user]);
   }
 
   Future<void> _enableListenUserPosition() async {
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      onGetUserPositionError?.call(Exception('Невозможно определить местоположение'));
+      return;
+    }
+
     var permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        onGetUserPositionError?.call(Exception('Невозможно определить местоположение'));
-      }
     }
 
-    if (permission == LocationPermission.deniedForever) {
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
       onGetUserPositionError?.call(Exception('Невозможно определить местоположение'));
+      return;
     }
 
     final position = await Geolocator.getCurrentPosition();
@@ -216,9 +223,11 @@ abstract class CustomMapControllerBase with Store {
             mapId: userMapId,
             point: position,
             opacity: 1,
+            zIndex: 100,
             icon: PlacemarkIcon.single(
               PlacemarkIconStyle(
-                scale: 2,
+                // Как circuit pins (74×74, scale 1).
+                scale: 1,
                 image: BitmapDescriptor.fromAssetImage(iconAsset),
               ),
             ),

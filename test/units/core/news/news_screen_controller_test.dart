@@ -127,5 +127,27 @@ void main() {
 
       expect(controller.articles.isError, isTrue);
     });
+
+    test('revealMore paginates visible articles', () async {
+      final many = List.generate(
+        25,
+        (i) => NewsArticleModel(id: i, headline: 'H$i', description: '', webUrl: 'https://example.com/$i'),
+      );
+      final controller = NewsScreenController(fetchArticlesForTest: () async => many);
+
+      await controller.loadArticles();
+
+      expect(controller.visibleArticles, hasLength(10));
+      expect(controller.canRevealMore, isTrue);
+
+      controller.revealMore();
+      expect(controller.visibleArticles, hasLength(20));
+
+      controller
+        ..revealMore()
+        ..revealMore();
+      expect(controller.visibleArticles, hasLength(25));
+      expect(controller.canRevealMore, isFalse);
+    });
   });
 }

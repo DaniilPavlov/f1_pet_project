@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/utils/constants/assets.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
 import 'package:f1_pet_project/core/schedule/controllers/schedule_screen_controller/schedule_screen_controller.dart';
@@ -112,7 +113,7 @@ void main() {
 
         await controller.loadAllData();
 
-        expect(controller.getLogoPath(DateTime.parse('2024-05-26')), 'assets/calendar/finish.png');
+        expect(controller.getLogoPath(DateTime.parse('2024-05-26')), Assets.calendar.finish);
         controller.dispose();
       });
 
@@ -130,7 +131,7 @@ void main() {
 
         await controller.loadAllData();
 
-        expect(controller.getLogoPath(DateTime.parse('2024-05-24')), 'assets/calendar/car.png');
+        expect(controller.getLogoPath(DateTime.parse('2024-05-24')), Assets.calendar.car);
         expect(controller.getLogoPath(DateTime.parse('2024-05-01')), isNull);
         controller.dispose();
       });

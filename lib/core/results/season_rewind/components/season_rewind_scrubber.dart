@@ -17,7 +17,6 @@ class SeasonRewindScrubber extends StatefulWidget {
     required this.selectedIndex,
     required this.isPlaying,
     required this.canPlay,
-    required this.isLoadingStandings,
     required this.onCommitRound,
     required this.onTogglePlayback,
     required this.onDragStart,
@@ -31,9 +30,6 @@ class SeasonRewindScrubber extends StatefulWidget {
 
   final bool isPlaying;
   final bool canPlay;
-
-  /// Идёт загрузка standings для [selectedIndex].
-  final bool isLoadingStandings;
 
   final ValueChanged<int> onCommitRound;
   final VoidCallback onTogglePlayback;
@@ -86,17 +82,6 @@ class _SeasonRewindScrubberState extends State<SeasonRewindScrubber> {
           style: AppStyles.caption,
           textAlign: TextAlign.center,
         ),
-        if (widget.isLoadingStandings) ...[
-          const SizedBox(height: 8),
-          const ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(2)),
-            child: LinearProgressIndicator(
-              minHeight: 2,
-              color: AppTheme.red,
-              backgroundColor: AppTheme.pink,
-            ),
-          ),
-        ],
         const SizedBox(height: 8),
         Row(
           children: [

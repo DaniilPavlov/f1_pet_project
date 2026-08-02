@@ -105,8 +105,18 @@ class RaceReminderService {
     await ios?.requestPermissions(alert: true, badge: true, sound: true);
   }
 
+  /// Снимает все запланированные reminders.
+  Future<void> cancelAll() async {
+    if (!PlatformCapabilities.hasLocalNotifications) {
+      return;
+    }
+    await _plugin.cancelAll();
+  }
+
   /// Подтягивает расписание и планирует ближайшие уведомления.
-  Future<void> sync({required Locale locale}) async {
+  ///
+  /// [includePractices]: если false — FP1/FP2/FP3 не планируются (квали/спринт/гонка остаются).
+  Future<void> sync({required Locale locale, bool includePractices = true}) async {
     if (!PlatformCapabilities.hasLocalNotifications) {
       return;
     }
@@ -120,7 +130,11 @@ class RaceReminderService {
 
       final loadResult = await _scheduleRepository.getSchedule();
       final l10n = await AppLocalizations.delegate.load(locale);
-      final upcoming = _buildPlannedReminders(loadResult.schedule.raceTable.races, l10n);
+      final upcoming = _buildPlannedReminders(
+        loadResult.schedule.raceTable.races,
+        l10n,
+        includePractices: includePractices,
+      );
       final toSchedule = upcoming.take(_maxScheduledReminders).toList();
 
       await _plugin.cancelAll();
@@ -190,21 +204,16 @@ class RaceReminderService {
     );
   }
 
-  List<_PlannedReminder> _buildPlannedReminders(List<RacesModel> races, AppLocalizations l10n) {
+  List<_PlannedReminder> _buildPlannedReminders(
+    List<RacesModel> races,
+    AppLocalizations l10n, {
+    required bool includePractices,
+  }) {
     final now = DateTime.now();
     final planned = <_PlannedReminder>[];
 
     for (final race in races) {
-      final sessions = <(String typeKey, String title, RaceDateModel date)>[
-        if (race.firstPractice != null) ('fp1', l10n.firstPractice, race.firstPractice!),
-        if (race.secondPractice != null) ('fp2', l10n.secondPractice, race.secondPractice!),
-        if (race.thirdPractice != null) ('fp3', l10n.thirdPractice, race.thirdPractice!),
-        if (race.sprintQualifying != null) ('sq', l10n.sprintQualifying, race.sprintQualifying!),
-        if (race.sprint != null) ('sprint', l10n.sprint, race.sprint!),
-        if (race.qualifying != null) ('quali', l10n.qualifying, race.qualifying!),
-        if (race.time != null && race.time!.isNotEmpty)
-          ('race', l10n.race, RaceDateModel(date: race.date, time: race.time!)),
-      ];
+      final sessions = sessionEntries(race, l10n, includePractices: includePractices);
 
       for (final (typeKey, activityTitle, date) in sessions) {
         final localStart = RaceDateTimeHelper.toLocal(date);
@@ -228,6 +237,24 @@ class RaceReminderService {
 
     planned.sort((a, b) => a.notifyAt.compareTo(b.notifyAt));
     return planned;
+  }
+
+  /// Список сессий уикенда для планирования. Публичный для unit-тестов.
+  static List<(String typeKey, String title, RaceDateModel date)> sessionEntries(
+    RacesModel race,
+    AppLocalizations l10n, {
+    required bool includePractices,
+  }) {
+    return [
+      if (includePractices && race.firstPractice != null) ('fp1', l10n.firstPractice, race.firstPractice!),
+      if (includePractices && race.secondPractice != null) ('fp2', l10n.secondPractice, race.secondPractice!),
+      if (includePractices && race.thirdPractice != null) ('fp3', l10n.thirdPractice, race.thirdPractice!),
+      if (race.sprintQualifying != null) ('sq', l10n.sprintQualifying, race.sprintQualifying!),
+      if (race.sprint != null) ('sprint', l10n.sprint, race.sprint!),
+      if (race.qualifying != null) ('quali', l10n.qualifying, race.qualifying!),
+      if (race.time != null && race.time!.isNotEmpty)
+        ('race', l10n.race, RaceDateModel(date: race.date, time: race.time!)),
+    ];
   }
 
   Future<void> _scheduleAll(List<_PlannedReminder> planned) async {

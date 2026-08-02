@@ -18,13 +18,253 @@ class AppLocalizationsRu extends AppLocalizations {
   String get navCalendar => 'Календарь';
 
   @override
-  String get navNews => 'Новости';
-
-  @override
   String get navCircuits => 'Трассы';
 
   @override
-  String get newsTitle => 'Новости';
+  String get navPredictor => 'Предикт';
+
+  @override
+  String get navProfile => 'Профиль';
+
+  @override
+  String get homeHeadlinesTitle => 'Новости';
+
+  @override
+  String get homeScrollToNews => 'К новостям';
+
+  @override
+  String get profileTitle => 'Профиль';
+
+  @override
+  String get profileAccountSection => 'Аккаунт';
+
+  @override
+  String profileSignedInAs(String email) {
+    return 'Вы вошли как $email';
+  }
+
+  @override
+  String get profileNotSignedIn => 'Вы не авторизованы';
+
+  @override
+  String get profileSignIn => 'Войти';
+
+  @override
+  String get profileSignOut => 'Выйти';
+
+  @override
+  String get profileRegister => 'Зарегистрироваться';
+
+  @override
+  String get profilePredictorRequiresAuth =>
+      'Войдите, чтобы пользоваться предиктором';
+
+  @override
+  String get profilePredictorRequiresVerification =>
+      'Подтвердите email, чтобы пользоваться предиктором';
+
+  @override
+  String get profileEmailNotVerified =>
+      'Мы отправили ссылку для подтверждения на вашу почту';
+
+  @override
+  String get profileResendVerification => 'Отправить ещё раз';
+
+  @override
+  String get profileRefreshVerification => 'Я подтвердил';
+
+  @override
+  String get profileVerificationSent => 'Письмо отправлено';
+
+  @override
+  String get profileStillNotVerified => 'Email ещё не подтверждён';
+
+  @override
+  String get profileEmailVerified => 'Email подтверждён';
+
+  @override
+  String get profileAppearanceSection => 'Внешний вид';
+
+  @override
+  String get profileTheme => 'Тема';
+
+  @override
+  String get profileLanguage => 'Язык';
+
+  @override
+  String get profileNotificationsSection => 'Уведомления';
+
+  @override
+  String get profileRaceReminders => 'Напоминания о сессиях';
+
+  @override
+  String get profileRaceRemindersSubtitle => 'За 30 минут до старта';
+
+  @override
+  String get profileRaceRemindersDisabledByRemote =>
+      'Напоминания отключены удалённо';
+
+  @override
+  String get profilePracticeReminders => 'Напоминания о практиках';
+
+  @override
+  String get profilePracticeRemindersSubtitle => 'FP1, FP2, FP3';
+
+  @override
+  String get authSignInTitle => 'Вход';
+
+  @override
+  String get authRegisterTitle => 'Регистрация';
+
+  @override
+  String get authEmailLabel => 'Email';
+
+  @override
+  String get authPasswordLabel => 'Пароль';
+
+  @override
+  String get authNoAccount => 'Нет аккаунта? Зарегистрироваться';
+
+  @override
+  String get authHaveAccount => 'Уже есть аккаунт? Войти';
+
+  @override
+  String get authForgotPassword => 'Забыли пароль?';
+
+  @override
+  String get authPasswordResetSent => 'Письмо для сброса пароля отправлено';
+
+  @override
+  String get authErrorEmptyFields => 'Введите email и пароль';
+
+  @override
+  String get authErrorEmptyEmail => 'Введите email';
+
+  @override
+  String get authErrorInvalidEmail => 'Некорректный email';
+
+  @override
+  String get authErrorUserDisabled => 'Аккаунт отключён';
+
+  @override
+  String get authErrorUserNotFound => 'Аккаунт с таким email не найден';
+
+  @override
+  String get authErrorWrongPassword => 'Неверный пароль';
+
+  @override
+  String get authErrorInvalidCredential => 'Неверный email или пароль';
+
+  @override
+  String get authErrorEmailInUse => 'Email уже используется';
+
+  @override
+  String get authErrorWeakPassword =>
+      'Пароль: минимум 8 символов, буква и цифра';
+
+  @override
+  String get authErrorDisposableEmail =>
+      'Временные email-адреса не допускаются';
+
+  @override
+  String get authErrorTooManyRequests =>
+      'Слишком много попыток. Попробуйте позже';
+
+  @override
+  String get authErrorNetwork => 'Ошибка сети. Проверьте соединение';
+
+  @override
+  String get authErrorGeneric => 'Что-то пошло не так. Попробуйте ещё раз';
+
+  @override
+  String get predictorTitle => 'Предиктор';
+
+  @override
+  String predictorSeasonPoints(String year, int points) {
+    return '$year · $points очк.';
+  }
+
+  @override
+  String get predictorLocked => 'Предикты заблокированы';
+
+  @override
+  String predictorLockIn(String countdown) {
+    return 'Блок через $countdown';
+  }
+
+  @override
+  String get predictorMissingQualiTime =>
+      'Время квалификации пока неизвестно — правки ещё открыты';
+
+  @override
+  String get predictorWaitingResults => 'Ждём результаты';
+
+  @override
+  String get predictorNoUpcoming => 'Нет ближайшей гонки для предикта';
+
+  @override
+  String predictorMoveToTitle(String driver) {
+    return 'Поставить $driver';
+  }
+
+  @override
+  String get predictorMoveToHint =>
+      'Обмен с этой позицией — остальные не сдвигаются';
+
+  @override
+  String get predictorCopyQualifyingToRace => 'Установить как в квалификации';
+
+  @override
+  String get predictorHistoryTitle => 'История сезона';
+
+  @override
+  String get predictorHistoryEmpty => 'Пока нет учтённых уикендов';
+
+  @override
+  String predictorWeekendPoints(String quali, String race, int total) {
+    return 'Q $quali · R $race · $total очк.';
+  }
+
+  @override
+  String get predictorPendingPoints => '—';
+
+  @override
+  String get predictorPredicted => 'Предикт';
+
+  @override
+  String get predictorActual => 'Факт';
+
+  @override
+  String predictorSessionPoints(int points) {
+    return '$points очк.';
+  }
+
+  @override
+  String get predictorCompareEmpty => 'Нет позиций для сравнения';
+
+  @override
+  String get predictorPastSeasonsTitle => 'Прошлые сезоны';
+
+  @override
+  String predictorSeasonButton(String year, int points, int races) {
+    String _temp0 = intl.Intl.pluralLogic(
+      points,
+      locale: localeName,
+      other: 'очков',
+      many: 'очков',
+      few: 'очка',
+      one: 'очко',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      races,
+      locale: localeName,
+      other: 'гонок',
+      many: 'гонок',
+      few: 'гонки',
+      one: 'гонка',
+    );
+    return '$year · $points $_temp0 · $races $_temp1';
+  }
 
   @override
   String get newsEmpty => 'Новостей пока нет';

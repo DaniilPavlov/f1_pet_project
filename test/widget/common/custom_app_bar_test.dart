@@ -55,7 +55,7 @@ void main() {
             Provider<ThemeController>.value(value: theme),
           ],
           child: Scaffold(
-            appBar: const CustomAppBar(title: 'Home'),
+            appBar: const CustomAppBar(title: 'Home', showPreferences: true),
             body: const SizedBox.shrink(),
           ),
         ),
@@ -66,6 +66,56 @@ void main() {
       await tester.tap(find.byIcon(Icons.brightness_auto));
       await tester.pump();
       expect(theme.preference, AppThemePreference.light);
+    });
+
+    testWidgets('shows back when onPop is set', (tester) async {
+      var pops = 0;
+      final locale = LocaleController();
+      final theme = ThemeController();
+
+      await tester.pumpApp(
+        MultiProvider(
+          providers: [
+            Provider<LocaleController>.value(value: locale),
+            Provider<ThemeController>.value(value: theme),
+          ],
+          child: Scaffold(
+            appBar: CustomAppBar(
+              title: 'News',
+              showPreferences: false,
+              onPop: () => pops++,
+            ),
+            body: const SizedBox.shrink(),
+          ),
+        ),
+        wrapInScaffold: false,
+      );
+
+      expect(find.byIcon(Icons.arrow_back_ios_new), findsOneWidget);
+      await tester.tap(find.byIcon(Icons.arrow_back_ios_new));
+      await tester.pump();
+      expect(pops, 1);
+    });
+
+    testWidgets('hides back on root without onPop', (tester) async {
+      final locale = LocaleController();
+      final theme = ThemeController();
+
+      await tester.pumpApp(
+        MultiProvider(
+          providers: [
+            Provider<LocaleController>.value(value: locale),
+            Provider<ThemeController>.value(value: theme),
+          ],
+          child: const Scaffold(
+            appBar: CustomAppBar(title: 'Home', showPreferences: false),
+            body: SizedBox.shrink(),
+          ),
+        ),
+        wrapInScaffold: false,
+      );
+
+      expect(find.byIcon(Icons.arrow_back_ios_new), findsNothing);
     });
   });
 }
