@@ -24,6 +24,87 @@ class AppLocalizationsRu extends AppLocalizations {
   String get navCircuits => 'Трассы';
 
   @override
+  String get navPredictor => 'Предикт';
+
+  @override
+  String get predictorTitle => 'Предиктор';
+
+  @override
+  String predictorSeasonPoints(String year, int points) {
+    return '$year · $points очк.';
+  }
+
+  @override
+  String get predictorLocked => 'Предикты заблокированы';
+
+  @override
+  String predictorLockIn(String countdown) {
+    return 'Блок через $countdown';
+  }
+
+  @override
+  String get predictorMissingQualiTime =>
+      'Время квалификации пока неизвестно — правки ещё открыты';
+
+  @override
+  String get predictorWaitingResults => 'Ждём результаты';
+
+  @override
+  String get predictorNoUpcoming => 'Нет ближайшей гонки для предикта';
+
+  @override
+  String get predictorHistoryTitle => 'История сезона';
+
+  @override
+  String get predictorHistoryEmpty => 'Пока нет учтённых уикендов';
+
+  @override
+  String predictorWeekendPoints(String quali, String race, int total) {
+    return 'Q $quali · R $race · $total очк.';
+  }
+
+  @override
+  String get predictorPendingPoints => '—';
+
+  @override
+  String get predictorPredicted => 'Предикт';
+
+  @override
+  String get predictorActual => 'Факт';
+
+  @override
+  String predictorSessionPoints(int points) {
+    return '$points очк.';
+  }
+
+  @override
+  String get predictorCompareEmpty => 'Нет позиций для сравнения';
+
+  @override
+  String get predictorPastSeasonsTitle => 'Прошлые сезоны';
+
+  @override
+  String predictorSeasonButton(String year, int points, int races) {
+    String _temp0 = intl.Intl.pluralLogic(
+      points,
+      locale: localeName,
+      other: 'очков',
+      many: 'очков',
+      few: 'очка',
+      one: 'очко',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      races,
+      locale: localeName,
+      other: 'гонок',
+      many: 'гонок',
+      few: 'гонки',
+      one: 'гонка',
+    );
+    return '$year · $points $_temp0 · $races $_temp1';
+  }
+
+  @override
   String get newsTitle => 'Новости';
 
   @override

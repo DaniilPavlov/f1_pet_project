@@ -5,6 +5,7 @@ import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/containers/red_border_container.dart';
 import 'package:f1_pet_project/common/widgets/custom_calendar.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/schedule_shimmer.dart';
@@ -12,6 +13,7 @@ import 'package:f1_pet_project/core/schedule/components/schedule_race_featured_c
 import 'package:f1_pet_project/core/schedule/components/schedule_race_sessions_sheet.dart';
 import 'package:f1_pet_project/core/schedule/controllers/schedule_screen_controller/schedule_screen_controller.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
+import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -100,6 +102,20 @@ class ScheduleScreen extends StatelessWidget {
                                     showCountdown: true,
                                     onViewSchedule: () => ScheduleRaceSessionsSheet.show(context, upcoming),
                                   ),
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                              StaticData.defaultHorizontalPadding,
+                              12,
+                              StaticData.defaultHorizontalPadding,
+                              StaticData.defaultVerticalPadding,
+                            ),
+                            child: RedBorderContainer(
+                              title: context.l10n.navCircuits,
+                              onTap: () async => context.router.push(const CircuitsRoute()),
+                            ),
                           ),
                         ),
                       ],

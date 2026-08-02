@@ -5,6 +5,54 @@
   "navCalendar": "Calendar",
   "navNews": "News",
   "navCircuits": "Circuits",
+  "navPredictor": "Predict",
+  "predictorTitle": "Predictor",
+  "predictorSeasonPoints": "{year} · {points} pts",
+  "@predictorSeasonPoints": {
+    "placeholders": {
+      "year": { "type": "String" },
+      "points": { "type": "int" }
+    }
+  },
+  "predictorLocked": "Predictions locked",
+  "predictorLockIn": "Locks in {countdown}",
+  "@predictorLockIn": {
+    "placeholders": {
+      "countdown": { "type": "String" }
+    }
+  },
+  "predictorMissingQualiTime": "Qualifying time is not available yet — edits are still open",
+  "predictorWaitingResults": "Waiting for results",
+  "predictorNoUpcoming": "No upcoming race to predict",
+  "predictorHistoryTitle": "Season history",
+  "predictorHistoryEmpty": "No scored weekends yet",
+  "predictorWeekendPoints": "Q {quali} · R {race} · {total} pts",
+  "@predictorWeekendPoints": {
+    "placeholders": {
+      "quali": { "type": "String" },
+      "race": { "type": "String" },
+      "total": { "type": "int" }
+    }
+  },
+  "predictorPendingPoints": "—",
+  "predictorPredicted": "Predict",
+  "predictorActual": "Actual",
+  "predictorSessionPoints": "{points} pts",
+  "@predictorSessionPoints": {
+    "placeholders": {
+      "points": { "type": "int" }
+    }
+  },
+  "predictorCompareEmpty": "No positions to compare",
+  "predictorPastSeasonsTitle": "Past seasons",
+  "predictorSeasonButton": "{year} · {points} {points, plural, one{point} other{points}} · {races} {races, plural, one{race} other{races}}",
+  "@predictorSeasonButton": {
+    "placeholders": {
+      "year": { "type": "String" },
+      "points": { "type": "int" },
+      "races": { "type": "int" }
+    }
+  },
   "newsTitle": "News",
   "newsEmpty": "No news right now",
   "homeStandingsTitle": "Current season standings",

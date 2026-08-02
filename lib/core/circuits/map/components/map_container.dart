@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/packages/custom_yandex_map/custom_map.dart';
+import 'package:f1_pet_project/common/utils/constants/assets.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/bottom_sheets/bottom_sheet_permissions.dart';
@@ -36,7 +37,8 @@ class MapContainer extends StatefulWidget {
 /// Состояние карты: разрешения геолокации и жизненный цикл.
 class _MapContainerState extends State<MapContainer> with WidgetsBindingObserver {
   late final MapContainerController _controller;
-  bool _isRequestPermission = false;
+  /// Ждём возврат из системных настроек после bottom sheet — не на каждый resume.
+  bool _awaitingReturnFromSettings = false;
   bool _userPositionExceptionIsShowed = false;
 
   @override
@@ -63,27 +65,28 @@ class _MapContainerState extends State<MapContainer> with WidgetsBindingObserver
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && _isRequestPermission) {
-      unawaited(_requestPermission());
-      _isRequestPermission = false;
-    }
-    if (state == AppLifecycleState.paused) {
-      _isRequestPermission = true;
+    if (state == AppLifecycleState.resumed && _awaitingReturnFromSettings) {
+      _awaitingReturnFromSettings = false;
+      unawaited(_onReturnedFromSettings());
     }
   }
 
-  Future<void> _requestPermission() async {
-    final geolocationPermission = await Geolocator.requestPermission();
-    if (!mounted) return;
-    if (geolocationPermission == LocationPermission.denied ||
-        geolocationPermission == LocationPermission.deniedForever) {
-      unawaited(_openPermissionsSheet());
+  /// После Settings: если доступ выдали — включаем геолокацию; иначе не дёргаем диалог снова.
+  Future<void> _onReturnedFromSettings() async {
+    final permission = await Geolocator.checkPermission();
+    if (!mounted) {
+      return;
+    }
+    if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+      _userPositionExceptionIsShowed = false;
+      _controller.mapController.updateUserPosition();
     }
   }
 
   void _onGetUserPositionError(Exception ex) {
     if (!_userPositionExceptionIsShowed) {
-      Fluttertoast.showToast(msg: ex.toString(), backgroundColor: AppTheme.red);
+      final message = ex.toString().replaceFirst(RegExp(r'^Exception:\s*'), '');
+      Fluttertoast.showToast(msg: message, backgroundColor: AppTheme.red);
       _userPositionExceptionIsShowed = true;
     } else {
       unawaited(_openPermissionsSheet());
@@ -96,8 +99,12 @@ class _MapContainerState extends State<MapContainer> with WidgetsBindingObserver
       builder: (sheetContext) {
         return BottomSheetPermissions(
           onTapSettings: () async {
-            if (await openAppSettings() && sheetContext.mounted) {
+            _awaitingReturnFromSettings = true;
+            final opened = await openAppSettings();
+            if (opened && sheetContext.mounted) {
               Navigator.of(sheetContext).pop();
+            } else {
+              _awaitingReturnFromSettings = false;
             }
           },
           text: context.l10n.locationPermissionNeeded,
@@ -117,9 +124,9 @@ class _MapContainerState extends State<MapContainer> with WidgetsBindingObserver
           child: CustomMap(
             mapController: _controller.mapController,
             onPlacemarkPressed: widget.onPlacemarkPressed,
-            mapObjectIcon: 'assets/icons/pin_unselected.png',
-            selectedMapObjectIcon: 'assets/icons/pin_red.png',
-            userIcon: 'assets/icons/location_user.png',
+            mapObjectIcon: Assets.icons.pinUnselected,
+            selectedMapObjectIcon: Assets.icons.pinRed,
+            userIcon: Assets.icons.locationUser,
             points: widget.points,
             placemarkIconSize: 1,
             selectedPlacemarkIconSize: 1.2,

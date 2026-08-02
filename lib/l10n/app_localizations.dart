@@ -128,6 +128,114 @@ abstract class AppLocalizations {
   /// **'Трассы'**
   String get navCircuits;
 
+  /// No description provided for @navPredictor.
+  ///
+  /// In ru, this message translates to:
+  /// **'Предикт'**
+  String get navPredictor;
+
+  /// No description provided for @predictorTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Предиктор'**
+  String get predictorTitle;
+
+  /// No description provided for @predictorSeasonPoints.
+  ///
+  /// In ru, this message translates to:
+  /// **'{year} · {points} очк.'**
+  String predictorSeasonPoints(String year, int points);
+
+  /// No description provided for @predictorLocked.
+  ///
+  /// In ru, this message translates to:
+  /// **'Предикты заблокированы'**
+  String get predictorLocked;
+
+  /// No description provided for @predictorLockIn.
+  ///
+  /// In ru, this message translates to:
+  /// **'Блок через {countdown}'**
+  String predictorLockIn(String countdown);
+
+  /// No description provided for @predictorMissingQualiTime.
+  ///
+  /// In ru, this message translates to:
+  /// **'Время квалификации пока неизвестно — правки ещё открыты'**
+  String get predictorMissingQualiTime;
+
+  /// No description provided for @predictorWaitingResults.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ждём результаты'**
+  String get predictorWaitingResults;
+
+  /// No description provided for @predictorNoUpcoming.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет ближайшей гонки для предикта'**
+  String get predictorNoUpcoming;
+
+  /// No description provided for @predictorHistoryTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'История сезона'**
+  String get predictorHistoryTitle;
+
+  /// No description provided for @predictorHistoryEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока нет учтённых уикендов'**
+  String get predictorHistoryEmpty;
+
+  /// No description provided for @predictorWeekendPoints.
+  ///
+  /// In ru, this message translates to:
+  /// **'Q {quali} · R {race} · {total} очк.'**
+  String predictorWeekendPoints(String quali, String race, int total);
+
+  /// No description provided for @predictorPendingPoints.
+  ///
+  /// In ru, this message translates to:
+  /// **'—'**
+  String get predictorPendingPoints;
+
+  /// No description provided for @predictorPredicted.
+  ///
+  /// In ru, this message translates to:
+  /// **'Предикт'**
+  String get predictorPredicted;
+
+  /// No description provided for @predictorActual.
+  ///
+  /// In ru, this message translates to:
+  /// **'Факт'**
+  String get predictorActual;
+
+  /// No description provided for @predictorSessionPoints.
+  ///
+  /// In ru, this message translates to:
+  /// **'{points} очк.'**
+  String predictorSessionPoints(int points);
+
+  /// No description provided for @predictorCompareEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нет позиций для сравнения'**
+  String get predictorCompareEmpty;
+
+  /// No description provided for @predictorPastSeasonsTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Прошлые сезоны'**
+  String get predictorPastSeasonsTitle;
+
+  /// No description provided for @predictorSeasonButton.
+  ///
+  /// In ru, this message translates to:
+  /// **'{year} · {points} {points, plural, one{очко} few{очка} many{очков} other{очков}} · {races} {races, plural, one{гонка} few{гонки} many{гонок} other{гонок}}'**
+  String predictorSeasonButton(String year, int points, int races);
+
   /// No description provided for @newsTitle.
   ///
   /// In ru, this message translates to:

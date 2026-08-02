@@ -6,17 +6,32 @@ import 'package:flutter/material.dart';
 
 /// Элемент нижней навигации с иконкой и подписью.
 class NavBarItem extends StatelessWidget {
-  const NavBarItem({required this.imageAsset, required this.title, this.isSelected = false, this.onPressed, super.key});
+  const NavBarItem({
+    required this.imageAsset,
+    required this.title,
+    this.isSelected = false,
+    this.onPressed,
+    this.iconSize = _defaultIconSize,
+    this.edgeCropScale = _defaultEdgeCropScale,
+    super.key,
+  });
 
   final String imageAsset;
   final String title;
   final VoidCallback? onPressed;
   final bool isSelected;
 
-  static const _iconSize = 28.0;
+  /// Размер слота иконки.
+  final double iconSize;
+
+  /// Масштаб обрезки краевого мата PNG (tint иначе даёт квадратную обводку).
+  /// Для плотных ассетов (шлем) лучше `1.0`, иначе края клипаются.
+  final double edgeCropScale;
+
+  static const _defaultIconSize = 28.0;
 
   /// Масштаб обрезки краевого мата PNG, который иначе даёт квадратную обводку после tint.
-  static const _edgeCropScale = 1.12;
+  static const _defaultEdgeCropScale = 1.12;
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +50,15 @@ class NavBarItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                width: _iconSize,
-                height: _iconSize,
+                width: iconSize,
+                height: iconSize,
                 child: ClipRect(
                   child: Transform.scale(
-                    scale: _edgeCropScale,
+                    scale: edgeCropScale,
                     child: Image.asset(
                       imageAsset,
-                      width: _iconSize,
-                      height: _iconSize,
+                      width: iconSize,
+                      height: iconSize,
                       fit: BoxFit.contain,
                       color: color,
                       colorBlendMode: BlendMode.srcIn,

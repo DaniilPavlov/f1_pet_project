@@ -24,6 +24,83 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navCircuits => 'Circuits';
 
   @override
+  String get navPredictor => 'Predict';
+
+  @override
+  String get predictorTitle => 'Predictor';
+
+  @override
+  String predictorSeasonPoints(String year, int points) {
+    return '$year · $points pts';
+  }
+
+  @override
+  String get predictorLocked => 'Predictions locked';
+
+  @override
+  String predictorLockIn(String countdown) {
+    return 'Locks in $countdown';
+  }
+
+  @override
+  String get predictorMissingQualiTime =>
+      'Qualifying time is not available yet — edits are still open';
+
+  @override
+  String get predictorWaitingResults => 'Waiting for results';
+
+  @override
+  String get predictorNoUpcoming => 'No upcoming race to predict';
+
+  @override
+  String get predictorHistoryTitle => 'Season history';
+
+  @override
+  String get predictorHistoryEmpty => 'No scored weekends yet';
+
+  @override
+  String predictorWeekendPoints(String quali, String race, int total) {
+    return 'Q $quali · R $race · $total pts';
+  }
+
+  @override
+  String get predictorPendingPoints => '—';
+
+  @override
+  String get predictorPredicted => 'Predict';
+
+  @override
+  String get predictorActual => 'Actual';
+
+  @override
+  String predictorSessionPoints(int points) {
+    return '$points pts';
+  }
+
+  @override
+  String get predictorCompareEmpty => 'No positions to compare';
+
+  @override
+  String get predictorPastSeasonsTitle => 'Past seasons';
+
+  @override
+  String predictorSeasonButton(String year, int points, int races) {
+    String _temp0 = intl.Intl.pluralLogic(
+      points,
+      locale: localeName,
+      other: 'points',
+      one: 'point',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      races,
+      locale: localeName,
+      other: 'races',
+      one: 'race',
+    );
+    return '$year · $points $_temp0 · $races $_temp1';
+  }
+
+  @override
   String get newsTitle => 'News';
 
   @override

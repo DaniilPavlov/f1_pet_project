@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:f1_pet_project/common/utils/constants/assets.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
@@ -142,10 +143,10 @@ abstract class ScheduleScreenControllerBase with Store {
     }
 
     if (races.any((race) => isSameDay(DateTime.parse(race.date), day))) {
-      return 'assets/calendar/finish.png';
+      return Assets.calendar.finish;
     }
     if (races.any((race) => _hasSessionOnDay(race, day))) {
-      return 'assets/calendar/car.png';
+      return Assets.calendar.car;
     }
     return null;
   }

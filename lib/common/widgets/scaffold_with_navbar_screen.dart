@@ -13,7 +13,13 @@ class ScaffoldWithNavBarScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
       homeIndex: 0,
-      routes: const [HomeRouter(), ResultsRouter(), ScheduleRouter(), NewsRouter(), CircuitsRouter()],
+      routes: const [
+        HomeRouter(),
+        ResultsRouter(),
+        ScheduleRouter(),
+        NewsRouter(),
+        PredictorRouter(),
+      ],
       bottomNavigationBuilder: (_, tabsRouter) {
         return Column(
           mainAxisSize: MainAxisSize.min,

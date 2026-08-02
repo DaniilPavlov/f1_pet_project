@@ -11,6 +11,7 @@ import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.da
 import 'package:f1_pet_project/core/circuits/stats/circuit_stats_repository.dart';
 import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
 import 'package:f1_pet_project/core/news/repositories/news_repository.dart';
+import 'package:f1_pet_project/core/predictor/repositories/predictor_repository.dart';
 import 'package:f1_pet_project/core/results/constructor/repositories/constructor_career_repository.dart';
 import 'package:f1_pet_project/core/results/constructor/repositories/constructor_catalog_repository.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_career_repository.dart';
@@ -51,6 +52,7 @@ Future<void> main() async {
   final standingsRepository = CurrentStandingsRepository();
   final driverCatalogRepository = DriverCatalogRepository();
   final constructorCatalogRepository = ConstructorCatalogRepository();
+  final predictorRepository = PredictorRepository();
   final wikipediaRepository = WikipediaPageImageRepository();
   final espnDio = AppDio.external();
   final espnNewsDio = AppDio.external(
@@ -80,6 +82,7 @@ Future<void> main() async {
         Provider(create: (_) => const ConstructorCareerRepository()),
         Provider<DriverCatalogRepository>.value(value: driverCatalogRepository),
         Provider<ConstructorCatalogRepository>.value(value: constructorCatalogRepository),
+        Provider<PredictorRepository>.value(value: predictorRepository),
         Provider<EspnScoreboardRepository>.value(value: scoreboardRepository),
         Provider(
           create: (_) => LiveWeekendController(scoreboardRepository: scoreboardRepository)..loadScoreboard(),

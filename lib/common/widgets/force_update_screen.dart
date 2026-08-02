@@ -1,5 +1,6 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/localization/locale_controller.dart';
+import 'package:f1_pet_project/common/utils/constants/assets.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
@@ -59,7 +60,7 @@ class ForceUpdateScreen extends StatelessWidget {
                         bottom: 10,
                       ),
                       child: Image.asset(
-                        'assets/error_car.png',
+                        Assets.errorCar,
                         height: MediaQuery.of(context).size.height / 3.6,
                         width: MediaQuery.of(context).size.width / 2,
                         fit: BoxFit.fill,

@@ -5,6 +5,54 @@
   "navCalendar": "Календарь",
   "navNews": "Новости",
   "navCircuits": "Трассы",
+  "navPredictor": "Предикт",
+  "predictorTitle": "Предиктор",
+  "predictorSeasonPoints": "{year} · {points} очк.",
+  "@predictorSeasonPoints": {
+    "placeholders": {
+      "year": { "type": "String" },
+      "points": { "type": "int" }
+    }
+  },
+  "predictorLocked": "Предикты заблокированы",
+  "predictorLockIn": "Блок через {countdown}",
+  "@predictorLockIn": {
+    "placeholders": {
+      "countdown": { "type": "String" }
+    }
+  },
+  "predictorMissingQualiTime": "Время квалификации пока неизвестно — правки ещё открыты",
+  "predictorWaitingResults": "Ждём результаты",
+  "predictorNoUpcoming": "Нет ближайшей гонки для предикта",
+  "predictorHistoryTitle": "История сезона",
+  "predictorHistoryEmpty": "Пока нет учтённых уикендов",
+  "predictorWeekendPoints": "Q {quali} · R {race} · {total} очк.",
+  "@predictorWeekendPoints": {
+    "placeholders": {
+      "quali": { "type": "String" },
+      "race": { "type": "String" },
+      "total": { "type": "int" }
+    }
+  },
+  "predictorPendingPoints": "—",
+  "predictorPredicted": "Предикт",
+  "predictorActual": "Факт",
+  "predictorSessionPoints": "{points} очк.",
+  "@predictorSessionPoints": {
+    "placeholders": {
+      "points": { "type": "int" }
+    }
+  },
+  "predictorCompareEmpty": "Нет позиций для сравнения",
+  "predictorPastSeasonsTitle": "Прошлые сезоны",
+  "predictorSeasonButton": "{year} · {points} {points, plural, one{очко} few{очка} many{очков} other{очков}} · {races} {races, plural, one{гонка} few{гонки} many{гонок} other{гонок}}",
+  "@predictorSeasonButton": {
+    "placeholders": {
+      "year": { "type": "String" },
+      "points": { "type": "int" },
+      "races": { "type": "int" }
+    }
+  },
   "newsTitle": "Новости",
   "newsEmpty": "Новостей пока нет",
   "homeStandingsTitle": "Турнирная таблица текущего сезона",

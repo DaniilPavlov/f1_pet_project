@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/utils/constants/assets.dart';
 import 'package:f1_pet_project/common/widgets/nav_bar/nav_bar_item.dart';
 import 'package:f1_pet_project/common/widgets/nav_bar/navbar.dart';
 import 'package:f1_pet_project/l10n/app_localizations_en.dart';
@@ -15,7 +16,7 @@ void main() {
       var taps = 0;
 
       await tester.pumpApp(
-        NavBarItem(imageAsset: 'assets/nav_bar/home.png', title: 'Home', isSelected: true, onPressed: () => taps++),
+        NavBarItem(imageAsset: Assets.navBar.home, title: 'Home', isSelected: true, onPressed: () => taps++),
       );
 
       expect(find.text('Home'), findsOneWidget);
@@ -39,9 +40,16 @@ void main() {
       expect(find.text(l10n.navResults), findsOneWidget);
       expect(find.text(l10n.navCalendar), findsOneWidget);
       expect(find.text(l10n.navNews), findsOneWidget);
-      expect(find.text(l10n.navCircuits), findsOneWidget);
+      expect(find.text(l10n.navPredictor), findsOneWidget);
+      expect(find.text(l10n.navCircuits), findsNothing);
 
-      for (final label in [l10n.navHome, l10n.navResults, l10n.navCalendar, l10n.navNews, l10n.navCircuits]) {
+      for (final label in [
+        l10n.navHome,
+        l10n.navResults,
+        l10n.navCalendar,
+        l10n.navNews,
+        l10n.navPredictor,
+      ]) {
         await tester.tap(find.text(label));
         await tester.pump();
       }
@@ -51,7 +59,7 @@ void main() {
         'results',
         'schedule',
         'news',
-        'circuits',
+        'predictor',
       ]);
     });
   });

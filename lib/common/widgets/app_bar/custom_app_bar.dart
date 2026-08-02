@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:f1_pet_project/common/localization/locale_controller.dart';
+import 'package:f1_pet_project/common/utils/constants/assets.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
@@ -73,7 +74,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               Center(
                 child: title != null
                     ? Text(title!, style: AppStyles.body.copyWith(color: AppTheme.onChrome))
-                    : Image.asset('assets/app_logo.png'),
+                    : Image.asset(Assets.appLogo),
               ),
               Align(
                 alignment: Alignment.centerRight,
