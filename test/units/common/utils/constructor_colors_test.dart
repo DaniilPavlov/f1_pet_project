@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('ConstructorColors', () {
     test('returns known team colors', () {
-      expect(ConstructorColors.forConstructorId('ferrari'), const Color(0xFF8B0000));
+      expect(ConstructorColors.forConstructorId('ferrari'), const Color(0xFFA51010));
       expect(ConstructorColors.forConstructorId('Mercedes'), const Color(0xFF006F62));
       expect(ConstructorColors.forConstructorId('red_bull'), const Color(0xFF1E2E5A));
       expect(ConstructorColors.forConstructorId('rb'), const Color(0xFF6B9AC4));
@@ -37,6 +37,33 @@ void main() {
       expect(a, b);
       expect(a, isNot(equals(ConstructorColors.forConstructorId('ferrari'))));
       expect(c, isA<Color>());
+    });
+
+    test('tableRowDecoration accents known constructor and zebra odd rows', () {
+      const zebra = Color(0xFFEEEEEE);
+      const bottom = Color(0xFFCCCCCC);
+
+      final withTeam = ConstructorColors.tableRowDecoration(
+        zebraColor: zebra,
+        bottomBorderColor: bottom,
+        index: 1,
+        constructorId: 'ferrari',
+      );
+      expect(withTeam.color, zebra);
+      final border = withTeam.border! as Border;
+      expect(border.left.color, const Color(0xFFA51010));
+      expect(border.left.width, 3);
+      expect(border.bottom.color, bottom);
+
+      final noTeam = ConstructorColors.tableRowDecoration(
+        zebraColor: zebra,
+        bottomBorderColor: bottom,
+        index: 0,
+        constructorId: null,
+      );
+      expect(noTeam.color, Colors.transparent);
+      final noTeamBorder = noTeam.border! as Border;
+      expect(noTeamBorder.left, BorderSide.none);
     });
   });
 }

@@ -9,7 +9,6 @@ import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/services/deeplinks/f1pet_deep_links.dart';
-import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -20,17 +19,13 @@ import 'package:timezone/timezone.dart' as tz;
 ///
 /// Расписание из [ScheduleRepository]. В ОС — окно из [_maxScheduledReminders]
 /// ближайших сессий; при старте / resume / смене локали пересобирается.
-/// Флаг Remote Config [RemoteConfigService.localNotificationsEnabledKey]
-/// запрещает создание (и снимает уже запланированные).
 ///
 /// Payload — `f1pet://race/<season>/<round>`; тапы отдаются в [notificationTaps]
 /// и открывают Schedule (или Results, если уикенд уже live).
 class RaceReminderService {
   RaceReminderService({
     required ScheduleRepository scheduleRepository,
-    required RemoteConfigService remoteConfig,
-  }) : _scheduleRepository = scheduleRepository,
-       _remoteConfig = remoteConfig;
+  }) : _scheduleRepository = scheduleRepository;
 
   static const _reminderLead = Duration(minutes: 30);
   static const _maxScheduledReminders = 10;
@@ -52,7 +47,6 @@ class RaceReminderService {
   static const _notificationDetails = NotificationDetails(android: _androidDetails, iOS: DarwinNotificationDetails());
 
   final ScheduleRepository _scheduleRepository;
-  final RemoteConfigService _remoteConfig;
   final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
   final _tapController = StreamController<Uri>.broadcast();
 
@@ -61,8 +55,7 @@ class RaceReminderService {
   /// Тапы по reminder (и cold-start launch). Слушает [F1PetDeepLinkHandler].
   Stream<Uri> get notificationTaps => _tapController.stream;
 
-  bool get _notificationsAllowed =>
-      PlatformCapabilities.hasLocalNotifications && _remoteConfig.localNotificationsEnabled;
+  bool get _notificationsAllowed => PlatformCapabilities.hasLocalNotifications;
 
   /// Инициализирует плагин и таймзону (без запроса permissions).
   Future<void> init() async {
@@ -120,17 +113,12 @@ class RaceReminderService {
     if (!PlatformCapabilities.hasLocalNotifications) {
       return;
     }
-    if (!_remoteConfig.localNotificationsEnabled) {
-      await _plugin.cancelAll();
-      logger.d('RaceReminderService: disabled by Remote Config, cancelled all');
-      return;
-    }
     try {
       await _configureLocalTimezone();
 
       final loadResult = await _scheduleRepository.getSchedule();
       final l10n = await AppLocalizations.delegate.load(locale);
-      final upcoming = _buildPlannedReminders(
+      final upcoming = buildPlannedReminders(
         loadResult.schedule.raceTable.races,
         l10n,
         includePractices: includePractices,
@@ -204,13 +192,16 @@ class RaceReminderService {
     );
   }
 
-  List<_PlannedReminder> _buildPlannedReminders(
+  /// Собирает будущие reminders (для unit-тестов и [sync]).
+  @visibleForTesting
+  static List<PlannedRaceReminder> buildPlannedReminders(
     List<RacesModel> races,
     AppLocalizations l10n, {
     required bool includePractices,
+    DateTime? now,
   }) {
-    final now = DateTime.now();
-    final planned = <_PlannedReminder>[];
+    final clock = now ?? DateTime.now();
+    final planned = <PlannedRaceReminder>[];
 
     for (final race in races) {
       final sessions = sessionEntries(race, l10n, includePractices: includePractices);
@@ -218,13 +209,13 @@ class RaceReminderService {
       for (final (typeKey, activityTitle, date) in sessions) {
         final localStart = RaceDateTimeHelper.toLocal(date);
         final notifyAt = localStart.subtract(_reminderLead);
-        if (!notifyAt.isAfter(now)) {
+        if (!notifyAt.isAfter(clock)) {
           continue;
         }
 
         planned.add(
-          _PlannedReminder(
-            id: _notificationId(race.season, race.round, typeKey),
+          PlannedRaceReminder(
+            id: notificationId(race.season, race.round, typeKey),
             activityTitle: activityTitle,
             grandPrixName: race.raceName,
             payload: F1PetDeepLinks.race(race.season, race.round).toString(),
@@ -257,7 +248,7 @@ class RaceReminderService {
     ];
   }
 
-  Future<void> _scheduleAll(List<_PlannedReminder> planned) async {
+  Future<void> _scheduleAll(List<PlannedRaceReminder> planned) async {
     for (final item in planned) {
       final body = '${item.grandPrixName} · ${Utils.formatHourMinute(item.startLocal)}';
       final scheduledDate = tz.TZDateTime.from(item.notifyAt.toUtc(), tz.local);
@@ -300,13 +291,16 @@ class RaceReminderService {
     }
   }
 
-  static int _notificationId(String season, String round, String typeKey) {
+  /// Стабильный id уведомления. Публичный для unit-тестов.
+  @visibleForTesting
+  static int notificationId(String season, String round, String typeKey) {
     return Object.hash(season, round, typeKey) & 0x7fffffff;
   }
 }
 
-class _PlannedReminder {
-  const _PlannedReminder({
+/// Планируемое локальное напоминание (публично для тестов planning-логики).
+class PlannedRaceReminder {
+  const PlannedRaceReminder({
     required this.id,
     required this.activityTitle,
     required this.grandPrixName,

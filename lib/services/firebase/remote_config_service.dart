@@ -8,15 +8,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 class RemoteConfigService {
   RemoteConfigService();
 
-  /// Разрешает создание локальных уведомлений (напоминания о сессиях).
-  static const localNotificationsEnabledKey = 'local_notifications_enabled';
-
   /// Минимально допустимая версия приложения (semver). Ниже — экран обновления.
   static const minAppVersionKey = 'min_app_version';
 
   final FirebaseRemoteConfig _remoteConfig = FirebaseRemoteConfig.instance;
-
-  bool get localNotificationsEnabled => _remoteConfig.getBool(localNotificationsEnabledKey);
 
   String get minAppVersion => _remoteConfig.getString(minAppVersionKey);
 
@@ -28,7 +23,6 @@ class RemoteConfigService {
       ),
     );
     await _remoteConfig.setDefaults(const {
-      localNotificationsEnabledKey: true,
       minAppVersionKey: '0.0.0',
     });
 
@@ -37,7 +31,6 @@ class RemoteConfigService {
       if (kDebugMode) {
         logger.d(
           'Remote Config activated=$activated, '
-          '$localNotificationsEnabledKey=$localNotificationsEnabled, '
           '$minAppVersionKey=$minAppVersion',
         );
       }

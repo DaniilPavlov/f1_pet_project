@@ -115,13 +115,11 @@ Future<void> main() async {
         Provider(
           create: (_) => RaceReminderService(
             scheduleRepository: scheduleRepository,
-            remoteConfig: remoteConfig,
           ),
         ),
         Provider(
           create: (context) => NotificationsPreferenceController(
             reminders: context.read<RaceReminderService>(),
-            remoteConfig: remoteConfig,
             analytics: analytics,
           ),
         ),

@@ -346,21 +346,32 @@ class PredictorLeaderboardRepository {
         return;
       }
 
-      final profile = await loadProfile();
-      if (!profile.canShowOnLeaderboard) {
-        return;
-      }
-      await _entryDoc(year, uid).set({
-        'nickname': profile.nickname,
-        'totalPoints': totalPoints,
-        'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
+      // Transaction: после leave (opt-in=false) не воскрешаем публичную запись.
+      final userRef = _userDoc(uid);
+      final entryRef = _entryDoc(year, uid);
+      await _firestore!.runTransaction((tx) async {
+        final userSnap = await tx.get(userRef);
+        final profile = PredictorLeaderboardProfile.fromJson(userSnap.data());
+        if (!profile.canShowOnLeaderboard) {
+          return;
+        }
+        tx.set(entryRef, {
+          'nickname': profile.nickname,
+          'totalPoints': totalPoints,
+          'updatedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      });
     } on Object catch (e) {
       await _authService?.signOutIfSessionDead(e);
     }
   }
 
-  void clearMemoryCache() {}
+  /// Очищает in-memory бэкенд (тесты / sign-out). Firestore-кэша нет.
+  void clearMemoryCache() {
+    _memory?.profiles.clear();
+    _memory?.nicknames.clear();
+    _memory?.entries.clear();
+  }
 
   PredictorLeaderboardResult _joinMemory({
     required _MemoryBackend memory,

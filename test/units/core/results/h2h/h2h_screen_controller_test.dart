@@ -4,7 +4,12 @@ import 'package:f1_pet_project/core/results/h2h/models/h2h_points_timeline.dart'
 import 'package:f1_pet_project/core/results/h2h/models/h2h_round_score.dart';
 import 'package:f1_pet_project/core/results/h2h/models/h2h_stats.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
+import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
 import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
+import 'package:f1_pet_project/data/models/standings/driver/driver_standings_model.dart';
+import 'package:f1_pet_project/data/models/standings/standings_lists_model.dart';
+import 'package:f1_pet_project/data/models/standings/standings_model.dart';
+import 'package:f1_pet_project/data/models/standings/standings_table_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../helpers/controller_fixtures.dart';
@@ -55,6 +60,91 @@ void main() {
       expect(controller.comparison.value?.statsB.wins, 3);
       expect(controller.comparison.value?.timeline.points, hasLength(2));
       expect(controller.comparison.value?.timeline.points.last.cumulativeA, 43);
+      controller.dispose();
+    });
+
+    test('compare attaches constructor ids from current standings for chart colors', () async {
+      final ferrari = ConstructorModel(
+        constructorId: 'ferrari',
+        url: 'http://example.com/ferrari',
+        name: 'Ferrari',
+        nationality: 'Italian',
+      );
+      final standings = StandingsModel(
+        standingsTable: StandingsTableModel(
+          standingsLists: [
+            StandingsListsModel(
+              season: '2026',
+              round: '1',
+              driverStandings: [
+                DriverStandingsModel(
+                  position: '1',
+                  positionText: '1',
+                  points: '10',
+                  wins: '0',
+                  driver: ControllerFixtures.driver,
+                  constructors: [ControllerFixtures.constructor],
+                ),
+                DriverStandingsModel(
+                  position: '2',
+                  positionText: '2',
+                  points: '8',
+                  wins: '0',
+                  driver: driverB,
+                  constructors: [ferrari],
+                ),
+              ],
+              constructorStandings: null,
+            ),
+          ],
+        ),
+      );
+
+      final controller =
+          H2hScreenController(
+              currentStandingsRepository: FakeCurrentStandingsRepository(drivers: standings),
+              loadCurrentDriversForTest: () async => [ControllerFixtures.driver, driverB],
+              loadAllDriversForTest: () async => [ControllerFixtures.driver, driverB],
+              compareDriversForTest: ({required driverIdA, required driverIdB, season}) async => loaded,
+            )
+            ..setDriverA(ControllerFixtures.driver)
+            ..setDriverB(driverB);
+
+      await controller.compare();
+
+      expect(controller.comparison.value?.constructorIdA, 'red_bull');
+      expect(controller.comparison.value?.constructorIdB, 'ferrari');
+      controller.dispose();
+    });
+
+    test('compare leaves constructor ids null when standings miss drivers', () async {
+      final emptyStandings = StandingsModel(
+        standingsTable: StandingsTableModel(
+          standingsLists: [
+            StandingsListsModel(
+              season: '2026',
+              round: '1',
+              driverStandings: const [],
+              constructorStandings: null,
+            ),
+          ],
+        ),
+      );
+
+      final controller =
+          H2hScreenController(
+              currentStandingsRepository: FakeCurrentStandingsRepository(drivers: emptyStandings),
+              loadCurrentDriversForTest: () async => [ControllerFixtures.driver, driverB],
+              loadAllDriversForTest: () async => [ControllerFixtures.driver, driverB],
+              compareDriversForTest: ({required driverIdA, required driverIdB, season}) async => loaded,
+            )
+            ..setDriverA(ControllerFixtures.driver)
+            ..setDriverB(driverB);
+
+      await controller.compare();
+
+      expect(controller.comparison.value?.constructorIdA, isNull);
+      expect(controller.comparison.value?.constructorIdB, isNull);
       controller.dispose();
     });
 

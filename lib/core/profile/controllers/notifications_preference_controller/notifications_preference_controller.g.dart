@@ -10,13 +10,6 @@ part of 'notifications_preference_controller.dart';
 
 mixin _$NotificationsPreferenceController
     on NotificationsPreferenceControllerBase, Store {
-  Computed<bool>? _$remoteAllowsComputed;
-
-  @override
-  bool get remoteAllows => (_$remoteAllowsComputed ??= Computed<bool>(
-    () => super.remoteAllows,
-    name: 'NotificationsPreferenceControllerBase.remoteAllows',
-  )).value;
   Computed<bool>? _$effectivelyEnabledComputed;
 
   @override
@@ -150,7 +143,6 @@ mixin _$NotificationsPreferenceController
 userEnabled: ${userEnabled},
 practiceRemindersEnabled: ${practiceRemindersEnabled},
 isLoaded: ${isLoaded},
-remoteAllows: ${remoteAllows},
 effectivelyEnabled: ${effectivelyEnabled},
 canToggle: ${canToggle},
 canTogglePractice: ${canTogglePractice},

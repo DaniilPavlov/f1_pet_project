@@ -35,6 +35,25 @@ void main() {
       await tester.pumpApp(const SingleChildScrollView(child: SeasonRewindShimmer(showScrubber: false)));
       expect(find.byType(SeasonRewindShimmer), findsOneWidget);
     });
+
+    testWidgets('golden', (tester) async {
+      await tester.pumpApp(
+        const ColoredBox(
+          color: Colors.white,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: SingleChildScrollView(child: SeasonRewindShimmer()),
+          ),
+        ),
+        surfaceSize: const Size(390, 640),
+      );
+      await tester.pumpForGolden();
+
+      await expectLater(
+        find.byType(SeasonRewindShimmer),
+        matchesGoldenFile('../goldens/season_rewind_shimmer.png'),
+      );
+    });
   });
 
   group('H2hCompareShimmer', () {
@@ -59,6 +78,25 @@ void main() {
 
       expect(find.byType(LastRaceSectionShimmer), findsOneWidget);
       expect(find.byType(RaceInfoShimmer), findsOneWidget);
+    });
+
+    testWidgets('RaceInfoShimmer golden', (tester) async {
+      await tester.pumpApp(
+        const ColoredBox(
+          color: Colors.white,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: RaceInfoShimmer(),
+          ),
+        ),
+        surfaceSize: const Size(390, 720),
+      );
+      await tester.pumpForGolden();
+
+      await expectLater(
+        find.byType(RaceInfoShimmer),
+        matchesGoldenFile('../goldens/race_info_shimmer.png'),
+      );
     });
   });
 

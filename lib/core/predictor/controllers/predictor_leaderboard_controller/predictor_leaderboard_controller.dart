@@ -110,6 +110,9 @@ abstract class PredictorLeaderboardControllerBase with Store {
 
   @action
   Future<bool> join() async {
+    if (isSaving) {
+      return false;
+    }
     if (!optInAgreed) {
       formErrorKey = 'predictorLeaderboardOptInRequired';
       return false;
@@ -135,6 +138,9 @@ abstract class PredictorLeaderboardControllerBase with Store {
 
   @action
   Future<bool> saveNickname() async {
+    if (isSaving) {
+      return false;
+    }
     isSaving = true;
     formErrorKey = null;
     try {
@@ -155,6 +161,9 @@ abstract class PredictorLeaderboardControllerBase with Store {
 
   @action
   Future<bool> leave() async {
+    if (isSaving) {
+      return false;
+    }
     isSaving = true;
     formErrorKey = null;
     try {

@@ -67,5 +67,46 @@ void main() {
       expect(find.text(AppLocalizationsEn().h2hPointsTimelineEmpty), findsOneWidget);
       expect(find.textContaining('12.5'), findsWidgets);
     });
+
+    testWidgets('golden with constructor team colors', (tester) async {
+      final timeline = H2hPointsTimeline.fromScores(
+        scoresA: const [
+          H2hRoundScore(season: '2024', round: '1', raceName: 'Bahrain', points: 25),
+          H2hRoundScore(season: '2024', round: '2', raceName: 'Saudi', points: 18),
+        ],
+        scoresB: const [
+          H2hRoundScore(season: '2024', round: '1', raceName: 'Bahrain', points: 18),
+          H2hRoundScore(season: '2024', round: '2', raceName: 'Saudi', points: 25),
+        ],
+      );
+
+      await tester.pumpApp(
+        ColoredBox(
+          color: Colors.white,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: SingleChildScrollView(
+              child: H2hCompareTable(
+                nameA: 'Max',
+                nameB: 'Charles',
+                statsA: const H2hStats(races: 10, wins: 5, podiums: 7, poles: 3),
+                statsB: const H2hStats(races: 10, wins: 2, podiums: 4, poles: 1),
+                timeline: timeline,
+                season: '2024',
+                constructorIdA: 'red_bull',
+                constructorIdB: 'ferrari',
+              ),
+            ),
+          ),
+        ),
+        surfaceSize: const Size(390, 520),
+      );
+      await tester.pumpForGolden();
+
+      await expectLater(
+        find.byType(H2hCompareTable),
+        matchesGoldenFile('../goldens/h2h_compare_table.png'),
+      );
+    });
   });
 }

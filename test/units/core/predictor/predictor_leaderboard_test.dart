@@ -56,6 +56,36 @@ void main() {
       expect(await repo.loadLeaderboard('2026'), isEmpty);
     });
 
+    test('join with zero points still appears on board', () async {
+      final repo = PredictorLeaderboardRepository.memory(uidProvider: () => 'uid-1');
+      final result = await repo.join(nickname: 'zero', year: '2026', totalPoints: 0);
+      expect(result.isSuccess, isTrue);
+
+      final board = await repo.loadLeaderboard('2026');
+      expect(board, hasLength(1));
+      expect(board.single.totalPoints, 0);
+      expect(board.single.rank, 1);
+    });
+
+    test('syncPoints after leave does not recreate entry', () async {
+      final repo = PredictorLeaderboardRepository.memory(uidProvider: () => 'uid-1');
+      await repo.join(nickname: 'racer', year: '2026', totalPoints: 7);
+      await repo.leave(year: '2026');
+      await repo.syncPoints(year: '2026', totalPoints: 99);
+      expect(await repo.loadLeaderboard('2026'), isEmpty);
+    });
+
+    test('updateNickname frees previous normalized key', () async {
+      String? uid = 'uid-1';
+      final repo = PredictorLeaderboardRepository.memory(uidProvider: () => uid);
+      await repo.join(nickname: 'OldNick', year: '2026', totalPoints: 1);
+      await repo.updateNickname(nickname: 'NewNick', year: '2026');
+
+      uid = 'uid-2';
+      final takeOld = await repo.join(nickname: 'OldNick', year: '2026', totalPoints: 2);
+      expect(takeOld.isSuccess, isTrue);
+    });
+
     test('ranks by points descending', () async {
       String? uid = 'uid-1';
       final repo = PredictorLeaderboardRepository.memory(uidProvider: () => uid);
@@ -102,6 +132,47 @@ void main() {
       expect(controller.showJoinForm, isFalse);
       expect(controller.myEntry?.rank, 1);
       expect(controller.rankedEntries, hasLength(1));
+    });
+
+    test('leave returns to join form', () async {
+      final repo = PredictorLeaderboardRepository.memory(uidProvider: () => 'uid-1');
+      final controller = PredictorLeaderboardController(
+        repository: repo,
+        year: '2026',
+        myPoints: 4,
+      );
+      await controller.load();
+      controller
+        ..setNicknameDraft('racer')
+        ..setOptInAgreed(true);
+      await controller.join();
+      expect(controller.showJoinForm, isFalse);
+
+      final ok = await controller.leave();
+      expect(ok, isTrue);
+      expect(controller.showJoinForm, isTrue);
+      expect(controller.myEntry, isNull);
+      expect(controller.profile.nickname, 'racer');
+    });
+
+    test('saveNickname updates draft and board entry', () async {
+      final repo = PredictorLeaderboardRepository.memory(uidProvider: () => 'uid-1');
+      final controller = PredictorLeaderboardController(
+        repository: repo,
+        year: '2026',
+        myPoints: 4,
+      );
+      await controller.load();
+      controller
+        ..setNicknameDraft('OldNick')
+        ..setOptInAgreed(true);
+      await controller.join();
+
+      controller.setNicknameDraft('NewNick');
+      final ok = await controller.saveNickname();
+      expect(ok, isTrue);
+      expect(controller.profile.nickname, 'NewNick');
+      expect(controller.myEntry?.nickname, 'NewNick');
     });
   });
 }

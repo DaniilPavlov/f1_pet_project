@@ -78,7 +78,7 @@ jobs:
         run: flutter test --coverage
 
       - name: Coverage gate
-        run: dart run tool/ci/check_coverage.dart --min 75 --path coverage/lcov.info
+        run: dart run tool/ci/check_coverage.dart --min 80 --path coverage/lcov.info
 
       - name: Upload golden failures
         if: failure()

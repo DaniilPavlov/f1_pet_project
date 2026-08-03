@@ -65,4 +65,75 @@ void main() {
       expect(keys, containsAll(['quali', 'race']));
     });
   });
+
+  group('RaceReminderService.buildPlannedReminders', () {
+    final l10n = AppLocalizationsEn();
+
+    test('skips sessions whose notify time is in the past', () {
+      final base = ControllerFixtures.race;
+      final race = RacesModel(
+        season: '2026',
+        round: '1',
+        url: base.url,
+        raceName: 'Past GP',
+        circuit: base.circuit,
+        date: '2020-01-04',
+        time: '14:00:00Z',
+        firstPractice: null,
+        secondPractice: null,
+        thirdPractice: null,
+        qualifying: RaceDateModel(date: '2020-01-03', time: '14:00:00Z'),
+        sprint: null,
+        results: const [],
+        qualifyingResults: const [],
+        pitStops: const [],
+      );
+
+      final planned = RaceReminderService.buildPlannedReminders(
+        [race],
+        l10n,
+        includePractices: true,
+        now: DateTime.utc(2026, 1, 1),
+      );
+      expect(planned, isEmpty);
+    });
+
+    test('keeps future sessions sorted and stable ids', () {
+      final base = ControllerFixtures.race;
+      final race = RacesModel(
+        season: '2026',
+        round: '12',
+        url: base.url,
+        raceName: 'Future GP',
+        circuit: base.circuit,
+        date: '2099-06-02',
+        time: '14:00:00Z',
+        firstPractice: null,
+        secondPractice: null,
+        thirdPractice: null,
+        qualifying: RaceDateModel(date: '2099-06-01', time: '14:00:00Z'),
+        sprint: RaceDateModel(date: '2099-06-01', time: '10:00:00Z'),
+        results: const [],
+        qualifyingResults: const [],
+        pitStops: const [],
+      );
+
+      final planned = RaceReminderService.buildPlannedReminders(
+        [race],
+        l10n,
+        includePractices: false,
+        now: DateTime.utc(2026, 1, 1),
+      );
+      expect(planned.length, 3);
+      expect(planned.map((e) => e.notifyAt).toList(), orderedEquals([...planned.map((e) => e.notifyAt)]..sort()));
+      expect(
+        planned.map((e) => e.id).toSet(),
+        {
+          RaceReminderService.notificationId('2026', '12', 'sprint'),
+          RaceReminderService.notificationId('2026', '12', 'quali'),
+          RaceReminderService.notificationId('2026', '12', 'race'),
+        },
+      );
+    });
+  });
 }
