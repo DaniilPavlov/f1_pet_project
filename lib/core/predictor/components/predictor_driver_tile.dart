@@ -45,7 +45,7 @@ class PredictorDriverTile extends StatelessWidget {
           color: bg,
           child: ListTile(
             onTap: enabled ? onTap : null,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
             leading: SizedBox(
               width: 28,
               child: Text(

@@ -10,6 +10,7 @@ class NetworkHeroPhoto extends StatelessWidget {
     this.isLoading = false,
     this.placeholderIcon = Icons.person,
     this.fit = BoxFit.cover,
+    this.borderColor = AppTheme.red,
     super.key,
   });
 
@@ -17,6 +18,7 @@ class NetworkHeroPhoto extends StatelessWidget {
   final bool isLoading;
   final IconData placeholderIcon;
   final BoxFit fit;
+  final Color borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -30,15 +32,15 @@ class NetworkHeroPhoto extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         foregroundDecoration: BoxDecoration(
-          border: Border.all(color: AppTheme.red),
+          border: Border.all(color: borderColor),
           borderRadius: const BorderRadius.all(Radius.circular(20)),
         ),
         child: isLoading
-            ? const Center(
+            ? Center(
                 child: SizedBox(
                   width: 28,
                   height: 28,
-                  child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.red),
+                  child: CircularProgressIndicator(strokeWidth: 2, color: borderColor),
                 ),
               )
             : photoUrl == null
@@ -60,17 +62,18 @@ class NetworkHeroPhoto extends StatelessWidget {
                       if (progress == null) {
                         return child;
                       }
-                      return const Center(
+                      return Center(
                         child: SizedBox(
                           width: 28,
                           height: 28,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.red),
+                          child: CircularProgressIndicator(strokeWidth: 2, color: borderColor),
                         ),
                       );
                     },
                   );
                 },
-              ),      ),
+              ),
+      ),
     );
   }
 }

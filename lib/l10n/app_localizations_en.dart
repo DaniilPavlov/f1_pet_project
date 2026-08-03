@@ -260,6 +260,66 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get predictorLeaderboardOpen => 'Leaderboard';
+
+  @override
+  String predictorLeaderboardTitle(String year) {
+    return 'Leaderboard · $year';
+  }
+
+  @override
+  String get predictorLeaderboardJoinHint =>
+      'Pick a nickname and opt in to appear on the public season leaderboard.';
+
+  @override
+  String get predictorNicknameLabel => 'Nickname';
+
+  @override
+  String get predictorNicknameHint => '3–16 letters, numbers, _';
+
+  @override
+  String get predictorNicknameSave => 'Save nickname';
+
+  @override
+  String get predictorLeaderboardOptInLabel => 'Show me on the leaderboard';
+
+  @override
+  String get predictorLeaderboardOptInRequired =>
+      'Agree to appear on the leaderboard';
+
+  @override
+  String get predictorLeaderboardJoin => 'Join leaderboard';
+
+  @override
+  String get predictorLeaderboardLeave => 'Leave leaderboard';
+
+  @override
+  String get predictorLeaderboardListTitle => 'Standings';
+
+  @override
+  String get predictorLeaderboardEmpty =>
+      'No one on the board yet — be the first';
+
+  @override
+  String predictorLeaderboardYourRank(int rank, int points) {
+    return 'You · #$rank · $points pts';
+  }
+
+  @override
+  String get predictorNicknameErrorLength => 'Nickname must be 3–16 characters';
+
+  @override
+  String get predictorNicknameErrorChars =>
+      'Only letters, numbers and underscore';
+
+  @override
+  String get predictorNicknameErrorTaken => 'This nickname is taken';
+
+  @override
+  String get predictorLeaderboardErrorGeneric =>
+      'Could not update the leaderboard. Try again';
+
+  @override
   String get newsEmpty => 'No news right now';
 
   @override

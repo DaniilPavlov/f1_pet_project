@@ -17,5 +17,10 @@ final AutoRoute predictorRoute = AutoRoute(
       page: PredictorWeekendDetailRoute.page,
       meta: const <String, bool>{'hideBottomNav': false},
     ),
+    AutoRoute(
+      path: 'leaderboard',
+      page: PredictorLeaderboardRoute.page,
+      meta: const <String, bool>{'hideBottomNav': false},
+    ),
   ],
 );

@@ -9,6 +9,7 @@ import 'package:f1_pet_project/core/predictor/models/predictor_season.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_season_summary.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_store.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_weekend_prediction.dart';
+import 'package:f1_pet_project/core/predictor/repositories/predictor_leaderboard_repository.dart';
 import 'package:f1_pet_project/core/predictor/repositories/predictor_repository.dart';
 import 'package:f1_pet_project/core/predictor/services/predictor_lock.dart';
 import 'package:f1_pet_project/core/predictor/services/predictor_lock_ticker.dart';
@@ -40,6 +41,7 @@ class PredictorScreenController = PredictorScreenControllerBase with _$Predictor
 abstract class PredictorScreenControllerBase with Store {
   PredictorScreenControllerBase({
     required PredictorRepository predictorRepository,
+    PredictorLeaderboardRepository? leaderboardRepository,
     ScheduleRepository? scheduleRepository,
     DriverCatalogRepository? driverCatalogRepository,
     CurrentStandingsRepository? standingsRepository,
@@ -61,6 +63,7 @@ abstract class PredictorScreenControllerBase with Store {
          'Provide driverCatalogRepository or loadDriversForTest',
        ),
        _predictorRepository = predictorRepository,
+       _leaderboardRepository = leaderboardRepository,
        _scheduleRepository = scheduleRepository,
        _standingsRepository = standingsRepository,
        _dataRefresh = dataRefresh,
@@ -76,6 +79,7 @@ abstract class PredictorScreenControllerBase with Store {
   }
 
   final PredictorRepository _predictorRepository;
+  final PredictorLeaderboardRepository? _leaderboardRepository;
   final ScheduleRepository? _scheduleRepository;
   final CurrentStandingsRepository? _standingsRepository;
   final AppDataRefresh? _dataRefresh;
@@ -251,6 +255,7 @@ abstract class PredictorScreenControllerBase with Store {
     if (screenError == null) {
       await _ensureCurrentDraft();
       await _scoreAllPending();
+      await _syncLeaderboardPoints();
       _ticker.start();
     }
 
@@ -429,6 +434,7 @@ abstract class PredictorScreenControllerBase with Store {
       return;
     }
     store = await _predictorRepository.replace(nextStore);
+    await _syncLeaderboardPoints();
     final race = upcomingRace;
     if (race != null) {
       final current = store.weekend(year: year, round: race.round);
@@ -547,5 +553,14 @@ abstract class PredictorScreenControllerBase with Store {
       throw StateError('Provide standingsRepository or fetchDriverStandingsForTest');
     }
     return repo.drivers();
+  }
+
+  Future<void> _syncLeaderboardPoints() async {
+    final year = seasonYear;
+    final repo = _leaderboardRepository;
+    if (year == null || repo == null) {
+      return;
+    }
+    await repo.syncPoints(year: year, totalPoints: seasonTotalPoints);
   }
 }

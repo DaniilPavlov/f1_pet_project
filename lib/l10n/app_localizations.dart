@@ -536,6 +536,108 @@ abstract class AppLocalizations {
   /// **'{year} · {points} {points, plural, one{очко} few{очка} many{очков} other{очков}} · {races} {races, plural, one{гонка} few{гонки} many{гонок} other{гонок}}'**
   String predictorSeasonButton(String year, int points, int races);
 
+  /// No description provided for @predictorLeaderboardOpen.
+  ///
+  /// In ru, this message translates to:
+  /// **'Лидерборд'**
+  String get predictorLeaderboardOpen;
+
+  /// No description provided for @predictorLeaderboardTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Лидерборд · {year}'**
+  String predictorLeaderboardTitle(String year);
+
+  /// No description provided for @predictorLeaderboardJoinHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Придумай ник и согласись отображаться в публичном лидерборде сезона.'**
+  String get predictorLeaderboardJoinHint;
+
+  /// No description provided for @predictorNicknameLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ник'**
+  String get predictorNicknameLabel;
+
+  /// No description provided for @predictorNicknameHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'3–16 букв, цифр, _'**
+  String get predictorNicknameHint;
+
+  /// No description provided for @predictorNicknameSave.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранить ник'**
+  String get predictorNicknameSave;
+
+  /// No description provided for @predictorLeaderboardOptInLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Показывать меня в лидерборде'**
+  String get predictorLeaderboardOptInLabel;
+
+  /// No description provided for @predictorLeaderboardOptInRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нужно согласие на отображение в лидерборде'**
+  String get predictorLeaderboardOptInRequired;
+
+  /// No description provided for @predictorLeaderboardJoin.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вступить в лидерборд'**
+  String get predictorLeaderboardJoin;
+
+  /// No description provided for @predictorLeaderboardLeave.
+  ///
+  /// In ru, this message translates to:
+  /// **'Покинуть лидерборд'**
+  String get predictorLeaderboardLeave;
+
+  /// No description provided for @predictorLeaderboardListTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Таблица'**
+  String get predictorLeaderboardListTitle;
+
+  /// No description provided for @predictorLeaderboardEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока никого нет — будь первым'**
+  String get predictorLeaderboardEmpty;
+
+  /// No description provided for @predictorLeaderboardYourRank.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ты · #{rank} · {points} очк.'**
+  String predictorLeaderboardYourRank(int rank, int points);
+
+  /// No description provided for @predictorNicknameErrorLength.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ник должен быть 3–16 символов'**
+  String get predictorNicknameErrorLength;
+
+  /// No description provided for @predictorNicknameErrorChars.
+  ///
+  /// In ru, this message translates to:
+  /// **'Только буквы, цифры и подчёркивание'**
+  String get predictorNicknameErrorChars;
+
+  /// No description provided for @predictorNicknameErrorTaken.
+  ///
+  /// In ru, this message translates to:
+  /// **'Этот ник уже занят'**
+  String get predictorNicknameErrorTaken;
+
+  /// No description provided for @predictorLeaderboardErrorGeneric.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось обновить лидерборд. Попробуй ещё раз'**
+  String get predictorLeaderboardErrorGeneric;
+
   /// No description provided for @newsEmpty.
   ///
   /// In ru, this message translates to:

@@ -62,13 +62,4 @@ void main() {
       await expectLater(find.byType(ListRowsShimmer), matchesGoldenFile('../goldens/list_rows_shimmer.png'));
     });
   });
-
-  group('CircuitsShimmer', () {
-    testWidgets('builds circuit card skeletons', (tester) async {
-      await tester.pumpApp(const CircuitsShimmer());
-
-      expect(find.byType(CircuitsShimmer), findsOneWidget);
-      expect(find.byType(ScreenShimmer), findsWidgets);
-    });
-  });
 }

@@ -113,6 +113,34 @@
       "races": { "type": "int" }
     }
   },
+  "predictorLeaderboardOpen": "Лидерборд",
+  "predictorLeaderboardTitle": "Лидерборд · {year}",
+  "@predictorLeaderboardTitle": {
+    "placeholders": {
+      "year": { "type": "String" }
+    }
+  },
+  "predictorLeaderboardJoinHint": "Придумай ник и согласись отображаться в публичном лидерборде сезона.",
+  "predictorNicknameLabel": "Ник",
+  "predictorNicknameHint": "3–16 букв, цифр, _",
+  "predictorNicknameSave": "Сохранить ник",
+  "predictorLeaderboardOptInLabel": "Показывать меня в лидерборде",
+  "predictorLeaderboardOptInRequired": "Нужно согласие на отображение в лидерборде",
+  "predictorLeaderboardJoin": "Вступить в лидерборд",
+  "predictorLeaderboardLeave": "Покинуть лидерборд",
+  "predictorLeaderboardListTitle": "Таблица",
+  "predictorLeaderboardEmpty": "Пока никого нет — будь первым",
+  "predictorLeaderboardYourRank": "Ты · #{rank} · {points} очк.",
+  "@predictorLeaderboardYourRank": {
+    "placeholders": {
+      "rank": { "type": "int" },
+      "points": { "type": "int" }
+    }
+  },
+  "predictorNicknameErrorLength": "Ник должен быть 3–16 символов",
+  "predictorNicknameErrorChars": "Только буквы, цифры и подчёркивание",
+  "predictorNicknameErrorTaken": "Этот ник уже занят",
+  "predictorLeaderboardErrorGeneric": "Не удалось обновить лидерборд. Попробуй ещё раз",
   "newsEmpty": "Новостей пока нет",
   "homeStandingsTitle": "Турнирная таблица текущего сезона",
   "circuitStatLength": "Длина",

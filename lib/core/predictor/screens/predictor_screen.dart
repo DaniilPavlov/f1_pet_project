@@ -7,6 +7,7 @@ import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/common/widgets/containers/red_border_container.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
@@ -19,6 +20,7 @@ import 'package:f1_pet_project/core/predictor/components/predictor_weekend_heade
 import 'package:f1_pet_project/core/predictor/controllers/predictor_screen_controller/predictor_screen_controller.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_season_summary.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_weekend_prediction.dart';
+import 'package:f1_pet_project/core/predictor/repositories/predictor_leaderboard_repository.dart';
 import 'package:f1_pet_project/core/predictor/repositories/predictor_repository.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
 import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
@@ -47,6 +49,7 @@ class PredictorScreen extends StatelessWidget {
             key: ValueKey('predictor_$localeCode'),
             create: (context) => PredictorScreenController(
               predictorRepository: context.read<PredictorRepository>(),
+              leaderboardRepository: context.read<PredictorLeaderboardRepository>(),
               scheduleRepository: context.read<ScheduleRepository>(),
               driverCatalogRepository: context.read<DriverCatalogRepository>(),
               standingsRepository: context.read<CurrentStandingsRepository>(),
@@ -125,13 +128,44 @@ class _PredictorBody extends StatelessWidget {
                     8,
                   ),
                   sliver: SliverToBoxAdapter(
-                    child: Text(
-                      context.l10n.predictorSeasonPoints(year, controller.seasonTotalPoints),
-                      style: AppStyles.h3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          context.l10n.predictorSeasonPoints(year, controller.seasonTotalPoints),
+                          style: AppStyles.h3,
+                        ),
+                        if (controller.seasonYear != null) ...[
+                          const SizedBox(height: 12),
+                          BlackButton(
+                            text: context.l10n.predictorLeaderboardOpen,
+                            isDisabled: false,
+                            midIcon: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  context.l10n.predictorLeaderboardOpen,
+                                  style: AppStyles.h3.copyWith(color: AppTheme.red),
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.arrow_right_alt, color: AppTheme.red),
+                              ],
+                            ),
+                            onTap: () async {
+                              final seasonYear = controller.seasonYear!;
+                              await context.router.push(
+                                PredictorLeaderboardRoute(
+                                  year: seasonYear,
+                                  myPoints: controller.seasonTotalPoints,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ],
                     ),
                   ),
-                ),
-                if (race == null)
+                ),                if (race == null)
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: StaticData.defaultHorizontalPadding),
                     sliver: SliverToBoxAdapter(
@@ -214,13 +248,16 @@ class _PredictorBody extends StatelessWidget {
                             ),
                             child: Text(
                               context.l10n.predictorCopyQualifyingToRace,
-                              style: AppStyles.caption.copyWith(color: context.colors.black),
+                              style: AppStyles.caption.copyWith(
+                                color: context.colors.black,
+                                decoration: TextDecoration.underline,
+                                decorationColor: context.colors.black,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  if (prediction != null &&
+                    ),                  if (prediction != null &&
                       (prediction.qualiPoints != null || prediction.racePoints != null))
                     SliverPadding(
                       padding: const EdgeInsets.fromLTRB(
@@ -233,54 +270,51 @@ class _PredictorBody extends StatelessWidget {
                         child: _CurrentPointsBanner(prediction: prediction),
                       ),
                     ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: StaticData.defaultHorizontalPadding),
-                    sliver: SliverReorderableList(
-                      itemCount: order.length,
-                      onReorderItem: locked
-                          ? (_, _) {}
-                          : (oldIndex, newIndex) {
-                              controller.reorderDraft(oldIndex: oldIndex, newIndex: newIndex);
-                            },
-                      itemBuilder: (context, index) {
-                        final id = order[index];
-                        final driver = byId[id] ??
-                            DriverModel(
-                              driverId: id,
-                              url: '',
-                              givenName: id,
-                              familyName: '',
-                              dateOfBirth: '',
-                              nationality: '',
-                              code: id,
-                              permanentNumber: null,
-                            );
-                        return PredictorDriverTile(
-                          key: ValueKey('${selectedGrid.name}_$id'),
-                          index: index,
-                          driver: driver,
-                          constructor: constructorsById[id],
-                          enabled: !locked,
-                          onTap: locked
-                              ? null
-                              : () async {
-                                  final label = (driver.code?.isNotEmpty ?? false)
-                                      ? driver.code!
-                                      : driver.familyName;
-                                  final toIndex = await showPredictorPositionPicker(
-                                    context: context,
-                                    itemCount: order.length,
-                                    currentIndex: index,
-                                    driverLabel: label,
-                                  );
-                                  if (toIndex == null || !context.mounted) {
-                                    return;
-                                  }
-                                  await controller.moveDraftTo(fromIndex: index, toIndex: toIndex);
-                                },
-                        );
-                      },
-                    ),
+                  SliverReorderableList(
+                    itemCount: order.length,
+                    onReorderItem: locked
+                        ? (_, _) {}
+                        : (oldIndex, newIndex) {
+                            controller.reorderDraft(oldIndex: oldIndex, newIndex: newIndex);
+                          },
+                    itemBuilder: (context, index) {
+                      final id = order[index];
+                      final driver = byId[id] ??
+                          DriverModel(
+                            driverId: id,
+                            url: '',
+                            givenName: id,
+                            familyName: '',
+                            dateOfBirth: '',
+                            nationality: '',
+                            code: id,
+                            permanentNumber: null,
+                          );
+                      return PredictorDriverTile(
+                        key: ValueKey('${selectedGrid.name}_$id'),
+                        index: index,
+                        driver: driver,
+                        constructor: constructorsById[id],
+                        enabled: !locked,
+                        onTap: locked
+                            ? null
+                            : () async {
+                                final label = (driver.code?.isNotEmpty ?? false)
+                                    ? driver.code!
+                                    : driver.familyName;
+                                final toIndex = await showPredictorPositionPicker(
+                                  context: context,
+                                  itemCount: order.length,
+                                  currentIndex: index,
+                                  driverLabel: label,
+                                );
+                                if (toIndex == null || !context.mounted) {
+                                  return;
+                                }
+                                await controller.moveDraftTo(fromIndex: index, toIndex: toIndex);
+                              },
+                      );
+                    },
                   ),
                 ],
                 SliverPadding(

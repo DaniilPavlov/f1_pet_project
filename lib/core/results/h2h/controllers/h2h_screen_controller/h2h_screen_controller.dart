@@ -2,6 +2,7 @@ import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.da
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/utils/helpers/text_editing_controller_extension.dart';
+import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
 import 'package:f1_pet_project/core/results/constructor/repositories/constructor_catalog_repository.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
 import 'package:f1_pet_project/core/results/h2h/models/h2h_entity_compare_data.dart';
@@ -29,6 +30,8 @@ class H2hCompareResult {
     required this.statsB,
     required this.timeline,
     this.season,
+    this.constructorIdA,
+    this.constructorIdB,
   });
 
   final String nameA;
@@ -39,6 +42,10 @@ class H2hCompareResult {
 
   /// `null` — сравнение за карьеру.
   final String? season;
+
+  /// Jolpica `constructorId` для цвета линии графика (если известен).
+  final String? constructorIdA;
+  final String? constructorIdB;
 }
 
 /// MobX-контроллер объединённого экрана H2H (пилоты / конструкторы).
@@ -52,6 +59,7 @@ abstract class H2hScreenControllerBase with Store {
     H2hRepository? h2hRepository,
     DriverCatalogRepository? driverCatalogRepository,
     ConstructorCatalogRepository? constructorCatalogRepository,
+    CurrentStandingsRepository? currentStandingsRepository,
     AppDataRefresh? dataRefresh,
     AnalyticsGateway? analytics,
     @visibleForTesting
@@ -77,6 +85,7 @@ abstract class H2hScreenControllerBase with Store {
     @visibleForTesting
     Future<List<ConstructorModel>> Function()? loadAllConstructorsForTest,
   }) : _h2hRepository = h2hRepository,
+       _currentStandingsRepository = currentStandingsRepository,
        _dataRefresh = dataRefresh,
        _analytics = analytics ?? const NoOpAnalyticsGateway(),
        _compareDriversForTest = compareDriversForTest,
@@ -92,6 +101,7 @@ abstract class H2hScreenControllerBase with Store {
 
   final SeasonsRepository? seasonsRepository;
   final H2hRepository? _h2hRepository;
+  final CurrentStandingsRepository? _currentStandingsRepository;
   final AppDataRefresh? _dataRefresh;
   final AnalyticsGateway _analytics;
   final Future<H2hLoadedCompare> Function({
@@ -321,6 +331,7 @@ abstract class H2hScreenControllerBase with Store {
             driverIdB: b.driverId,
             season: season,
           );
+          final teamIds = await _constructorIdsForDrivers(a.driverId, b.driverId);
           return H2hCompareResult(
             nameA: '${a.givenName} ${a.familyName}'.trim(),
             nameB: '${b.givenName} ${b.familyName}'.trim(),
@@ -328,6 +339,8 @@ abstract class H2hScreenControllerBase with Store {
             statsB: loaded.statsB,
             timeline: loaded.timeline,
             season: season,
+            constructorIdA: teamIds.$1,
+            constructorIdB: teamIds.$2,
           );
         },
         getField: () => comparison,
@@ -365,6 +378,8 @@ abstract class H2hScreenControllerBase with Store {
           statsB: loaded.statsB,
           timeline: loaded.timeline,
           season: season,
+          constructorIdA: a.constructorId,
+          constructorIdB: b.constructorId,
         );
       },
       getField: () => comparison,
@@ -430,5 +445,41 @@ abstract class H2hScreenControllerBase with Store {
       constructorIdB: constructorIdB,
       season: season,
     );
+  }
+
+  /// Текущие команды пилотов из standings (для цвета линий графика).
+  Future<(String?, String?)> _constructorIdsForDrivers(
+    String driverIdA,
+    String driverIdB,
+  ) async {
+    final repo = _currentStandingsRepository;
+    if (repo == null) {
+      return (null, null);
+    }
+    try {
+      final standings = await repo.drivers();
+      String? idA;
+      String? idB;
+      for (final list in standings.standingsTable.standingsLists) {
+        final rows = list.driverStandings;
+        if (rows == null) {
+          continue;
+        }
+        for (final row in rows) {
+          if (idA == null && row.driver.driverId == driverIdA && row.constructors.isNotEmpty) {
+            idA = row.constructors.first.constructorId;
+          }
+          if (idB == null && row.driver.driverId == driverIdB && row.constructors.isNotEmpty) {
+            idB = row.constructors.first.constructorId;
+          }
+          if (idA != null && idB != null) {
+            return (idA, idB);
+          }
+        }
+      }
+      return (idA, idB);
+    } on Object {
+      return (null, null);
+    }
   }
 }

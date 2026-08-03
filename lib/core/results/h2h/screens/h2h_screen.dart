@@ -12,6 +12,7 @@ import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/h2h_compare_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/constructor_picker_field.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/driver_picker_field.dart';
+import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
 import 'package:f1_pet_project/core/results/constructor/repositories/constructor_catalog_repository.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
 import 'package:f1_pet_project/core/results/h2h/components/h2h_compare_table.dart';
@@ -53,6 +54,7 @@ class H2hView extends StatelessWidget {
         h2hRepository: context.read<H2hRepository>(),
         driverCatalogRepository: context.read<DriverCatalogRepository>(),
         constructorCatalogRepository: context.read<ConstructorCatalogRepository>(),
+        currentStandingsRepository: context.read<CurrentStandingsRepository>(),
         dataRefresh: context.read<AppDataRefresh>(),
         analytics: context.read<AnalyticsGateway>(),
       )..bootstrap(),
@@ -208,6 +210,8 @@ class H2hView extends StatelessWidget {
                               statsB: comparison.value!.statsB,
                               timeline: comparison.value!.timeline,
                               season: comparison.value!.season,
+                              constructorIdA: comparison.value!.constructorIdA,
+                              constructorIdB: comparison.value!.constructorIdB,
                             ),
                         ],
                       ),

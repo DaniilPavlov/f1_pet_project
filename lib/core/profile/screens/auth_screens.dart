@@ -104,7 +104,8 @@ class _AuthForm extends StatelessWidget {
                           FocusScope.of(context).unfocus();
                           final ok = isRegister ? await controller.register() : await controller.signIn();
                           if (ok && context.mounted) {
-                            context.router.popUntilRouteWithName(ProfileRoute.name);
+                            // replaceAll — стек мог быть только [AuthSignIn] (вход с предиктора).
+                            await context.router.replaceAll([const ProfileRoute()]);
                           }
                         },
                 ),
@@ -156,7 +157,7 @@ class _AuthForm extends StatelessWidget {
                       FocusScope.of(context).unfocus();
                       final ok = isRegister ? await controller.register() : await controller.signIn();
                       if (ok && context.mounted) {
-                        context.router.popUntilRouteWithName(ProfileRoute.name);
+                        await context.router.replaceAll([const ProfileRoute()]);
                       }
                     },
                   ),

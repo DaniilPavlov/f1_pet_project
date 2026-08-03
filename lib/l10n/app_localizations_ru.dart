@@ -267,6 +267,65 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get predictorLeaderboardOpen => 'Лидерборд';
+
+  @override
+  String predictorLeaderboardTitle(String year) {
+    return 'Лидерборд · $year';
+  }
+
+  @override
+  String get predictorLeaderboardJoinHint =>
+      'Придумай ник и согласись отображаться в публичном лидерборде сезона.';
+
+  @override
+  String get predictorNicknameLabel => 'Ник';
+
+  @override
+  String get predictorNicknameHint => '3–16 букв, цифр, _';
+
+  @override
+  String get predictorNicknameSave => 'Сохранить ник';
+
+  @override
+  String get predictorLeaderboardOptInLabel => 'Показывать меня в лидерборде';
+
+  @override
+  String get predictorLeaderboardOptInRequired =>
+      'Нужно согласие на отображение в лидерборде';
+
+  @override
+  String get predictorLeaderboardJoin => 'Вступить в лидерборд';
+
+  @override
+  String get predictorLeaderboardLeave => 'Покинуть лидерборд';
+
+  @override
+  String get predictorLeaderboardListTitle => 'Таблица';
+
+  @override
+  String get predictorLeaderboardEmpty => 'Пока никого нет — будь первым';
+
+  @override
+  String predictorLeaderboardYourRank(int rank, int points) {
+    return 'Ты · #$rank · $points очк.';
+  }
+
+  @override
+  String get predictorNicknameErrorLength => 'Ник должен быть 3–16 символов';
+
+  @override
+  String get predictorNicknameErrorChars =>
+      'Только буквы, цифры и подчёркивание';
+
+  @override
+  String get predictorNicknameErrorTaken => 'Этот ник уже занят';
+
+  @override
+  String get predictorLeaderboardErrorGeneric =>
+      'Не удалось обновить лидерборд. Попробуй ещё раз';
+
+  @override
   String get newsEmpty => 'Новостей пока нет';
 
   @override

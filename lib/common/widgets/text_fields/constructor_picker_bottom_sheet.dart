@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/utils/constructor_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
@@ -81,6 +82,14 @@ class _ConstructorPickerBottomSheetState extends State<ConstructorPickerBottomSh
                             final constructor = filtered[index];
                             final isSelected = constructor.constructorId == widget.selectedConstructorId;
                             return ListTile(
+                              leading: Container(
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: ConstructorColors.forConstructorId(constructor.constructorId),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
                               title: Text(
                                 constructor.name,
                                 style: AppStyles.body.copyWith(

@@ -37,7 +37,10 @@ class PredictorAuthGate extends StatelessWidget {
   }
 
   void _openSignIn(BuildContext context) {
-    context.router.navigate(const ProfileRouter(children: [AuthSignInRoute()]));
+    // Нужен ProfileRoute под sign-in, иначе после логина popUntil оставит пустой стек.
+    context.router.navigate(
+      const ProfileRouter(children: [ProfileRoute(), AuthSignInRoute()]),
+    );
   }
 
   void _openProfile(BuildContext context) {

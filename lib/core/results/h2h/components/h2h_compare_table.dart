@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/utils/constructor_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
@@ -16,6 +17,8 @@ class H2hCompareTable extends StatelessWidget {
     required this.statsB,
     required this.timeline,
     this.season,
+    this.constructorIdA,
+    this.constructorIdB,
     super.key,
   });
 
@@ -25,11 +28,17 @@ class H2hCompareTable extends StatelessWidget {
   final H2hStats statsB;
   final H2hPointsTimeline timeline;
   final String? season;
+  final String? constructorIdA;
+  final String? constructorIdB;
 
   @override
   Widget build(BuildContext context) {
-    final colorA = AppTheme.red;
-    final colorB = context.colors.black;
+    final colorA = _lineColor(constructorIdA, fallback: AppTheme.red);
+    var colorB = _lineColor(constructorIdB, fallback: context.colors.black);
+    if (colorA.toARGB32() == colorB.toARGB32()) {
+      // Однокомандники: чуть осветляем вторую линию, чтобы серии различались.
+      colorB = Color.lerp(colorB, Colors.white, 0.4) ?? colorB;
+    }
     final rows = [
       (context.l10n.careerStatRaces, statsA.races, statsB.races),
       (context.l10n.wins, statsA.wins, statsB.wins),
@@ -207,4 +216,11 @@ class _CompareRow extends StatelessWidget {
       ),
     );
   }
+}
+
+Color _lineColor(String? constructorId, {required Color fallback}) {
+  if (constructorId == null || constructorId.trim().isEmpty) {
+    return fallback;
+  }
+  return ConstructorColors.forConstructorId(constructorId);
 }

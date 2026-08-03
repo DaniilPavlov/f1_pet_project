@@ -2,6 +2,7 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/utils/constructor_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/widgets/tables/tappable_driver_row.dart';
 import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
@@ -59,9 +60,11 @@ class QualificationTable extends StatelessWidget {
                     ...List.generate(qualifyingResults.length, (i) {
                       final result = qualifyingResults[i];
                       return TableRow(
-                        decoration: BoxDecoration(
-                          color: i.isOdd ? context.colors.grayBG : Colors.transparent,
-                          border: Border(bottom: BorderSide(color: context.colors.strokeGray)),
+                        decoration: ConstructorColors.tableRowDecoration(
+                          zebraColor: context.colors.grayBG,
+                          bottomBorderColor: context.colors.strokeGray,
+                          index: i,
+                          constructorId: result.constructor.constructorId,
                         ),
                         children: tappableDriverRowCells(
                           context: context,

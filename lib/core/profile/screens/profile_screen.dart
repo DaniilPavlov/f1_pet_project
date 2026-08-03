@@ -9,6 +9,7 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/theme/theme_controller.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
+import 'package:f1_pet_project/core/predictor/repositories/predictor_leaderboard_repository.dart';
 import 'package:f1_pet_project/core/predictor/repositories/predictor_repository.dart';
 import 'package:f1_pet_project/core/profile/controllers/notifications_preference_controller/notifications_preference_controller.dart';
 import 'package:f1_pet_project/core/profile/utils/auth_error_l10n.dart';
@@ -107,6 +108,7 @@ class ProfileScreen extends StatelessWidget {
                         await auth.signOut();
                         if (context.mounted) {
                           context.read<PredictorRepository>().clearMemoryCache();
+                          context.read<PredictorLeaderboardRepository>().clearMemoryCache();
                         }
                       },
                     ),
