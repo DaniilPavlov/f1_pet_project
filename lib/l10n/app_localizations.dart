@@ -911,7 +911,7 @@ abstract class AppLocalizations {
   /// No description provided for @h2hTitle.
   ///
   /// In ru, this message translates to:
-  /// **'H2H · Пилоты'**
+  /// **'H2H'**
   String get h2hTitle;
 
   /// No description provided for @h2hSubtitle.
@@ -1327,6 +1327,65 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'В этом списке пока нет гонок'**
   String get careerRaceListEmpty;
+
+  /// No description provided for @careerRaceListLoading.
+  ///
+  /// In ru, this message translates to:
+  /// **'Загружаем список гонок…'**
+  String get careerRaceListLoading;
+
+  /// No description provided for @newsArticleSemantics.
+  ///
+  /// In ru, this message translates to:
+  /// **'Новость: {headline}'**
+  String newsArticleSemantics(String headline);
+
+  /// No description provided for @navTabSemantics.
+  ///
+  /// In ru, this message translates to:
+  /// **'{title}, вкладка{selected}'**
+  String navTabSemantics(String title, String selected);
+
+  /// No description provided for @navTabSelectedSuffix.
+  ///
+  /// In ru, this message translates to:
+  /// **', выбрана'**
+  String get navTabSelectedSuffix;
+
+  /// No description provided for @predictorDriverSemantics.
+  ///
+  /// In ru, this message translates to:
+  /// **'P{position} {name}{locked}'**
+  String predictorDriverSemantics(int position, String name, String locked);
+
+  /// No description provided for @predictorLockedSuffix.
+  ///
+  /// In ru, this message translates to:
+  /// **', заблокировано'**
+  String get predictorLockedSuffix;
+
+  /// No description provided for @predictorHistorySemantics.
+  ///
+  /// In ru, this message translates to:
+  /// **'{race}, Q {quali}, R {racePts}, {total} очков'**
+  String predictorHistorySemantics(
+    String race,
+    String quali,
+    String racePts,
+    int total,
+  );
+
+  /// No description provided for @h2hModeDrivers.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пилоты'**
+  String get h2hModeDrivers;
+
+  /// No description provided for @h2hModeConstructors.
+  ///
+  /// In ru, this message translates to:
+  /// **'Конструкторы'**
+  String get h2hModeConstructors;
 
   /// No description provided for @driverTeamsTitle.
   ///

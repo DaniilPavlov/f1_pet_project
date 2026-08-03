@@ -230,6 +230,15 @@ class FakeDriverCareerRepository extends DriverCareerRepository {
   Future<CareerStats<ConstructorModel>> load({
     required String driverId,
     List<ConstructorModel> current = const [],
+  }) async {
+    final totals = await loadTotals(driverId: driverId, current: current);
+    return loadRaceLists(driverId: driverId, totals: totals);
+  }
+
+  @override
+  Future<CareerStats<ConstructorModel>> loadTotals({
+    required String driverId,
+    List<ConstructorModel> current = const [],
   }) async => CareerStats(
     races: 100,
     wins: 20,
@@ -237,7 +246,14 @@ class FakeDriverCareerRepository extends DriverCareerRepository {
     poles: 15,
     current: current.isEmpty ? [ControllerFixtures.constructor] : current,
     related: [ControllerFixtures.constructor],
+    listsComplete: false,
   );
+
+  @override
+  Future<CareerStats<ConstructorModel>> loadRaceLists({
+    required String driverId,
+    required CareerStats<ConstructorModel> totals,
+  }) async => totals.copyWith(listsComplete: true);
 }
 
 class FakeConstructorCareerRepository extends ConstructorCareerRepository {

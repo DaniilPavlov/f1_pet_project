@@ -28,7 +28,8 @@ class PredictorRepository {
 
   final AuthService? _authService;
   final FirebaseFirestore? _firestore;
-  final Map<String, Map<String, dynamic>>? _memoryBackend;
+  /// uid → year → season json (только memory-режим).
+  final Map<String, Map<String, Map<String, dynamic>>>? _memoryBackend;
   final String? Function()? _uidProvider;
 
   PredictorStore? _memory;
@@ -55,7 +56,8 @@ class PredictorRepository {
       final seasons = <String, PredictorSeason>{};
       final backend = _memoryBackend;
       if (backend != null) {
-        for (final entry in backend.entries) {
+        final userSeasons = backend[uid] ?? const <String, Map<String, dynamic>>{};
+        for (final entry in userSeasons.entries) {
           seasons[entry.key] = PredictorSeason.fromJson(entry.key, entry.value);
         }
       } else {
@@ -131,7 +133,11 @@ class PredictorRepository {
     final payload = season.toJson();
     final backend = _memoryBackend;
     if (backend != null) {
-      backend[year] = payload;
+      final uid = _uid;
+      if (uid == null) {
+        throw StateError('PredictorRepository._persistSeason requires signed-in user');
+      }
+      backend.putIfAbsent(uid, () => {})[year] = payload;
       return;
     }
     final uid = _uid;

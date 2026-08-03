@@ -27,24 +27,30 @@ class PredictorWeekendHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final status = _statusText(context);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(race.raceName, style: AppStyles.h3),
-        const SizedBox(height: 8),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          decoration: BoxDecoration(
-            color: isLocked ? AppTheme.pink.withValues(alpha: 0.35) : context.colors.grayBG,
-            borderRadius: AppTheme.defaultBorderRadius,
-          ),
-          child: Text(
-            status,
-            style: AppStyles.caption.copyWith(color: context.colors.black),
-          ),
+    return Semantics(
+      liveRegion: true,
+      label: '${race.raceName}. $status',
+      child: ExcludeSemantics(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(race.raceName, style: AppStyles.h3),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: isLocked ? AppTheme.pink.withValues(alpha: 0.35) : context.colors.grayBG,
+                borderRadius: AppTheme.defaultBorderRadius,
+              ),
+              child: Text(
+                status,
+                style: AppStyles.caption.copyWith(color: context.colors.black),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:f1_pet_project/common/models/career/career_stats.dart';
 import 'package:f1_pet_project/common/models/espn/espn_driver_card_data.dart';
 import 'package:f1_pet_project/common/repositories/espn/espn_media_repository.dart';
@@ -71,19 +73,55 @@ abstract class DriverScreenControllerBase with Store {
     await loadAll();
   }
 
-  /// Загружает (или перезагружает) карьерную статистику.
+  /// Totals сразу, списки гонок — фоном (progressive).
   @action
   Future<void> loadCareerStats() async {
+    final forTest = _fetchCareerStatsForTest;
+    if (forTest != null) {
+      await runAsyncLoad(
+        fetch: () => forTest(driverId: driver.driverId, current: currentConstructors),
+        getField: () => careerStats,
+        setField: (value) => careerStats = value,
+        onSuccess: (data) {
+          if (data != null) {
+            careerStats = careerStats.toValue(data);
+          }
+        },
+      );
+      return;
+    }
+
     await runAsyncLoad(
-      fetch: () => _fetchCareerStats(driverId: driver.driverId, current: currentConstructors),
+      fetch: () => _careerRepository!.loadTotals(
+        driverId: driver.driverId,
+        current: currentConstructors,
+      ),
       getField: () => careerStats,
       setField: (value) => careerStats = value,
       onSuccess: (data) {
         if (data != null) {
           careerStats = careerStats.toValue(data);
+          unawaited(_completeRaceLists(data));
         }
       },
     );
+  }
+
+  @action
+  Future<void> _completeRaceLists(CareerStats<ConstructorModel> totals) async {
+    try {
+      final complete = await _careerRepository!.loadRaceLists(
+        driverId: driver.driverId,
+        totals: totals,
+      );
+      final current = careerStats.value;
+      if (current == null || current.races != totals.races || current.wins != totals.wins) {
+        return;
+      }
+      careerStats = careerStats.toValue(complete);
+    } on Object {
+      // Totals уже на экране — списки просто останутся неполными.
+    }
   }
 
   /// Загружает фото / флаг / новости ESPN (ошибка → пустые данные, экран не ломаем).
@@ -99,16 +137,5 @@ abstract class DriverScreenControllerBase with Store {
     } on Object {
       espnCard = espnCard.toValue(const EspnDriverCardData());
     }
-  }
-
-  Future<CareerStats<ConstructorModel>> _fetchCareerStats({
-    required String driverId,
-    required List<ConstructorModel> current,
-  }) {
-    final forTest = _fetchCareerStatsForTest;
-    if (forTest != null) {
-      return forTest(driverId: driverId, current: current);
-    }
-    return _careerRepository!.load(driverId: driverId, current: current);
   }
 }

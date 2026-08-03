@@ -114,13 +114,7 @@ class ResultsScreen extends StatelessWidget {
                                   const SizedBox(height: 12),
                                   RedBorderContainer(
                                     title: context.l10n.h2hTitle,
-                                    onTap: () async => context.router.push(const H2hRoute()),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  RedBorderContainer(
-                                    title: context.l10n.h2hConstructorsTitle,
-                                    onTap: () async =>
-                                        context.router.push(const H2hConstructorsRoute()),
+                                    onTap: () async => context.router.push(H2hRoute()),
                                   ),
                                   const SizedBox(height: 12),
                                   RedBorderContainer(

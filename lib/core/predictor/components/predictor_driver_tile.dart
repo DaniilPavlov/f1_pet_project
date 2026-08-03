@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constructor_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
@@ -30,43 +31,54 @@ class PredictorDriverTile extends StatelessWidget {
     final onTeam = teamColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
     final onTeamMuted = onTeam.withValues(alpha: enabled ? 0.85 : 0.7);
     final subtitle = constructor?.name ?? driver.code ?? '';
+    final name = '${driver.givenName} ${driver.familyName}'.trim();
 
-    return Material(
-      color: bg,
-      child: ListTile(
-        onTap: enabled ? onTap : null,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-        leading: SizedBox(
-          width: 28,
-          child: Text(
-            '${index + 1}',
-            style: AppStyles.body.copyWith(
-              fontFamily: 'HelveticaNeueCyr-Bold',
-              color: onTeam,
+    return Semantics(
+      button: enabled,
+      label: context.l10n.predictorDriverSemantics(
+        index + 1,
+        name,
+        enabled ? '' : context.l10n.predictorLockedSuffix,
+      ),
+      child: ExcludeSemantics(
+        child: Material(
+          color: bg,
+          child: ListTile(
+            onTap: enabled ? onTap : null,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+            leading: SizedBox(
+              width: 28,
+              child: Text(
+                '${index + 1}',
+                style: AppStyles.body.copyWith(
+                  fontFamily: 'HelveticaNeueCyr-Bold',
+                  color: onTeam,
+                ),
+              ),
             ),
+            title: Text(
+              name,
+              style: AppStyles.body.copyWith(
+                color: onTeam,
+                fontWeight: FontWeight.w600,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: Text(
+              subtitle,
+              style: AppStyles.caption.copyWith(color: onTeamMuted),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            trailing: enabled
+                ? ReorderableDragStartListener(
+                    index: index,
+                    child: Icon(Icons.drag_handle, color: onTeamMuted),
+                  )
+                : Icon(Icons.lock_outline, size: 18, color: onTeamMuted),
           ),
         ),
-        title: Text(
-          '${driver.givenName} ${driver.familyName}',
-          style: AppStyles.body.copyWith(
-            color: onTeam,
-            fontWeight: FontWeight.w600,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Text(
-          subtitle,
-          style: AppStyles.caption.copyWith(color: onTeamMuted),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        trailing: enabled
-            ? ReorderableDragStartListener(
-                index: index,
-                child: Icon(Icons.drag_handle, color: onTeamMuted),
-              )
-            : Icon(Icons.lock_outline, size: 18, color: onTeamMuted),
       ),
     );
   }

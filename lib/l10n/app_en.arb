@@ -201,7 +201,7 @@
   },
   "seasonRewindChartHint": "Full standings by points — scrub or hit Play",
   "seasonRewindLoadError": "Could not load standings for this round",
-  "h2hTitle": "H2H · Drivers",
+  "h2hTitle": "H2H",
   "h2hSubtitle": "Compare two drivers with filters for period and driver list",
   "h2hDriverA": "Driver 1",
   "h2hDriverB": "Driver 2",
@@ -281,6 +281,41 @@
   "careerStatPodiums": "Podiums",
   "careerStatPoles": "Poles",
   "careerRaceListEmpty": "No races in this list",
+  "careerRaceListLoading": "Loading race list…",
+  "newsArticleSemantics": "News: {headline}",
+  "@newsArticleSemantics": {
+    "placeholders": {
+      "headline": { "type": "String" }
+    }
+  },
+  "navTabSemantics": "{title}, tab{selected}",
+  "@navTabSemantics": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "selected": { "type": "String" }
+    }
+  },
+  "navTabSelectedSuffix": ", selected",
+  "predictorDriverSemantics": "P{position} {name}{locked}",
+  "@predictorDriverSemantics": {
+    "placeholders": {
+      "position": { "type": "int" },
+      "name": { "type": "String" },
+      "locked": { "type": "String" }
+    }
+  },
+  "predictorLockedSuffix": ", locked",
+  "predictorHistorySemantics": "{race}, Q {quali}, R {racePts}, {total} points",
+  "@predictorHistorySemantics": {
+    "placeholders": {
+      "race": { "type": "String" },
+      "quali": { "type": "String" },
+      "racePts": { "type": "String" },
+      "total": { "type": "int" }
+    }
+  },
+  "h2hModeDrivers": "Drivers",
+  "h2hModeConstructors": "Constructors",
   "driverTeamsTitle": "Teams",
   "constructorDriversTitle": "Drivers",
   "noConnection": "No connection",

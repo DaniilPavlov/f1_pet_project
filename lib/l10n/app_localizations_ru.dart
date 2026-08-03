@@ -473,7 +473,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Не удалось загрузить standings для этого раунда';
 
   @override
-  String get h2hTitle => 'H2H · Пилоты';
+  String get h2hTitle => 'H2H';
 
   @override
   String get h2hSubtitle =>
@@ -692,6 +692,46 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get careerRaceListEmpty => 'В этом списке пока нет гонок';
+
+  @override
+  String get careerRaceListLoading => 'Загружаем список гонок…';
+
+  @override
+  String newsArticleSemantics(String headline) {
+    return 'Новость: $headline';
+  }
+
+  @override
+  String navTabSemantics(String title, String selected) {
+    return '$title, вкладка$selected';
+  }
+
+  @override
+  String get navTabSelectedSuffix => ', выбрана';
+
+  @override
+  String predictorDriverSemantics(int position, String name, String locked) {
+    return 'P$position $name$locked';
+  }
+
+  @override
+  String get predictorLockedSuffix => ', заблокировано';
+
+  @override
+  String predictorHistorySemantics(
+    String race,
+    String quali,
+    String racePts,
+    int total,
+  ) {
+    return '$race, Q $quali, R $racePts, $total очков';
+  }
+
+  @override
+  String get h2hModeDrivers => 'Пилоты';
+
+  @override
+  String get h2hModeConstructors => 'Конструкторы';
 
   @override
   String get driverTeamsTitle => 'Команды';

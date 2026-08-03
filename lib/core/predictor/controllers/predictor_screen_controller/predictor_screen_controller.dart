@@ -11,7 +11,9 @@ import 'package:f1_pet_project/core/predictor/models/predictor_store.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_weekend_prediction.dart';
 import 'package:f1_pet_project/core/predictor/repositories/predictor_repository.dart';
 import 'package:f1_pet_project/core/predictor/services/predictor_lock.dart';
-import 'package:f1_pet_project/core/predictor/services/predictor_score_service.dart';
+import 'package:f1_pet_project/core/predictor/services/predictor_lock_ticker.dart';
+import 'package:f1_pet_project/core/predictor/services/predictor_order.dart';
+import 'package:f1_pet_project/core/predictor/services/predictor_scoring_coordinator.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
 import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
@@ -26,32 +28,10 @@ import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
 
+export 'package:f1_pet_project/core/predictor/services/predictor_order.dart'
+    show PredictorGridKind, defaultPredictorOrder, hasUsableDriverCode;
+
 part 'predictor_screen_controller.g.dart';
-
-/// Пилот с реальным трёхбуквенным кодом (не пустой и не `none`).
-bool hasUsableDriverCode(DriverModel driver) {
-  final code = driver.code?.trim();
-  return code != null && code.isNotEmpty && code.toLowerCase() != 'none';
-}
-
-/// Стартовый порядок предикта: места в чемпионате, затем остальные из ростера.
-///
-/// Используется при первом создании драфта уикенда ([PredictorScreenController]).
-List<String> defaultPredictorOrder({
-  required List<String> rosterIds,
-  required List<String> championshipOrder,
-}) {
-  if (championshipOrder.isEmpty) {
-    return List<String>.from(rosterIds);
-  }
-  final rosterSet = rosterIds.toSet();
-  final ranked = championshipOrder.where(rosterSet.contains).toList();
-  final missing = rosterIds.where((id) => !ranked.contains(id));
-  return [...ranked, ...missing];
-}
-
-/// Какая сетка сейчас редактируется.
-enum PredictorGridKind { qualifying, race }
 
 /// MobX-контроллер экрана предиктора.
 class PredictorScreenController = PredictorScreenControllerBase with _$PredictorScreenController;
@@ -83,26 +63,28 @@ abstract class PredictorScreenControllerBase with Store {
        _predictorRepository = predictorRepository,
        _scheduleRepository = scheduleRepository,
        _standingsRepository = standingsRepository,
-       _raceWeekendRepository = raceWeekendRepository ?? const RaceWeekendRepository(),
        _dataRefresh = dataRefresh,
        _fetchScheduleForTest = fetchScheduleForTest,
        _loadDrivers = loadDriversForTest ?? driverCatalogRepository!.loadCurrent,
        _fetchDriverStandingsForTest = fetchDriverStandingsForTest,
-       _fetchQualifyingForTest = fetchQualifyingForTest,
-       _fetchRaceResultsForTest = fetchRaceResultsForTest;
+       _scoring = PredictorScoringCoordinator(
+         raceWeekendRepository: raceWeekendRepository ?? const RaceWeekendRepository(),
+         fetchQualifying: fetchQualifyingForTest,
+         fetchRaceResults: fetchRaceResultsForTest,
+       ) {
+    _ticker = PredictorLockTicker(onTick: _tickNow);
+  }
 
   final PredictorRepository _predictorRepository;
   final ScheduleRepository? _scheduleRepository;
   final CurrentStandingsRepository? _standingsRepository;
-  final RaceWeekendRepository _raceWeekendRepository;
   final AppDataRefresh? _dataRefresh;
   final Future<ScheduleModel> Function()? _fetchScheduleForTest;
   final Future<List<DriverModel>> Function() _loadDrivers;
   final Future<StandingsModel> Function()? _fetchDriverStandingsForTest;
-  final Future<ScheduleModel> Function({required String year, required String round})? _fetchQualifyingForTest;
-  final Future<ScheduleModel> Function({required String year, required String round})? _fetchRaceResultsForTest;
+  final PredictorScoringCoordinator _scoring;
 
-  Timer? _ticker;
+  late final PredictorLockTicker _ticker;
 
   /// season+round текущего драфта — чтобы при смене upcomingRace перезагрузить порядок.
   String? _boundDraftKey;
@@ -255,8 +237,7 @@ abstract class PredictorScreenControllerBase with Store {
 
   /// Освобождает ticker.
   void dispose() {
-    _ticker?.cancel();
-    _ticker = null;
+    _ticker.dispose();
   }
 
   /// Первичная загрузка расписания, ростера, команд и store.
@@ -270,7 +251,7 @@ abstract class PredictorScreenControllerBase with Store {
     if (screenError == null) {
       await _ensureCurrentDraft();
       await _scoreAllPending();
-      _startTicker();
+      _ticker.start();
     }
 
     allDataIsLoaded = screenError == null;
@@ -402,18 +383,11 @@ abstract class PredictorScreenControllerBase with Store {
 
     draftQualifyingOrder
       ..clear()
-      ..addAll(_syncOrderToRoster(existing.qualifyingOrder, rosterIds));
+      ..addAll(syncOrderToRoster(existing.qualifyingOrder, rosterIds));
     draftRaceOrder
       ..clear()
-      ..addAll(_syncOrderToRoster(existing.raceOrder, rosterIds));
+      ..addAll(syncOrderToRoster(existing.raceOrder, rosterIds));
     await _persistDraft(raceName: race.raceName, round: race.round, year: year);
-  }
-
-  List<String> _syncOrderToRoster(List<String> saved, List<String> rosterIds) {
-    final rosterSet = rosterIds.toSet();
-    final kept = saved.where(rosterSet.contains).toList();
-    final missing = rosterIds.where((id) => !kept.contains(id));
-    return [...kept, ...missing];
   }
 
   Future<void> _persistDraft({String? raceName, String? round, String? year}) async {
@@ -450,104 +424,23 @@ abstract class PredictorScreenControllerBase with Store {
     if (year == null) {
       return;
     }
-    final season = store.season(year);
-    if (season == null || season.weekends.isEmpty) {
+    final nextStore = await _scoring.scoreAllPending(store: store, year: year, now: now);
+    if (nextStore == null) {
       return;
     }
-
-    var nextStore = store;
-    var changed = false;
-    for (final weekend in season.weekends.values) {
-      final scored = await _scoreWeekend(year: year, weekend: weekend);
-      if (scored != null && _weekendScoreChanged(weekend, scored)) {
-        nextStore = nextStore.upsertWeekend(year: year, weekend: scored);
-        changed = true;
+    store = await _predictorRepository.replace(nextStore);
+    final race = upcomingRace;
+    if (race != null) {
+      final current = store.weekend(year: year, round: race.round);
+      if (current != null && isLocked) {
+        draftQualifyingOrder
+          ..clear()
+          ..addAll(current.qualifyingOrder);
+        draftRaceOrder
+          ..clear()
+          ..addAll(current.raceOrder);
       }
     }
-    if (changed) {
-      store = await _predictorRepository.replace(nextStore);
-      final race = upcomingRace;
-      if (race != null) {
-        final current = store.weekend(year: year, round: race.round);
-        if (current != null && isLocked) {
-          draftQualifyingOrder
-            ..clear()
-            ..addAll(current.qualifyingOrder);
-          draftRaceOrder
-            ..clear()
-            ..addAll(current.raceOrder);
-        }
-      }
-    }
-  }
-
-  Future<PredictorWeekendPrediction?> _scoreWeekend({
-    required String year,
-    required PredictorWeekendPrediction weekend,
-  }) async {
-    if (weekend.qualifyingOrder.isEmpty && weekend.raceOrder.isEmpty) {
-      return null;
-    }
-
-    var qualiActual = _nonEmpty(weekend.actualQualifyingOrder);
-    var raceActual = _nonEmpty(weekend.actualRaceOrder);
-
-    if (qualiActual == null) {
-      try {
-        final qualiModel = await _fetchQualifying(year: year, round: weekend.round);
-        final list = qualiModel.raceTable.races.isEmpty
-            ? null
-            : qualiModel.raceTable.races.first.qualifyingResults;
-        if (list != null && list.isNotEmpty) {
-          qualiActual = PredictorScoreService.qualifyingActualOrder(list);
-        }
-      } on Object {
-        qualiActual = null;
-      }
-    }
-
-    if (raceActual == null) {
-      try {
-        final raceModel = await _fetchRaceResults(year: year, round: weekend.round);
-        final list = raceModel.raceTable.races.isEmpty ? null : raceModel.raceTable.races.first.results;
-        if (list != null && list.isNotEmpty) {
-          raceActual = PredictorScoreService.raceActualOrder(list);
-        }
-      } on Object {
-        raceActual = null;
-      }
-    }
-
-    if (qualiActual == null && raceActual == null) {
-      return null;
-    }
-
-    return PredictorScoreService.applyResults(
-      weekend: weekend,
-      actualQualifyingOrder: qualiActual,
-      actualRaceOrder: raceActual,
-      now: now,
-    );
-  }
-
-  static List<String>? _nonEmpty(List<String>? list) {
-    if (list == null || list.isEmpty) {
-      return null;
-    }
-    return list;
-  }
-
-  static bool _weekendScoreChanged(PredictorWeekendPrediction before, PredictorWeekendPrediction after) {
-    return before.qualiPoints != after.qualiPoints ||
-        before.racePoints != after.racePoints ||
-        !listEquals(before.actualQualifyingOrder, after.actualQualifyingOrder) ||
-        !listEquals(before.actualRaceOrder, after.actualRaceOrder);
-  }
-
-  void _startTicker() {
-    _ticker?.cancel();
-    _tickNow();
-    _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tickNow());
   }
 
   @action
@@ -597,7 +490,7 @@ abstract class PredictorScreenControllerBase with Store {
       fetch: _loadDrivers,
       getField: () => drivers,
       setField: (value) => drivers = value,
-      onSuccess: (data) => drivers = drivers.toValue(_withDriverCode(data!)),
+      onSuccess: (data) => drivers = drivers.toValue(data!.where(hasUsableDriverCode).toList()),
     );
   }
 
@@ -635,11 +528,6 @@ abstract class PredictorScreenControllerBase with Store {
     }
   }
 
-  /// Только пилоты с реальным трёхбуквенным кодом (без `none`).
-  static List<DriverModel> _withDriverCode(List<DriverModel> list) {
-    return list.where(hasUsableDriverCode).toList();
-  }
-
   Future<ScheduleModel> _fetchSchedule() async {
     final forTest = _fetchScheduleForTest;
     if (forTest != null) {
@@ -659,21 +547,5 @@ abstract class PredictorScreenControllerBase with Store {
       throw StateError('Provide standingsRepository or fetchDriverStandingsForTest');
     }
     return repo.drivers();
-  }
-
-  Future<ScheduleModel> _fetchQualifying({required String year, required String round}) {
-    final forTest = _fetchQualifyingForTest;
-    if (forTest != null) {
-      return forTest(year: year, round: round);
-    }
-    return _raceWeekendRepository.qualifyingResults(year: year, round: round);
-  }
-
-  Future<ScheduleModel> _fetchRaceResults({required String year, required String round}) {
-    final forTest = _fetchRaceResultsForTest;
-    if (forTest != null) {
-      return forTest(year: year, round: round);
-    }
-    return _raceWeekendRepository.raceResults(year: year, round: round);
   }
 }

@@ -20,9 +20,9 @@ import 'package:f1_pet_project/core/circuits/screens/circuits_screen.dart'
     as _i3;
 import 'package:f1_pet_project/core/home/screens/home_screen.dart' as _i11;
 import 'package:f1_pet_project/core/predictor/models/predictor_season.dart'
-    as _i28;
-import 'package:f1_pet_project/core/predictor/models/predictor_weekend_prediction.dart'
     as _i29;
+import 'package:f1_pet_project/core/predictor/models/predictor_weekend_prediction.dart'
+    as _i30;
 import 'package:f1_pet_project/core/predictor/screens/predictor_screen.dart'
     as _i12;
 import 'package:f1_pet_project/core/predictor/screens/predictor_season_history_screen.dart'
@@ -38,6 +38,7 @@ import 'package:f1_pet_project/core/results/driver/screens/driver_screen.dart'
     as _i5;
 import 'package:f1_pet_project/core/results/finish_status/screens/finish_status_screen.dart'
     as _i6;
+import 'package:f1_pet_project/core/results/h2h/models/h2h_mode.dart' as _i28;
 import 'package:f1_pet_project/core/results/h2h/screens/h2h_constructors_screen.dart'
     as _i7;
 import 'package:f1_pet_project/core/results/h2h/screens/h2h_screen.dart' as _i8;
@@ -51,7 +52,7 @@ import 'package:f1_pet_project/core/results/screens/results_screen.dart'
     as _i18;
 import 'package:f1_pet_project/core/results/season_rewind/screens/season_rewind_screen.dart'
     as _i21;
-import 'package:f1_pet_project/core/schedule/models/races_model.dart' as _i30;
+import 'package:f1_pet_project/core/schedule/models/races_model.dart' as _i31;
 import 'package:f1_pet_project/core/schedule/screens/schedule_screen.dart'
     as _i20;
 import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart'
@@ -332,18 +333,51 @@ class H2hConstructorsRoute extends _i22.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i8.H2hScreen]
-class H2hRoute extends _i22.PageRouteInfo<void> {
-  const H2hRoute({List<_i22.PageRouteInfo>? children})
-    : super(H2hRoute.name, initialChildren: children);
+class H2hRoute extends _i22.PageRouteInfo<H2hRouteArgs> {
+  H2hRoute({
+    _i28.H2hMode initialMode = _i28.H2hMode.drivers,
+    _i24.Key? key,
+    List<_i22.PageRouteInfo>? children,
+  }) : super(
+         H2hRoute.name,
+         args: H2hRouteArgs(initialMode: initialMode, key: key),
+         initialChildren: children,
+       );
 
   static const String name = 'H2hRoute';
 
   static _i22.PageInfo page = _i22.PageInfo(
     name,
     builder: (data) {
-      return const _i8.H2hScreen();
+      final args = data.argsAs<H2hRouteArgs>(
+        orElse: () => const H2hRouteArgs(),
+      );
+      return _i8.H2hScreen(initialMode: args.initialMode, key: args.key);
     },
   );
+}
+
+class H2hRouteArgs {
+  const H2hRouteArgs({this.initialMode = _i28.H2hMode.drivers, this.key});
+
+  final _i28.H2hMode initialMode;
+
+  final _i24.Key? key;
+
+  @override
+  String toString() {
+    return 'H2hRouteArgs{initialMode: $initialMode, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! H2hRouteArgs) return false;
+    return initialMode == other.initialMode && key == other.key;
+  }
+
+  @override
+  int get hashCode => initialMode.hashCode ^ key.hashCode;
 }
 
 /// generated route for
@@ -431,7 +465,7 @@ class PredictorRoute extends _i22.PageRouteInfo<void> {
 class PredictorSeasonHistoryRoute
     extends _i22.PageRouteInfo<PredictorSeasonHistoryRouteArgs> {
   PredictorSeasonHistoryRoute({
-    required _i28.PredictorSeason season,
+    required _i29.PredictorSeason season,
     _i24.Key? key,
     List<_i22.PageRouteInfo>? children,
   }) : super(
@@ -457,7 +491,7 @@ class PredictorSeasonHistoryRoute
 class PredictorSeasonHistoryRouteArgs {
   const PredictorSeasonHistoryRouteArgs({required this.season, this.key});
 
-  final _i28.PredictorSeason season;
+  final _i29.PredictorSeason season;
 
   final _i24.Key? key;
 
@@ -483,7 +517,7 @@ class PredictorWeekendDetailRoute
     extends _i22.PageRouteInfo<PredictorWeekendDetailRouteArgs> {
   PredictorWeekendDetailRoute({
     required String season,
-    required _i29.PredictorWeekendPrediction weekend,
+    required _i30.PredictorWeekendPrediction weekend,
     _i24.Key? key,
     List<_i22.PageRouteInfo>? children,
   }) : super(
@@ -520,7 +554,7 @@ class PredictorWeekendDetailRouteArgs {
 
   final String season;
 
-  final _i29.PredictorWeekendPrediction weekend;
+  final _i30.PredictorWeekendPrediction weekend;
 
   final _i24.Key? key;
 
@@ -578,7 +612,7 @@ class ProfileRoute extends _i22.PageRouteInfo<void> {
 /// [_i16.RaceInfoScreen]
 class RaceInfoRoute extends _i22.PageRouteInfo<RaceInfoRouteArgs> {
   RaceInfoRoute({
-    required _i30.RacesModel raceModel,
+    required _i31.RacesModel raceModel,
     _i24.Key? key,
     List<_i22.PageRouteInfo>? children,
   }) : super(
@@ -601,7 +635,7 @@ class RaceInfoRoute extends _i22.PageRouteInfo<RaceInfoRouteArgs> {
 class RaceInfoRouteArgs {
   const RaceInfoRouteArgs({required this.raceModel, this.key});
 
-  final _i30.RacesModel raceModel;
+  final _i31.RacesModel raceModel;
 
   final _i24.Key? key;
 

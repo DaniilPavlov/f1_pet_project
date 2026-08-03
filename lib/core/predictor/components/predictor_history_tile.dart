@@ -22,34 +22,45 @@ class PredictorHistoryTile extends StatelessWidget {
     final quali = weekend.qualiPoints?.toString() ?? l10n.predictorPendingPoints;
     final race = weekend.racePoints?.toString() ?? l10n.predictorPendingPoints;
 
-    return Material(
-      color: context.colors.grayBG,
-      borderRadius: AppTheme.defaultBorderRadius,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: AppTheme.defaultBorderRadius,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      weekend.raceName,
-                      style: AppStyles.body.copyWith(fontFamily: 'HelveticaNeueCyr-Bold'),
+    return Semantics(
+      button: onTap != null,
+      label: context.l10n.predictorHistorySemantics(
+        weekend.raceName,
+        quali,
+        race,
+        weekend.totalPoints,
+      ),
+      child: ExcludeSemantics(
+        child: Material(
+          color: context.colors.grayBG,
+          borderRadius: AppTheme.defaultBorderRadius,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: AppTheme.defaultBorderRadius,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          weekend.raceName,
+                          style: AppStyles.body.copyWith(fontFamily: 'HelveticaNeueCyr-Bold'),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          l10n.predictorWeekendPoints(quali, race, weekend.totalPoints),
+                          style: AppStyles.caption.copyWith(color: context.colors.textGray),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      l10n.predictorWeekendPoints(quali, race, weekend.totalPoints),
-                      style: AppStyles.caption.copyWith(color: context.colors.textGray),
-                    ),
-                  ],
-                ),
+                  ),
+                  if (onTap != null) Icon(Icons.chevron_right, color: context.colors.textGray),
+                ],
               ),
-              if (onTap != null) Icon(Icons.chevron_right, color: context.colors.textGray),
-            ],
+            ),
           ),
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
@@ -39,45 +40,55 @@ class NavBarItem extends StatelessWidget {
     final color = isSelected ? AppTheme.red : AppTheme.onChrome;
     final itemWidth = (MediaQuery.sizeOf(context).width - StaticData.defaultHorizontalPadding * 2) / 5;
 
-    return BounceAnimationWidget(
-      onPressed: () => onPressed?.call(),
-      isSelected: isSelected,
-      child: SizedBox(
-        width: itemWidth,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 4),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: iconSize,
-                height: iconSize,
-                child: icon != null
-                    ? Icon(icon, size: iconSize * 0.9, color: color)
-                    : ClipRect(
-                        child: Transform.scale(
-                          scale: edgeCropScale,
-                          child: Image.asset(
-                            imageAsset!,
-                            width: iconSize,
-                            height: iconSize,
-                            fit: BoxFit.contain,
-                            color: color,
-                            colorBlendMode: BlendMode.srcIn,
-                            gaplessPlayback: true,
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: context.l10n.navTabSemantics(
+        title,
+        isSelected ? context.l10n.navTabSelectedSuffix : '',
+      ),
+      child: BounceAnimationWidget(
+        onPressed: () => onPressed?.call(),
+        isSelected: isSelected,
+        child: ExcludeSemantics(
+          child: SizedBox(
+            width: itemWidth,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: iconSize,
+                    height: iconSize,
+                    child: icon != null
+                        ? Icon(icon, size: iconSize * 0.9, color: color)
+                        : ClipRect(
+                            child: Transform.scale(
+                              scale: edgeCropScale,
+                              child: Image.asset(
+                                imageAsset!,
+                                width: iconSize,
+                                height: iconSize,
+                                fit: BoxFit.contain,
+                                color: color,
+                                colorBlendMode: BlendMode.srcIn,
+                                gaplessPlayback: true,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    title,
+                    style: AppStyles.navBar.copyWith(color: color),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
-              const SizedBox(height: 4),
-              Text(
-                title,
-                style: AppStyles.navBar.copyWith(color: color),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+            ),
           ),
         ),
       ),
