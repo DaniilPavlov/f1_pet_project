@@ -12,6 +12,7 @@ class CareerStats<T> {
     this.winRaces = const [],
     this.podiumRaces = const [],
     this.poleRaces = const [],
+    this.listsComplete = true,
   });
 
   final int races;
@@ -33,4 +34,33 @@ class CareerStats<T> {
 
   /// Поулы (`qualifying/1`), новые сверху.
   final List<CareerRaceResult> poleRaces;
+
+  /// `false`, пока пагинированные списки гонок ещё грузятся.
+  final bool listsComplete;
+
+  CareerStats<T> copyWith({
+    int? races,
+    int? wins,
+    int? podiums,
+    int? poles,
+    List<T>? current,
+    List<T>? related,
+    List<CareerRaceResult>? winRaces,
+    List<CareerRaceResult>? podiumRaces,
+    List<CareerRaceResult>? poleRaces,
+    bool? listsComplete,
+  }) {
+    return CareerStats(
+      races: races ?? this.races,
+      wins: wins ?? this.wins,
+      podiums: podiums ?? this.podiums,
+      poles: poles ?? this.poles,
+      current: current ?? this.current,
+      related: related ?? this.related,
+      winRaces: winRaces ?? this.winRaces,
+      podiumRaces: podiumRaces ?? this.podiumRaces,
+      poleRaces: poleRaces ?? this.poleRaces,
+      listsComplete: listsComplete ?? this.listsComplete,
+    );
+  }
 }

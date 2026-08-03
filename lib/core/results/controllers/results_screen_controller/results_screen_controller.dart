@@ -1,5 +1,6 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/offline_cached_banner.dart';
 import 'package:f1_pet_project/core/results/repositories/results_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
@@ -34,6 +35,10 @@ abstract class ResultsScreenControllerBase with Store {
   @observable
   AsyncValue<RacesModel> lastRace = const AsyncValue.loading();
 
+  /// Офлайн + есть кэш last race / scoreboard.
+  @observable
+  bool showingCachedData = false;
+
   @computed
   CustomException? get screenError => lastRace.exception;
 
@@ -41,6 +46,7 @@ abstract class ResultsScreenControllerBase with Store {
   @action
   Future<void> loadAllData() async {
     await loadLastRaceResults();
+    await _syncOfflineBanner();
   }
 
   /// Pull-to-refresh: единый сброс кэшей и принудительная перезагрузка.
@@ -51,6 +57,7 @@ abstract class ResultsScreenControllerBase with Store {
       loadLastRaceResults(),
       if (_liveWeekend != null) _liveWeekend.loadScoreboard(forceRefresh: true),
     ]);
+    await _syncOfflineBanner();
   }
 
   /// Запрашивает результаты последней завершённой гонки.
@@ -62,6 +69,19 @@ abstract class ResultsScreenControllerBase with Store {
       setField: (value) => lastRace = value,
       onSuccess: (data) => lastRace = lastRace.toValue(data!.raceTable.races[0]),
     );
+  }
+
+  Future<void> _syncOfflineBanner() async {
+    final hasScoreboard = _liveWeekend?.scoreboard.isValue ?? false;
+    showingCachedData = await shouldShowOfflineCachedBanner(
+      hasCachedContent: lastRace.isValue || hasScoreboard,
+    );
+  }
+
+  /// После появления сети — спрятать баннер без перезагрузки.
+  @action
+  Future<void> dismissOfflineBannerIfOnline() async {
+    showingCachedData = await clearOfflineBannerIfOnline(currentlyShowing: showingCachedData);
   }
 
   Future<ScheduleModel> _fetchLastRaceResults() {

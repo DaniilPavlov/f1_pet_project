@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/repositories/espn/espn_media_repository.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
+import 'package:f1_pet_project/common/utils/constructor_colors.dart';
 import 'package:f1_pet_project/common/utils/helpers/share_helper.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
@@ -103,6 +104,15 @@ class ConstructorScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(constructor.name, style: AppStyles.h1),
+                              const SizedBox(height: 8),
+                              Container(
+                                width: 48,
+                                height: 3,
+                                decoration: BoxDecoration(
+                                  color: ConstructorColors.forConstructorId(constructor.constructorId),
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
                               const SizedBox(height: 16),
                               CareerInfoRow(
                                 label: context.l10n.nationality,

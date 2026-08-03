@@ -14,6 +14,7 @@ Future<void> showCareerRaceResultsSheet({
   required String title,
   required List<CareerRaceResult> races,
   required bool showPosition,
+  bool listsLoading = false,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -28,7 +29,9 @@ Future<void> showCareerRaceResultsSheet({
             Text(title, style: AppStyles.h2),
             const SizedBox(height: 16),
             Expanded(
-              child: races.isEmpty
+              child: listsLoading
+                  ? Center(child: Text(context.l10n.careerRaceListLoading, style: AppStyles.body))
+                  : races.isEmpty
                   ? Center(child: Text(context.l10n.careerRaceListEmpty, style: AppStyles.body))
                   : ListView.separated(
                       itemCount: races.length,

@@ -109,7 +109,7 @@ flutterfire configure --yes --project=<PROJECT_ID> --platforms=android,ios,web
 # ios: cd ios && pod install
 ```
 
-Remote Config: `local_notifications_enabled` (bool), `min_app_version` (string).
+Remote Config: `min_app_version` (string).
 
 ## CI / CD
 
@@ -130,7 +130,7 @@ dart run tool/ci/check_coverage.dart --min 75 --path coverage/lcov.info
 git tag v1.6.3 && git push origin v1.6.3
 ```
 
-Release secrets: `YANDEX_MAPKIT_API_KEY`, `ANDROID_KEYSTORE_*` (required); `APPMETRICA_API_KEY`, `FIREBASE_OPTIONS_DART`, `GOOGLE_SERVICES_JSON` (optional).
+Release secrets: `YANDEX_MAPKIT_API_KEY`, `ANDROID_KEYSTORE_*` (required); `APPMETRICA_API_KEY`, `FIREBASE_OPTIONS_DART`, `GOOGLE_SERVICES_JSON`, `FIREBASE_TOKEN` (optional; token enables Crashlytics Dart symbol upload).
 
 ```bash
 keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload

@@ -14,9 +14,24 @@ const _defaultPath = 'coverage/lcov.info';
 
 const _excludeSuffixes = <String>['.g.dart', '.gr.dart', '.freezed.dart', '.mocks.dart'];
 
-const _excludePathParts = <String>['/l10n/'];
+const _excludePathParts = <String>[
+  '/l10n/',
+  // MapKit / Yandex — не исполняются в Flutter test VM.
+  '/custom_yandex_map/',
+];
 
-const _excludeBasenames = <String>{'firebase_options.dart', 'main.dart'};
+const _excludeBasenames = <String>{
+  'firebase_options.dart',
+  'main.dart',
+  'map_container.dart',
+  // Тяжёлые UI-shells: smoke/widget-тесты есть, line coverage нецелесообразен.
+  'predictor_screen.dart',
+  'predictor_leaderboard_screen.dart',
+  'predictor_weekend_detail_screen.dart',
+  'predictor_auth_gate.dart',
+  'profile_screen.dart',
+  'auth_screens.dart',
+};
 
 void main(List<String> args) {
   final options = _parseArgs(args);

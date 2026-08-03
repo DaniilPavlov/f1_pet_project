@@ -251,22 +251,44 @@ class H2hPointsChartLegend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final aLeads = pointsA > pointsB;
+    final bLeads = pointsB > pointsA;
     return Row(
       children: [
-        Expanded(child: _LegendItem(name: nameA, points: pointsA, color: colorA)),
+        Expanded(
+          child: _LegendItem(
+            name: nameA,
+            points: pointsA,
+            color: colorA,
+            highlightPoints: aLeads,
+          ),
+        ),
         const SizedBox(width: 12),
-        Expanded(child: _LegendItem(name: nameB, points: pointsB, color: colorB)),
+        Expanded(
+          child: _LegendItem(
+            name: nameB,
+            points: pointsB,
+            color: colorB,
+            highlightPoints: bLeads,
+          ),
+        ),
       ],
     );
   }
 }
 
 class _LegendItem extends StatelessWidget {
-  const _LegendItem({required this.name, required this.points, required this.color});
+  const _LegendItem({
+    required this.name,
+    required this.points,
+    required this.color,
+    required this.highlightPoints,
+  });
 
   final String name;
   final double points;
   final Color color;
+  final bool highlightPoints;
 
   @override
   Widget build(BuildContext context) {
@@ -291,7 +313,7 @@ class _LegendItem extends StatelessWidget {
           pts,
           style: AppStyles.body.copyWith(
             fontWeight: FontWeight.w700,
-            color: color == AppTheme.red ? AppTheme.red : null,
+            color: highlightPoints ? AppTheme.red : context.colors.black,
           ),
         ),
       ],

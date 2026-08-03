@@ -267,6 +267,65 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get predictorLeaderboardOpen => 'Лидерборд';
+
+  @override
+  String predictorLeaderboardTitle(String year) {
+    return 'Лидерборд · $year';
+  }
+
+  @override
+  String get predictorLeaderboardJoinHint =>
+      'Придумай ник и согласись отображаться в публичном лидерборде сезона.';
+
+  @override
+  String get predictorNicknameLabel => 'Ник';
+
+  @override
+  String get predictorNicknameHint => '3–16 букв, цифр, _';
+
+  @override
+  String get predictorNicknameSave => 'Сохранить ник';
+
+  @override
+  String get predictorLeaderboardOptInLabel => 'Показывать меня в лидерборде';
+
+  @override
+  String get predictorLeaderboardOptInRequired =>
+      'Нужно согласие на отображение в лидерборде';
+
+  @override
+  String get predictorLeaderboardJoin => 'Вступить в лидерборд';
+
+  @override
+  String get predictorLeaderboardLeave => 'Покинуть лидерборд';
+
+  @override
+  String get predictorLeaderboardListTitle => 'Таблица';
+
+  @override
+  String get predictorLeaderboardEmpty => 'Пока никого нет — будь первым';
+
+  @override
+  String predictorLeaderboardYourRank(int rank, int points) {
+    return 'Ты · #$rank · $points очк.';
+  }
+
+  @override
+  String get predictorNicknameErrorLength => 'Ник должен быть 3–16 символов';
+
+  @override
+  String get predictorNicknameErrorChars =>
+      'Только буквы, цифры и подчёркивание';
+
+  @override
+  String get predictorNicknameErrorTaken => 'Этот ник уже занят';
+
+  @override
+  String get predictorLeaderboardErrorGeneric =>
+      'Не удалось обновить лидерборд. Попробуй ещё раз';
+
+  @override
   String get newsEmpty => 'Новостей пока нет';
 
   @override
@@ -473,7 +532,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Не удалось загрузить standings для этого раунда';
 
   @override
-  String get h2hTitle => 'H2H · Пилоты';
+  String get h2hTitle => 'H2H';
 
   @override
   String get h2hSubtitle =>
@@ -694,6 +753,46 @@ class AppLocalizationsRu extends AppLocalizations {
   String get careerRaceListEmpty => 'В этом списке пока нет гонок';
 
   @override
+  String get careerRaceListLoading => 'Загружаем список гонок…';
+
+  @override
+  String newsArticleSemantics(String headline) {
+    return 'Новость: $headline';
+  }
+
+  @override
+  String navTabSemantics(String title, String selected) {
+    return '$title, вкладка$selected';
+  }
+
+  @override
+  String get navTabSelectedSuffix => ', выбрана';
+
+  @override
+  String predictorDriverSemantics(int position, String name, String locked) {
+    return 'P$position $name$locked';
+  }
+
+  @override
+  String get predictorLockedSuffix => ', заблокировано';
+
+  @override
+  String predictorHistorySemantics(
+    String race,
+    String quali,
+    String racePts,
+    int total,
+  ) {
+    return '$race, Q $quali, R $racePts, $total очков';
+  }
+
+  @override
+  String get h2hModeDrivers => 'Пилоты';
+
+  @override
+  String get h2hModeConstructors => 'Конструкторы';
+
+  @override
   String get driverTeamsTitle => 'Команды';
 
   @override
@@ -705,6 +804,12 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get noConnectionSubtitle =>
       'Как только соединение восстановится, вы снова сможете пользоваться приложением';
+
+  @override
+  String get showingCachedData => 'Показаны сохранённые данные';
+
+  @override
+  String get locationUnavailable => 'Невозможно определить местоположение';
 
   @override
   String get refresh => 'Обновить';

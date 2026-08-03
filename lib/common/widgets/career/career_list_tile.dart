@@ -9,6 +9,7 @@ class CareerListTile extends StatelessWidget {
     this.subtitle,
     this.trailing,
     this.onTap,
+    this.accentColor,
     super.key,
   });
 
@@ -16,6 +17,7 @@ class CareerListTile extends StatelessWidget {
   final String? subtitle;
   final Widget? trailing;
   final VoidCallback? onTap;
+  final Color? accentColor;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,17 @@ class CareerListTile extends StatelessWidget {
         onTap: onTap,
         child: Row(
           children: [
+            if (accentColor != null) ...[
+              Container(
+                width: 3,
+                height: 18,
+                decoration: BoxDecoration(
+                  color: accentColor,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(width: 10),
+            ],
             Expanded(child: Text(title, style: AppStyles.body)),
             if (trailing != null)
               trailing!

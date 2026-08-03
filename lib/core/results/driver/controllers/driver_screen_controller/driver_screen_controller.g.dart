@@ -106,6 +106,18 @@ mixin _$DriverScreenController on DriverScreenControllerBase, Store {
     return _$loadCareerStatsAsyncAction.run(() => super.loadCareerStats());
   }
 
+  late final _$_completeRaceListsAsyncAction = AsyncAction(
+    'DriverScreenControllerBase._completeRaceLists',
+    context: context,
+  );
+
+  @override
+  Future<void> _completeRaceLists(CareerStats<ConstructorModel> totals) {
+    return _$_completeRaceListsAsyncAction.run(
+      () => super._completeRaceLists(totals),
+    );
+  }
+
   late final _$loadEspnCardAsyncAction = AsyncAction(
     'DriverScreenControllerBase.loadEspnCard',
     context: context,

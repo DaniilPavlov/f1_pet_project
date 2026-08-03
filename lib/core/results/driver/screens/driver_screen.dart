@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/repositories/espn/espn_media_repository.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
+import 'package:f1_pet_project/common/utils/constructor_colors.dart';
 import 'package:f1_pet_project/common/utils/helpers/share_helper.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
@@ -88,6 +89,12 @@ class DriverScreen extends StatelessWidget {
                   }
 
                   final espn = controller.espnCardData;
+                  final teamConstructor = stats.current.isNotEmpty
+                      ? stats.current.first
+                      : (currentConstructors.isNotEmpty ? currentConstructors.first : null);
+                  final teamColor = teamConstructor == null
+                      ? AppTheme.red
+                      : ConstructorColors.forConstructorId(teamConstructor.constructorId);
 
                   return RefreshIndicator(
                     color: AppTheme.red,
@@ -108,9 +115,21 @@ class DriverScreen extends StatelessWidget {
                               EspnDriverPhoto(
                                 photoUrl: espn.photoUrl,
                                 isLoading: controller.isEspnLoading,
+                                borderColor: teamColor,
                               ),
                               const SizedBox(height: 16),
                               Text(fullName, style: AppStyles.h1),
+                              if (teamConstructor != null) ...[
+                                const SizedBox(height: 8),
+                                Container(
+                                  width: 48,
+                                  height: 3,
+                                  decoration: BoxDecoration(
+                                    color: teamColor,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                              ],
                               const SizedBox(height: 16),
                               CareerInfoRow(label: context.l10n.driverCode, value: _displayValue(context, driver.code)),
                               CareerInfoRow(
@@ -159,18 +178,21 @@ class DriverScreen extends StatelessWidget {
                                   title: context.l10n.wins,
                                   races: stats.winRaces,
                                   showPosition: false,
+                                  listsLoading: !stats.listsComplete,
                                 ),
                                 onPodiumsTap: () => showCareerRaceResultsSheet(
                                   context: context,
                                   title: context.l10n.careerStatPodiums,
                                   races: stats.podiumRaces,
                                   showPosition: true,
+                                  listsLoading: !stats.listsComplete,
                                 ),
                                 onPolesTap: () => showCareerRaceResultsSheet(
                                   context: context,
                                   title: context.l10n.careerStatPoles,
                                   races: stats.poleRaces,
                                   showPosition: false,
+                                  listsLoading: !stats.listsComplete,
                                 ),
                               ),
                               const SizedBox(height: 28),
@@ -179,6 +201,7 @@ class DriverScreen extends StatelessWidget {
                               ...stats.related.map(
                                 (constructor) => CareerListTile(
                                   title: constructor.name,
+                                  accentColor: ConstructorColors.forConstructorId(constructor.constructorId),
                                   trailing: CountryFlag(countryOrNationality: constructor.nationality),
                                   onTap: () => context.router.push(ConstructorRoute(constructor: constructor)),
                                 ),

@@ -536,6 +536,108 @@ abstract class AppLocalizations {
   /// **'{year} · {points} {points, plural, one{очко} few{очка} many{очков} other{очков}} · {races} {races, plural, one{гонка} few{гонки} many{гонок} other{гонок}}'**
   String predictorSeasonButton(String year, int points, int races);
 
+  /// No description provided for @predictorLeaderboardOpen.
+  ///
+  /// In ru, this message translates to:
+  /// **'Лидерборд'**
+  String get predictorLeaderboardOpen;
+
+  /// No description provided for @predictorLeaderboardTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Лидерборд · {year}'**
+  String predictorLeaderboardTitle(String year);
+
+  /// No description provided for @predictorLeaderboardJoinHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'Придумай ник и согласись отображаться в публичном лидерборде сезона.'**
+  String get predictorLeaderboardJoinHint;
+
+  /// No description provided for @predictorNicknameLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ник'**
+  String get predictorNicknameLabel;
+
+  /// No description provided for @predictorNicknameHint.
+  ///
+  /// In ru, this message translates to:
+  /// **'3–16 букв, цифр, _'**
+  String get predictorNicknameHint;
+
+  /// No description provided for @predictorNicknameSave.
+  ///
+  /// In ru, this message translates to:
+  /// **'Сохранить ник'**
+  String get predictorNicknameSave;
+
+  /// No description provided for @predictorLeaderboardOptInLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Показывать меня в лидерборде'**
+  String get predictorLeaderboardOptInLabel;
+
+  /// No description provided for @predictorLeaderboardOptInRequired.
+  ///
+  /// In ru, this message translates to:
+  /// **'Нужно согласие на отображение в лидерборде'**
+  String get predictorLeaderboardOptInRequired;
+
+  /// No description provided for @predictorLeaderboardJoin.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вступить в лидерборд'**
+  String get predictorLeaderboardJoin;
+
+  /// No description provided for @predictorLeaderboardLeave.
+  ///
+  /// In ru, this message translates to:
+  /// **'Покинуть лидерборд'**
+  String get predictorLeaderboardLeave;
+
+  /// No description provided for @predictorLeaderboardListTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Таблица'**
+  String get predictorLeaderboardListTitle;
+
+  /// No description provided for @predictorLeaderboardEmpty.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пока никого нет — будь первым'**
+  String get predictorLeaderboardEmpty;
+
+  /// No description provided for @predictorLeaderboardYourRank.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ты · #{rank} · {points} очк.'**
+  String predictorLeaderboardYourRank(int rank, int points);
+
+  /// No description provided for @predictorNicknameErrorLength.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ник должен быть 3–16 символов'**
+  String get predictorNicknameErrorLength;
+
+  /// No description provided for @predictorNicknameErrorChars.
+  ///
+  /// In ru, this message translates to:
+  /// **'Только буквы, цифры и подчёркивание'**
+  String get predictorNicknameErrorChars;
+
+  /// No description provided for @predictorNicknameErrorTaken.
+  ///
+  /// In ru, this message translates to:
+  /// **'Этот ник уже занят'**
+  String get predictorNicknameErrorTaken;
+
+  /// No description provided for @predictorLeaderboardErrorGeneric.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось обновить лидерборд. Попробуй ещё раз'**
+  String get predictorLeaderboardErrorGeneric;
+
   /// No description provided for @newsEmpty.
   ///
   /// In ru, this message translates to:
@@ -911,7 +1013,7 @@ abstract class AppLocalizations {
   /// No description provided for @h2hTitle.
   ///
   /// In ru, this message translates to:
-  /// **'H2H · Пилоты'**
+  /// **'H2H'**
   String get h2hTitle;
 
   /// No description provided for @h2hSubtitle.
@@ -1328,6 +1430,65 @@ abstract class AppLocalizations {
   /// **'В этом списке пока нет гонок'**
   String get careerRaceListEmpty;
 
+  /// No description provided for @careerRaceListLoading.
+  ///
+  /// In ru, this message translates to:
+  /// **'Загружаем список гонок…'**
+  String get careerRaceListLoading;
+
+  /// No description provided for @newsArticleSemantics.
+  ///
+  /// In ru, this message translates to:
+  /// **'Новость: {headline}'**
+  String newsArticleSemantics(String headline);
+
+  /// No description provided for @navTabSemantics.
+  ///
+  /// In ru, this message translates to:
+  /// **'{title}, вкладка{selected}'**
+  String navTabSemantics(String title, String selected);
+
+  /// No description provided for @navTabSelectedSuffix.
+  ///
+  /// In ru, this message translates to:
+  /// **', выбрана'**
+  String get navTabSelectedSuffix;
+
+  /// No description provided for @predictorDriverSemantics.
+  ///
+  /// In ru, this message translates to:
+  /// **'P{position} {name}{locked}'**
+  String predictorDriverSemantics(int position, String name, String locked);
+
+  /// No description provided for @predictorLockedSuffix.
+  ///
+  /// In ru, this message translates to:
+  /// **', заблокировано'**
+  String get predictorLockedSuffix;
+
+  /// No description provided for @predictorHistorySemantics.
+  ///
+  /// In ru, this message translates to:
+  /// **'{race}, Q {quali}, R {racePts}, {total} очков'**
+  String predictorHistorySemantics(
+    String race,
+    String quali,
+    String racePts,
+    int total,
+  );
+
+  /// No description provided for @h2hModeDrivers.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пилоты'**
+  String get h2hModeDrivers;
+
+  /// No description provided for @h2hModeConstructors.
+  ///
+  /// In ru, this message translates to:
+  /// **'Конструкторы'**
+  String get h2hModeConstructors;
+
   /// No description provided for @driverTeamsTitle.
   ///
   /// In ru, this message translates to:
@@ -1351,6 +1512,18 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Как только соединение восстановится, вы снова сможете пользоваться приложением'**
   String get noConnectionSubtitle;
+
+  /// No description provided for @showingCachedData.
+  ///
+  /// In ru, this message translates to:
+  /// **'Показаны сохранённые данные'**
+  String get showingCachedData;
+
+  /// No description provided for @locationUnavailable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Невозможно определить местоположение'**
+  String get locationUnavailable;
 
   /// No description provided for @refresh.
   ///

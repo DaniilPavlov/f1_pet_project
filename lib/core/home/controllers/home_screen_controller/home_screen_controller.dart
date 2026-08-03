@@ -1,5 +1,6 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/offline_cached_banner.dart';
 import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/standings/constructor/constructor_standings_model.dart';
@@ -43,6 +44,13 @@ abstract class HomeScreenControllerBase with Store {
   @observable
   String currentRound = '';
 
+  /// Офлайн-fallback: данные из кэша после сбоя сети.
+  @observable
+  bool showingCachedData = false;
+
+  var _driversOfflineFallback = false;
+  var _constructorsOfflineFallback = false;
+
   @computed
   CustomException? get screenError => firstException([currentDrivers, currentConstructors]);
 
@@ -71,6 +79,7 @@ abstract class HomeScreenControllerBase with Store {
         currentDrivers = currentDrivers.toValue(standings.driverStandings ?? []);
         currentSeason = standings.season;
         currentRound = standings.round;
+        _syncCachedFlag();
       },
     );
   }
@@ -86,23 +95,40 @@ abstract class HomeScreenControllerBase with Store {
         currentConstructors = currentConstructors.toValue(
           data!.standingsTable.standingsLists[0].constructorStandings ?? [],
         );
+        _syncCachedFlag();
       },
     );
   }
 
-  Future<StandingsModel> _fetchCurrentDriversStandings() {
-    final forTest = _fetchCurrentDriversStandingsForTest;
-    if (forTest != null) {
-      return forTest();
-    }
-    return _standingsRepository!.drivers();
+  void _syncCachedFlag() {
+    showingCachedData = _driversOfflineFallback || _constructorsOfflineFallback;
   }
 
-  Future<StandingsModel> _fetchCurrentConstructorsStandings() {
-    final forTest = _fetchCurrentConstructorsStandingsForTest;
+  /// После появления сети — спрятать баннер без перезагрузки таблиц.
+  @action
+  Future<void> dismissOfflineBannerIfOnline() async {
+    showingCachedData = await clearOfflineBannerIfOnline(currentlyShowing: showingCachedData);
+  }
+
+  Future<StandingsModel> _fetchCurrentDriversStandings() async {
+    final forTest = _fetchCurrentDriversStandingsForTest;
     if (forTest != null) {
+      _driversOfflineFallback = false;
       return forTest();
     }
-    return _standingsRepository!.constructors();
+    final result = await _standingsRepository!.loadDrivers();
+    _driversOfflineFallback = result.offlineFallback;
+    return result.standings;
+  }
+
+  Future<StandingsModel> _fetchCurrentConstructorsStandings() async {
+    final forTest = _fetchCurrentConstructorsStandingsForTest;
+    if (forTest != null) {
+      _constructorsOfflineFallback = false;
+      return forTest();
+    }
+    final result = await _standingsRepository!.loadConstructors();
+    _constructorsOfflineFallback = result.offlineFallback;
+    return result.standings;
   }
 }

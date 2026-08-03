@@ -154,6 +154,24 @@ mixin _$ScheduleScreenController on ScheduleScreenControllerBase, Store {
     );
   }
 
+  late final _$showingCachedDataAtom = Atom(
+    name: 'ScheduleScreenControllerBase.showingCachedData',
+    context: context,
+  );
+
+  @override
+  bool get showingCachedData {
+    _$showingCachedDataAtom.reportRead();
+    return super.showingCachedData;
+  }
+
+  @override
+  set showingCachedData(bool value) {
+    _$showingCachedDataAtom.reportWrite(value, super.showingCachedData, () {
+      super.showingCachedData = value;
+    });
+  }
+
   late final _$loadAllDataAsyncAction = AsyncAction(
     'ScheduleScreenControllerBase.loadAllData',
     context: context,
@@ -182,6 +200,18 @@ mixin _$ScheduleScreenController on ScheduleScreenControllerBase, Store {
   @override
   Future<void> _loadSchedule() {
     return _$_loadScheduleAsyncAction.run(() => super._loadSchedule());
+  }
+
+  late final _$dismissOfflineBannerIfOnlineAsyncAction = AsyncAction(
+    'ScheduleScreenControllerBase.dismissOfflineBannerIfOnline',
+    context: context,
+  );
+
+  @override
+  Future<void> dismissOfflineBannerIfOnline() {
+    return _$dismissOfflineBannerIfOnlineAsyncAction.run(
+      () => super.dismissOfflineBannerIfOnline(),
+    );
   }
 
   late final _$ScheduleScreenControllerBaseActionController = ActionController(
@@ -244,6 +274,7 @@ now: ${now},
 selectedDate: ${selectedDate},
 focusedDate: ${focusedDate},
 scheduleOfSelectedDate: ${scheduleOfSelectedDate},
+showingCachedData: ${showingCachedData},
 screenError: ${screenError},
 selectedDayHasSessions: ${selectedDayHasSessions},
 upcomingRace: ${upcomingRace},

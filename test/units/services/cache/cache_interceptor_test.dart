@@ -31,7 +31,7 @@ void main() {
       expect(request.nextCalled, isFalse);
     });
 
-    test('invalidate forces one network pass then cache works again', () async {
+    test('invalidate forces one network pass per URI then cache works again', () async {
       final cache = CacheInterceptor();
       final opts = options('current/drivers.json');
       final response = ok(opts, {'ok': true});
@@ -45,7 +45,7 @@ void main() {
       cache.onRequest(opts, afterInvalidate);
       expect(afterInvalidate.nextCalled, isTrue);
 
-      // Второй запрос после «принудительного» прохода снова может взять memory cache.
+      // Второй запрос того же URI после «принудительного» прохода снова может взять memory cache.
       final second = _RequestHandler();
       cache.onRequest(opts, second);
       expect(second.resolved, isNotNull);
@@ -56,6 +56,30 @@ void main() {
       await Future<void>.delayed(const Duration(milliseconds: 50));
 
       expect(errorHandler.resolved?.data, {'ok': true});
+    });
+
+    test('invalidate forces network for parallel distinct URIs', () async {
+      final cache = CacheInterceptor();
+      final drivers = options('current/driverStandings.json');
+      final constructors = options('current/constructorStandings.json');
+
+      cache
+        ..onResponse(ok(drivers, {'drivers': true}), _ResponseHandler())
+        ..onResponse(ok(constructors, {'ctors': true}), _ResponseHandler());
+      await Future<void>.delayed(const Duration(milliseconds: 30));
+
+      cache.invalidate();
+
+      final driversHandler = _RequestHandler();
+      final constructorsHandler = _RequestHandler();
+      cache
+        ..onRequest(drivers, driversHandler)
+        ..onRequest(constructors, constructorsHandler);
+
+      expect(driversHandler.nextCalled, isTrue);
+      expect(constructorsHandler.nextCalled, isTrue);
+      expect(driversHandler.resolved, isNull);
+      expect(constructorsHandler.resolved, isNull);
     });
 
     test('non-connectivity errors pass through', () {

@@ -90,6 +90,24 @@ mixin _$HomeScreenController on HomeScreenControllerBase, Store {
     });
   }
 
+  late final _$showingCachedDataAtom = Atom(
+    name: 'HomeScreenControllerBase.showingCachedData',
+    context: context,
+  );
+
+  @override
+  bool get showingCachedData {
+    _$showingCachedDataAtom.reportRead();
+    return super.showingCachedData;
+  }
+
+  @override
+  set showingCachedData(bool value) {
+    _$showingCachedDataAtom.reportWrite(value, super.showingCachedData, () {
+      super.showingCachedData = value;
+    });
+  }
+
   late final _$loadAllDataAsyncAction = AsyncAction(
     'HomeScreenControllerBase.loadAllData',
     context: context,
@@ -134,6 +152,18 @@ mixin _$HomeScreenController on HomeScreenControllerBase, Store {
     );
   }
 
+  late final _$dismissOfflineBannerIfOnlineAsyncAction = AsyncAction(
+    'HomeScreenControllerBase.dismissOfflineBannerIfOnline',
+    context: context,
+  );
+
+  @override
+  Future<void> dismissOfflineBannerIfOnline() {
+    return _$dismissOfflineBannerIfOnlineAsyncAction.run(
+      () => super.dismissOfflineBannerIfOnline(),
+    );
+  }
+
   @override
   String toString() {
     return '''
@@ -141,6 +171,7 @@ currentDrivers: ${currentDrivers},
 currentConstructors: ${currentConstructors},
 currentSeason: ${currentSeason},
 currentRound: ${currentRound},
+showingCachedData: ${showingCachedData},
 screenError: ${screenError}
     ''';
   }

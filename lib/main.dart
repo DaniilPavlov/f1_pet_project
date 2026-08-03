@@ -11,6 +11,7 @@ import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.da
 import 'package:f1_pet_project/core/circuits/stats/circuit_stats_repository.dart';
 import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
 import 'package:f1_pet_project/core/news/repositories/news_repository.dart';
+import 'package:f1_pet_project/core/predictor/repositories/predictor_leaderboard_repository.dart';
 import 'package:f1_pet_project/core/predictor/repositories/predictor_repository.dart';
 import 'package:f1_pet_project/core/profile/controllers/notifications_preference_controller/notifications_preference_controller.dart';
 import 'package:f1_pet_project/core/results/constructor/repositories/constructor_career_repository.dart';
@@ -56,6 +57,9 @@ Future<void> main() async {
   final constructorCatalogRepository = ConstructorCatalogRepository();
   final authService = AuthService();
   final predictorRepository = PredictorRepository(authService: authService);
+  final predictorLeaderboardRepository = PredictorLeaderboardRepository(
+    authService: authService,
+  );
   final wikipediaRepository = WikipediaPageImageRepository();
   final espnDio = AppDio.external();
   final espnNewsDio = AppDio.external(
@@ -87,6 +91,7 @@ Future<void> main() async {
         Provider<ConstructorCatalogRepository>.value(value: constructorCatalogRepository),
         Provider<AuthService>.value(value: authService),
         Provider<PredictorRepository>.value(value: predictorRepository),
+        Provider<PredictorLeaderboardRepository>.value(value: predictorLeaderboardRepository),
         Provider<EspnScoreboardRepository>.value(value: scoreboardRepository),
         Provider(
           create: (_) => LiveWeekendController(scoreboardRepository: scoreboardRepository)..loadScoreboard(),
@@ -110,13 +115,11 @@ Future<void> main() async {
         Provider(
           create: (_) => RaceReminderService(
             scheduleRepository: scheduleRepository,
-            remoteConfig: remoteConfig,
           ),
         ),
         Provider(
           create: (context) => NotificationsPreferenceController(
             reminders: context.read<RaceReminderService>(),
-            remoteConfig: remoteConfig,
             analytics: analytics,
           ),
         ),

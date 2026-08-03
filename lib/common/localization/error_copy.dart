@@ -7,6 +7,7 @@ abstract final class ErrorCopy {
   static String noConnection = 'No connection';
   static String noConnectionSubtitle =
       'Once the connection is restored, you will be able to use the app again';
+  static String locationUnavailable = 'Unable to determine location';
   static String tooManyRequests = 'Too many requests';
   static String tooManyRequestsSubtitle =
       'The API is rate-limiting requests. Wait a moment and try again.';
@@ -18,6 +19,7 @@ abstract final class ErrorCopy {
   static void sync(AppLocalizations l10n) {
     noConnection = l10n.noConnection;
     noConnectionSubtitle = l10n.noConnectionSubtitle;
+    locationUnavailable = l10n.locationUnavailable;
     tooManyRequests = l10n.tooManyRequests;
     tooManyRequestsSubtitle = l10n.tooManyRequestsSubtitle;
     requestError = l10n.requestError;

@@ -44,7 +44,8 @@ void main() {
       await tester.pumpScreenSmoke(const H2hConstructorsScreen());
 
       expect(find.byType(H2hConstructorsScreen), findsOneWidget);
-      expect(find.text(AppLocalizationsEn().h2hConstructorsTitle), findsOneWidget);
+      expect(find.byType(H2hView), findsOneWidget);
+      expect(find.textContaining(AppLocalizationsEn().h2hConstructorsSubtitle.split('.').first), findsWidgets);
     });
 
     testWidgets('FinishStatusScreen shows statuses', (tester) async {

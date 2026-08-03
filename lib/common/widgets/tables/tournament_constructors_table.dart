@@ -2,6 +2,7 @@
 
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/utils/constructor_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/widgets/tables/table_parts/tournament_table_constructors_detail_row.dart';
 import 'package:f1_pet_project/common/widgets/tables/table_parts/tournament_table_constructors_primary_row.dart';
@@ -86,9 +87,11 @@ class TournamentConstructorsTable extends StatelessWidget {
                     ...List.generate(constructors.length, (i) {
                       final standing = constructors[i];
                       return TableRow(
-                        decoration: BoxDecoration(
-                          color: i.isOdd ? context.colors.grayBG : Colors.transparent,
-                          border: Border(bottom: BorderSide(color: context.colors.strokeGray)),
+                        decoration: ConstructorColors.tableRowDecoration(
+                          zebraColor: context.colors.grayBG,
+                          bottomBorderColor: context.colors.strokeGray,
+                          index: i,
+                          constructorId: standing.constructor.constructorId,
                         ),
                         children: tappableConstructorRowCells(
                           context: context,

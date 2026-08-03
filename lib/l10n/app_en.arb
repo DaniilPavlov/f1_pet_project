@@ -113,6 +113,34 @@
       "races": { "type": "int" }
     }
   },
+  "predictorLeaderboardOpen": "Leaderboard",
+  "predictorLeaderboardTitle": "Leaderboard · {year}",
+  "@predictorLeaderboardTitle": {
+    "placeholders": {
+      "year": { "type": "String" }
+    }
+  },
+  "predictorLeaderboardJoinHint": "Pick a nickname and opt in to appear on the public season leaderboard.",
+  "predictorNicknameLabel": "Nickname",
+  "predictorNicknameHint": "3–16 letters, numbers, _",
+  "predictorNicknameSave": "Save nickname",
+  "predictorLeaderboardOptInLabel": "Show me on the leaderboard",
+  "predictorLeaderboardOptInRequired": "Agree to appear on the leaderboard",
+  "predictorLeaderboardJoin": "Join leaderboard",
+  "predictorLeaderboardLeave": "Leave leaderboard",
+  "predictorLeaderboardListTitle": "Standings",
+  "predictorLeaderboardEmpty": "No one on the board yet — be the first",
+  "predictorLeaderboardYourRank": "You · #{rank} · {points} pts",
+  "@predictorLeaderboardYourRank": {
+    "placeholders": {
+      "rank": { "type": "int" },
+      "points": { "type": "int" }
+    }
+  },
+  "predictorNicknameErrorLength": "Nickname must be 3–16 characters",
+  "predictorNicknameErrorChars": "Only letters, numbers and underscore",
+  "predictorNicknameErrorTaken": "This nickname is taken",
+  "predictorLeaderboardErrorGeneric": "Could not update the leaderboard. Try again",
   "newsEmpty": "No news right now",
   "homeStandingsTitle": "Current season standings",
   "circuitStatLength": "Length",
@@ -201,7 +229,7 @@
   },
   "seasonRewindChartHint": "Full standings by points — scrub or hit Play",
   "seasonRewindLoadError": "Could not load standings for this round",
-  "h2hTitle": "H2H · Drivers",
+  "h2hTitle": "H2H",
   "h2hSubtitle": "Compare two drivers with filters for period and driver list",
   "h2hDriverA": "Driver 1",
   "h2hDriverB": "Driver 2",
@@ -281,10 +309,47 @@
   "careerStatPodiums": "Podiums",
   "careerStatPoles": "Poles",
   "careerRaceListEmpty": "No races in this list",
+  "careerRaceListLoading": "Loading race list…",
+  "newsArticleSemantics": "News: {headline}",
+  "@newsArticleSemantics": {
+    "placeholders": {
+      "headline": { "type": "String" }
+    }
+  },
+  "navTabSemantics": "{title}, tab{selected}",
+  "@navTabSemantics": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "selected": { "type": "String" }
+    }
+  },
+  "navTabSelectedSuffix": ", selected",
+  "predictorDriverSemantics": "P{position} {name}{locked}",
+  "@predictorDriverSemantics": {
+    "placeholders": {
+      "position": { "type": "int" },
+      "name": { "type": "String" },
+      "locked": { "type": "String" }
+    }
+  },
+  "predictorLockedSuffix": ", locked",
+  "predictorHistorySemantics": "{race}, Q {quali}, R {racePts}, {total} points",
+  "@predictorHistorySemantics": {
+    "placeholders": {
+      "race": { "type": "String" },
+      "quali": { "type": "String" },
+      "racePts": { "type": "String" },
+      "total": { "type": "int" }
+    }
+  },
+  "h2hModeDrivers": "Drivers",
+  "h2hModeConstructors": "Constructors",
   "driverTeamsTitle": "Teams",
   "constructorDriversTitle": "Drivers",
   "noConnection": "No connection",
   "noConnectionSubtitle": "Once the connection is restored, you will be able to use the app again",
+  "showingCachedData": "Showing saved data",
+  "locationUnavailable": "Unable to determine location",
   "refresh": "Refresh",
   "notNow": "not now",
   "settings": "Settings",

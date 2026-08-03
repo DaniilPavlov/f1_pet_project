@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/cached_data_banner.dart';
 import 'package:f1_pet_project/common/widgets/containers/red_border_container.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
+import 'package:f1_pet_project/common/widgets/on_app_resumed.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/race_section_shimmer.dart';
 import 'package:f1_pet_project/core/results/components/last_race_table_section.dart';
 import 'package:f1_pet_project/core/results/components/weekend_scoreboard_section.dart';
@@ -34,86 +38,98 @@ class ResultsScreen extends StatelessWidget {
       child: Scaffold(
         appBar: const CustomAppBar(),
         body: SafeArea(
-          child: Observer(
+          child: Builder(
             builder: (context) {
-              final controller = context.read<ResultsScreenController>();
-              final liveWeekend = context.read<LiveWeekendController>();
-              final hasRace = controller.lastRace.value != null;
-              final raceFailed = !hasRace && (controller.lastRace.isError || controller.screenError != null);
+              return OnAppResumed(
+                onResumed: () {
+                  unawaited(
+                    context.read<ResultsScreenController>().dismissOfflineBannerIfOnline(),
+                  );
+                },
+                child: Observer(
+                  builder: (context) {
+                    final controller = context.read<ResultsScreenController>();
+                    final liveWeekend = context.read<LiveWeekendController>();
+                    final hasRace = controller.lastRace.value != null;
+                    final raceFailed =
+                        !hasRace && (controller.lastRace.isError || controller.screenError != null);
 
-              return RefreshIndicator(
-                color: AppTheme.red,
-                onRefresh: controller.refreshAll,
-                child: CustomScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  scrollBehavior: AntiGlowBehavior(),
-                  slivers: [
-                    Observer(
-                      builder: (context) => SliverToBoxAdapter(
-                        child: WeekendScoreboardSection(
-                          scoreboard: liveWeekend.scoreboard,
-                          locale: Localizations.localeOf(context),
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: hasRace
-                          ? LastRaceTableSection(lastRace: controller.lastRace.value!)
-                          : raceFailed
-                          ? Padding(
-                              padding: const EdgeInsets.all(StaticData.defaultHorizontalPadding),
-                              child: ErrorBody(
-                                onTap: controller.refreshAll,
-                                title: controller.screenError?.title ??
-                                    controller.lastRace.error?.errorMessage ??
-                                    '',
-                                subtitle: controller.screenError?.subtitle,
+                    return RefreshIndicator(
+                      color: AppTheme.red,
+                      onRefresh: controller.refreshAll,
+                      child: CustomScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        scrollBehavior: AntiGlowBehavior(),
+                        slivers: [
+                          if (controller.showingCachedData)
+                            SliverToBoxAdapter(
+                              child: CachedDataBanner(message: context.l10n.showingCachedData),
+                            ),
+                          Observer(
+                            builder: (context) => SliverToBoxAdapter(
+                              child: WeekendScoreboardSection(
+                                scoreboard: liveWeekend.scoreboard,
+                                locale: Localizations.localeOf(context),
                               ),
-                            )
-                          : const LastRaceSectionShimmer(),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: StaticData.defaultHorizontalPadding,
-                          vertical: StaticData.defaultVerticalPadding,
-                        ),
-                        child: Column(
-                          children: [
-                            RedBorderContainer(
-                              title: context.l10n.chooseSpecificRace,
-                              onTap: () async => context.router.push(const RaceSearchRoute()),
                             ),
-                            const SizedBox(height: 12),
-                            RedBorderContainer(
-                              title: context.l10n.hallOfFameTitle,
-                              onTap: () async => context.router.push(const HallOfFameRoute()),
+                          ),
+                          SliverToBoxAdapter(
+                            child: hasRace
+                                ? LastRaceTableSection(lastRace: controller.lastRace.value!)
+                                : raceFailed
+                                ? Padding(
+                                    padding: const EdgeInsets.all(StaticData.defaultHorizontalPadding),
+                                    child: ErrorBody(
+                                      onTap: controller.refreshAll,
+                                      title: controller.screenError?.title ??
+                                          controller.lastRace.error?.errorMessage ??
+                                          '',
+                                      subtitle: controller.screenError?.subtitle,
+                                    ),
+                                  )
+                                : const LastRaceSectionShimmer(),
+                          ),
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: StaticData.defaultHorizontalPadding,
+                                vertical: StaticData.defaultVerticalPadding,
+                              ),
+                              child: Column(
+                                children: [
+                                  RedBorderContainer(
+                                    title: context.l10n.chooseSpecificRace,
+                                    onTap: () async => context.router.push(const RaceSearchRoute()),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  RedBorderContainer(
+                                    title: context.l10n.hallOfFameTitle,
+                                    onTap: () async => context.router.push(const HallOfFameRoute()),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  RedBorderContainer(
+                                    title: context.l10n.seasonRewindTitle,
+                                    onTap: () async => context.router.push(const SeasonRewindRoute()),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  RedBorderContainer(
+                                    title: context.l10n.h2hTitle,
+                                    onTap: () async => context.router.push(H2hRoute()),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  RedBorderContainer(
+                                    title: context.l10n.finishStatusTitle,
+                                    onTap: () async =>
+                                        context.router.push(const FinishStatusRoute()),
+                                  ),
+                                ],
+                              ),
                             ),
-                            const SizedBox(height: 12),
-                            RedBorderContainer(
-                              title: context.l10n.seasonRewindTitle,
-                              onTap: () async => context.router.push(const SeasonRewindRoute()),
-                            ),
-                            const SizedBox(height: 12),
-                            RedBorderContainer(
-                              title: context.l10n.h2hTitle,
-                              onTap: () async => context.router.push(const H2hRoute()),
-                            ),
-                            const SizedBox(height: 12),
-                            RedBorderContainer(
-                              title: context.l10n.h2hConstructorsTitle,
-                              onTap: () async => context.router.push(const H2hConstructorsRoute()),
-                            ),
-                            const SizedBox(height: 12),
-                            RedBorderContainer(
-                              title: context.l10n.finishStatusTitle,
-                              onTap: () async => context.router.push(const FinishStatusRoute()),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               );
             },

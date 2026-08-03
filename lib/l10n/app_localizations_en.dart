@@ -260,6 +260,66 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get predictorLeaderboardOpen => 'Leaderboard';
+
+  @override
+  String predictorLeaderboardTitle(String year) {
+    return 'Leaderboard · $year';
+  }
+
+  @override
+  String get predictorLeaderboardJoinHint =>
+      'Pick a nickname and opt in to appear on the public season leaderboard.';
+
+  @override
+  String get predictorNicknameLabel => 'Nickname';
+
+  @override
+  String get predictorNicknameHint => '3–16 letters, numbers, _';
+
+  @override
+  String get predictorNicknameSave => 'Save nickname';
+
+  @override
+  String get predictorLeaderboardOptInLabel => 'Show me on the leaderboard';
+
+  @override
+  String get predictorLeaderboardOptInRequired =>
+      'Agree to appear on the leaderboard';
+
+  @override
+  String get predictorLeaderboardJoin => 'Join leaderboard';
+
+  @override
+  String get predictorLeaderboardLeave => 'Leave leaderboard';
+
+  @override
+  String get predictorLeaderboardListTitle => 'Standings';
+
+  @override
+  String get predictorLeaderboardEmpty =>
+      'No one on the board yet — be the first';
+
+  @override
+  String predictorLeaderboardYourRank(int rank, int points) {
+    return 'You · #$rank · $points pts';
+  }
+
+  @override
+  String get predictorNicknameErrorLength => 'Nickname must be 3–16 characters';
+
+  @override
+  String get predictorNicknameErrorChars =>
+      'Only letters, numbers and underscore';
+
+  @override
+  String get predictorNicknameErrorTaken => 'This nickname is taken';
+
+  @override
+  String get predictorLeaderboardErrorGeneric =>
+      'Could not update the leaderboard. Try again';
+
+  @override
   String get newsEmpty => 'No news right now';
 
   @override
@@ -465,7 +525,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seasonRewindLoadError => 'Could not load standings for this round';
 
   @override
-  String get h2hTitle => 'H2H · Drivers';
+  String get h2hTitle => 'H2H';
 
   @override
   String get h2hSubtitle =>
@@ -686,6 +746,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get careerRaceListEmpty => 'No races in this list';
 
   @override
+  String get careerRaceListLoading => 'Loading race list…';
+
+  @override
+  String newsArticleSemantics(String headline) {
+    return 'News: $headline';
+  }
+
+  @override
+  String navTabSemantics(String title, String selected) {
+    return '$title, tab$selected';
+  }
+
+  @override
+  String get navTabSelectedSuffix => ', selected';
+
+  @override
+  String predictorDriverSemantics(int position, String name, String locked) {
+    return 'P$position $name$locked';
+  }
+
+  @override
+  String get predictorLockedSuffix => ', locked';
+
+  @override
+  String predictorHistorySemantics(
+    String race,
+    String quali,
+    String racePts,
+    int total,
+  ) {
+    return '$race, Q $quali, R $racePts, $total points';
+  }
+
+  @override
+  String get h2hModeDrivers => 'Drivers';
+
+  @override
+  String get h2hModeConstructors => 'Constructors';
+
+  @override
   String get driverTeamsTitle => 'Teams';
 
   @override
@@ -697,6 +797,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noConnectionSubtitle =>
       'Once the connection is restored, you will be able to use the app again';
+
+  @override
+  String get showingCachedData => 'Showing saved data';
+
+  @override
+  String get locationUnavailable => 'Unable to determine location';
 
   @override
   String get refresh => 'Refresh';

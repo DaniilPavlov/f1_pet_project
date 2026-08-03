@@ -16,6 +16,15 @@ class DriverCareerRepository {
     required String driverId,
     List<ConstructorModel> current = const [],
   }) async {
+    final totals = await loadTotals(driverId: driverId, current: current);
+    return loadRaceLists(driverId: driverId, totals: totals);
+  }
+
+  /// Быстрый проход: totals + команды, без пагинации списков гонок.
+  Future<CareerStats<ConstructorModel>> loadTotals({
+    required String driverId,
+    List<ConstructorModel> current = const [],
+  }) async {
     final prefix = 'drivers/$driverId';
 
     final totals = await CareerApiHelper.getThrottled([
@@ -26,11 +35,6 @@ class DriverCareerRepository {
       '$prefix/qualifying/1',
       '$prefix/constructors',
     ], limit: 1);
-
-    final winPages = await CareerApiHelper.fetchAllPages('$prefix/results/1');
-    final secondPages = await CareerApiHelper.fetchAllPages('$prefix/results/2');
-    final thirdPages = await CareerApiHelper.fetchAllPages('$prefix/results/3');
-    final polePages = await CareerApiHelper.fetchAllPages('$prefix/qualifying/1');
 
     final races = CareerApiHelper.totalOf(totals[0]);
     final wins = CareerApiHelper.totalOf(totals[1]);
@@ -44,6 +48,29 @@ class DriverCareerRepository {
       fromJson: ConstructorModel.fromJson,
     );
 
+    return CareerStats(
+      races: races,
+      wins: wins,
+      podiums: wins + second + third,
+      poles: poles,
+      current: current,
+      related: related,
+      listsComplete: false,
+    );
+  }
+
+  /// Догружает win/podium/pole списки к уже полученным totals.
+  Future<CareerStats<ConstructorModel>> loadRaceLists({
+    required String driverId,
+    required CareerStats<ConstructorModel> totals,
+  }) async {
+    final prefix = 'drivers/$driverId';
+
+    final winPages = await CareerApiHelper.fetchAllPages('$prefix/results/1');
+    final secondPages = await CareerApiHelper.fetchAllPages('$prefix/results/2');
+    final thirdPages = await CareerApiHelper.fetchAllPages('$prefix/results/3');
+    final polePages = await CareerApiHelper.fetchAllPages('$prefix/qualifying/1');
+
     final winRaces = _parseAll(winPages, position: 1)..sort(_compareNewestFirst);
     final podiumRaces = [
       ...winRaces,
@@ -52,16 +79,11 @@ class DriverCareerRepository {
     ]..sort(_compareNewestFirst);
     final poleRaces = _parseAllPoles(polePages)..sort(_compareNewestFirst);
 
-    return CareerStats(
-      races: races,
-      wins: wins,
-      podiums: wins + second + third,
-      poles: poles,
-      current: current,
-      related: related,
+    return totals.copyWith(
       winRaces: winRaces,
       podiumRaces: podiumRaces,
       poleRaces: poleRaces,
+      listsComplete: true,
     );
   }
 

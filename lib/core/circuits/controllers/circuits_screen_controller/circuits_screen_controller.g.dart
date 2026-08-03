@@ -54,6 +54,24 @@ mixin _$CircuitsScreenController on CircuitsScreenControllerBase, Store {
     });
   }
 
+  late final _$showingCachedDataAtom = Atom(
+    name: 'CircuitsScreenControllerBase.showingCachedData',
+    context: context,
+  );
+
+  @override
+  bool get showingCachedData {
+    _$showingCachedDataAtom.reportRead();
+    return super.showingCachedData;
+  }
+
+  @override
+  set showingCachedData(bool value) {
+    _$showingCachedDataAtom.reportWrite(value, super.showingCachedData, () {
+      super.showingCachedData = value;
+    });
+  }
+
   late final _$loadCircuitsAsyncAction = AsyncAction(
     'CircuitsScreenControllerBase.loadCircuits',
     context: context,
@@ -62,6 +80,18 @@ mixin _$CircuitsScreenController on CircuitsScreenControllerBase, Store {
   @override
   Future<void> loadCircuits() {
     return _$loadCircuitsAsyncAction.run(() => super.loadCircuits());
+  }
+
+  late final _$dismissOfflineBannerIfOnlineAsyncAction = AsyncAction(
+    'CircuitsScreenControllerBase.dismissOfflineBannerIfOnline',
+    context: context,
+  );
+
+  @override
+  Future<void> dismissOfflineBannerIfOnline() {
+    return _$dismissOfflineBannerIfOnlineAsyncAction.run(
+      () => super.dismissOfflineBannerIfOnline(),
+    );
   }
 
   late final _$refreshAllAsyncAction = AsyncAction(
@@ -95,6 +125,7 @@ mixin _$CircuitsScreenController on CircuitsScreenControllerBase, Store {
     return '''
 circuits: ${circuits},
 activePage: ${activePage},
+showingCachedData: ${showingCachedData},
 screenError: ${screenError}
     ''';
   }

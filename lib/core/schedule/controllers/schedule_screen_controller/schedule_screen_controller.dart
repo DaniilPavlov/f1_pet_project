@@ -4,6 +4,7 @@ import 'package:f1_pet_project/common/utils/constants/assets.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/offline_cached_banner.dart';
 import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/scroll_controller_extension.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
@@ -65,6 +66,10 @@ abstract class ScheduleScreenControllerBase with Store {
 
   @observable
   ObservableList<Widget> scheduleOfSelectedDate = ObservableList<Widget>();
+
+  /// Офлайн-fallback: расписание из кэша после сбоя сети.
+  @observable
+  bool showingCachedData = false;
 
   @computed
   CustomException? get screenError => racesElements.exception;
@@ -239,16 +244,29 @@ abstract class ScheduleScreenControllerBase with Store {
       fetch: _fetchSchedule,
       getField: () => racesElements,
       setField: (value) => racesElements = value,
-      onSuccess: (data) => racesElements = racesElements.toValue(data!.raceTable.races),
+      onSuccess: (data) {
+        racesElements = racesElements.toValue(data!.raceTable.races);
+        showingCachedData = _lastOfflineFallback;
+      },
     );
   }
+
+  /// После появления сети — спрятать баннер без перезагрузки.
+  @action
+  Future<void> dismissOfflineBannerIfOnline() async {
+    showingCachedData = await clearOfflineBannerIfOnline(currentlyShowing: showingCachedData);
+  }
+
+  var _lastOfflineFallback = false;
 
   Future<ScheduleModel> _fetchSchedule() async {
     final forTest = _fetchScheduleForTest;
     if (forTest != null) {
+      _lastOfflineFallback = false;
       return forTest();
     }
     final result = await _scheduleRepository!.getSchedule();
+    _lastOfflineFallback = result.offlineFallback;
     return result.schedule;
   }
 }

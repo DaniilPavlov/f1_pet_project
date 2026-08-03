@@ -9,6 +9,13 @@ part of 'h2h_screen_controller.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$H2hScreenController on H2hScreenControllerBase, Store {
+  Computed<bool>? _$isDriversModeComputed;
+
+  @override
+  bool get isDriversMode => (_$isDriversModeComputed ??= Computed<bool>(
+    () => super.isDriversMode,
+    name: 'H2hScreenControllerBase.isDriversMode',
+  )).value;
   Computed<bool>? _$isSeasonScopeComputed;
 
   @override
@@ -46,6 +53,24 @@ mixin _$H2hScreenController on H2hScreenControllerBase, Store {
         name: 'H2hScreenControllerBase.screenError',
       )).value;
 
+  late final _$modeAtom = Atom(
+    name: 'H2hScreenControllerBase.mode',
+    context: context,
+  );
+
+  @override
+  H2hMode get mode {
+    _$modeAtom.reportRead();
+    return super.mode;
+  }
+
+  @override
+  set mode(H2hMode value) {
+    _$modeAtom.reportWrite(value, super.mode, () {
+      super.mode = value;
+    });
+  }
+
   late final _$scopeModeAtom = Atom(
     name: 'H2hScreenControllerBase.scopeMode',
     context: context,
@@ -82,21 +107,21 @@ mixin _$H2hScreenController on H2hScreenControllerBase, Store {
     });
   }
 
-  late final _$currentDriversOnlyAtom = Atom(
-    name: 'H2hScreenControllerBase.currentDriversOnly',
+  late final _$currentEntitiesOnlyAtom = Atom(
+    name: 'H2hScreenControllerBase.currentEntitiesOnly',
     context: context,
   );
 
   @override
-  bool get currentDriversOnly {
-    _$currentDriversOnlyAtom.reportRead();
-    return super.currentDriversOnly;
+  bool get currentEntitiesOnly {
+    _$currentEntitiesOnlyAtom.reportRead();
+    return super.currentEntitiesOnly;
   }
 
   @override
-  set currentDriversOnly(bool value) {
-    _$currentDriversOnlyAtom.reportWrite(value, super.currentDriversOnly, () {
-      super.currentDriversOnly = value;
+  set currentEntitiesOnly(bool value) {
+    _$currentEntitiesOnlyAtom.reportWrite(value, super.currentEntitiesOnly, () {
+      super.currentEntitiesOnly = value;
     });
   }
 
@@ -172,6 +197,42 @@ mixin _$H2hScreenController on H2hScreenControllerBase, Store {
     });
   }
 
+  late final _$constructorAAtom = Atom(
+    name: 'H2hScreenControllerBase.constructorA',
+    context: context,
+  );
+
+  @override
+  ConstructorModel? get constructorA {
+    _$constructorAAtom.reportRead();
+    return super.constructorA;
+  }
+
+  @override
+  set constructorA(ConstructorModel? value) {
+    _$constructorAAtom.reportWrite(value, super.constructorA, () {
+      super.constructorA = value;
+    });
+  }
+
+  late final _$constructorBAtom = Atom(
+    name: 'H2hScreenControllerBase.constructorB',
+    context: context,
+  );
+
+  @override
+  ConstructorModel? get constructorB {
+    _$constructorBAtom.reportRead();
+    return super.constructorB;
+  }
+
+  @override
+  set constructorB(ConstructorModel? value) {
+    _$constructorBAtom.reportWrite(value, super.constructorB, () {
+      super.constructorB = value;
+    });
+  }
+
   late final _$comparisonAtom = Atom(
     name: 'H2hScreenControllerBase.comparison',
     context: context,
@@ -226,12 +287,24 @@ mixin _$H2hScreenController on H2hScreenControllerBase, Store {
   );
 
   @override
-  void setScopeMode(int mode) {
+  void setMode(H2hMode value) {
+    final _$actionInfo = _$H2hScreenControllerBaseActionController.startAction(
+      name: 'H2hScreenControllerBase.setMode',
+    );
+    try {
+      return super.setMode(value);
+    } finally {
+      _$H2hScreenControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setScopeMode(int value) {
     final _$actionInfo = _$H2hScreenControllerBaseActionController.startAction(
       name: 'H2hScreenControllerBase.setScopeMode',
     );
     try {
-      return super.setScopeMode(mode);
+      return super.setScopeMode(value);
     } finally {
       _$H2hScreenControllerBaseActionController.endAction(_$actionInfo);
     }
@@ -250,12 +323,12 @@ mixin _$H2hScreenController on H2hScreenControllerBase, Store {
   }
 
   @override
-  void setCurrentDriversOnly(bool value) {
+  void setCurrentEntitiesOnly(bool value) {
     final _$actionInfo = _$H2hScreenControllerBaseActionController.startAction(
-      name: 'H2hScreenControllerBase.setCurrentDriversOnly',
+      name: 'H2hScreenControllerBase.setCurrentEntitiesOnly',
     );
     try {
-      return super.setCurrentDriversOnly(value);
+      return super.setCurrentEntitiesOnly(value);
     } finally {
       _$H2hScreenControllerBaseActionController.endAction(_$actionInfo);
     }
@@ -298,16 +371,44 @@ mixin _$H2hScreenController on H2hScreenControllerBase, Store {
   }
 
   @override
+  void setConstructorA(ConstructorModel constructor) {
+    final _$actionInfo = _$H2hScreenControllerBaseActionController.startAction(
+      name: 'H2hScreenControllerBase.setConstructorA',
+    );
+    try {
+      return super.setConstructorA(constructor);
+    } finally {
+      _$H2hScreenControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setConstructorB(ConstructorModel constructor) {
+    final _$actionInfo = _$H2hScreenControllerBaseActionController.startAction(
+      name: 'H2hScreenControllerBase.setConstructorB',
+    );
+    try {
+      return super.setConstructorB(constructor);
+    } finally {
+      _$H2hScreenControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
+mode: ${mode},
 scopeMode: ${scopeMode},
 useCurrentSeason: ${useCurrentSeason},
-currentDriversOnly: ${currentDriversOnly},
+currentEntitiesOnly: ${currentEntitiesOnly},
 latestSeason: ${latestSeason},
 seasonSelected: ${seasonSelected},
 driverA: ${driverA},
 driverB: ${driverB},
+constructorA: ${constructorA},
+constructorB: ${constructorB},
 comparison: ${comparison},
+isDriversMode: ${isDriversMode},
 isSeasonScope: ${isSeasonScope},
 showYearPicker: ${showYearPicker},
 selectedSeason: ${selectedSeason},

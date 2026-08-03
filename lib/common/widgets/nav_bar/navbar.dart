@@ -64,15 +64,13 @@ class NavBar extends StatelessWidget {
                   onPressed: () => _switchTab(context, 2),
                 ),
                 NavBarItem(
-                  imageAsset: Assets.navBar.helmet,
+                  imageAsset: Assets.navBar.trophy,
                   title: context.l10n.navPredictor,
                   isSelected: tabsRouter?.activeIndex == 3,
                   onPressed: () => _switchTab(context, 3),
-                  iconSize: 26,
-                  edgeCropScale: 0.8,
                 ),
                 NavBarItem(
-                  imageAsset: Assets.navBar.trophy,
+                  imageAsset: Assets.navBar.helmet,
                   title: context.l10n.navProfile,
                   isSelected: tabsRouter?.activeIndex == 4,
                   onPressed: () => _switchTab(context, 4),

@@ -17,7 +17,7 @@ class RequestHandler {
   final _cache = CacheInterceptor();
   late final Dio _dio;
 
-  /// Pull-to-refresh: следующий запрос в сеть, кэш остаётся для офлайна.
+  /// Pull-to-refresh: следующий запрос каждого URI в сеть, кэш остаётся для офлайна.
   void invalidateCache() => _cache.invalidate();
 
   /// GET к Jolpica с суффиксом `.json`.

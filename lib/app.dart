@@ -97,7 +97,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     if (!mounted || _forceUpdate) {
       return;
     }
-    await Future.wait([_syncReminders(remoteConfig), _syncHomeWidgets()]);
+    await Future.wait([_syncReminders(), _syncHomeWidgets()]);
   }
 
   Future<void> _syncHomeWidgets() async {
@@ -125,7 +125,6 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     if (!mounted) {
       return;
     }
-    final remoteConfig = context.read<RemoteConfigService>();
     final localeController = context.read<LocaleController>();
     final themeController = context.read<ThemeController>();
     final reminders = context.read<RaceReminderService>();
@@ -139,7 +138,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       return;
     }
 
-    if (!PlatformCapabilities.hasLocalNotifications || !remoteConfig.localNotificationsEnabled) {
+    if (!PlatformCapabilities.hasLocalNotifications) {
       return;
     }
 
@@ -160,7 +159,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _syncReminders(RemoteConfigService remoteConfig) async {
+  Future<void> _syncReminders() async {
     if (!PlatformCapabilities.hasLocalNotifications || !mounted) {
       return;
     }
@@ -168,7 +167,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     final reminders = context.read<RaceReminderService>();
     final notificationPrefs = context.read<NotificationsPreferenceController>();
 
-    if (!remoteConfig.localNotificationsEnabled || !notificationPrefs.userEnabled) {
+    if (!notificationPrefs.userEnabled) {
       await reminders.cancelAll();
       return;
     }

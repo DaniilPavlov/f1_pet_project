@@ -44,17 +44,35 @@ class FakeCurrentStandingsRepository extends CurrentStandingsRepository {
   FakeCurrentStandingsRepository({
     StandingsModel? drivers,
     StandingsModel? constructors,
+    this.fetchedFromNetwork = true,
+    this.offlineFallback = false,
   }) : _drivers = drivers,
        _constructors = constructors;
 
   final StandingsModel? _drivers;
   final StandingsModel? _constructors;
+  final bool fetchedFromNetwork;
+  final bool offlineFallback;
 
   @override
-  Future<StandingsModel> drivers() async => _drivers ?? ControllerFixtures.driversStandingsModel;
+  Future<StandingsModel> drivers() async => (await loadDrivers()).standings;
 
   @override
-  Future<StandingsModel> constructors() async => _constructors ?? ControllerFixtures.constructorsStandingsModel;
+  Future<StandingsModel> constructors() async => (await loadConstructors()).standings;
+
+  @override
+  Future<StandingsLoadResult> loadDrivers() async => StandingsLoadResult(
+    standings: _drivers ?? ControllerFixtures.driversStandingsModel,
+    fetchedFromNetwork: fetchedFromNetwork,
+    offlineFallback: offlineFallback,
+  );
+
+  @override
+  Future<StandingsLoadResult> loadConstructors() async => StandingsLoadResult(
+    standings: _constructors ?? ControllerFixtures.constructorsStandingsModel,
+    fetchedFromNetwork: fetchedFromNetwork,
+    offlineFallback: offlineFallback,
+  );
 }
 
 class FakeScheduleRepository extends ScheduleRepository {
@@ -63,6 +81,7 @@ class FakeScheduleRepository extends ScheduleRepository {
     ScheduleLoadResult? result,
     this.throwOnLoad = false,
     this.fetchedFromNetwork = false,
+    this.offlineFallback = false,
   }) : _schedule = schedule,
        _result = result;
 
@@ -70,6 +89,7 @@ class FakeScheduleRepository extends ScheduleRepository {
   final ScheduleLoadResult? _result;
   final bool throwOnLoad;
   final bool fetchedFromNetwork;
+  final bool offlineFallback;
 
   @override
   Future<ScheduleLoadResult> getSchedule({bool forceRefresh = false}) async {
@@ -82,6 +102,7 @@ class FakeScheduleRepository extends ScheduleRepository {
     return ScheduleLoadResult(
       schedule: _schedule ?? ControllerFixtures.scheduleModel,
       fetchedFromNetwork: fetchedFromNetwork,
+      offlineFallback: offlineFallback,
     );
   }
 }
@@ -209,6 +230,15 @@ class FakeDriverCareerRepository extends DriverCareerRepository {
   Future<CareerStats<ConstructorModel>> load({
     required String driverId,
     List<ConstructorModel> current = const [],
+  }) async {
+    final totals = await loadTotals(driverId: driverId, current: current);
+    return loadRaceLists(driverId: driverId, totals: totals);
+  }
+
+  @override
+  Future<CareerStats<ConstructorModel>> loadTotals({
+    required String driverId,
+    List<ConstructorModel> current = const [],
   }) async => CareerStats(
     races: 100,
     wins: 20,
@@ -216,7 +246,14 @@ class FakeDriverCareerRepository extends DriverCareerRepository {
     poles: 15,
     current: current.isEmpty ? [ControllerFixtures.constructor] : current,
     related: [ControllerFixtures.constructor],
+    listsComplete: false,
   );
+
+  @override
+  Future<CareerStats<ConstructorModel>> loadRaceLists({
+    required String driverId,
+    required CareerStats<ConstructorModel> totals,
+  }) async => totals.copyWith(listsComplete: true);
 }
 
 class FakeConstructorCareerRepository extends ConstructorCareerRepository {

@@ -113,6 +113,34 @@
       "races": { "type": "int" }
     }
   },
+  "predictorLeaderboardOpen": "Лидерборд",
+  "predictorLeaderboardTitle": "Лидерборд · {year}",
+  "@predictorLeaderboardTitle": {
+    "placeholders": {
+      "year": { "type": "String" }
+    }
+  },
+  "predictorLeaderboardJoinHint": "Придумай ник и согласись отображаться в публичном лидерборде сезона.",
+  "predictorNicknameLabel": "Ник",
+  "predictorNicknameHint": "3–16 букв, цифр, _",
+  "predictorNicknameSave": "Сохранить ник",
+  "predictorLeaderboardOptInLabel": "Показывать меня в лидерборде",
+  "predictorLeaderboardOptInRequired": "Нужно согласие на отображение в лидерборде",
+  "predictorLeaderboardJoin": "Вступить в лидерборд",
+  "predictorLeaderboardLeave": "Покинуть лидерборд",
+  "predictorLeaderboardListTitle": "Таблица",
+  "predictorLeaderboardEmpty": "Пока никого нет — будь первым",
+  "predictorLeaderboardYourRank": "Ты · #{rank} · {points} очк.",
+  "@predictorLeaderboardYourRank": {
+    "placeholders": {
+      "rank": { "type": "int" },
+      "points": { "type": "int" }
+    }
+  },
+  "predictorNicknameErrorLength": "Ник должен быть 3–16 символов",
+  "predictorNicknameErrorChars": "Только буквы, цифры и подчёркивание",
+  "predictorNicknameErrorTaken": "Этот ник уже занят",
+  "predictorLeaderboardErrorGeneric": "Не удалось обновить лидерборд. Попробуй ещё раз",
   "newsEmpty": "Новостей пока нет",
   "homeStandingsTitle": "Турнирная таблица текущего сезона",
   "circuitStatLength": "Длина",
@@ -216,7 +244,7 @@
   },
   "seasonRewindChartHint": "Все участники по очкам — двигайте слайдер или нажмите Play",
   "seasonRewindLoadError": "Не удалось загрузить standings для этого раунда",
-  "h2hTitle": "H2H · Пилоты",
+  "h2hTitle": "H2H",
   "h2hSubtitle": "Сравните двух пилотов с фильтрами периода и списка",
   "h2hDriverA": "Пилот 1",
   "h2hDriverB": "Пилот 2",
@@ -301,10 +329,47 @@
   "careerStatPodiums": "Подиумы",
   "careerStatPoles": "Поулы",
   "careerRaceListEmpty": "В этом списке пока нет гонок",
+  "careerRaceListLoading": "Загружаем список гонок…",
+  "newsArticleSemantics": "Новость: {headline}",
+  "@newsArticleSemantics": {
+    "placeholders": {
+      "headline": { "type": "String" }
+    }
+  },
+  "navTabSemantics": "{title}, вкладка{selected}",
+  "@navTabSemantics": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "selected": { "type": "String" }
+    }
+  },
+  "navTabSelectedSuffix": ", выбрана",
+  "predictorDriverSemantics": "P{position} {name}{locked}",
+  "@predictorDriverSemantics": {
+    "placeholders": {
+      "position": { "type": "int" },
+      "name": { "type": "String" },
+      "locked": { "type": "String" }
+    }
+  },
+  "predictorLockedSuffix": ", заблокировано",
+  "predictorHistorySemantics": "{race}, Q {quali}, R {racePts}, {total} очков",
+  "@predictorHistorySemantics": {
+    "placeholders": {
+      "race": { "type": "String" },
+      "quali": { "type": "String" },
+      "racePts": { "type": "String" },
+      "total": { "type": "int" }
+    }
+  },
+  "h2hModeDrivers": "Пилоты",
+  "h2hModeConstructors": "Конструкторы",
   "driverTeamsTitle": "Команды",
   "constructorDriversTitle": "Пилоты",
   "noConnection": "Соединение отсутствует",
   "noConnectionSubtitle": "Как только соединение восстановится, вы снова сможете пользоваться приложением",
+  "showingCachedData": "Показаны сохранённые данные",
+  "locationUnavailable": "Невозможно определить местоположение",
   "refresh": "Обновить",
   "notNow": "не сейчас",
   "settings": "Настройки",

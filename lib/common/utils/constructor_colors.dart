@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 abstract final class ConstructorColors {
   /// Известные Jolpica `constructorId` → цвет команды.
   static const knownByConstructorId = <String, Color>{
-    'ferrari': Color(0xFF8B0000), // тёмно-красный
+    'ferrari': Color(0xFFA51010), // тёмно-красный, светлее darkred, темнее audi
     'mercedes': Color(0xFF006F62), // тёмно-зелёный
     'red_bull': Color(0xFF1E2E5A), // тёмно-синий
     'rb': Color(0xFF6B9AC4), // светло-синий
@@ -44,5 +44,24 @@ abstract final class ConstructorColors {
     }
     final hash = key.codeUnits.fold<int>(0, (acc, c) => (acc * 31 + c) & 0x7fffffff);
     return _fallbackSwatches[hash % _fallbackSwatches.length];
+  }
+
+  /// Zebra-строка таблицы с левым акцентом цвета команды.
+  static BoxDecoration tableRowDecoration({
+    required Color zebraColor,
+    required Color bottomBorderColor,
+    required int index,
+    String? constructorId,
+    double accentWidth = 3,
+  }) {
+    final id = constructorId?.trim();
+    final accent = (id == null || id.isEmpty) ? null : forConstructorId(id);
+    return BoxDecoration(
+      color: index.isOdd ? zebraColor : Colors.transparent,
+      border: Border(
+        left: accent == null ? BorderSide.none : BorderSide(color: accent, width: accentWidth),
+        bottom: BorderSide(color: bottomBorderColor),
+      ),
+    );
   }
 }
