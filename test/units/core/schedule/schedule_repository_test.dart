@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/utils/helpers/career_api_helper.dart';
+import 'package:f1_pet_project/common/utils/helpers/network_reachability.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/services/api_loader.dart';
 import 'package:f1_pet_project/services/cache/prefs_json_store.dart';
@@ -12,6 +13,11 @@ void main() {
   setUp(() {
     CareerApiHelper.resetThrottleForTest();
     SharedPreferences.setMockInitialValues({});
+    NetworkReachability.debugIsOfflineOverride = () async => false;
+  });
+
+  tearDown(() {
+    NetworkReachability.debugIsOfflineOverride = null;
   });
 
   group('ScheduleRepository', () {
@@ -88,6 +94,7 @@ void main() {
       await store.writeToday(JolpicaFixtures.scheduleMrData());
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('sched_stale_date', '1999-01-01');
+      NetworkReachability.debugIsOfflineOverride = () async => true;
 
       ApiLoader.configure(
         FakeRequestHandler(resolver: (path, limit, offset) => throw Exception('down')),
@@ -97,6 +104,7 @@ void main() {
       final result = await repo.getSchedule(forceRefresh: true);
 
       expect(result.fetchedFromNetwork, isFalse);
+      expect(result.offlineFallback, isTrue);
       expect(result.schedule.raceTable.races.first.raceName, 'Bahrain Grand Prix');
     });
   });

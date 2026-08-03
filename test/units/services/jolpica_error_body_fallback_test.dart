@@ -44,6 +44,26 @@ void main() {
           response: Response(
             requestOptions: RequestOptions(path: 'x'),
             data: body,
+            statusCode: 404,
+          ),
+        );
+      });
+
+      expect(result, isNotNull);
+      expect(result!.mrData, isA<Map>());
+    });
+
+    test('toasts on 429 with JSON body then returns parsed response', () async {
+      final body = {
+        'MRData': JolpicaFixtures.seasonsMrData(),
+      };
+
+      final result = await withErrorBodyFallback(() async {
+        throw DioException(
+          requestOptions: RequestOptions(path: 'x'),
+          response: Response(
+            requestOptions: RequestOptions(path: 'x'),
+            data: body,
             statusCode: 429,
           ),
         );

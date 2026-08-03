@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:f1_pet_project/common/localization/error_copy.dart';
 import 'package:f1_pet_project/common/packages/custom_yandex_map/src/map_controller.dart';
 import 'package:f1_pet_project/common/packages/custom_yandex_map/src/services/camera_services.dart';
 import 'package:f1_pet_project/common/packages/custom_yandex_map/src/services/cluster_drawer.dart';
@@ -173,7 +174,7 @@ abstract class CustomMapControllerBase with Store {
   Future<void> _enableListenUserPosition() async {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      onGetUserPositionError?.call(Exception('Невозможно определить местоположение'));
+      onGetUserPositionError?.call(Exception(ErrorCopy.locationUnavailable));
       return;
     }
 
@@ -183,7 +184,7 @@ abstract class CustomMapControllerBase with Store {
     }
 
     if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
-      onGetUserPositionError?.call(Exception('Невозможно определить местоположение'));
+      onGetUserPositionError?.call(Exception(ErrorCopy.locationUnavailable));
       return;
     }
 

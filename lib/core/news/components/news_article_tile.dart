@@ -44,14 +44,22 @@ class NewsArticleTile extends StatelessWidget {
             if (article.imageUrl != null)
               AspectRatio(
                 aspectRatio: 16 / 9,
-                child: Image.network(
-                  TrustedUrl.preferHttps(article.imageUrl!),
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final dpr = MediaQuery.devicePixelRatioOf(context);
+                    final cacheWidth = (constraints.maxWidth * dpr).round();
+                    final cacheHeight = (constraints.maxHeight * dpr).round();
+                    return Image.network(
+                      TrustedUrl.preferHttps(article.imageUrl!),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      cacheWidth: cacheWidth > 0 ? cacheWidth : null,
+                      cacheHeight: cacheHeight > 0 ? cacheHeight : null,
+                      errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                    );
+                  },
                 ),
-              ),
-            Padding(
+              ),            Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

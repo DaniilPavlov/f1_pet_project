@@ -1352,6 +1352,18 @@ abstract class AppLocalizations {
   /// **'Как только соединение восстановится, вы снова сможете пользоваться приложением'**
   String get noConnectionSubtitle;
 
+  /// No description provided for @showingCachedData.
+  ///
+  /// In ru, this message translates to:
+  /// **'Показаны сохранённые данные'**
+  String get showingCachedData;
+
+  /// No description provided for @locationUnavailable.
+  ///
+  /// In ru, this message translates to:
+  /// **'Невозможно определить местоположение'**
+  String get locationUnavailable;
+
   /// No description provided for @refresh.
   ///
   /// In ru, this message translates to:

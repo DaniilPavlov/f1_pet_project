@@ -285,6 +285,8 @@
   "constructorDriversTitle": "Drivers",
   "noConnection": "No connection",
   "noConnectionSubtitle": "Once the connection is restored, you will be able to use the app again",
+  "showingCachedData": "Showing saved data",
+  "locationUnavailable": "Unable to determine location",
   "refresh": "Refresh",
   "notNow": "not now",
   "settings": "Settings",

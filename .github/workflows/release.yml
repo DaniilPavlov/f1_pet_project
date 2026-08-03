@@ -120,6 +120,24 @@ jobs:
           path: build/app/symbols
           if-no-files-found: error
 
+      - name: Upload Dart symbols to Crashlytics
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -z "$FIREBASE_TOKEN" ] || [ -z "$GOOGLE_SERVICES_JSON" ]; then
+            echo "Skipping Crashlytics symbol upload (FIREBASE_TOKEN / GOOGLE_SERVICES_JSON not set)."
+            exit 0
+          fi
+          npm install -g firebase-tools
+          APP_ID="$(python3 - <<'PY'
+          import json
+          data = json.load(open("android/app/google-services.json"))
+          print(data["client"][0]["client_info"]["mobilesdk_app_id"])
+          PY
+          )"
+          firebase crashlytics:symbols:upload --app="$APP_ID" build/app/symbols
+
   build-web:
     name: Web
     runs-on: ubuntu-latest

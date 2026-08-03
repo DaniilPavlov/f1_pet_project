@@ -707,6 +707,12 @@ class AppLocalizationsRu extends AppLocalizations {
       'Как только соединение восстановится, вы снова сможете пользоваться приложением';
 
   @override
+  String get showingCachedData => 'Показаны сохранённые данные';
+
+  @override
+  String get locationUnavailable => 'Невозможно определить местоположение';
+
+  @override
   String get refresh => 'Обновить';
 
   @override

@@ -68,8 +68,6 @@ class NavBar extends StatelessWidget {
                   title: context.l10n.navPredictor,
                   isSelected: tabsRouter?.activeIndex == 3,
                   onPressed: () => _switchTab(context, 3),
-                  iconSize: 26,
-                  edgeCropScale: 0.8,
                 ),
                 NavBarItem(
                   imageAsset: Assets.navBar.trophy,

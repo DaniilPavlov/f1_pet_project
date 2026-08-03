@@ -12,28 +12,46 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// GoF Structural Decorator — поведение кэша «навешивается» на Dio через
 /// interceptor, не меняя API клиента.
 ///
-/// Refresh: [invalidate] → следующий запрос идёт в сеть, кэш остаётся на случай фейла.
+/// Refresh: [invalidate] → для каждого URI следующий запрос идёт в сеть
+/// (параллельные GET после pull-to-refresh не бьют в same-day кэш).
 class CacheInterceptor extends Interceptor {
   CacheInterceptor();
 
   static const _diskPrefix = 'jolpica_http_cache_v1:';
 
   final _memory = <Uri, ({Response<dynamic> response, DateTime cachedAt})>{};
-  var _preferNetwork = false;
 
-  void invalidate() => _preferNetwork = true;
+  /// Эпоха soft-invalidate; растёт на каждом [invalidate].
+  var _preferNetworkEpoch = 0;
+
+  /// Последняя эпоха, для которой URI уже был принудительно отправлен в сеть.
+  final _uriNetworkEpoch = <Uri, int>{};
+
+  void invalidate() => _preferNetworkEpoch++;
 
   void clearMemory() {
     _memory.clear();
-    _preferNetwork = false;
+    _preferNetworkEpoch = 0;
+    _uriNetworkEpoch.clear();
+  }
+
+  bool _shouldPreferNetwork(Uri uri) {
+    final epoch = _preferNetworkEpoch;
+    if (epoch == 0) {
+      return false;
+    }
+    return (_uriNetworkEpoch[uri] ?? 0) < epoch;
+  }
+
+  void _markNetworkPreferred(Uri uri) {
+    _uriNetworkEpoch[uri] = _preferNetworkEpoch;
   }
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     // GoF Behavioral Chain of Responsibility — либо отвечаем из кэша, либо next().
-    if (_preferNetwork) {
-      // Один «принудительный» сетевой проход после invalidate, дальше снова кэш.
-      _preferNetwork = false;
+    if (_shouldPreferNetwork(options.uri)) {
+      _markNetworkPreferred(options.uri);
       handler.next(options);
       return;
     }
@@ -68,10 +86,19 @@ class CacheInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    // После invalidate диск тоже нельзя отдавать как «свежий» same-day кэш —
+    // иначе параллельные URI после первого сетевого hop снова возьмут prefs.
+    if (_shouldPreferNetwork(options.uri)) {
+      _markNetworkPreferred(options.uri);
+      handler.next(options);
+      return;
+    }
+
     final disk = await _readDisk(options);
     if (disk != null) {
-      _memory[options.uri] = (response: disk, cachedAt: DateTime.now());
-      handler.resolve(disk);
+      // Сохраняем оригинальный cachedAt с диска — не «освежаем» в сегодня.
+      _memory[options.uri] = (response: disk.response, cachedAt: disk.cachedAt);
+      handler.resolve(disk.response);
       return;
     }
     handler.next(options);
@@ -79,19 +106,32 @@ class CacheInterceptor extends Interceptor {
 
   Future<void> _serveCacheOnError(DioException err, ErrorInterceptorHandler handler) async {
     final uri = err.requestOptions.uri;
-    final cached = _memory[uri]?.response ?? await _readDisk(err.requestOptions, allowStale: true);
-    if (cached != null) {
-      _memory[uri] = (response: cached, cachedAt: DateTime.now());
+    final memory = _memory[uri];
+    if (memory != null) {
+      // Не двигаем cachedAt: stale offline не должен стать same-day memory hit.
       if (kDebugMode) {
         logger.d('CacheInterceptor: offline cache for ${err.requestOptions.path}');
       }
-      handler.resolve(cached);
+      handler.resolve(memory.response);
+      return;
+    }
+
+    final disk = await _readDisk(err.requestOptions, allowStale: true);
+    if (disk != null) {
+      _memory[uri] = (response: disk.response, cachedAt: disk.cachedAt);
+      if (kDebugMode) {
+        logger.d('CacheInterceptor: offline cache for ${err.requestOptions.path}');
+      }
+      handler.resolve(disk.response);
       return;
     }
     handler.next(err);
   }
 
-  Future<Response<dynamic>?> _readDisk(RequestOptions options, {bool allowStale = false}) async {
+  Future<({Response<dynamic> response, DateTime cachedAt})?> _readDisk(
+    RequestOptions options, {
+    bool allowStale = false,
+  }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final raw = prefs.getString('$_diskPrefix${options.uri}');
@@ -103,10 +143,13 @@ class CacheInterceptor extends Interceptor {
       if (!allowStale && !isSameCalendarDay(cachedAt)) {
         return null;
       }
-      return Response<dynamic>(
-        requestOptions: options,
-        data: map['data'],
-        statusCode: map['statusCode'] as int? ?? 200,
+      return (
+        response: Response<dynamic>(
+          requestOptions: options,
+          data: map['data'],
+          statusCode: map['statusCode'] as int? ?? 200,
+        ),
+        cachedAt: cachedAt ?? DateTime.fromMillisecondsSinceEpoch(0),
       );
     } on Object catch (error, stackTrace) {
       logger.w('CacheInterceptor disk read failed', error: error, stackTrace: stackTrace);

@@ -1,5 +1,6 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/offline_cached_banner.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
 import 'package:f1_pet_project/core/circuits/models/circuits_model.dart';
 import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.dart';
@@ -36,6 +37,10 @@ abstract class CircuitsScreenControllerBase with Store {
   @observable
   int activePage = 0;
 
+  /// Офлайн + список трасс из кэша.
+  @observable
+  bool showingCachedData = false;
+
   @computed
   CustomException? get screenError => circuits.exception;
 
@@ -53,6 +58,13 @@ abstract class CircuitsScreenControllerBase with Store {
       setField: (value) => circuits = value,
       onSuccess: (data) => circuits = circuits.toValue(data!.circuitTable.circuits),
     );
+    showingCachedData = await shouldShowOfflineCachedBanner(hasCachedContent: circuits.isValue);
+  }
+
+  /// После появления сети — спрятать баннер без перезагрузки.
+  @action
+  Future<void> dismissOfflineBannerIfOnline() async {
+    showingCachedData = await clearOfflineBannerIfOnline(currentlyShowing: showingCachedData);
   }
 
   /// Pull-to-refresh / ErrorBody: сброс кэшей и перезагрузка списка.

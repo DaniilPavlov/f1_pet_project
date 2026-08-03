@@ -6,7 +6,9 @@ import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/cached_data_banner.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
+import 'package:f1_pet_project/common/widgets/on_app_resumed.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/tournament_tables_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/tables/tournament_tables_section.dart';
 import 'package:f1_pet_project/core/home/components/home_headlines_section.dart';
@@ -158,7 +160,12 @@ class _HomeViewState extends State<_HomeView> {
             : const SizedBox.shrink(key: ValueKey('home-scroll-to-news-hidden')),
       ),
       body: SafeArea(
-        child: Observer(
+        child: OnAppResumed(
+          onResumed: () {
+            final controller = context.read<HomeScreenController>();
+            unawaited(controller.dismissOfflineBannerIfOnline());
+          },
+          child: Observer(
           builder: (context) {
             final controller = context.read<HomeScreenController>();
             final hasData = controller.currentDrivers.value != null && controller.currentConstructors.value != null;
@@ -188,6 +195,10 @@ class _HomeViewState extends State<_HomeView> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   scrollBehavior: AntiGlowBehavior(),
                   slivers: [
+                    if (controller.showingCachedData)
+                      SliverToBoxAdapter(
+                        child: CachedDataBanner(message: context.l10n.showingCachedData),
+                      ),
                     SliverToBoxAdapter(
                       child: TournamentTablesSection(
                         driversStandings: controller.currentDrivers.value!,
@@ -204,6 +215,7 @@ class _HomeViewState extends State<_HomeView> {
               ),
             );
           },
+        ),
         ),
       ),
     );

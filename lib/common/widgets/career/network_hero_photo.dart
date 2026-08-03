@@ -43,26 +43,34 @@ class NetworkHeroPhoto extends StatelessWidget {
               )
             : photoUrl == null
             ? _Placeholder(icon: placeholderIcon)
-            : Image.network(
-                TrustedUrl.preferHttps(photoUrl!),
-                fit: fit,
-                width: double.infinity,
-                height: double.infinity,
-                errorBuilder: (_, _, _) => _Placeholder(icon: placeholderIcon),
-                loadingBuilder: (context, child, progress) {
-                  if (progress == null) {
-                    return child;
-                  }
-                  return const Center(
-                    child: SizedBox(
-                      width: 28,
-                      height: 28,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.red),
-                    ),
+            : LayoutBuilder(
+                builder: (context, constraints) {
+                  final dpr = MediaQuery.devicePixelRatioOf(context);
+                  final cacheWidth = (constraints.maxWidth * dpr).round();
+                  final cacheHeight = (constraints.maxHeight * dpr).round();
+                  return Image.network(
+                    TrustedUrl.preferHttps(photoUrl!),
+                    fit: fit,
+                    width: double.infinity,
+                    height: double.infinity,
+                    cacheWidth: cacheWidth > 0 ? cacheWidth : null,
+                    cacheHeight: cacheHeight > 0 ? cacheHeight : null,
+                    errorBuilder: (_, _, _) => _Placeholder(icon: placeholderIcon),
+                    loadingBuilder: (context, child, progress) {
+                      if (progress == null) {
+                        return child;
+                      }
+                      return const Center(
+                        child: SizedBox(
+                          width: 28,
+                          height: 28,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.red),
+                        ),
+                      );
+                    },
                   );
                 },
-              ),
-      ),
+              ),      ),
     );
   }
 }

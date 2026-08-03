@@ -305,6 +305,8 @@
   "constructorDriversTitle": "Пилоты",
   "noConnection": "Соединение отсутствует",
   "noConnectionSubtitle": "Как только соединение восстановится, вы снова сможете пользоваться приложением",
+  "showingCachedData": "Показаны сохранённые данные",
+  "locationUnavailable": "Невозможно определить местоположение",
   "refresh": "Обновить",
   "notNow": "не сейчас",
   "settings": "Настройки",

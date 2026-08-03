@@ -699,6 +699,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Once the connection is restored, you will be able to use the app again';
 
   @override
+  String get showingCachedData => 'Showing saved data';
+
+  @override
+  String get locationUnavailable => 'Unable to determine location';
+
+  @override
   String get refresh => 'Refresh';
 
   @override

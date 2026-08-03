@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/utils/helpers/network_reachability.dart';
 import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/data/models/standings/standings_model.dart';
 import 'package:f1_pet_project/services/api_loader.dart';
@@ -5,10 +6,17 @@ import 'package:f1_pet_project/services/cache/prefs_json_store.dart';
 
 /// Результат загрузки standings с флагом источника данных.
 class StandingsLoadResult {
-  const StandingsLoadResult({required this.standings, required this.fetchedFromNetwork});
+  const StandingsLoadResult({
+    required this.standings,
+    required this.fetchedFromNetwork,
+    this.offlineFallback = false,
+  });
 
   final StandingsModel standings;
   final bool fetchedFromNetwork;
+
+  /// `true`, если устройство офлайн и данные из prefs (day-cache или stale fallback).
+  final bool offlineFallback;
 }
 
 /// Текущие standings Jolpica (дневной prefs-кэш + офлайн-fallback).
@@ -36,32 +44,31 @@ class CurrentStandingsRepository {
   Future<StandingsLoadResult>? _driversInFlight;
   Future<StandingsLoadResult>? _constructorsInFlight;
 
-  var _forceNetwork = false;
+  /// Отдельные флаги: Home грузит drivers+constructors через [Future.wait].
+  var _forceDriversNetwork = false;
+  var _forceConstructorsNetwork = false;
 
-  /// Pull-to-refresh: следующий запрос идёт в сеть; кэш остаётся для офлайна.
-  void invalidate() => _forceNetwork = true;
+  /// Pull-to-refresh: следующий запрос каждого типа идёт в сеть; кэш для офлайна.
+  void invalidate() {
+    _forceDriversNetwork = true;
+    _forceConstructorsNetwork = true;
+  }
 
   Future<StandingsModel> drivers() async {
-    final result = await _getDrivers();
+    final result = await loadDrivers();
     return result.standings;
   }
 
   Future<StandingsModel> constructors() async {
-    final result = await _getConstructors();
+    final result = await loadConstructors();
     return result.standings;
   }
 
-  /// Читает и сбрасывает [_forceNetwork] синхронно, чтобы параллельный вызов
-  /// [_getConstructors] тоже успел увидеть флаг до его сброса.
-  bool _consumeForceNetwork() {
-    final v = _forceNetwork;
-    _forceNetwork = false;
-    return v;
-  }
-
-  Future<StandingsLoadResult> _getDrivers() {
+  /// Загрузка с флагом источника (для UI «из кэша»).
+  Future<StandingsLoadResult> loadDrivers() {
     if (_driversInFlight != null) return _driversInFlight!;
-    final shouldForce = _consumeForceNetwork();
+    final shouldForce = _forceDriversNetwork;
+    _forceDriversNetwork = false;
     final future = _load(
       forceRefresh: shouldForce,
       store: _driversStore,
@@ -73,9 +80,10 @@ class CurrentStandingsRepository {
     });
   }
 
-  Future<StandingsLoadResult> _getConstructors() {
+  Future<StandingsLoadResult> loadConstructors() {
     if (_constructorsInFlight != null) return _constructorsInFlight!;
-    final shouldForce = _consumeForceNetwork();
+    final shouldForce = _forceConstructorsNetwork;
+    _forceConstructorsNetwork = false;
     final future = _load(
       forceRefresh: shouldForce,
       store: _constructorsStore,
@@ -98,6 +106,7 @@ class CurrentStandingsRepository {
         return StandingsLoadResult(
           standings: StandingsModel.fromJson(today),
           fetchedFromNetwork: false,
+          offlineFallback: await NetworkReachability.isOffline(),
         );
       }
     }
@@ -105,10 +114,16 @@ class CurrentStandingsRepository {
     try {
       final response = await ApiLoader.get(apiPath);
       final mrData = Map<String, dynamic>.from(response.mrData as Map);
-      await store.writeToday(mrData);
+      // CacheInterceptor может отдать offline-кэш как «успех» — не пишем его как today
+      // и не врём про network.
+      final offline = await NetworkReachability.isOffline();
+      if (!offline) {
+        await store.writeToday(mrData);
+      }
       return StandingsLoadResult(
         standings: StandingsModel.fromJson(mrData),
-        fetchedFromNetwork: true,
+        fetchedFromNetwork: !offline,
+        offlineFallback: offline,
       );
     } on Object catch (error) {
       logger.w('CurrentStandingsRepository: fetch failed ($apiPath), fallback to cache', error: error);
@@ -117,6 +132,7 @@ class CurrentStandingsRepository {
         return StandingsLoadResult(
           standings: StandingsModel.fromJson(stale),
           fetchedFromNetwork: false,
+          offlineFallback: await NetworkReachability.isOffline(),
         );
       }
       rethrow;

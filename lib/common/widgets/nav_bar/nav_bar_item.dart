@@ -27,12 +27,11 @@ class NavBarItem extends StatelessWidget {
   final double iconSize;
 
   /// Масштаб обрезки краевого мата PNG (tint иначе даёт квадратную обводку).
-  /// Для плотных ассетов (шлем) лучше `1.0`, иначе края клипаются.
   final double edgeCropScale;
 
   static const _defaultIconSize = 28.0;
 
-  /// Масштаб обрезки краевого мата PNG, который иначе даёт квадратную обводку после tint.
+  /// Zoom-in под ClipRect, чтобы срезать полупрозрачный мат по краям PNG.
   static const _defaultEdgeCropScale = 1.12;
 
   @override

@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/utils/helpers/network_reachability.dart';
 import 'package:f1_pet_project/common/utils/loggers/logger.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/services/api_loader.dart';
@@ -5,10 +6,17 @@ import 'package:f1_pet_project/services/cache/prefs_json_store.dart';
 
 /// Результат загрузки расписания с флагом источника данных.
 class ScheduleLoadResult {
-  const ScheduleLoadResult({required this.schedule, required this.fetchedFromNetwork});
+  const ScheduleLoadResult({
+    required this.schedule,
+    required this.fetchedFromNetwork,
+    this.offlineFallback = false,
+  });
 
   final ScheduleModel schedule;
   final bool fetchedFromNetwork;
+
+  /// `true`, если устройство офлайн и данные из prefs (day-cache или stale fallback).
+  final bool offlineFallback;
 }
 
 /// Расписание текущего сезона (дневной prefs-кэш + офлайн-fallback).
@@ -48,20 +56,35 @@ class ScheduleRepository {
     if (!forceRefresh) {
       final today = await _store.readToday();
       if (today != null) {
-        return ScheduleLoadResult(schedule: ScheduleModel.fromJson(today), fetchedFromNetwork: false);
+        return ScheduleLoadResult(
+          schedule: ScheduleModel.fromJson(today),
+          fetchedFromNetwork: false,
+          offlineFallback: await NetworkReachability.isOffline(),
+        );
       }
     }
 
     try {
       final response = await ApiLoader.get('current');
       final mrData = Map<String, dynamic>.from(response.mrData as Map);
-      await _store.writeToday(mrData);
-      return ScheduleLoadResult(schedule: ScheduleModel.fromJson(mrData), fetchedFromNetwork: true);
+      final offline = await NetworkReachability.isOffline();
+      if (!offline) {
+        await _store.writeToday(mrData);
+      }
+      return ScheduleLoadResult(
+        schedule: ScheduleModel.fromJson(mrData),
+        fetchedFromNetwork: !offline,
+        offlineFallback: offline,
+      );
     } on Object catch (error) {
       logger.w('ScheduleRepository: fetch failed, fallback to cache', error: error);
       final stale = await _store.readAny();
       if (stale != null) {
-        return ScheduleLoadResult(schedule: ScheduleModel.fromJson(stale), fetchedFromNetwork: false);
+        return ScheduleLoadResult(
+          schedule: ScheduleModel.fromJson(stale),
+          fetchedFromNetwork: false,
+          offlineFallback: await NetworkReachability.isOffline(),
+        );
       }
       rethrow;
     }

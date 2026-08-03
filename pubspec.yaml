@@ -3,7 +3,7 @@ description: F1 stats app (Jolpica + ESPN). MobX, Provider, Auto Route, Dio.
 
 publish_to: "none"
 
-version: 2.0.0+202608020
+version: 2.1.0+202608030
 
 environment:
   sdk: ">=3.10.0 <4.0.0"
@@ -16,6 +16,7 @@ dependencies:
   cloud_firestore: ^6.7.1
   collection: any
   colorful_safe_area: ^1.0.0
+  connectivity_plus: ^7.3.1
   dio: ^5.11.0
   envied: ^1.3.8
   firebase_analytics: ^12.4.5
@@ -51,7 +52,7 @@ dependencies:
   yandex_mapkit:
     git:
       url: https://github.com/DaniilPavlov/yandex_mapkit.git
-      ref: 03e2620f1b7b776f26c3897c657b6243a82096d5
+      ref: b8c4aef640ac280abd5ed9c7a0b4b5f1e30c2c56
 
 dev_dependencies:
   # ^10.6 / build_runner ^2.15.2 blocked by mobx_codegen analyzer range
