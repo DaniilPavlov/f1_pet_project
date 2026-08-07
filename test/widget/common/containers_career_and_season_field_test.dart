@@ -1,4 +1,3 @@
-import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
 import 'package:f1_pet_project/common/widgets/career/career_info_row.dart';
 import 'package:f1_pet_project/common/widgets/containers/rounded_container.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/news_list_shimmer.dart';
@@ -7,9 +6,10 @@ import 'package:f1_pet_project/common/widgets/text_fields/season_picker_field.da
 import 'package:f1_pet_project/core/results/components/last_race_table_section.dart';
 import 'package:f1_pet_project/core/results/models/results_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
 
 import '../../helpers/fake_repositories.dart';
 import '../../helpers/pump_app.dart';
@@ -110,9 +110,12 @@ void main() {
       addTearDown(controller.dispose);
 
       await tester.pumpApp(
-        Provider<SeasonsRepository>.value(
-          value: FakeSeasonsRepository(years: ['2025', '2024']),
-          child: SeasonPickerField(controller: controller),
+        SeasonPickerField(controller: controller),
+        wrapApp: (app) => ProviderScope(
+          overrides: [
+            seasonsRepositoryProvider.overrideWithValue(FakeSeasonsRepository(years: ['2025', '2024'])),
+          ],
+          child: app,
         ),
       );
 

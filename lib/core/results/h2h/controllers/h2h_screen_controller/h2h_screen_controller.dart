@@ -1,6 +1,6 @@
 import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/common/utils/helpers/text_editing_controller_extension.dart';
 import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
 import 'package:f1_pet_project/core/results/constructor/repositories/constructor_catalog_repository.dart';
@@ -16,10 +16,9 @@ import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
 import 'package:f1_pet_project/services/analytics/analytics_event.dart';
 import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:mobx/mobx.dart';
-
-part 'h2h_screen_controller.g.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Результат сравнения двух сущностей (имена для таблицы).
 class H2hCompareResult {
@@ -48,20 +47,88 @@ class H2hCompareResult {
   final String? constructorIdB;
 }
 
-/// MobX-контроллер объединённого экрана H2H (пилоты / конструкторы).
-class H2hScreenController = H2hScreenControllerBase with _$H2hScreenController;
+/// Состояние объединённого экрана H2H.
+@immutable
+class H2hState {
+  const H2hState({
+    this.mode = H2hMode.drivers,
+    this.scopeMode = 0,
+    this.useCurrentSeason = true,
+    this.currentEntitiesOnly = true,
+    this.latestSeason = '',
+    this.seasonSelected = false,
+    this.driverA,
+    this.driverB,
+    this.constructorA,
+    this.constructorB,
+    this.comparison = const Loadable.value(),
+  });
+
+  final H2hMode mode;
+
+  /// 0 — карьера, 1 — сезон.
+  final int scopeMode;
+
+  /// В режиме сезона: true — актуальный год, false — выбор года.
+  final bool useCurrentSeason;
+
+  /// true — только current entities, false — полный каталог.
+  final bool currentEntitiesOnly;
+
+  final String latestSeason;
+  final bool seasonSelected;
+  final DriverModel? driverA;
+  final DriverModel? driverB;
+  final ConstructorModel? constructorA;
+  final ConstructorModel? constructorB;
+  final Loadable<H2hCompareResult?> comparison;
+
+  bool get isDriversMode => mode == H2hMode.drivers;
+
+  bool get isSeasonScope => scopeMode == 1;
+
+  bool get showYearPicker => isSeasonScope && !useCurrentSeason;
+
+  CustomException? get screenError => comparison.exception;
+
+  H2hState copyWith({
+    H2hMode? mode,
+    int? scopeMode,
+    bool? useCurrentSeason,
+    bool? currentEntitiesOnly,
+    String? latestSeason,
+    bool? seasonSelected,
+    DriverModel? driverA,
+    DriverModel? driverB,
+    ConstructorModel? constructorA,
+    ConstructorModel? constructorB,
+    Loadable<H2hCompareResult?>? comparison,
+    bool clearDriverA = false,
+    bool clearDriverB = false,
+    bool clearConstructorA = false,
+    bool clearConstructorB = false,
+  }) {
+    return H2hState(
+      mode: mode ?? this.mode,
+      scopeMode: scopeMode ?? this.scopeMode,
+      useCurrentSeason: useCurrentSeason ?? this.useCurrentSeason,
+      currentEntitiesOnly: currentEntitiesOnly ?? this.currentEntitiesOnly,
+      latestSeason: latestSeason ?? this.latestSeason,
+      seasonSelected: seasonSelected ?? this.seasonSelected,
+      driverA: clearDriverA ? null : (driverA ?? this.driverA),
+      driverB: clearDriverB ? null : (driverB ?? this.driverB),
+      constructorA: clearConstructorA ? null : (constructorA ?? this.constructorA),
+      constructorB: clearConstructorB ? null : (constructorB ?? this.constructorB),
+      comparison: comparison ?? this.comparison,
+    );
+  }
+}
 
 /// Фильтры + выбор сущностей и загрузка сравнения.
-abstract class H2hScreenControllerBase with Store {
-  H2hScreenControllerBase({
-    H2hMode initialMode = H2hMode.drivers,
-    this.seasonsRepository,
-    H2hRepository? h2hRepository,
-    DriverCatalogRepository? driverCatalogRepository,
-    ConstructorCatalogRepository? constructorCatalogRepository,
-    CurrentStandingsRepository? currentStandingsRepository,
-    AppDataRefresh? dataRefresh,
-    AnalyticsGateway? analytics,
+class H2hScreenController extends Notifier<H2hState> {
+  H2hScreenController(
+    this.initialMode, {
+    @visibleForTesting SeasonsRepository? seasonsRepositoryForTest,
     @visibleForTesting
     Future<H2hLoadedCompare> Function({
       required String driverIdA,
@@ -76,34 +143,24 @@ abstract class H2hScreenControllerBase with Store {
       String? season,
     })?
     compareConstructorsForTest,
-    @visibleForTesting
-    Future<List<DriverModel>> Function()? loadCurrentDriversForTest,
-    @visibleForTesting
-    Future<List<DriverModel>> Function()? loadAllDriversForTest,
-    @visibleForTesting
-    Future<List<ConstructorModel>> Function()? loadCurrentConstructorsForTest,
-    @visibleForTesting
-    Future<List<ConstructorModel>> Function()? loadAllConstructorsForTest,
-  }) : _h2hRepository = h2hRepository,
-       _currentStandingsRepository = currentStandingsRepository,
-       _dataRefresh = dataRefresh,
-       _analytics = analytics ?? const NoOpAnalyticsGateway(),
+    @visibleForTesting Future<List<DriverModel>> Function()? loadCurrentDriversForTest,
+    @visibleForTesting Future<List<DriverModel>> Function()? loadAllDriversForTest,
+    @visibleForTesting Future<List<ConstructorModel>> Function()? loadCurrentConstructorsForTest,
+    @visibleForTesting Future<List<ConstructorModel>> Function()? loadAllConstructorsForTest,
+    @visibleForTesting AppDataRefresh? dataRefreshForTest,
+    @visibleForTesting AnalyticsGateway? analyticsForTest,
+  }) : _seasonsRepositoryForTest = seasonsRepositoryForTest,
        _compareDriversForTest = compareDriversForTest,
        _compareConstructorsForTest = compareConstructorsForTest,
-       _loadCurrentDrivers = loadCurrentDriversForTest ?? driverCatalogRepository?.loadCurrent,
-       _loadAllDrivers = loadAllDriversForTest ?? driverCatalogRepository?.loadAll,
-       _loadCurrentConstructors =
-           loadCurrentConstructorsForTest ?? constructorCatalogRepository?.loadCurrent,
-       _loadAllConstructors = loadAllConstructorsForTest ?? constructorCatalogRepository?.loadAll,
-       mode = initialMode {
-    yearController = TextEditingController();
-  }
+       _loadCurrentDriversForTest = loadCurrentDriversForTest,
+       _loadAllDriversForTest = loadAllDriversForTest,
+       _loadCurrentConstructorsForTest = loadCurrentConstructorsForTest,
+       _loadAllConstructorsForTest = loadAllConstructorsForTest,
+       _dataRefreshForTest = dataRefreshForTest,
+       _analyticsForTest = analyticsForTest;
 
-  final SeasonsRepository? seasonsRepository;
-  final H2hRepository? _h2hRepository;
-  final CurrentStandingsRepository? _currentStandingsRepository;
-  final AppDataRefresh? _dataRefresh;
-  final AnalyticsGateway _analytics;
+  final H2hMode initialMode;
+  final SeasonsRepository? _seasonsRepositoryForTest;
   final Future<H2hLoadedCompare> Function({
     required String driverIdA,
     required String driverIdB,
@@ -116,214 +173,179 @@ abstract class H2hScreenControllerBase with Store {
     String? season,
   })?
   _compareConstructorsForTest;
-  final Future<List<DriverModel>> Function()? _loadCurrentDrivers;
-  final Future<List<DriverModel>> Function()? _loadAllDrivers;
-  final Future<List<ConstructorModel>> Function()? _loadCurrentConstructors;
-  final Future<List<ConstructorModel>> Function()? _loadAllConstructors;
+  final Future<List<DriverModel>> Function()? _loadCurrentDriversForTest;
+  final Future<List<DriverModel>> Function()? _loadAllDriversForTest;
+  final Future<List<ConstructorModel>> Function()? _loadCurrentConstructorsForTest;
+  final Future<List<ConstructorModel>> Function()? _loadAllConstructorsForTest;
+  final AppDataRefresh? _dataRefreshForTest;
+  final AnalyticsGateway? _analyticsForTest;
 
   late final TextEditingController yearController;
 
-  @observable
-  H2hMode mode;
+  bool get _usingTestFetches =>
+      _compareDriversForTest != null ||
+      _compareConstructorsForTest != null ||
+      _loadCurrentDriversForTest != null ||
+      _loadAllDriversForTest != null;
 
-  /// 0 — карьера, 1 — сезон.
-  @observable
-  int scopeMode = 0;
+  AnalyticsGateway get _analytics => _analyticsForTest ?? ref.read(analyticsGatewayProvider);
 
-  /// В режиме сезона: true — актуальный год, false — выбор года.
-  @observable
-  bool useCurrentSeason = true;
+  H2hRepository get _h2hRepository => ref.read(h2hRepositoryProvider);
 
-  /// true — только current entities, false — полный каталог.
-  @observable
-  bool currentEntitiesOnly = true;
+  DriverCatalogRepository get _driverCatalog => ref.read(driverCatalogRepositoryProvider);
 
-  @observable
-  String latestSeason = '';
+  ConstructorCatalogRepository get _constructorCatalog => ref.read(constructorCatalogRepositoryProvider);
 
-  @observable
-  bool seasonSelected = false;
+  CurrentStandingsRepository get _currentStandings => ref.read(currentStandingsRepositoryProvider);
 
-  @observable
-  DriverModel? driverA;
-
-  @observable
-  DriverModel? driverB;
-
-  @observable
-  ConstructorModel? constructorA;
-
-  @observable
-  ConstructorModel? constructorB;
-
-  @observable
-  AsyncValue<H2hCompareResult?> comparison = const AsyncValue.value();
-
-  @computed
-  bool get isDriversMode => mode == H2hMode.drivers;
-
-  @computed
-  bool get isSeasonScope => scopeMode == 1;
-
-  @computed
-  bool get showYearPicker => isSeasonScope && !useCurrentSeason;
-
-  @computed
   String? get selectedSeason {
-    if (!isSeasonScope) {
+    if (!state.isSeasonScope) {
       return null;
     }
-    if (useCurrentSeason) {
-      return latestSeason.isEmpty ? null : latestSeason;
+    if (state.useCurrentSeason) {
+      return state.latestSeason.isEmpty ? null : state.latestSeason;
     }
-    return seasonSelected ? yearController.text : null;
+    return state.seasonSelected ? yearController.text : null;
   }
 
-  @computed
   bool get canCompare {
-    if (!isSeasonScope || selectedSeason != null) {
-      if (isDriversMode) {
-        return driverA != null && driverB != null && driverA!.driverId != driverB!.driverId;
+    if (!state.isSeasonScope || selectedSeason != null) {
+      if (state.isDriversMode) {
+        return state.driverA != null &&
+            state.driverB != null &&
+            state.driverA!.driverId != state.driverB!.driverId;
       }
-      return constructorA != null &&
-          constructorB != null &&
-          constructorA!.constructorId != constructorB!.constructorId;
+      return state.constructorA != null &&
+          state.constructorB != null &&
+          state.constructorA!.constructorId != state.constructorB!.constructorId;
     }
     return false;
   }
 
-  @computed
-  CustomException? get screenError => comparison.exception;
+  @override
+  H2hState build() {
+    yearController = TextEditingController();
+    ref.onDispose(yearController.dispose);
+    return H2hState(mode: initialMode);
+  }
 
   Future<List<DriverModel>> loadDriversForPicker() {
-    final current = _loadCurrentDrivers;
-    final all = _loadAllDrivers;
-    if (current == null || all == null) {
-      throw StateError('Provide DriverCatalogRepository or driver loaders for test');
+    final current = _loadCurrentDriversForTest;
+    final all = _loadAllDriversForTest;
+    if (current != null && all != null) {
+      return state.currentEntitiesOnly ? current() : all();
     }
-    return currentEntitiesOnly ? current() : all();
+    return state.currentEntitiesOnly ? _driverCatalog.loadCurrent() : _driverCatalog.loadAll();
   }
 
   Future<List<ConstructorModel>> loadConstructorsForPicker() {
-    final current = _loadCurrentConstructors;
-    final all = _loadAllConstructors;
-    if (current == null || all == null) {
-      throw StateError('Provide ConstructorCatalogRepository or constructor loaders for test');
+    final current = _loadCurrentConstructorsForTest;
+    final all = _loadAllConstructorsForTest;
+    if (current != null && all != null) {
+      return state.currentEntitiesOnly ? current() : all();
     }
-    return currentEntitiesOnly ? current() : all();
-  }
-
-  void dispose() {
-    yearController.dispose();
+    return state.currentEntitiesOnly
+        ? _constructorCatalog.loadCurrent()
+        : _constructorCatalog.loadAll();
   }
 
   /// Загружает годы сезонов для фильтра «текущий / выбор года».
-  @action
   Future<void> bootstrap() async {
-    final repository = seasonsRepository;
+    final repository = _seasonsRepositoryForTest ??
+        (_usingTestFetches ? null : ref.read(seasonsRepositoryProvider));
     if (repository == null) {
       return;
     }
     try {
       final years = await repository.getSeasonYears();
       if (years.isNotEmpty) {
-        latestSeason = years.first;
         yearController.text = years.first;
-        seasonSelected = true;
+        state = state.copyWith(latestSeason: years.first, seasonSelected: true);
       }
     } on Object {
       // Оставляем пустые значения — пользователь выберет сезон вручную.
     }
   }
 
-  @action
   void setMode(H2hMode value) {
-    if (mode == value) {
+    if (state.mode == value) {
       return;
     }
-    mode = value;
-    driverA = null;
-    driverB = null;
-    constructorA = null;
-    constructorB = null;
-    _resetComparison();
+    state = state.copyWith(
+      mode: value,
+      clearDriverA: true,
+      clearDriverB: true,
+      clearConstructorA: true,
+      clearConstructorB: true,
+      comparison: const Loadable.value(),
+    );
   }
 
-  @action
   void setScopeMode(int value) {
-    if (scopeMode == value) {
+    if (state.scopeMode == value) {
       return;
     }
-    scopeMode = value;
-    _resetComparison();
+    state = state.copyWith(scopeMode: value, comparison: const Loadable.value());
   }
 
-  @action
   void setUseCurrentSeason(bool value) {
-    if (useCurrentSeason == value) {
+    if (state.useCurrentSeason == value) {
       return;
     }
-    useCurrentSeason = value;
-    if (!value) {
-      seasonSelected = yearController.isValidYear;
-    }
-    _resetComparison();
+    state = state.copyWith(
+      useCurrentSeason: value,
+      seasonSelected: value ? state.seasonSelected : yearController.isValidYear,
+      comparison: const Loadable.value(),
+    );
   }
 
-  @action
   void setCurrentEntitiesOnly(bool value) {
-    if (currentEntitiesOnly == value) {
+    if (state.currentEntitiesOnly == value) {
       return;
     }
-    currentEntitiesOnly = value;
-    driverA = null;
-    driverB = null;
-    constructorA = null;
-    constructorB = null;
-    _resetComparison();
+    state = state.copyWith(
+      currentEntitiesOnly: value,
+      clearDriverA: true,
+      clearDriverB: true,
+      clearConstructorA: true,
+      clearConstructorB: true,
+      comparison: const Loadable.value(),
+    );
   }
 
-  @action
   void onSeasonChanged() {
-    seasonSelected = yearController.isValidYear;
-    _resetComparison();
+    state = state.copyWith(
+      seasonSelected: yearController.isValidYear,
+      comparison: const Loadable.value(),
+    );
   }
 
-  @action
   void setDriverA(DriverModel driver) {
-    driverA = driver;
-    _resetComparison();
+    state = state.copyWith(driverA: driver, comparison: const Loadable.value());
   }
 
-  @action
   void setDriverB(DriverModel driver) {
-    driverB = driver;
-    _resetComparison();
+    state = state.copyWith(driverB: driver, comparison: const Loadable.value());
   }
 
-  @action
   void setConstructorA(ConstructorModel constructor) {
-    constructorA = constructor;
-    _resetComparison();
+    state = state.copyWith(constructorA: constructor, comparison: const Loadable.value());
   }
 
-  @action
   void setConstructorB(ConstructorModel constructor) {
-    constructorB = constructor;
-    _resetComparison();
+    state = state.copyWith(constructorB: constructor, comparison: const Loadable.value());
   }
 
   /// Последовательно грузит обе сущности (глобальный API throttle ~3 req/s).
-  @action
   Future<void> compare() async {
     if (!canCompare) {
       return;
     }
     final season = selectedSeason;
 
-    if (isDriversMode) {
-      final a = driverA!;
-      final b = driverB!;
+    if (state.isDriversMode) {
+      final a = state.driverA!;
+      final b = state.driverB!;
       await runAsyncLoad<H2hCompareResult, H2hCompareResult?>(
         fetch: () async {
           final loaded = await _compareDrivers(
@@ -343,11 +365,11 @@ abstract class H2hScreenControllerBase with Store {
             constructorIdB: teamIds.$2,
           );
         },
-        getField: () => comparison,
-        setField: (value) => comparison = value,
+        getField: () => state.comparison,
+        setField: (value) => state = state.copyWith(comparison: value),
         onSuccess: (data) {
           if (data != null) {
-            comparison = comparison.toValue(data);
+            state = state.copyWith(comparison: state.comparison.toValue(data));
             _analytics.log(
               H2hCompared(
                 driverA: data.nameA,
@@ -362,8 +384,8 @@ abstract class H2hScreenControllerBase with Store {
       return;
     }
 
-    final a = constructorA!;
-    final b = constructorB!;
+    final a = state.constructorA!;
+    final b = state.constructorB!;
     await runAsyncLoad<H2hCompareResult, H2hCompareResult?>(
       fetch: () async {
         final loaded = await _compareConstructors(
@@ -382,11 +404,11 @@ abstract class H2hScreenControllerBase with Store {
           constructorIdB: b.constructorId,
         );
       },
-      getField: () => comparison,
-      setField: (value) => comparison = value,
+      getField: () => state.comparison,
+      setField: (value) => state = state.copyWith(comparison: value),
       onSuccess: (data) {
         if (data != null) {
-          comparison = comparison.toValue(data);
+          state = state.copyWith(comparison: state.comparison.toValue(data));
           _analytics.log(
             H2hConstructorsCompared(
               constructorA: data.nameA,
@@ -401,14 +423,13 @@ abstract class H2hScreenControllerBase with Store {
   }
 
   /// ErrorBody retry: сброс кэшей и повторное сравнение.
-  @action
   Future<void> refreshComparison() async {
-    await _dataRefresh?.clearAll();
+    if (_dataRefreshForTest != null) {
+      await _dataRefreshForTest.clearAll();
+    } else if (!_usingTestFetches) {
+      await ref.read(appDataRefreshProvider).clearAll();
+    }
     await compare();
-  }
-
-  void _resetComparison() {
-    comparison = const AsyncValue.value();
   }
 
   Future<H2hLoadedCompare> _compareDrivers({
@@ -420,7 +441,7 @@ abstract class H2hScreenControllerBase with Store {
     if (forTest != null) {
       return forTest(driverIdA: driverIdA, driverIdB: driverIdB, season: season);
     }
-    return _h2hRepository!.compareDrivers(
+    return _h2hRepository.compareDrivers(
       driverIdA: driverIdA,
       driverIdB: driverIdB,
       season: season,
@@ -440,7 +461,7 @@ abstract class H2hScreenControllerBase with Store {
         season: season,
       );
     }
-    return _h2hRepository!.compareConstructors(
+    return _h2hRepository.compareConstructors(
       constructorIdA: constructorIdA,
       constructorIdB: constructorIdB,
       season: season,
@@ -452,12 +473,11 @@ abstract class H2hScreenControllerBase with Store {
     String driverIdA,
     String driverIdB,
   ) async {
-    final repo = _currentStandingsRepository;
-    if (repo == null) {
+    if (_compareDriversForTest != null) {
       return (null, null);
     }
     try {
-      final standings = await repo.drivers();
+      final standings = await _currentStandings.drivers();
       String? idA;
       String? idB;
       for (final list in standings.standingsTable.standingsLists) {
@@ -483,3 +503,8 @@ abstract class H2hScreenControllerBase with Store {
     }
   }
 }
+
+final h2hScreenControllerProvider =
+    NotifierProvider.autoDispose.family<H2hScreenController, H2hState, H2hMode>(
+      H2hScreenController.new,
+    );

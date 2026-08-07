@@ -1,48 +1,32 @@
 import 'dart:math' as math;
 
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
-import 'package:f1_pet_project/core/news/repositories/news_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
-import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/foundation.dart';
-import 'package:mobx/mobx.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-part 'news_screen_controller.g.dart';
+/// Сколько карточек показывать за один «экран» пагинации.
+const newsPageSize = 10;
 
-/// MobX-контроллер ленты новостей ESPN (Home + общий кэш репозитория).
-class NewsScreenController = NewsScreenControllerBase with _$NewsScreenController;
+/// Состояние ленты новостей ESPN.
+@immutable
+class NewsState {
+  const NewsState({
+    this.articles = const Loadable.loading(),
+    this.visibleCount = newsPageSize,
+  });
 
-/// Управляет загрузкой и клиентской пагинацией ленты новостей.
-abstract class NewsScreenControllerBase with Store {
-  NewsScreenControllerBase({
-    NewsRepository? newsRepository,
-    AppDataRefresh? dataRefresh,
-    @visibleForTesting Future<List<NewsArticleModel>> Function()? fetchArticlesForTest,
-  }) : _newsRepository = newsRepository,
-       _dataRefresh = dataRefresh,
-       _fetchArticlesForTest = fetchArticlesForTest;
-
-  /// Сколько карточек показывать за один «экран» пагинации.
-  static const pageSize = 10;
-
-  final NewsRepository? _newsRepository;
-  final AppDataRefresh? _dataRefresh;
-  final Future<List<NewsArticleModel>> Function()? _fetchArticlesForTest;
-
-  @observable
-  AsyncValue<List<NewsArticleModel>> articles = const AsyncValue.loading();
+  final Loadable<List<NewsArticleModel>> articles;
 
   /// Сколько элементов из [articles] видно в UI (клиентская пагинация).
-  @observable
-  int visibleCount = pageSize;
+  final int visibleCount;
 
-  @computed
   CustomException? get screenError => articles.exception;
 
   /// Уже раскрытая часть ленты.
-  @computed
   List<NewsArticleModel> get visibleArticles {
     final list = articles.value;
     if (list == null || list.isEmpty) {
@@ -52,27 +36,49 @@ abstract class NewsScreenControllerBase with Store {
   }
 
   /// Есть ли ещё элементы за пределами [visibleCount].
-  @computed
   bool get canRevealMore {
     final list = articles.value;
     return list != null && visibleCount < list.length;
   }
 
+  NewsState copyWith({
+    Loadable<List<NewsArticleModel>>? articles,
+    int? visibleCount,
+  }) {
+    return NewsState(
+      articles: articles ?? this.articles,
+      visibleCount: visibleCount ?? this.visibleCount,
+    );
+  }
+}
+
+/// Управляет загрузкой и клиентской пагинацией ленты новостей.
+class NewsScreenController extends Notifier<NewsState> {
+  NewsScreenController({
+    @visibleForTesting Future<List<NewsArticleModel>> Function()? fetchArticlesForTest,
+  }) : _fetchArticlesForTest = fetchArticlesForTest;
+
+  /// Сколько карточек показывать за один «экран» пагинации.
+  static const pageSize = newsPageSize;
+
+  final Future<List<NewsArticleModel>> Function()? _fetchArticlesForTest;
+
+  @override
+  NewsState build() => const NewsState();
+
   /// Подгружает следующую страницу в UI (данные уже в памяти).
-  @action
   void revealMore() {
-    final list = articles.value;
-    if (list == null || visibleCount >= list.length) {
+    final list = state.articles.value;
+    if (list == null || state.visibleCount >= list.length) {
       return;
     }
-    visibleCount = math.min(visibleCount + pageSize, list.length);
+    state = state.copyWith(visibleCount: math.min(state.visibleCount + pageSize, list.length));
   }
 
   /// Загружает новости (сначала кэш, без мигания лоадера при повторном открытии).
-  @action
   Future<void> loadArticles({bool forceRefresh = false}) async {
-    final newsRepository = _newsRepository;
-    final useSharedCache = _fetchArticlesForTest == null && newsRepository != null;
+    final newsRepository = _fetchArticlesForTest == null ? ref.read(newsRepositoryProvider) : null;
+    final useSharedCache = newsRepository != null;
     if (useSharedCache && !forceRefresh) {
       final cached = newsRepository.peek;
       if (newsRepository.isFresh && cached != null) {
@@ -83,6 +89,9 @@ abstract class NewsScreenControllerBase with Store {
         _applyArticles(cached);
         try {
           final data = await newsRepository.loadArticles();
+          if (!ref.mounted) {
+            return;
+          }
           _applyArticles(data, resetPagination: false);
         } on Object {
           // оставляем кэш на экране
@@ -94,13 +103,16 @@ abstract class NewsScreenControllerBase with Store {
     if (forceRefresh && useSharedCache) {
       try {
         final data = await newsRepository.loadArticles(forceRefresh: true);
+        if (!ref.mounted) {
+          return;
+        }
         _applyArticles(data);
       } on Object {
-        if (!articles.isValue) {
+        if (!state.articles.isValue) {
           await runAsyncLoad<List<NewsArticleModel>, List<NewsArticleModel>>(
             fetch: _fetchArticles,
-            getField: () => articles,
-            setField: (value) => articles = value,
+            getField: () => state.articles,
+            setField: (value) => state = state.copyWith(articles: value),
             onSuccess: (data) => _applyArticles(data ?? const []),
           );
         }
@@ -110,30 +122,36 @@ abstract class NewsScreenControllerBase with Store {
 
     await runAsyncLoad<List<NewsArticleModel>, List<NewsArticleModel>>(
       fetch: _fetchArticles,
-      getField: () => articles,
-      setField: (value) => articles = value,
+      getField: () => state.articles,
+      setField: (value) => state = state.copyWith(articles: value),
       onSuccess: (data) => _applyArticles(data ?? const []),
     );
   }
 
   /// Pull-to-refresh: единый сброс кэшей и перезагрузка ленты.
-  @action
   Future<void> refreshAll() async {
-    await _dataRefresh?.clearAll();
+    if (_fetchArticlesForTest == null) {
+      await ref.read(appDataRefreshProvider).clearAll();
+    }
     await loadArticles(forceRefresh: true);
   }
 
   void _applyArticles(List<NewsArticleModel> data, {bool resetPagination = true}) {
-    articles = articles.toValue(data);
     if (resetPagination) {
-      visibleCount = math.min(pageSize, data.length);
+      state = state.copyWith(
+        articles: state.articles.toValue(data),
+        visibleCount: math.min(pageSize, data.length),
+      );
       return;
     }
     if (data.isEmpty) {
-      visibleCount = 0;
+      state = state.copyWith(articles: state.articles.toValue(data), visibleCount: 0);
       return;
     }
-    visibleCount = visibleCount.clamp(1, data.length);
+    state = state.copyWith(
+      articles: state.articles.toValue(data),
+      visibleCount: state.visibleCount.clamp(1, data.length),
+    );
   }
 
   Future<List<NewsArticleModel>> _fetchArticles() {
@@ -141,6 +159,10 @@ abstract class NewsScreenControllerBase with Store {
     if (forTest != null) {
       return forTest();
     }
-    return _newsRepository!.loadArticles();
+    return ref.read(newsRepositoryProvider).loadArticles();
   }
 }
+
+final newsScreenControllerProvider = NotifierProvider.autoDispose<NewsScreenController, NewsState>(
+  NewsScreenController.new,
+);

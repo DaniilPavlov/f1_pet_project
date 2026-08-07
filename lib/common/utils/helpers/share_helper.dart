@@ -8,10 +8,10 @@ import 'package:f1_pet_project/common/widgets/share/share_weekend_summary_card.d
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/services/analytics/analytics_event.dart';
-import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Шаринг карьеры, результатов гонки и сводки уикенда картинкой.
@@ -23,7 +23,7 @@ abstract class ShareHelper {
     required CareerStats<dynamic> stats,
     Uri? deepLink,
   }) {
-    context.read<AnalyticsGateway>().log(const ShareTapped(contentType: 'career_card'));
+    ProviderScope.containerOf(context).read(analyticsGatewayProvider).log(const ShareTapped(contentType: 'career_card'));
     return _shareWidgetImage(
       context: context,
       fileName: 'f1_career_${DateTime.now().millisecondsSinceEpoch}.png',
@@ -37,7 +37,7 @@ abstract class ShareHelper {
     required AppLocalizations l10n,
     required RacesModel race,
   }) {
-    context.read<AnalyticsGateway>().log(const ShareTapped(contentType: 'race_results'));
+    ProviderScope.containerOf(context).read(analyticsGatewayProvider).log(const ShareTapped(contentType: 'race_results'));
     return _shareWidgetImage(
       context: context,
       fileName: 'f1_race_${race.season}_${race.round}.png',
@@ -51,7 +51,7 @@ abstract class ShareHelper {
     required EspnScoreboardEvent event,
     required Locale locale,
   }) {
-    context.read<AnalyticsGateway>().log(const ShareTapped(contentType: 'weekend_summary'));
+    ProviderScope.containerOf(context).read(analyticsGatewayProvider).log(const ShareTapped(contentType: 'weekend_summary'));
     final slug = (event.shortName.isNotEmpty ? event.shortName : event.name).toLowerCase().replaceAll(
       RegExp('[^a-z0-9]+'),
       '_',
@@ -69,7 +69,7 @@ abstract class ShareHelper {
     required Uri deepLink,
     required String contentType,
   }) async {
-    context.read<AnalyticsGateway>().log(ShareTapped(contentType: contentType));
+    ProviderScope.containerOf(context).read(analyticsGatewayProvider).log(ShareTapped(contentType: contentType));
     final box = context.findRenderObject() as RenderBox?;
     await SharePlus.instance.share(
       ShareParams(

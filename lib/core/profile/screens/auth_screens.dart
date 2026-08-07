@@ -10,12 +10,10 @@ import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart
 import 'package:f1_pet_project/core/profile/controllers/auth_controller/auth_controller.dart';
 import 'package:f1_pet_project/core/profile/utils/auth_error_l10n.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
-import 'package:f1_pet_project/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:provider/provider.dart';
 
 /// Экран входа по email/password.
 @RoutePage()
@@ -24,16 +22,13 @@ class AuthSignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      create: (context) => AuthController(authService: context.read<AuthService>()),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.l10n.authSignInTitle,
-          showPreferences: false,
-          onPop: () => context.router.maybePop(),
-        ),
-        body: const SafeArea(child: _AuthForm(isRegister: false)),
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: context.l10n.authSignInTitle,
+        showPreferences: false,
+        onPop: () => context.router.maybePop(),
       ),
+      body: const SafeArea(child: _AuthForm(isRegister: false)),
     );
   }
 }
@@ -45,21 +40,18 @@ class AuthRegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      create: (context) => AuthController(authService: context.read<AuthService>()),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.l10n.authRegisterTitle,
-          showPreferences: false,
-          onPop: () => context.router.maybePop(),
-        ),
-        body: const SafeArea(child: _AuthForm(isRegister: true)),
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: context.l10n.authRegisterTitle,
+        showPreferences: false,
+        onPop: () => context.router.maybePop(),
       ),
+      body: const SafeArea(child: _AuthForm(isRegister: true)),
     );
   }
 }
 
-class _AuthForm extends StatelessWidget {
+class _AuthForm extends ConsumerWidget {
   const _AuthForm({required this.isRegister});
 
   /// Высота [BlackButton]: vertical padding 12×2 + [AppStyles.h3] fontSize 25.
@@ -68,121 +60,118 @@ class _AuthForm extends StatelessWidget {
   final bool isRegister;
 
   @override
-  Widget build(BuildContext context) {
-    final controller = context.read<AuthController>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(authControllerProvider);
+    final controller = ref.read(authControllerProvider.notifier);
+    final error = authErrorMessage(context.l10n, state.errorKey);
+    final loading = state.isLoading;
 
-    return Observer(
-      builder: (context) {
-        final error = authErrorMessage(context.l10n, controller.errorKey);
-        final loading = controller.isLoading;
-        return Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: StaticData.defaultHorizontalPadding,
-            vertical: 16,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                CustomTextField(
-                  label: context.l10n.authEmailLabel,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  onChanged: controller.setEmail,
-                  disabled: loading,
-                ),
-                const SizedBox(height: 12),
-                CustomTextField(
-                  label: context.l10n.authPasswordLabel,
-                  obscureText: true,
-                  textInputAction: TextInputAction.done,
-                  onChanged: controller.setPassword,
-                  disabled: loading,
-                  onSubmit: loading
-                      ? null
-                      : (_) async {
-                          FocusScope.of(context).unfocus();
-                          final ok = isRegister ? await controller.register() : await controller.signIn();
-                          if (ok && context.mounted) {
-                            // replaceAll — стек мог быть только [AuthSignIn] (вход с предиктора).
-                            await context.router.replaceAll([const ProfileRoute()]);
-                          }
-                        },
-                ),
-                if (error.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(error, style: AppStyles.caption.copyWith(color: context.colors.red)),
-                ],
-                if (!isRegister) ...[
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: loading
-                          ? null
-                          : () async {
-                              FocusScope.of(context).unfocus();
-                              final ok = await controller.sendPasswordReset();
-                              if (!context.mounted) {
-                                return;
-                              }
-                              if (ok) {
-                                await Fluttertoast.showToast(msg: context.l10n.authPasswordResetSent);
-                              }
-                            },
-                      child: Text(
-                        context.l10n.authForgotPassword,
-                        style: AppStyles.caption.copyWith(color: context.colors.textGray),
-                      ),
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 12),
-                if (loading)
-                  SizedBox(
-                    height: _authPrimaryButtonHeight,
-                    child: Center(
-                      child: LoadingAnimationWidget.twistingDots(
-                        leftDotColor: context.colors.black,
-                        rightDotColor: AppTheme.red,
-                        size: 28,
-                      ),
-                    ),
-                  )
-                else
-                  BlackButton(
-                    text: isRegister ? context.l10n.profileRegister : context.l10n.profileSignIn,
-                    isDisabled: false,
-                    onTap: () async {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: StaticData.defaultHorizontalPadding,
+        vertical: 16,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            CustomTextField(
+              label: context.l10n.authEmailLabel,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              onChanged: controller.setEmail,
+              disabled: loading,
+            ),
+            const SizedBox(height: 12),
+            CustomTextField(
+              label: context.l10n.authPasswordLabel,
+              obscureText: true,
+              textInputAction: TextInputAction.done,
+              onChanged: controller.setPassword,
+              disabled: loading,
+              onSubmit: loading
+                  ? null
+                  : (_) async {
                       FocusScope.of(context).unfocus();
                       final ok = isRegister ? await controller.register() : await controller.signIn();
                       if (ok && context.mounted) {
+                        // replaceAll — стек мог быть только [AuthSignIn] (вход с предиктора).
                         await context.router.replaceAll([const ProfileRoute()]);
                       }
                     },
-                  ),
-                const SizedBox(height: 16),
-                TextButton(
+            ),
+            if (error.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(error, style: AppStyles.caption.copyWith(color: context.colors.red)),
+            ],
+            if (!isRegister) ...[
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
                   onPressed: loading
                       ? null
-                      : () {
-                          if (isRegister) {
-                            context.router.replace(const AuthSignInRoute());
-                          } else {
-                            context.router.replace(const AuthRegisterRoute());
+                      : () async {
+                          FocusScope.of(context).unfocus();
+                          final ok = await controller.sendPasswordReset();
+                          if (!context.mounted) {
+                            return;
+                          }
+                          if (ok) {
+                            await Fluttertoast.showToast(msg: context.l10n.authPasswordResetSent);
                           }
                         },
                   child: Text(
-                    isRegister ? context.l10n.authHaveAccount : context.l10n.authNoAccount,
-                    style: AppStyles.body.copyWith(color: context.colors.black),
-                    textAlign: TextAlign.center,
+                    context.l10n.authForgotPassword,
+                    style: AppStyles.caption.copyWith(color: context.colors.textGray),
                   ),
                 ),
-              ],
+              ),
+            ],
+            const SizedBox(height: 12),
+            if (loading)
+              SizedBox(
+                height: _authPrimaryButtonHeight,
+                child: Center(
+                  child: LoadingAnimationWidget.twistingDots(
+                    leftDotColor: context.colors.black,
+                    rightDotColor: AppTheme.red,
+                    size: 28,
+                  ),
+                ),
+              )
+            else
+              BlackButton(
+                text: isRegister ? context.l10n.profileRegister : context.l10n.profileSignIn,
+                isDisabled: false,
+                onTap: () async {
+                  FocusScope.of(context).unfocus();
+                  final ok = isRegister ? await controller.register() : await controller.signIn();
+                  if (ok && context.mounted) {
+                    await context.router.replaceAll([const ProfileRoute()]);
+                  }
+                },
+              ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: loading
+                  ? null
+                  : () {
+                      if (isRegister) {
+                        context.router.replace(const AuthSignInRoute());
+                      } else {
+                        context.router.replace(const AuthRegisterRoute());
+                      }
+                    },
+              child: Text(
+                isRegister ? context.l10n.authHaveAccount : context.l10n.authNoAccount,
+                style: AppStyles.body.copyWith(color: context.colors.black),
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 }

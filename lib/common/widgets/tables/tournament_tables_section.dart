@@ -8,8 +8,7 @@ import 'package:f1_pet_project/core/home/controllers/tournament_tables_section_c
 import 'package:f1_pet_project/data/models/standings/constructor/constructor_standings_model.dart';
 import 'package:f1_pet_project/data/models/standings/driver/driver_standings_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Секция турнирных таблиц с переключением пилоты/конструкторы.
 class TournamentTablesSection extends StatelessWidget {
@@ -34,60 +33,90 @@ class TournamentTablesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<TournamentTablesSectionController>(
-      create: (_) => TournamentTablesSectionController(),
-      child: Observer(
-        builder: (context) {
-          final controller = context.read<TournamentTablesSectionController>();
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (title != null || season != null || round != null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: StaticData.defaultHorizontalPadding),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+    return ProviderScope(
+      overrides: [
+        tournamentTablesSectionControllerProvider.overrideWith(TournamentTablesSectionController.new),
+      ],
+      child: _TournamentTablesSectionView(
+        driversStandings: driversStandings,
+        constructorsStandings: constructorsStandings,
+        title: title,
+        season: season,
+        round: round,
+        passCurrentRoster: passCurrentRoster,
+      ),
+    );
+  }
+}
+
+class _TournamentTablesSectionView extends ConsumerWidget {
+  const _TournamentTablesSectionView({
+    required this.driversStandings,
+    required this.constructorsStandings,
+    required this.passCurrentRoster,
+    this.title,
+    this.season,
+    this.round,
+  });
+
+  final List<DriverStandingsModel> driversStandings;
+  final List<ConstructorStandingsModel> constructorsStandings;
+  final String? title;
+  final String? season;
+  final String? round;
+  final bool passCurrentRoster;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(tournamentTablesSectionControllerProvider);
+    final controller = ref.read(tournamentTablesSectionControllerProvider.notifier);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (title != null || season != null || round != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: StaticData.defaultHorizontalPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: StaticData.defaultVerticalPadding),
+                if (title != null) Text(title!, style: AppStyles.h1),
+                if (season != null || round != null) ...[
+                  const SizedBox(height: 32),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const SizedBox(height: StaticData.defaultVerticalPadding),
-                      if (title != null) Text(title!, style: AppStyles.h1),
-                      if (season != null || round != null) ...[
-                        const SizedBox(height: 32),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            if (season != null) Text(context.l10n.seasonLabel(season!), style: AppStyles.h2),
-                            if (round != null) Text(context.l10n.roundLabel(round!), style: AppStyles.h2),
-                          ],
-                        ),
-                      ],
-                      const SizedBox(height: 32),
+                      if (season != null) Text(context.l10n.seasonLabel(season!), style: AppStyles.h2),
+                      if (round != null) Text(context.l10n.roundLabel(round!), style: AppStyles.h2),
                     ],
                   ),
-                ),
-              CustomSwitcher(
-                firstTitle: context.l10n.drivers,
-                secondTitle: context.l10n.constructors,
-                onChanged: controller.changeActiveTable,
-                activeValue: controller.activeTable,
-              ),
-              if (controller.activeTable == 0)
-                TournamentDriversTable(
-                  drivers: driversStandings,
-                  passCurrentRoster: passCurrentRoster,
-                )
-              else
-                TournamentConstructorsTable(
-                  constructors: constructorsStandings,
-                  driversStandings: driversStandings,
-                  passCurrentRoster: passCurrentRoster,
-                ),
-              const SizedBox(height: 32),
-            ],
-          );
-        },
-      ),
+                ],
+                const SizedBox(height: 32),
+              ],
+            ),
+          ),
+        CustomSwitcher(
+          firstTitle: context.l10n.drivers,
+          secondTitle: context.l10n.constructors,
+          onChanged: controller.changeActiveTable,
+          activeValue: state.activeTable,
+        ),
+        if (state.activeTable == 0)
+          TournamentDriversTable(
+            drivers: driversStandings,
+            passCurrentRoster: passCurrentRoster,
+          )
+        else
+          TournamentConstructorsTable(
+            constructors: constructorsStandings,
+            driversStandings: driversStandings,
+            passCurrentRoster: passCurrentRoster,
+          ),
+        const SizedBox(height: 32),
+      ],
     );
   }
 }

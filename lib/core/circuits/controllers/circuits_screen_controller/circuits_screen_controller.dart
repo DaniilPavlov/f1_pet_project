@@ -1,85 +1,114 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/common/utils/helpers/offline_cached_banner.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
 import 'package:f1_pet_project/core/circuits/models/circuits_model.dart';
 import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:mobx/mobx.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-part 'circuits_screen_controller.g.dart';
+/// Состояние экрана трасс.
+@immutable
+class CircuitsScreenState {
+  const CircuitsScreenState({
+    this.circuits = const Loadable.loading(),
+    this.activePage = 0,
+    this.showingCachedData = false,
+  });
 
-/// MobX-контроллер экрана трасс.
-class CircuitsScreenController = CircuitsScreenControllerBase with _$CircuitsScreenController;
+  final Loadable<List<CircuitModel>> circuits;
+  final int activePage;
+
+  /// Офлайн + список трасс из кэша.
+  final bool showingCachedData;
+
+  CustomException? get screenError => circuits.exception;
+
+  CircuitsScreenState copyWith({
+    Loadable<List<CircuitModel>>? circuits,
+    int? activePage,
+    bool? showingCachedData,
+  }) {
+    return CircuitsScreenState(
+      circuits: circuits ?? this.circuits,
+      activePage: activePage ?? this.activePage,
+      showingCachedData: showingCachedData ?? this.showingCachedData,
+    );
+  }
+}
 
 /// Управляет загрузкой трасс и переключением вкладок списка/карты.
-abstract class CircuitsScreenControllerBase with Store {
-  CircuitsScreenControllerBase({
-    CircuitsRepository? circuitsRepository,
-    AppDataRefresh? dataRefresh,
-    @visibleForTesting
-    Future<CircuitsModel> Function()? fetchCircuitsForTest,
-  }) : _circuitsRepository = circuitsRepository,
-       _dataRefresh = dataRefresh,
-       _fetchCircuitsForTest = fetchCircuitsForTest;
+class CircuitsScreenController extends Notifier<CircuitsScreenState> {
+  CircuitsScreenController({
+    @visibleForTesting Future<CircuitsModel> Function()? fetchCircuitsForTest,
+  }) : _fetchCircuitsForTest = fetchCircuitsForTest;
 
-  final CircuitsRepository? _circuitsRepository;
-  final AppDataRefresh? _dataRefresh;
   final Future<CircuitsModel> Function()? _fetchCircuitsForTest;
 
   final pageController = PageController();
 
-  @observable
-  AsyncValue<List<CircuitModel>> circuits = const AsyncValue.loading();
+  CircuitsRepository? get _circuitsRepository {
+    if (_fetchCircuitsForTest != null) {
+      return null;
+    }
+    return ref.read(circuitsRepositoryProvider);
+  }
 
-  @observable
-  int activePage = 0;
+  AppDataRefresh? get _dataRefresh {
+    if (_fetchCircuitsForTest != null) {
+      return null;
+    }
+    return ref.read(appDataRefreshProvider);
+  }
 
-  /// Офлайн + список трасс из кэша.
-  @observable
-  bool showingCachedData = false;
-
-  @computed
-  CustomException? get screenError => circuits.exception;
-
-  /// Освобождает ресурсы контроллера страниц.
-  void dispose() {
-    pageController.dispose();
+  @override
+  CircuitsScreenState build() {
+    ref.onDispose(pageController.dispose);
+    return const CircuitsScreenState();
   }
 
   /// Загружает список трасс с сервера.
-  @action
   Future<void> loadCircuits() async {
     await runAsyncLoad<CircuitsModel, List<CircuitModel>>(
       fetch: _fetchCircuits,
-      getField: () => circuits,
-      setField: (value) => circuits = value,
-      onSuccess: (data) => circuits = circuits.toValue(data!.circuitTable.circuits),
+      getField: () => state.circuits,
+      setField: (value) => state = state.copyWith(circuits: value),
+      onSuccess: (data) => state = state.copyWith(circuits: state.circuits.toValue(data!.circuitTable.circuits)),
     );
-    showingCachedData = await shouldShowOfflineCachedBanner(hasCachedContent: circuits.isValue);
+    if (!ref.mounted) {
+      return;
+    }
+    state = state.copyWith(
+      showingCachedData: await shouldShowOfflineCachedBanner(hasCachedContent: state.circuits.isValue),
+    );
   }
 
   /// После появления сети — спрятать баннер без перезагрузки.
-  @action
   Future<void> dismissOfflineBannerIfOnline() async {
-    showingCachedData = await clearOfflineBannerIfOnline(currentlyShowing: showingCachedData);
+    final next = await clearOfflineBannerIfOnline(currentlyShowing: state.showingCachedData);
+    if (!ref.mounted) {
+      return;
+    }
+    state = state.copyWith(showingCachedData: next);
   }
 
   /// Pull-to-refresh / ErrorBody: сброс кэшей и перезагрузка списка.
-  @action
   Future<void> refreshAll() async {
     await _dataRefresh?.clearAll();
+    if (!ref.mounted) {
+      return;
+    }
     await loadCircuits();
   }
 
   /// Переключает активную вкладку (карта или список).
-  @action
   void changeActivePage(int value) {
-    activePage = value;
+    state = state.copyWith(activePage: value);
     if (pageController.hasClients) {
-      pageController.animateToPage(activePage, curve: Curves.ease, duration: const Duration(milliseconds: 250));
+      pageController.animateToPage(state.activePage, curve: Curves.ease, duration: const Duration(milliseconds: 250));
     }
   }
 
@@ -91,3 +120,6 @@ abstract class CircuitsScreenControllerBase with Store {
     return _circuitsRepository!.all();
   }
 }
+
+final circuitsScreenControllerProvider =
+    NotifierProvider.autoDispose<CircuitsScreenController, CircuitsScreenState>(CircuitsScreenController.new);

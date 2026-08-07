@@ -7,8 +7,9 @@ import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:f1_pet_project/services/auth/auth_service.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum _PredictorAuthState { signedOut, unverified, ok }
 
@@ -16,7 +17,7 @@ enum _PredictorAuthState { signedOut, unverified, ok }
 ///
 /// [asTabRoot]: на вкладке показываем CTA вместо redirect/pop
 /// (иначе вкладка «ломалась» бы при выходе из аккаунта).
-class PredictorAuthGate extends StatelessWidget {
+class PredictorAuthGate extends ConsumerWidget {
   const PredictorAuthGate({
     required this.child,
     this.asTabRoot = false,
@@ -48,8 +49,8 @@ class PredictorAuthGate extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final auth = context.read<AuthService>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final auth = ref.read(authServiceProvider);
 
     return StreamBuilder<_PredictorAuthState>(
       initialData: _stateOf(auth),

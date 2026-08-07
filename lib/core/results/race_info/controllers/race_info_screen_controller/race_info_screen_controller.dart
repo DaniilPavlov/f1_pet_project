@@ -1,5 +1,5 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/core/results/models/pit_stops_model.dart';
 import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
 import 'package:f1_pet_project/core/results/models/results_model.dart';
@@ -9,21 +9,50 @@ import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/foundation.dart';
-import 'package:mobx/mobx.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-part 'race_info_screen_controller.g.dart';
+/// Состояние детального экрана гонки.
+@immutable
+class RaceInfoState {
+  const RaceInfoState({
+    this.allDataIsLoaded = false,
+    this.sprintResults = const Loadable.loading(),
+    this.qualifyingResults = const Loadable.loading(),
+    this.pitStops = const Loadable.loading(),
+  });
 
-/// MobX-контроллер детального экрана гонки.
-class RaceInfoScreenController = RaceInfoScreenControllerBase with _$RaceInfoScreenController;
+  final bool allDataIsLoaded;
+  final Loadable<List<ResultsModel>> sprintResults;
+  final Loadable<List<QualifyingResultsModel>> qualifyingResults;
+  final Loadable<List<PitStopsModel>> pitStops;
+
+  CustomException? get screenError => firstException([sprintResults, qualifyingResults, pitStops]);
+
+  /// Есть ли результаты спринта для отображения.
+  bool get hasSprintResults => sprintResults.value?.isNotEmpty ?? false;
+
+  RaceInfoState copyWith({
+    bool? allDataIsLoaded,
+    Loadable<List<ResultsModel>>? sprintResults,
+    Loadable<List<QualifyingResultsModel>>? qualifyingResults,
+    Loadable<List<PitStopsModel>>? pitStops,
+  }) {
+    return RaceInfoState(
+      allDataIsLoaded: allDataIsLoaded ?? this.allDataIsLoaded,
+      sprintResults: sprintResults ?? this.sprintResults,
+      qualifyingResults: qualifyingResults ?? this.qualifyingResults,
+      pitStops: pitStops ?? this.pitStops,
+    );
+  }
+}
 
 /// Управляет данными гонки, спринта, квалификации и пит-стопов.
-abstract class RaceInfoScreenControllerBase with Store {
-  RaceInfoScreenControllerBase({
-    required this.raceModel,
-    this.scheduleRepository,
-    RaceWeekendRepository? raceWeekendRepository,
-    AppDataRefresh? dataRefresh,
+class RaceInfoScreenController extends Notifier<RaceInfoState> {
+  RaceInfoScreenController(
+    this.raceModel, {
+    @visibleForTesting ScheduleRepository? scheduleRepositoryForTest,
     @visibleForTesting Future<bool> Function()? weekendHasSprintForTest,
     @visibleForTesting
     Future<ScheduleModel> Function({required String year, required String round})? fetchQualifyingResultsForTest,
@@ -31,58 +60,66 @@ abstract class RaceInfoScreenControllerBase with Store {
     Future<ScheduleModel> Function({required String year, required String round})? fetchPitStopsForTest,
     @visibleForTesting
     Future<ScheduleModel> Function({required String year, required String round})? fetchSprintResultsForTest,
-  }) : _raceWeekendRepository = raceWeekendRepository,
-       _dataRefresh = dataRefresh,
+    @visibleForTesting AppDataRefresh? dataRefreshForTest,
+  }) : _scheduleRepositoryForTest = scheduleRepositoryForTest,
        _weekendHasSprintForTest = weekendHasSprintForTest,
        _fetchQualifyingResultsForTest = fetchQualifyingResultsForTest,
        _fetchPitStopsForTest = fetchPitStopsForTest,
-       _fetchSprintResultsForTest = fetchSprintResultsForTest;
+       _fetchSprintResultsForTest = fetchSprintResultsForTest,
+       _dataRefreshForTest = dataRefreshForTest;
 
   final RacesModel raceModel;
-  final ScheduleRepository? scheduleRepository;
-  final RaceWeekendRepository? _raceWeekendRepository;
-  final AppDataRefresh? _dataRefresh;
+  final ScheduleRepository? _scheduleRepositoryForTest;
   final Future<bool> Function()? _weekendHasSprintForTest;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchQualifyingResultsForTest;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchPitStopsForTest;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchSprintResultsForTest;
+  final AppDataRefresh? _dataRefreshForTest;
 
-  @observable
-  bool allDataIsLoaded = false;
+  ScheduleRepository? get _scheduleRepository {
+    if (_scheduleRepositoryForTest != null) {
+      return _scheduleRepositoryForTest;
+    }
+    if (_usingTestFetches) {
+      return null;
+    }
+    return ref.read(scheduleRepositoryProvider);
+  }
 
-  @observable
-  AsyncValue<List<ResultsModel>> sprintResults = const AsyncValue.loading();
+  RaceWeekendRepository get _raceWeekendRepository => ref.read(raceWeekendRepositoryProvider);
 
-  @observable
-  AsyncValue<List<QualifyingResultsModel>> qualifyingResults = const AsyncValue.loading();
+  bool get _usingTestFetches =>
+      _weekendHasSprintForTest != null ||
+      _fetchQualifyingResultsForTest != null ||
+      _fetchPitStopsForTest != null ||
+      _fetchSprintResultsForTest != null;
 
-  @observable
-  AsyncValue<List<PitStopsModel>> pitStops = const AsyncValue.loading();
-
-  @computed
-  CustomException? get screenError => firstException([sprintResults, qualifyingResults, pitStops]);
-
-  /// Есть ли результаты спринта для отображения.
-  bool get hasSprintResults => sprintResults.value?.isNotEmpty ?? false;
+  @override
+  RaceInfoState build() => const RaceInfoState();
 
   /// Загружает квалификацию, пит-стопы и спринт (только если уикенд со спринтом).
-  @action
   Future<void> loadAllData() async {
-    allDataIsLoaded = false;
+    state = state.copyWith(allDataIsLoaded: false);
     final loads = <Future<void>>[loadQualifyingResults(), loadPitStops()];
     if (await _weekendHasSprint()) {
       loads.add(loadSprintResults());
     } else {
-      sprintResults = const AsyncValue.value(value: []);
+      state = state.copyWith(sprintResults: const Loadable.value(value: []));
     }
     await Future.wait(loads);
-    allDataIsLoaded = screenError == null;
+    if (!ref.mounted) {
+      return;
+    }
+    state = state.copyWith(allDataIsLoaded: state.screenError == null);
   }
 
   /// Pull-to-refresh / ErrorBody: сброс кэшей и перезагрузка секций.
-  @action
   Future<void> refreshAll() async {
-    await _dataRefresh?.clearAll();
+    if (_dataRefreshForTest != null) {
+      await _dataRefreshForTest.clearAll();
+    } else if (!_usingTestFetches) {
+      await ref.read(appDataRefreshProvider).clearAll();
+    }
     await loadAllData();
   }
 
@@ -95,7 +132,7 @@ abstract class RaceInfoScreenControllerBase with Store {
     if (forTest != null) {
       return forTest();
     }
-    final repository = scheduleRepository;
+    final repository = _scheduleRepository;
     if (repository == null) {
       return true;
     }
@@ -114,52 +151,53 @@ abstract class RaceInfoScreenControllerBase with Store {
   }
 
   /// Загружает результаты спринта; на обычном уикенде список будет пустым.
-  @action
   Future<void> loadSprintResults() async {
     await runAsyncLoad<ScheduleModel, List<ResultsModel>>(
       fetch: () => _fetchSprintResults(year: raceModel.season, round: raceModel.round),
-      getField: () => sprintResults,
-      setField: (value) => sprintResults = value,
+      getField: () => state.sprintResults,
+      setField: (value) => state = state.copyWith(sprintResults: value),
       onSuccess: (data) {
         if (data!.raceTable.races.isEmpty) {
-          sprintResults = sprintResults.toValue([]);
+          state = state.copyWith(sprintResults: state.sprintResults.toValue([]));
         } else {
-          sprintResults = sprintResults.toValue(data.raceTable.races[0].sprintResults ?? []);
+          state = state.copyWith(
+            sprintResults: state.sprintResults.toValue(data.raceTable.races[0].sprintResults ?? []),
+          );
         }
       },
     );
   }
 
   /// Загружает результаты квалификации для текущей гонки.
-  @action
   Future<void> loadQualifyingResults() async {
     await runAsyncLoad<ScheduleModel, List<QualifyingResultsModel>>(
       fetch: () => _fetchQualifyingResults(year: raceModel.season, round: raceModel.round),
-      getField: () => qualifyingResults,
-      setField: (value) => qualifyingResults = value,
+      getField: () => state.qualifyingResults,
+      setField: (value) => state = state.copyWith(qualifyingResults: value),
       onSuccess: (data) {
         if (data!.raceTable.races.isEmpty) {
-          qualifyingResults = qualifyingResults.toValue([]);
+          state = state.copyWith(qualifyingResults: state.qualifyingResults.toValue([]));
         } else {
-          qualifyingResults = qualifyingResults.toValue(data.raceTable.races[0].qualifyingResults ?? []);
+          state = state.copyWith(
+            qualifyingResults: state.qualifyingResults.toValue(data.raceTable.races[0].qualifyingResults ?? []),
+          );
         }
       },
     );
   }
 
   /// Загружает пит-стопы и подставляет имена пилотов из уже известных данных гонки.
-  @action
   Future<void> loadPitStops() async {
     await runAsyncLoad<ScheduleModel, List<PitStopsModel>>(
       fetch: () => _fetchPitStops(year: raceModel.season, round: raceModel.round),
-      getField: () => pitStops,
-      setField: (value) => pitStops = value,
+      getField: () => state.pitStops,
+      setField: (value) => state = state.copyWith(pitStops: value),
       onSuccess: (data) {
         if (data!.raceTable.races.isEmpty) {
-          pitStops = pitStops.toValue([]);
+          state = state.copyWith(pitStops: state.pitStops.toValue([]));
         } else {
           final stops = data.raceTable.races[0].pitStops ?? [];
-          pitStops = pitStops.toValue(_withDriverNames(stops));
+          state = state.copyWith(pitStops: state.pitStops.toValue(_withDriverNames(stops)));
         }
       },
     );
@@ -177,7 +215,7 @@ abstract class RaceInfoScreenControllerBase with Store {
       final driver = result.driver;
       names.putIfAbsent(driver.driverId, () => '${driver.givenName} ${driver.familyName}');
     }
-    for (final result in sprintResults.value ?? const <ResultsModel>[]) {
+    for (final result in state.sprintResults.value ?? const <ResultsModel>[]) {
       final driver = result.driver;
       names.putIfAbsent(driver.driverId, () => '${driver.givenName} ${driver.familyName}');
     }
@@ -190,7 +228,7 @@ abstract class RaceInfoScreenControllerBase with Store {
     if (forTest != null) {
       return forTest(year: year, round: round);
     }
-    return _raceWeekendRepository!.sprintResults(year: year, round: round);
+    return _raceWeekendRepository.sprintResults(year: year, round: round);
   }
 
   Future<ScheduleModel> _fetchQualifyingResults({required String year, required String round}) {
@@ -198,7 +236,7 @@ abstract class RaceInfoScreenControllerBase with Store {
     if (forTest != null) {
       return forTest(year: year, round: round);
     }
-    return _raceWeekendRepository!.qualifyingResults(year: year, round: round);
+    return _raceWeekendRepository.qualifyingResults(year: year, round: round);
   }
 
   Future<ScheduleModel> _fetchPitStops({required String year, required String round}) {
@@ -206,6 +244,11 @@ abstract class RaceInfoScreenControllerBase with Store {
     if (forTest != null) {
       return forTest(year: year, round: round);
     }
-    return _raceWeekendRepository!.pitStops(year: year, round: round);
+    return _raceWeekendRepository.pitStops(year: year, round: round);
   }
 }
+
+final raceInfoScreenControllerProvider =
+    NotifierProvider.autoDispose.family<RaceInfoScreenController, RaceInfoState, RacesModel>(
+      RaceInfoScreenController.new,
+    );

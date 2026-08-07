@@ -4,6 +4,7 @@ import 'package:f1_pet_project/core/schedule/models/race_table_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/controller_fixtures.dart';
@@ -31,51 +32,78 @@ void main() {
         permanentNumber: null,
       );
 
+  ProviderContainer buildContainer({
+    required PredictorWeekendDetailArgs args,
+    Future<ScheduleModel> Function({required String year, required String round})? fetchQualifying,
+    Future<ScheduleModel> Function({required String year, required String round})? fetchRace,
+    Future<List<DriverModel>> Function()? loadDrivers,
+  }) {
+    return ProviderContainer(
+      overrides: [
+        predictorWeekendDetailControllerProvider(args).overrideWith(
+          () => PredictorWeekendDetailController(
+            args,
+            loadDriversForTest: loadDrivers,
+            fetchQualifyingForTest: fetchQualifying,
+            fetchRaceResultsForTest: fetchRace,
+          ),
+        ),
+      ],
+    );
+  }
+
   group('PredictorWeekendDetailController', () {
     test('load uses cached actuals without network hooks', () async {
       var qualiCalls = 0;
       var raceCalls = 0;
-      final controller = PredictorWeekendDetailController(
-        season: '2026',
-        weekend: weekend,
-        loadDriversForTest: () async => [driver('ver'), driver('lec'), driver('ham')],
-        fetchQualifyingForTest: ({required year, required round}) async {
+      const args = PredictorWeekendDetailArgs(season: '2026', weekend: weekend);
+      final container = buildContainer(
+        args: args,
+        loadDrivers: () async => [driver('ver'), driver('lec'), driver('ham')],
+        fetchQualifying: ({required year, required round}) async {
           qualiCalls++;
           return ControllerFixtures.emptyScheduleModel;
         },
-        fetchRaceResultsForTest: ({required year, required round}) async {
+        fetchRace: ({required year, required round}) async {
           raceCalls++;
           return ControllerFixtures.emptyScheduleModel;
         },
       );
+      addTearDown(container.dispose);
 
-      await controller.load();
+      await container.read(predictorWeekendDetailControllerProvider(args).notifier).load();
+      final state = container.read(predictorWeekendDetailControllerProvider(args));
 
-      expect(controller.allDataIsLoaded, isTrue);
-      expect(controller.screenError, isNull);
+      expect(state.allDataIsLoaded, isTrue);
+      expect(state.screenError, isNull);
       expect(qualiCalls, 0);
       expect(raceCalls, 0);
-      expect(controller.qualifyingCompare.value?.rows, isNotEmpty);
-      expect(controller.raceCompare.value?.rows, isNotEmpty);
-      expect(controller.driversById['ver']?.familyName, 'VER');
+      expect(state.qualifyingCompare.value?.rows, isNotEmpty);
+      expect(state.raceCompare.value?.rows, isNotEmpty);
+      expect(state.driversById['ver']?.familyName, 'VER');
     });
 
     test('selectSession switches active compare', () async {
-      final controller = PredictorWeekendDetailController(
-        season: '2026',
-        weekend: weekend,
-        loadDriversForTest: () async => [driver('ver')],
-        fetchQualifyingForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
-        fetchRaceResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
+      const args = PredictorWeekendDetailArgs(season: '2026', weekend: weekend);
+      final container = buildContainer(
+        args: args,
+        loadDrivers: () async => [driver('ver')],
+        fetchQualifying: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
+        fetchRace: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
       );
+      addTearDown(container.dispose);
+
+      final controller = container.read(predictorWeekendDetailControllerProvider(args).notifier);
       await controller.load();
 
-      expect(controller.selectedSession, PredictorDetailSession.qualifying);
-      expect(controller.activeCompare, same(controller.qualifyingCompare.value));
+      var state = container.read(predictorWeekendDetailControllerProvider(args));
+      expect(state.selectedSession, PredictorDetailSession.qualifying);
+      expect(state.activeCompare, same(state.qualifyingCompare.value));
 
       controller.selectSession(PredictorDetailSession.race);
-      expect(controller.selectedSession, PredictorDetailSession.race);
-      expect(controller.activeCompare, same(controller.raceCompare.value));
+      state = container.read(predictorWeekendDetailControllerProvider(args));
+      expect(state.selectedSession, PredictorDetailSession.race);
+      expect(state.activeCompare, same(state.raceCompare.value));
     });
 
     test('fetches actuals when cache empty and swallows catalog errors', () async {
@@ -106,38 +134,44 @@ void main() {
         ),
       );
 
-      final controller = PredictorWeekendDetailController(
-        season: '2024',
-        weekend: const PredictorWeekendPrediction(
-          round: '1',
-          raceName: 'Bahrain',
-          qualifyingOrder: ['max_verstappen', 'norris'],
-          raceOrder: ['max_verstappen', 'norris'],
-        ),
-        loadDriversForTest: () async => throw StateError('catalog down'),
-        fetchQualifyingForTest: ({required year, required round}) async => scheduleWithResults,
-        fetchRaceResultsForTest: ({required year, required round}) async => scheduleWithResults,
+      const uncached = PredictorWeekendPrediction(
+        round: '1',
+        raceName: 'Bahrain',
+        qualifyingOrder: ['max_verstappen', 'norris'],
+        raceOrder: ['max_verstappen', 'norris'],
       );
+      const args = PredictorWeekendDetailArgs(season: '2024', weekend: uncached);
+      final container = buildContainer(
+        args: args,
+        loadDrivers: () async => throw StateError('catalog down'),
+        fetchQualifying: ({required year, required round}) async => scheduleWithResults,
+        fetchRace: ({required year, required round}) async => scheduleWithResults,
+      );
+      addTearDown(container.dispose);
 
-      await controller.load();
-      expect(controller.allDataIsLoaded, isTrue);
-      expect(controller.driversById, isEmpty);
-      expect(controller.qualifyingCompare.isValue, isTrue);
-      expect(controller.raceCompare.isValue, isTrue);
+      await container.read(predictorWeekendDetailControllerProvider(args).notifier).load();
+      final state = container.read(predictorWeekendDetailControllerProvider(args));
+      expect(state.allDataIsLoaded, isTrue);
+      expect(state.driversById, isEmpty);
+      expect(state.qualifyingCompare.isValue, isTrue);
+      expect(state.raceCompare.isValue, isTrue);
     });
 
     test('refreshAll reloads', () async {
       var loads = 0;
-      final controller = PredictorWeekendDetailController(
-        season: '2026',
-        weekend: weekend,
-        loadDriversForTest: () async {
+      const args = PredictorWeekendDetailArgs(season: '2026', weekend: weekend);
+      final container = buildContainer(
+        args: args,
+        loadDrivers: () async {
           loads++;
           return [driver('ver')];
         },
-        fetchQualifyingForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
-        fetchRaceResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
+        fetchQualifying: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
+        fetchRace: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
       );
+      addTearDown(container.dispose);
+
+      final controller = container.read(predictorWeekendDetailControllerProvider(args).notifier);
       await controller.load();
       await controller.refreshAll();
       expect(loads, 2);

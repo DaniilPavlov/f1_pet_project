@@ -2,6 +2,7 @@ import 'package:f1_pet_project/common/widgets/tables/tournament_constructors_tab
 import 'package:f1_pet_project/common/widgets/tables/tournament_tables_section.dart';
 import 'package:f1_pet_project/l10n/app_localizations_ru.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/pump_app.dart';
@@ -22,6 +23,7 @@ void main() {
         ),
         surfaceSize: const Size(800, 1200),
         locale: const Locale('ru'),
+        wrapApp: (app) => ProviderScope(child: app),
       );
 
       expect(find.text('Standings'), findsOneWidget);

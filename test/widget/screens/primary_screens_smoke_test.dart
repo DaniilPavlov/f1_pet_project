@@ -36,21 +36,18 @@ void main() {
     });
 
     testWidgets('ResultsScreen shows last race', (tester) async {
-      final live = LiveWeekendController(
-        fetchScoreboardForTest: ({bool forceRefresh = false}) async => const EspnScoreboardEvent(
-          name: 'Monaco Grand Prix',
-          shortName: 'MON',
-          statusState: 'post',
-          statusDetail: 'Final',
-          circuitName: 'Monaco',
-          sessions: [],
-        ),
-      );
-      addTearDown(live.dispose);
-
       await tester.pumpScreenSmoke(
         const ResultsScreen(),
-        liveWeekend: live,
+        liveWeekend: () => LiveWeekendController(
+          fetchScoreboardForTest: ({bool forceRefresh = false}) async => const EspnScoreboardEvent(
+            name: 'Monaco Grand Prix',
+            shortName: 'MON',
+            statusState: 'post',
+            statusDetail: 'Final',
+            circuitName: 'Monaco',
+            sessions: [],
+          ),
+        ),
         surfaceSize: const Size(800, 2400),
       );
 

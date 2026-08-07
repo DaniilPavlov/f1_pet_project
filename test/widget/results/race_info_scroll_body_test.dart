@@ -1,4 +1,4 @@
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/core/results/race_info/components/pit_stops_table_appbar.dart';
 import 'package:f1_pet_project/core/results/race_info/components/qualification_table_appbar.dart';
 import 'package:f1_pet_project/core/results/race_info/components/race_info_scroll_body.dart';
@@ -20,16 +20,19 @@ void main() {
 
   group('RaceInfoScrollBody', () {
     testWidgets('renders race header and sections', (tester) async {
-      final controller = RaceInfoScreenController(
-        raceModel: ControllerFixtures.race,
-        weekendHasSprintForTest: () async => false,
-        fetchQualifyingResultsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
-        fetchPitStopsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
-      );
-      await controller.loadAllData();
+      final race = ControllerFixtures.race;
 
       await tester.pumpApp(
-        RaceInfoScrollBody(controller: controller),
+        RaceInfoScrollBody(
+          raceModel: race,
+          state: RaceInfoState(
+            allDataIsLoaded: true,
+            sprintResults: const Loadable.value(value: []),
+            qualifyingResults: Loadable.value(value: race.qualifyingResults ?? []),
+            pitStops: Loadable.value(value: race.pitStops ?? []),
+          ),
+          onRefresh: () async {},
+        ),
         surfaceSize: const Size(800, 1400),
         locale: const Locale('ru'),
       );
@@ -40,18 +43,19 @@ void main() {
     });
 
     testWidgets('includes sprint section when sprint results exist', (tester) async {
-      final controller = RaceInfoScreenController(
-        raceModel: ControllerFixtures.race,
-        weekendHasSprintForTest: () async => true,
-        fetchQualifyingResultsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
-        fetchPitStopsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
-        fetchSprintResultsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
-      );
-      await controller.loadAllData();
-      controller.sprintResults = AsyncValue.value(value: ControllerFixtures.race.results);
+      final race = ControllerFixtures.race;
 
       await tester.pumpApp(
-        RaceInfoScrollBody(controller: controller),
+        RaceInfoScrollBody(
+          raceModel: race,
+          state: RaceInfoState(
+            allDataIsLoaded: true,
+            sprintResults: Loadable.value(value: race.results ?? []),
+            qualifyingResults: Loadable.value(value: race.qualifyingResults ?? []),
+            pitStops: Loadable.value(value: race.pitStops ?? []),
+          ),
+          onRefresh: () async {},
+        ),
         surfaceSize: const Size(800, 1600),
         locale: const Locale('ru'),
       );

@@ -4,9 +4,10 @@ import 'package:f1_pet_project/core/news/models/news_article_model.dart';
 import 'package:f1_pet_project/core/schedule/components/schedule_race_featured_card.dart';
 import 'package:f1_pet_project/l10n/app_localizations_en.dart';
 import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
 
 import '../../helpers/controller_fixtures.dart';
 import '../../helpers/pump_app.dart';
@@ -24,9 +25,10 @@ void main() {
       );
 
       await tester.pumpApp(
-        Provider<AnalyticsGateway>.value(
-          value: const NoOpAnalyticsGateway(),
-          child: NewsArticleTile(article: article, locale: const Locale('en')),
+        NewsArticleTile(article: article, locale: const Locale('en')),
+        wrapApp: (app) => ProviderScope(
+          overrides: [analyticsGatewayProvider.overrideWithValue(const NoOpAnalyticsGateway())],
+          child: app,
         ),
       );
 

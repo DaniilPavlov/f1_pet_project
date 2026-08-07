@@ -6,10 +6,14 @@ import 'package:f1_pet_project/core/news/models/news_article_model.dart';
 import 'package:f1_pet_project/core/results/driver/controllers/driver_screen_controller/driver_screen_controller.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
 import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../helpers/controller_fixtures.dart';
 import '../../../../helpers/fake_espn_media_repository.dart';
+import '../../../../helpers/fake_repositories.dart';
+import '../../../../helpers/riverpod_container.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +27,38 @@ void main() {
     related: [],
   );
 
+  final args = DriverScreenArgs(driver: ControllerFixtures.driver);
+
+  (DriverScreenController, ProviderContainer) createController({
+    FakeEspnMediaRepository? espn,
+    Future<CareerStats<ConstructorModel>> Function({
+      required String driverId,
+      List<ConstructorModel> current,
+    })?
+    fetchCareerStatsForTest,
+    bool useCareerRepository = false,
+  }) {
+    late DriverScreenController controller;
+    final container = createNotifierContainer(
+      overrides: [
+        if (espn != null) espnMediaRepositoryProvider.overrideWithValue(espn),
+        if (useCareerRepository)
+          driverCareerRepositoryProvider.overrideWithValue(FakeDriverCareerRepository()),
+        driverScreenControllerProvider(args).overrideWith(
+          () => controller = DriverScreenController(
+            args,
+            fetchCareerStatsForTest: fetchCareerStatsForTest,
+          ),
+        ),
+      ],
+    )
+    ..listen(driverScreenControllerProvider(args), (_, _) {});
+    controller = container.read(driverScreenControllerProvider(args).notifier);
+    return (controller, container);
+  }
+
+  DriverState stateOf(ProviderContainer container) => container.read(driverScreenControllerProvider(args));
+
   group('DriverScreenController', () {
     test('loadAll sets career and espn card', () async {
       final espn = FakeEspnMediaRepository(
@@ -31,40 +67,36 @@ void main() {
           news: [NewsArticleModel(id: 1, headline: 'News', description: 'd', webUrl: 'https://x.com')],
         ),
       );
-      final controller = DriverScreenController(
-        driver: ControllerFixtures.driver,
-        espnMediaRepository: espn,
-        fetchCareerStatsForTest: ({required driverId, List<ConstructorModel> current = const []}) async => career,
-      );
+      final (controller, container) = createController(espn: espn, useCareerRepository: true);
 
       await controller.loadAll();
 
-      expect(controller.isLoaded, isTrue);
-      expect(controller.careerStats.value?.wins, 20);
-      expect(controller.espnCardData.photoUrl, 'https://example.com/photo.png');
-      expect(controller.espnCardData.news, hasLength(1));
+      final state = stateOf(container);
+      expect(state.isLoaded, isTrue);
+      expect(state.careerStats.value?.wins, 20);
+      expect(state.espnCardData.photoUrl, 'https://example.com/photo.png');
+      expect(state.espnCardData.news, hasLength(1));
       expect(espn.driverCardCalls, 1);
     });
 
     test('espn failure yields empty card without failing career', () async {
-      final controller = DriverScreenController(
-        driver: ControllerFixtures.driver,
-        espnMediaRepository: FakeEspnMediaRepository(throwOnDriverCard: true),
-        fetchCareerStatsForTest: ({required driverId, List<ConstructorModel> current = const []}) async => career,
+      final (controller, container) = createController(
+        espn: FakeEspnMediaRepository(throwOnDriverCard: true),
+        useCareerRepository: true,
       );
 
       await controller.loadAll();
 
-      expect(controller.isLoaded, isTrue);
-      expect(controller.screenError, isNull);
-      expect(controller.espnCardData.photoUrl, isNull);
-      expect(controller.espnCardData.news, isEmpty);
+      final state = stateOf(container);
+      expect(state.isLoaded, isTrue);
+      expect(state.screenError, isNull);
+      expect(state.espnCardData.photoUrl, isNull);
+      expect(state.espnCardData.news, isEmpty);
     });
 
     test('career failure sets screenError', () async {
-      final controller = DriverScreenController(
-        driver: ControllerFixtures.driver,
-        espnMediaRepository: FakeEspnMediaRepository(),
+      final (controller, container) = createController(
+        espn: FakeEspnMediaRepository(),
         fetchCareerStatsForTest: ({required driverId, List<ConstructorModel> current = const []}) async {
           throw ResponseParseException('career failed');
         },
@@ -72,15 +104,15 @@ void main() {
 
       await controller.loadCareerStats();
 
-      expect(controller.careerStats.isError, isTrue);
-      expect(controller.screenError, isNotNull);
+      final state = stateOf(container);
+      expect(state.careerStats.isError, isTrue);
+      expect(state.screenError, isNotNull);
     });
 
     test('refreshAll reloads career', () async {
       var calls = 0;
-      final controller = DriverScreenController(
-        driver: ControllerFixtures.driver,
-        espnMediaRepository: FakeEspnMediaRepository(),
+      final (controller, container) = createController(
+        espn: FakeEspnMediaRepository(),
         fetchCareerStatsForTest: ({required driverId, List<ConstructorModel> current = const []}) async {
           calls++;
           return career;
@@ -89,23 +121,19 @@ void main() {
 
       await controller.refreshAll();
       expect(calls, 1);
-      expect(controller.isLoaded, isTrue);
+      expect(stateOf(container).isLoaded, isTrue);
     });
 
     test('isEspnLoading while card fetch is pending', () async {
       final gate = Completer<EspnDriverCardData>();
       final espn = FakeEspnMediaRepository(driverCardFuture: gate.future);
-      final controller = DriverScreenController(
-        driver: ControllerFixtures.driver,
-        espnMediaRepository: espn,
-        fetchCareerStatsForTest: ({required driverId, List<ConstructorModel> current = const []}) async => career,
-      );
+      final (controller, container) = createController(espn: espn, useCareerRepository: true);
 
       final pending = controller.loadEspnCard();
-      expect(controller.isEspnLoading, isTrue);
+      expect(stateOf(container).isEspnLoading, isTrue);
       gate.complete(const EspnDriverCardData(photoUrl: 'https://x.com/p.png'));
       await pending;
-      expect(controller.isEspnLoading, isFalse);
+      expect(stateOf(container).isEspnLoading, isFalse);
     });
   });
 }

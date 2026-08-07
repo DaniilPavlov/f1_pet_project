@@ -7,16 +7,15 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Блокирующий экран: версия ниже минимума из Remote Config.
-class ForceUpdateScreen extends StatelessWidget {
+class ForceUpdateScreen extends ConsumerWidget {
   const ForceUpdateScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final localeController = context.read<LocaleController>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final localeState = ref.watch(localeControllerProvider);
 
     return Scaffold(
       backgroundColor: context.colors.white,
@@ -30,23 +29,19 @@ class ForceUpdateScreen extends StatelessWidget {
             children: [
               Align(
                 alignment: Alignment.centerRight,
-                child: Observer(
-                  builder: (context) {
-                    return GestureDetector(
-                      onTap: localeController.toggle,
-                      behavior: HitTestBehavior.opaque,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                        child: Text(
-                          localeController.localeCodeLabel,
-                          style: AppStyles.body.copyWith(
-                            color: context.colors.black,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                child: GestureDetector(
+                  onTap: () => ref.read(localeControllerProvider.notifier).toggle(),
+                  behavior: HitTestBehavior.opaque,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    child: Text(
+                      localeState.localeCodeLabel,
+                      style: AppStyles.body.copyWith(
+                        color: context.colors.black,
+                        fontWeight: FontWeight.w600,
                       ),
-                    );
-                  },
+                    ),
+                  ),
                 ),
               ),
               Expanded(

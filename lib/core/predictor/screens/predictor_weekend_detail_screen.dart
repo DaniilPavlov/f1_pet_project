@@ -12,15 +12,12 @@ import 'package:f1_pet_project/core/predictor/components/predictor_auth_gate.dar
 import 'package:f1_pet_project/core/predictor/components/predictor_comparison_tile.dart';
 import 'package:f1_pet_project/core/predictor/controllers/predictor_weekend_detail_controller/predictor_weekend_detail_controller.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_weekend_prediction.dart';
-import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
-import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Экран сравнения предикта уикенда с фактическими результатами.
 @RoutePage()
-class PredictorWeekendDetailScreen extends StatelessWidget {
+class PredictorWeekendDetailScreen extends ConsumerWidget {
   const PredictorWeekendDetailScreen({
     required this.season,
     required this.weekend,
@@ -31,118 +28,135 @@ class PredictorWeekendDetailScreen extends StatelessWidget {
   final PredictorWeekendPrediction weekend;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final args = PredictorWeekendDetailArgs(season: season, weekend: weekend);
+
     return PredictorAuthGate(
-      child: Provider(
-        create: (context) => PredictorWeekendDetailController(
-          season: season,
-          weekend: weekend,
-          raceWeekendRepository: context.read<RaceWeekendRepository>(),
-          driverCatalogRepository: context.read<DriverCatalogRepository>(),
-        )..load(),
-        child: Scaffold(
-          appBar: CustomAppBar(
-            title: weekend.raceName,
-            onPop: () => context.router.maybePop(),
-          ),
-          body: SafeArea(
-            child: Observer(
-              builder: (context) {
-                final controller = context.read<PredictorWeekendDetailController>();
-                if (!controller.allDataIsLoaded &&
-                    controller.qualifyingCompare.isLoading &&
-                    controller.raceCompare.isLoading) {
-                  return const CustomLoadingIndicator();
-                }
-                if (controller.screenError != null &&
-                    controller.qualifyingCompare.value == null &&
-                    controller.raceCompare.value == null) {
-                  return ErrorBody(
-                    onTap: controller.refreshAll,
-                    title: controller.screenError!.title,
-                    subtitle: controller.screenError!.subtitle,
-                  );
-                }
+      child: _WeekendDetailAuthedScreen(args: args, title: weekend.raceName),
+    );
+  }
+}
 
-                final compare = controller.activeCompare;
-                final points = compare?.points ?? 0;
+class _WeekendDetailAuthedScreen extends ConsumerStatefulWidget {
+  const _WeekendDetailAuthedScreen({required this.args, required this.title});
 
-                return RefreshIndicator(
-                  color: AppTheme.red,
-                  onRefresh: controller.refreshAll,
-                  child: ScrollConfiguration(
-                    behavior: AntiGlowBehavior(),
-                    child: ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.fromLTRB(
-                        StaticData.defaultHorizontalPadding,
-                        StaticData.defaultVerticalPadding,
-                        StaticData.defaultHorizontalPadding,
-                        StaticData.defaultVerticalPadding,
-                      ),
-                      children: [
-                        Text(
-                          context.l10n.predictorSessionPoints(points),
-                          style: AppStyles.caption.copyWith(color: context.colors.textGray),
-                        ),
-                        const SizedBox(height: 12),
-                        SegmentedButton<PredictorDetailSession>(
-                          showSelectedIcon: false,
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.resolveWith((states) {
-                              if (states.contains(WidgetState.selected)) {
-                                return AppTheme.red;
-                              }
-                              return context.colors.white;
-                            }),
-                            foregroundColor: WidgetStateProperty.resolveWith((states) {
-                              if (states.contains(WidgetState.selected)) {
-                                return AppTheme.onChrome;
-                              }
-                              return context.colors.black;
-                            }),
-                            side: WidgetStatePropertyAll(
-                              BorderSide(color: context.colors.textGray.withValues(alpha: 0.35)),
-                            ),
-                          ),
-                          segments: [
-                            ButtonSegment(
-                              value: PredictorDetailSession.qualifying,
-                              label: Text(context.l10n.qualifying),
-                            ),
-                            ButtonSegment(
-                              value: PredictorDetailSession.race,
-                              label: Text(context.l10n.race),
-                            ),
-                          ],
-                          selected: {controller.selectedSession},
-                          onSelectionChanged: (value) => controller.selectSession(value.first),
-                        ),
-                        const SizedBox(height: 16),
-                        if (compare == null || compare.rows.isEmpty)
-                          Text(
-                            context.l10n.predictorCompareEmpty,
-                            style: AppStyles.caption.copyWith(color: context.colors.textGray),
-                          )
-                        else
-                          ...compare.rows.map(
-                            (row) => Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: PredictorComparisonTile(
-                                row: row,
-                                driversById: Map.of(controller.driversById),
-                                predictedLabel: context.l10n.predictorPredicted,
-                                actualLabel: context.l10n.predictorActual,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
+  final PredictorWeekendDetailArgs args;
+  final String title;
+
+  @override
+  ConsumerState<_WeekendDetailAuthedScreen> createState() => _WeekendDetailAuthedScreenState();
+}
+
+class _WeekendDetailAuthedScreenState extends ConsumerState<_WeekendDetailAuthedScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(predictorWeekendDetailControllerProvider(widget.args).notifier).load());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(predictorWeekendDetailControllerProvider(widget.args));
+    final controller = ref.read(predictorWeekendDetailControllerProvider(widget.args).notifier);
+
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: widget.title,
+        onPop: () => context.router.maybePop(),
+      ),
+      body: SafeArea(
+        child: Builder(
+          builder: (context) {
+            if (!state.allDataIsLoaded && state.qualifyingCompare.isLoading && state.raceCompare.isLoading) {
+              return const CustomLoadingIndicator();
+            }
+            if (state.screenError != null &&
+                state.qualifyingCompare.value == null &&
+                state.raceCompare.value == null) {
+              return ErrorBody(
+                onTap: controller.refreshAll,
+                title: state.screenError!.title,
+                subtitle: state.screenError!.subtitle,
+              );
+            }
+
+            final compare = state.activeCompare;
+            final points = compare?.points ?? 0;
+
+            return RefreshIndicator(
+              color: AppTheme.red,
+              onRefresh: controller.refreshAll,
+              child: ScrollConfiguration(
+                behavior: AntiGlowBehavior(),
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(
+                    StaticData.defaultHorizontalPadding,
+                    StaticData.defaultVerticalPadding,
+                    StaticData.defaultHorizontalPadding,
+                    StaticData.defaultVerticalPadding,
                   ),
-                );
-              },
-            ),
-          ),
+                  children: [
+                    Text(
+                      context.l10n.predictorSessionPoints(points),
+                      style: AppStyles.caption.copyWith(color: context.colors.textGray),
+                    ),
+                    const SizedBox(height: 12),
+                    SegmentedButton<PredictorDetailSession>(
+                      showSelectedIcon: false,
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.resolveWith((states) {
+                          if (states.contains(WidgetState.selected)) {
+                            return AppTheme.red;
+                          }
+                          return context.colors.white;
+                        }),
+                        foregroundColor: WidgetStateProperty.resolveWith((states) {
+                          if (states.contains(WidgetState.selected)) {
+                            return AppTheme.onChrome;
+                          }
+                          return context.colors.black;
+                        }),
+                        side: WidgetStatePropertyAll(
+                          BorderSide(color: context.colors.textGray.withValues(alpha: 0.35)),
+                        ),
+                      ),
+                      segments: [
+                        ButtonSegment(
+                          value: PredictorDetailSession.qualifying,
+                          label: Text(context.l10n.qualifying),
+                        ),
+                        ButtonSegment(
+                          value: PredictorDetailSession.race,
+                          label: Text(context.l10n.race),
+                        ),
+                      ],
+                      selected: {state.selectedSession},
+                      onSelectionChanged: (value) => controller.selectSession(value.first),
+                    ),
+                    const SizedBox(height: 16),
+                    if (compare == null || compare.rows.isEmpty)
+                      Text(
+                        context.l10n.predictorCompareEmpty,
+                        style: AppStyles.caption.copyWith(color: context.colors.textGray),
+                      )
+                    else
+                      ...compare.rows.map(
+                        (row) => Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: PredictorComparisonTile(
+                            row: row,
+                            driversById: Map.of(state.driversById),
+                            predictedLabel: context.l10n.predictorPredicted,
+                            actualLabel: context.l10n.predictorActual,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

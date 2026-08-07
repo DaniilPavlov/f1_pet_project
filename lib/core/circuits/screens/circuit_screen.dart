@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
-import 'package:f1_pet_project/common/repositories/wikipedia/wikipedia_page_image_repository.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/helpers/share_helper.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
@@ -17,74 +16,81 @@ import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/circuit_screen_shimmer.dart';
 import 'package:f1_pet_project/core/circuits/controllers/circuit_screen_controller/circuit_screen_controller.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
-import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.dart';
 import 'package:f1_pet_project/core/circuits/stats/circuit_layout_assets.dart';
-import 'package:f1_pet_project/core/circuits/stats/circuit_stats_repository.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:f1_pet_project/services/analytics/analytics_event.dart';
-import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
-import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:f1_pet_project/services/deeplinks/f1pet_deep_links.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Экран трассы: схема, stats, информация и история побед.
 @RoutePage()
-class CircuitScreen extends StatelessWidget {
+class CircuitScreen extends ConsumerStatefulWidget {
   const CircuitScreen({required this.circuitModel, super.key});
 
   final CircuitModel circuitModel;
 
   @override
-  Widget build(BuildContext context) {
-    return Provider(
-      create: (context) {
-        context.read<AnalyticsGateway>().log(
+  ConsumerState<CircuitScreen> createState() => _CircuitScreenState();
+}
+
+class _CircuitScreenState extends ConsumerState<CircuitScreen> {
+  var _analyticsLogged = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (!_analyticsLogged) {
+        _analyticsLogged = true;
+        ref.read(analyticsGatewayProvider).log(
               CircuitOpened(
-                circuitId: circuitModel.circuitId,
-                circuitName: circuitModel.circuitName,
+                circuitId: widget.circuitModel.circuitId,
+                circuitName: widget.circuitModel.circuitName,
               ),
             );
-        return CircuitScreenController(
-          circuit: circuitModel,
-          statsRepository: context.read<CircuitStatsRepository>(),
-          circuitsRepository: context.read<CircuitsRepository>(),
-          wikipediaRepository: context.read<WikipediaPageImageRepository>(),
-          dataRefresh: context.read<AppDataRefresh>(),
-        )..loadAll();
-      },
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.l10n.circuitInfoTitle,
-          showPreferences: false,
-          onPop: () => context.router.maybePop(),
-          onShare: () => ShareHelper.shareDeepLink(
-            context: context,
-            deepLink: F1PetDeepLinks.circuit(circuitModel.circuitId),
-            contentType: 'circuit',
-          ),
+      }
+      ref.read(circuitScreenControllerProvider(widget.circuitModel).notifier).loadAll();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final circuitModel = widget.circuitModel;
+    final state = ref.watch(circuitScreenControllerProvider(circuitModel));
+    final controller = ref.read(circuitScreenControllerProvider(circuitModel).notifier);
+
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: context.l10n.circuitInfoTitle,
+        showPreferences: false,
+        onPop: () => context.router.maybePop(),
+        onShare: () => ShareHelper.shareDeepLink(
+          context: context,
+          deepLink: F1PetDeepLinks.circuit(circuitModel.circuitId),
+          contentType: 'circuit',
         ),
-        body: SafeArea(
-          child: Observer(
-            builder: (context) {
-              final controller = context.read<CircuitScreenController>();
-              final error = controller.screenError;
-              if (error != null) {
-                return ErrorBody(onTap: controller.refreshAll, title: error.title, subtitle: error.subtitle);
-              }
-              if (!controller.isLoaded) {
-                return const CircuitScreenShimmer();
-              }
+      ),
+      body: SafeArea(
+        child: Builder(
+          builder: (context) {
+            final error = state.screenError;
+            if (error != null) {
+              return ErrorBody(onTap: controller.refreshAll, title: error.title, subtitle: error.subtitle);
+            }
+            if (!state.isLoaded) {
+              return const CircuitScreenShimmer();
+            }
 
-              final wins = controller.winners.value!;
-              final hasLayout = CircuitLayoutAssets.hasLayout(circuitModel.circuitId);
-              final stats = controller.circuitStats;
+            final wins = state.winners.value!;
+            final hasLayout = CircuitLayoutAssets.hasLayout(circuitModel.circuitId);
+            final stats = state.circuitStats;
 
-              return RefreshIndicator(
-                color: AppTheme.red,
-                onRefresh: controller.refreshAll,
-                child: CustomScrollView(
+            return RefreshIndicator(
+              color: AppTheme.red,
+              onRefresh: controller.refreshAll,
+              child: CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 scrollBehavior: AntiGlowBehavior(),
                 slivers: [
@@ -101,8 +107,8 @@ class CircuitScreen extends StatelessWidget {
                             CircuitLayoutImage(circuitId: circuitModel.circuitId, height: 220)
                           else
                             NetworkHeroPhoto(
-                              photoUrl: controller.circuitPhotoUrl,
-                              isLoading: controller.isPhotoLoading,
+                              photoUrl: state.circuitPhotoUrl,
+                              isLoading: state.isPhotoLoading,
                               placeholderIcon: Icons.map_outlined,
                               fit: BoxFit.contain,
                             ),
@@ -153,9 +159,8 @@ class CircuitScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              );
-            },
-          ),
+            );
+          },
         ),
       ),
     );

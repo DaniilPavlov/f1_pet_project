@@ -1,5 +1,5 @@
 import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/career/espn_driver_photo.dart';
 import 'package:f1_pet_project/common/widgets/career/network_hero_photo.dart';
@@ -20,6 +20,7 @@ import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/l10n/app_localizations_en.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/controller_fixtures.dart';
@@ -226,10 +227,12 @@ void main() {
       );
 
       await tester.pumpApp(
-        SingleChildScrollView(
-          child: WeekendScoreboardSection(
-            scoreboard: AsyncValue.value(value: event),
-            locale: const Locale('en'),
+        ProviderScope(
+          child: SingleChildScrollView(
+            child: WeekendScoreboardSection(
+              scoreboardForTest: Loadable.value(value: event),
+              localeForTest: const Locale('en'),
+            ),
           ),
         ),
       );

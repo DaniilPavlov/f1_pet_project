@@ -1,10 +1,8 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
-import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/season_picker_bottom_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 /// Read-only поле сезона: открывает список годов из Jolpica `seasons/`.
 class SeasonPickerField extends StatelessWidget {
@@ -46,10 +44,7 @@ class SeasonPickerField extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => SeasonPickerBottomSheet(
-        seasonsRepository: context.read<SeasonsRepository>(),
-        selectedYear: controller.text,
-      ),
+      builder: (_) => SeasonPickerBottomSheet(selectedYear: controller.text),
     );
 
     if (selected == null || !context.mounted) {

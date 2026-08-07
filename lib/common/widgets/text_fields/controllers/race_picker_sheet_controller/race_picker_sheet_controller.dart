@@ -1,35 +1,47 @@
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
-import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
-import 'package:mobx/mobx.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-part 'race_picker_sheet_controller.g.dart';
+/// Состояние bottom sheet выбора гонки.
+@immutable
+class RacePickerSheetState {
+  const RacePickerSheetState({this.races = const Loadable.loading()});
 
-/// MobX-контроллер bottom sheet выбора гонки.
-class RacePickerSheetController = RacePickerSheetControllerBase with _$RacePickerSheetController;
+  final Loadable<List<RacesModel>> races;
+
+  RacePickerSheetState copyWith({Loadable<List<RacesModel>>? races}) {
+    return RacePickerSheetState(races: races ?? this.races);
+  }
+}
 
 /// Загружает этапы выбранного сезона.
-abstract class RacePickerSheetControllerBase with Store {
-  RacePickerSheetControllerBase({
-    required this.seasonYear,
-    required RaceWeekendRepository raceWeekendRepository,
-  }) : _raceWeekendRepository = raceWeekendRepository;
+class RacePickerSheetController extends Notifier<RacePickerSheetState> {
+  RacePickerSheetController(this.seasonYear);
 
   final String seasonYear;
-  final RaceWeekendRepository _raceWeekendRepository;
 
-  @observable
-  AsyncValue<List<RacesModel>> races = const AsyncValue.loading();
+  @override
+  RacePickerSheetState build() => const RacePickerSheetState();
 
   /// Подтягивает гонки сезона.
-  @action
   Future<void> load() async {
-    races = races.toLoading();
+    state = state.copyWith(races: state.races.toLoading());
     try {
-      final list = await _raceWeekendRepository.seasonRaces(year: seasonYear);
-      races = races.toValue(list);
+      final list = await ref.read(raceWeekendRepositoryProvider).seasonRaces(year: seasonYear);
+      if (!ref.mounted) {
+        return;
+      }
+      state = state.copyWith(races: state.races.toValue(list));
     } on Object catch (error) {
-      races = races.toError(error.toString());
+      if (!ref.mounted) {
+        return;
+      }
+      state = state.copyWith(races: state.races.toError(error.toString()));
     }
   }
 }
+
+final racePickerSheetControllerProvider = NotifierProvider.autoDispose
+    .family<RacePickerSheetController, RacePickerSheetState, String>(RacePickerSheetController.new);

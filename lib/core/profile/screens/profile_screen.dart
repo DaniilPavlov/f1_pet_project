@@ -9,26 +9,23 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/theme/theme_controller.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
-import 'package:f1_pet_project/core/predictor/repositories/predictor_leaderboard_repository.dart';
-import 'package:f1_pet_project/core/predictor/repositories/predictor_repository.dart';
 import 'package:f1_pet_project/core/profile/controllers/notifications_preference_controller/notifications_preference_controller.dart';
 import 'package:f1_pet_project/core/profile/utils/auth_error_l10n.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
-import 'package:f1_pet_project/services/auth/auth_service.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
 
 /// Вкладка профиля: аккаунт, тема/язык, уведомления.
 @RoutePage()
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final auth = context.read<AuthService>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final auth = ref.watch(authServiceProvider);
 
     return Scaffold(
       appBar: CustomAppBar(title: context.l10n.profileTitle, showPreferences: false),
@@ -107,8 +104,8 @@ class ProfileScreen extends StatelessWidget {
                       onTap: () async {
                         await auth.signOut();
                         if (context.mounted) {
-                          context.read<PredictorRepository>().clearMemoryCache();
-                          context.read<PredictorLeaderboardRepository>().clearMemoryCache();
+                          ref.read(predictorRepositoryProvider).clearMemoryCache();
+                          ref.read(predictorLeaderboardRepositoryProvider).clearMemoryCache();
                         }
                       },
                     ),
@@ -143,113 +140,106 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
-class _ThemeRow extends StatelessWidget {
+class _ThemeRow extends ConsumerWidget {
   const _ThemeRow();
 
   @override
-  Widget build(BuildContext context) {
-    final themeController = context.read<ThemeController>();
-    return Observer(
-      builder: (context) {
-        return ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(context.l10n.profileTheme, style: AppStyles.body.copyWith(color: context.colors.black)),
-          trailing: Icon(themeController.preferenceIcon, color: AppTheme.red),
-          onTap: themeController.cycle,
-        );
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeControllerProvider);
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(context.l10n.profileTheme, style: AppStyles.body.copyWith(color: context.colors.black)),
+      trailing: Icon(themeState.preferenceIcon, color: AppTheme.red),
+      onTap: () => ref.read(themeControllerProvider.notifier).cycle(),
     );
   }
 }
 
-class _LocaleRow extends StatelessWidget {
+class _LocaleRow extends ConsumerWidget {
   const _LocaleRow();
 
   @override
-  Widget build(BuildContext context) {
-    final localeController = context.read<LocaleController>();
-    return Observer(
-      builder: (context) {
-        return ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(context.l10n.profileLanguage, style: AppStyles.body.copyWith(color: context.colors.black)),
-          trailing: Text(
-            localeController.localeCodeLabel,
-            style: AppStyles.body.copyWith(color: AppTheme.red, fontWeight: FontWeight.w600),
-          ),
-          onTap: () async {
-            await localeController.toggle();
-            if (!context.mounted) {
-              return;
-            }
-            final prefs = context.read<NotificationsPreferenceController>();
-            if (prefs.effectivelyEnabled) {
-              await prefs.resync(locale: localeController.locale);
-            }
-          },
-        );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final localeState = ref.watch(localeControllerProvider);
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(context.l10n.profileLanguage, style: AppStyles.body.copyWith(color: context.colors.black)),
+      trailing: Text(
+        localeState.localeCodeLabel,
+        style: AppStyles.body.copyWith(color: AppTheme.red, fontWeight: FontWeight.w600),
+      ),
+      onTap: () async {
+        await ref.read(localeControllerProvider.notifier).toggle();
+        if (!context.mounted) {
+          return;
+        }
+        final prefs = ref.read(notificationsPreferenceControllerProvider);
+        if (prefs.effectivelyEnabled) {
+          await ref.read(notificationsPreferenceControllerProvider.notifier).resync(
+            locale: ref.read(localeControllerProvider).locale,
+          );
+        }
       },
     );
   }
 }
 
-class _NotificationsRow extends StatelessWidget {
+class _NotificationsRow extends ConsumerWidget {
   const _NotificationsRow();
 
   @override
-  Widget build(BuildContext context) {
-    final prefs = context.read<NotificationsPreferenceController>();
-    final localeController = context.read<LocaleController>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final prefs = ref.watch(notificationsPreferenceControllerProvider);
+    final locale = ref.watch(localeControllerProvider).locale;
+    final canToggle = prefs.canToggle;
+    final canTogglePractice = prefs.canTogglePractice;
 
-    return Observer(
-      builder: (context) {
-        final canToggle = prefs.canToggle;
-        final canTogglePractice = prefs.canTogglePractice;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                context.l10n.profileRaceReminders,
-                style: AppStyles.body.copyWith(color: context.colors.black),
-              ),
-              subtitle: Text(
-                canToggle
-                    ? context.l10n.profileRaceRemindersSubtitle
-                    : context.l10n.profileRaceRemindersDisabledByRemote,
-                style: AppStyles.caption.copyWith(color: context.colors.textGray),
-              ),
-              value: prefs.effectivelyEnabled,
-              activeThumbColor: AppTheme.red,
-              onChanged: !canToggle
-                  ? null
-                  : (value) => prefs.setEnabled(enabled: value, locale: localeController.locale),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(
+            context.l10n.profileRaceReminders,
+            style: AppStyles.body.copyWith(color: context.colors.black),
+          ),
+          subtitle: Text(
+            canToggle
+                ? context.l10n.profileRaceRemindersSubtitle
+                : context.l10n.profileRaceRemindersDisabledByRemote,
+            style: AppStyles.caption.copyWith(color: context.colors.textGray),
+          ),
+          value: prefs.effectivelyEnabled,
+          activeThumbColor: AppTheme.red,
+          onChanged: !canToggle
+              ? null
+              : (value) => ref.read(notificationsPreferenceControllerProvider.notifier).setEnabled(
+                    enabled: value,
+                    locale: locale,
+                  ),
+        ),
+        SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(
+            context.l10n.profilePracticeReminders,
+            style: AppStyles.body.copyWith(
+              color: canTogglePractice ? context.colors.black : context.colors.textGray,
             ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                context.l10n.profilePracticeReminders,
-                style: AppStyles.body.copyWith(
-                  color: canTogglePractice ? context.colors.black : context.colors.textGray,
-                ),
-              ),
-              subtitle: Text(
-                context.l10n.profilePracticeRemindersSubtitle,
-                style: AppStyles.caption.copyWith(color: context.colors.textGray),
-              ),
-              value: prefs.practiceRemindersEffectivelyEnabled,
-              activeThumbColor: AppTheme.red,
-              onChanged: !canTogglePractice
-                  ? null
-                  : (value) => prefs.setPracticeRemindersEnabled(
-                      enabled: value,
-                      locale: localeController.locale,
-                    ),
-            ),
-          ],
-        );
-      },
+          ),
+          subtitle: Text(
+            context.l10n.profilePracticeRemindersSubtitle,
+            style: AppStyles.caption.copyWith(color: context.colors.textGray),
+          ),
+          value: prefs.practiceRemindersEffectivelyEnabled,
+          activeThumbColor: AppTheme.red,
+          onChanged: !canTogglePractice
+              ? null
+              : (value) => ref.read(notificationsPreferenceControllerProvider.notifier).setPracticeRemindersEnabled(
+                    enabled: value,
+                    locale: locale,
+                  ),
+        ),
+      ],
     );
   }
 }

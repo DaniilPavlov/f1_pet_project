@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 /// Контейнер с закруглёнными краями и картой внутри.
@@ -37,6 +36,7 @@ class MapContainer extends StatefulWidget {
 /// Состояние карты: разрешения геолокации и жизненный цикл.
 class _MapContainerState extends State<MapContainer> with WidgetsBindingObserver {
   late final MapContainerController _controller;
+
   /// Ждём возврат из системных настроек после bottom sheet — не на каждый resume.
   bool _awaitingReturnFromSettings = false;
   bool _userPositionExceptionIsShowed = false;
@@ -45,7 +45,7 @@ class _MapContainerState extends State<MapContainer> with WidgetsBindingObserver
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _controller = MapContainerController(points: widget.points)..init();
+    _controller = MapContainerController(points: widget.points);
     if (widget.onAddressChanged != null) {
       _controller.mapController.updateUserPosition();
     }
@@ -115,37 +115,34 @@ class _MapContainerState extends State<MapContainer> with WidgetsBindingObserver
 
   @override
   Widget build(BuildContext context) {
-    return Provider<MapContainerController>.value(
-      value: _controller,
-      child: SizedBox(
-        height: 327,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: CustomMap(
-            mapController: _controller.mapController,
-            onPlacemarkPressed: widget.onPlacemarkPressed,
-            mapObjectIcon: Assets.icons.pinUnselected,
-            selectedMapObjectIcon: Assets.icons.pinRed,
-            userIcon: Assets.icons.locationUser,
-            points: widget.points,
-            placemarkIconSize: 1,
-            selectedPlacemarkIconSize: 1.2,
-            clusterColor: AppTheme.red,
-            clusterTextStyle: AppStyles.body.copyWith(
-              fontSize: 24,
-              height: 1,
-              color: Colors.black,
-              fontWeight: FontWeight.w700,
-            ),
-            onGetUserPositionError: _onGetUserPositionError,
-            onCameraPositionChanged: widget.onAddressChanged != null
-                ? (pos, _, _) => widget.onCameraPositionChanged!(pos.target.latitude, pos.target.longitude)
-                : null,
-            userInterface: MapControlsWidget(
-              onPlusPressed: _controller.mapController.zoomIn,
-              onMinusPressed: _controller.mapController.zoomOut,
-              onUserLocationPressed: _controller.onUserLocationPressed,
-            ),
+    return SizedBox(
+      height: 327,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: CustomMap(
+          mapController: _controller.mapController,
+          onPlacemarkPressed: widget.onPlacemarkPressed,
+          mapObjectIcon: Assets.icons.pinUnselected,
+          selectedMapObjectIcon: Assets.icons.pinRed,
+          userIcon: Assets.icons.locationUser,
+          points: widget.points,
+          placemarkIconSize: 1,
+          selectedPlacemarkIconSize: 1.2,
+          clusterColor: AppTheme.red,
+          clusterTextStyle: AppStyles.body.copyWith(
+            fontSize: 24,
+            height: 1,
+            color: Colors.black,
+            fontWeight: FontWeight.w700,
+          ),
+          onGetUserPositionError: _onGetUserPositionError,
+          onCameraPositionChanged: widget.onAddressChanged != null
+              ? (pos, _, _) => widget.onCameraPositionChanged!(pos.target.latitude, pos.target.longitude)
+              : null,
+          userInterface: MapControlsWidget(
+            onPlusPressed: _controller.mapController.zoomIn,
+            onMinusPressed: _controller.mapController.zoomOut,
+            onUserLocationPressed: _controller.onUserLocationPressed,
           ),
         ),
       ),

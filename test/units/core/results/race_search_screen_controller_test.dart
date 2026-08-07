@@ -1,127 +1,131 @@
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/race_picker_field.dart';
 import 'package:f1_pet_project/core/results/race_search/controllers/race_search_screen_controller/race_search_screen_controller.dart';
-import 'package:f1_pet_project/core/schedule/models/races_model.dart';
+import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
-import 'package:f1_pet_project/l10n/app_localizations_ru.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/controller_fixtures.dart';
-import '../../../mobx/mobx_testing.dart';
+import '../../../helpers/riverpod_container.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  const languageCode = 'ru';
+
+  (RaceSearchScreenController, ProviderContainer) createController({
+    Future<ScheduleModel> Function({required String year, required String round})? fetchRaceResultsForTest,
+  }) {
+    late RaceSearchScreenController controller;
+    final container = createNotifierContainer(
+      overrides: [
+        raceSearchScreenControllerProvider(languageCode).overrideWith(
+          () => controller = RaceSearchScreenController(
+            languageCode,
+            fetchRaceResultsForTest: fetchRaceResultsForTest,
+            analyticsForTest: const NoOpAnalyticsGateway(),
+          ),
+        ),
+      ],
+    )..listen(raceSearchScreenControllerProvider(languageCode), (_, _) {});
+    controller = container.read(raceSearchScreenControllerProvider(languageCode).notifier);
+    return (controller, container);
+  }
+
+  RaceSearchState stateOf(ProviderContainer container) =>
+      container.read(raceSearchScreenControllerProvider(languageCode));
+
   group('RaceSearchScreenController', () {
     group('checkFields', () {
-      mobxTest(
-        'marks fields as invalid when empty',
-        build: () => RaceSearchScreenController(l10n: AppLocalizationsRu()),
-        value: (store) => store.fieldsInputted,
-        act: (store) => store.checkFields(),
-        expect: () => [false],
-      );
+      test('marks fields as invalid when empty', () {
+        final (controller, container) = createController();
 
-      mobxTest(
-        'marks fields as valid when year and round are filled',
-        build: () => RaceSearchScreenController(l10n: AppLocalizationsRu()),
-        value: (store) => store.fieldsInputted,
-        act: (store) {
-          store.yearController.text = '2024';
-          store.roundController.text = '5';
-          store.checkFields();
-        },
-        expect: () => [false, true],
-      );
+        controller.checkFields();
+
+        expect(stateOf(container).fieldsInputted, isFalse);
+      });
+
+      test('marks fields as valid when year and round are filled', () {
+        final (controller, container) = createController();
+        controller.yearController.text = '2024';
+        controller.roundController.text = '5';
+
+        controller.checkFields();
+
+        expect(stateOf(container).fieldsInputted, isTrue);
+      });
     });
 
     group('loadRaceResults', () {
-      mobxTest(
-        'sets value on success',
-        build: () => RaceSearchScreenController(
-          l10n: AppLocalizationsRu(),
+      test('sets value on success', () async {
+        final (controller, container) = createController(
           fetchRaceResultsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
-        ),
-        value: (store) => store.searchedRace,
-        act: (store) async {
-          store.yearController.text = '2024';
-          store.roundController.text = '5';
-          await store.loadRaceResults();
-        },
-        expect: () => [
-          isA<AsyncValue<RacesModel?>>()
-              .having((e) => e.status, 'status', AsyncStatus.value)
-              .having((e) => e.value, 'value', isNull),
-          isA<AsyncValue<RacesModel?>>().having((e) => e.status, 'status', AsyncStatus.loading),
-          isA<AsyncValue<RacesModel?>>()
-              .having((e) => e.status, 'status', AsyncStatus.value)
-              .having((e) => e.value?.raceName, 'raceName', 'Monaco Grand Prix'),
-        ],
-        verify: (store) {
-          expect(store.dataIsLoaded, isTrue);
-          expect(store.errorMessage, isEmpty);
-        },
-      );
+        );
+        controller.yearController.text = '2024';
+        controller.roundController.text = '5';
 
-      mobxTest(
-        'sets message when race is not found',
-        build: () => RaceSearchScreenController(
-          l10n: AppLocalizationsRu(),
+        await controller.loadRaceResults();
+
+        final state = stateOf(container);
+        expect(state.searchedRace.isValue, isTrue);
+        expect(state.searchedRace.value?.raceName, 'Monaco Grand Prix');
+        expect(state.dataIsLoaded, isTrue);
+        expect(state.errorMessage, isEmpty);
+      });
+
+      test('sets message when race is not found', () async {
+        final (controller, container) = createController(
           fetchRaceResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
-        ),
-        value: (store) => store.errorMessage,
-        act: (store) async {
-          store.yearController.text = '2024';
-          store.roundController.text = '99';
-          await store.loadRaceResults();
-        },
-        expect: () => ['', 'По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.'],
-      );
+        );
+        controller.yearController.text = '2024';
+        controller.roundController.text = '99';
 
-      mobxTest(
-        'sets error on failure',
-        build: () => RaceSearchScreenController(
-          l10n: AppLocalizationsRu(),
-          fetchRaceResultsForTest: ({required year, required round}) async => throw ResponseParseException('parse error'),
-        ),
-        value: (store) => store.searchedRace,
-        act: (store) async {
-          store.yearController.text = '2024';
-          store.roundController.text = '5';
-          await store.loadRaceResults();
-        },
-        expect: () => [
-          isA<AsyncValue<RacesModel?>>()
-              .having((e) => e.status, 'status', AsyncStatus.value)
-              .having((e) => e.value, 'value', isNull),
-          isA<AsyncValue<RacesModel?>>().having((e) => e.status, 'status', AsyncStatus.loading),
-          isA<AsyncValue<RacesModel?>>().having((e) => e.status, 'status', AsyncStatus.error),
-        ],
-      );
+        await controller.loadRaceResults();
+
+        expect(
+          stateOf(container).errorMessage,
+          'По вашему запросу гонок не найдено. Проверьте введенные данные и попробуйте еще раз.',
+        );
+      });
+
+      test('sets error on failure', () async {
+        final (controller, container) = createController(
+          fetchRaceResultsForTest: ({required year, required round}) async =>
+              throw ResponseParseException('parse error'),
+        );
+        controller.yearController.text = '2024';
+        controller.roundController.text = '5';
+
+        await controller.loadRaceResults();
+
+        expect(stateOf(container).searchedRace.isError, isTrue);
+      });
     });
 
     test('onSeasonSelected clears race and updates selectedSeason', () {
-      final controller = RaceSearchScreenController(l10n: AppLocalizationsRu())
-        ..yearController.text = '2024'
-        ..roundController.text = '5'
-        ..raceDisplayController.text = 'Monaco'
-        ..onSeasonSelected();
+      final (controller, container) = createController();
+      controller.yearController.text = '2024';
+      controller.roundController.text = '5';
+      controller.raceDisplayController.text = 'Monaco';
 
-      expect(controller.selectedSeason, '2024');
+      controller.onSeasonSelected();
+
+      final state = stateOf(container);
+      expect(state.selectedSeason, '2024');
       expect(controller.roundController.text, isEmpty);
       expect(controller.raceDisplayController.text, isEmpty);
-      expect(controller.fieldsInputted, isFalse);
-      controller.dispose();
+      expect(state.fieldsInputted, isFalse);
     });
 
     test('onRacePicked fills round and validates fields', () {
-      final controller = RaceSearchScreenController(l10n: AppLocalizationsRu())
-        ..yearController.text = '2024'
-        ..onRacePicked(const RacePick(round: '7', title: 'Monaco'));
+      final (controller, container) = createController();
+      controller.yearController.text = '2024';
+
+      controller.onRacePicked(const RacePick(round: '7', title: 'Monaco'));
 
       expect(controller.roundController.text, '7');
-      expect(controller.fieldsInputted, isTrue);
-      controller.dispose();
+      expect(stateOf(container).fieldsInputted, isTrue);
     });
   });
 }

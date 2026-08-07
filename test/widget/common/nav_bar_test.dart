@@ -3,9 +3,9 @@ import 'package:f1_pet_project/common/widgets/nav_bar/nav_bar_item.dart';
 import 'package:f1_pet_project/common/widgets/nav_bar/navbar.dart';
 import 'package:f1_pet_project/l10n/app_localizations_en.dart';
 import 'package:f1_pet_project/services/analytics/analytics_event.dart';
-import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
 
 import '../../helpers/pump_app.dart';
 import '../../helpers/recording_analytics_gateway.dart';
@@ -32,8 +32,12 @@ void main() {
       final l10n = AppLocalizationsEn();
 
       await tester.pumpApp(
-        Provider<AnalyticsGateway>.value(value: gateway, child: const NavBar()),
+        const NavBar(),
         wrapInScaffold: true,
+        wrapApp: (app) => ProviderScope(
+          overrides: [analyticsGatewayProvider.overrideWithValue(gateway)],
+          child: app,
+        ),
       );
 
       expect(find.text(l10n.navHome), findsOneWidget);

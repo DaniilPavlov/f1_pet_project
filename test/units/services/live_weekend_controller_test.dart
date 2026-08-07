@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:f1_pet_project/services/live_weekend/live_weekend_controller.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/fake_repositories.dart';
@@ -27,10 +32,34 @@ EspnScoreboardSession _session({required String statusState, String abbr = 'Race
 
 void main() {
   group('LiveWeekendController', () {
+    (ProviderContainer, LiveWeekendController) create({
+      Future<EspnScoreboardEvent?> Function({bool forceRefresh})? fetchScoreboardForTest,
+      Duration? pollIntervalForTest,
+      List<Override> extraOverrides = const [],
+    }) {
+      late LiveWeekendController controller;
+      final container = ProviderContainer(
+        overrides: [
+          liveWeekendControllerProvider.overrideWith(
+            () => controller = LiveWeekendController(
+              fetchScoreboardForTest: fetchScoreboardForTest,
+              pollIntervalForTest: pollIntervalForTest,
+            ),
+          ),
+          ...extraOverrides,
+        ],
+      );
+      addTearDown(container.dispose);
+      controller = container.read(liveWeekendControllerProvider.notifier);
+      return (container, controller);
+    }
+
+    LiveWeekendState stateOf(ProviderContainer container) => container.read(liveWeekendControllerProvider);
+
     test('sets scoreboard value and starts polling when live', () {
       fakeAsync((async) {
         var loads = 0;
-        final controller = LiveWeekendController(
+        final (container, controller) = create(
           fetchScoreboardForTest: ({bool forceRefresh = false}) async {
             loads++;
             return _event(
@@ -46,9 +75,10 @@ void main() {
         async.flushMicrotasks();
         expect(done, isTrue);
 
-        expect(controller.scoreboard.isValue, isTrue);
-        expect(controller.isLive, isTrue);
-        expect(controller.liveSessionAbbreviation, 'Race');
+        final state = stateOf(container);
+        expect(state.scoreboard.isValue, isTrue);
+        expect(state.isLive, isTrue);
+        expect(state.liveSessionAbbreviation, 'Race');
         expect(controller.isPollingForTest, isTrue);
         expect(loads, 1);
 
@@ -56,15 +86,12 @@ void main() {
           ..elapse(const Duration(seconds: 1))
           ..flushMicrotasks();
         expect(loads, 2);
-
-        controller.dispose();
-        expect(controller.isPollingForTest, isFalse);
       });
     });
 
     test('does not poll when not live', () {
       fakeAsync((async) {
-        final controller = LiveWeekendController(
+        final (container, controller) = create(
           fetchScoreboardForTest: ({bool forceRefresh = false}) async => _event(statusState: 'post'),
           pollIntervalForTest: const Duration(seconds: 1),
         );
@@ -74,15 +101,14 @@ void main() {
         async.flushMicrotasks();
         expect(done, isTrue);
 
-        expect(controller.isLive, isFalse);
+        expect(stateOf(container).isLive, isFalse);
         expect(controller.isPollingForTest, isFalse);
-        controller.dispose();
       });
     });
 
     test('stops polling on background and resumes on foreground when live', () {
       fakeAsync((async) {
-        final controller = LiveWeekendController(
+        final (_, controller) = create(
           fetchScoreboardForTest: ({bool forceRefresh = false}) async => _event(
             statusState: 'in',
             sessions: [_session(statusState: 'in', abbr: 'Q')],
@@ -102,15 +128,13 @@ void main() {
         controller.onAppLifecycleChanged(AppLifecycleState.resumed);
         async.flushMicrotasks();
         expect(controller.isPollingForTest, isTrue);
-
-        controller.dispose();
       });
     });
 
     test('does not start a second timer while already polling', () {
       fakeAsync((async) {
         var loads = 0;
-        final controller = LiveWeekendController(
+        final (_, controller) = create(
           fetchScoreboardForTest: ({bool forceRefresh = false}) async {
             loads++;
             return _event(
@@ -137,34 +161,33 @@ void main() {
           ..elapse(const Duration(seconds: 2))
           ..flushMicrotasks();
         expect(loads, loadsBeforeTick + 1);
-
-        controller.dispose();
       });
     });
 
     test('keeps null scoreboard usable when fetch fails', () async {
-      final controller = LiveWeekendController(
+      final (container, controller) = create(
         fetchScoreboardForTest: ({bool forceRefresh = false}) async => throw Exception('network'),
       );
 
       await controller.loadScoreboard();
 
-      expect(controller.scoreboard.isValue, isTrue);
-      expect(controller.scoreboard.value, isNull);
+      final state = stateOf(container);
+      expect(state.scoreboard.isValue, isTrue);
+      expect(state.scoreboard.value, isNull);
       expect(controller.isPollingForTest, isFalse);
-      controller.dispose();
     });
 
     test('uses shared scoreboard repository cache when fresh', () async {
       final event = _event(statusState: 'post');
       final repo = FakeEspnScoreboardRepository(cached: event, fresh: true);
-      final controller = LiveWeekendController(scoreboardRepository: repo);
+      final (container, controller) = create(
+        extraOverrides: [espnScoreboardRepositoryProvider.overrideWithValue(repo)],
+      );
 
       await controller.loadScoreboard();
 
-      expect(controller.scoreboard.value, event);
+      expect(stateOf(container).scoreboard.value, event);
       expect(repo.loadCalls, 0);
-      controller.dispose();
     });
 
     test('shows stale cache then refreshes via repository', () async {
@@ -174,22 +197,21 @@ void main() {
         sessions: [_session(statusState: 'in')],
       );
       final repo = FakeEspnScoreboardRepository(cached: stale, fresh: false, next: fresh);
-      final controller = LiveWeekendController(
-        scoreboardRepository: repo,
+      final (container, controller) = create(
         pollIntervalForTest: const Duration(days: 1),
+        extraOverrides: [espnScoreboardRepositoryProvider.overrideWithValue(repo)],
       );
 
       await controller.loadScoreboard();
 
-      expect(controller.scoreboard.value, fresh);
+      expect(stateOf(container).scoreboard.value, fresh);
       expect(repo.loadCalls, 1);
-      controller.dispose();
     });
 
     test('poll tick stops when no longer live', () {
       fakeAsync((async) {
         var loads = 0;
-        final controller = LiveWeekendController(
+        final (container, controller) = create(
           fetchScoreboardForTest: ({bool forceRefresh = false}) async {
             loads++;
             if (loads == 1) {
@@ -201,34 +223,34 @@ void main() {
             return _event(statusState: 'post');
           },
           pollIntervalForTest: const Duration(seconds: 1),
-        )..loadScoreboard();
+        );
+        unawaited(controller.loadScoreboard());
         async.flushMicrotasks();
         expect(controller.isPollingForTest, isTrue);
 
         async
           ..elapse(const Duration(seconds: 1))
           ..flushMicrotasks();
-        expect(controller.isLive, isFalse);
+        expect(stateOf(container).isLive, isFalse);
         expect(controller.isPollingForTest, isFalse);
-        controller.dispose();
       });
     });
 
     test('detached lifecycle stops polling', () {
       fakeAsync((async) {
-        final controller = LiveWeekendController(
+        final (_, controller) = create(
           fetchScoreboardForTest: ({bool forceRefresh = false}) async => _event(
             statusState: 'in',
             sessions: [_session(statusState: 'in')],
           ),
           pollIntervalForTest: const Duration(seconds: 1),
-        )..loadScoreboard();
+        );
+        unawaited(controller.loadScoreboard());
         async.flushMicrotasks();
         expect(controller.isPollingForTest, isTrue);
 
         controller.onAppLifecycleChanged(AppLifecycleState.detached);
         expect(controller.isPollingForTest, isFalse);
-        controller.dispose();
       });
     });
   });

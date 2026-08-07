@@ -1,70 +1,87 @@
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/core/results/hall_of_fame/controllers/hall_of_fame_screen_controller/hall_of_fame_screen_controller.dart';
-import 'package:f1_pet_project/data/models/standings/standings_lists_model.dart';
+import 'package:f1_pet_project/data/models/standings/standings_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../helpers/controller_fixtures.dart';
 import '../../../../helpers/fake_repositories.dart';
-import '../../../../mobx/mobx_testing.dart';
+import '../../../../helpers/riverpod_container.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  (HallOfFameScreenController, ProviderContainer) createController({
+    FakeSeasonsRepository? seasonsRepository,
+    Future<StandingsModel> Function(String year)? fetchDriversStandingsForTest,
+    Future<StandingsModel> Function(String year)? fetchConstructorsStandingsForTest,
+  }) {
+    late HallOfFameScreenController controller;
+    final container = createNotifierContainer(
+      overrides: [
+        hallOfFameScreenControllerProvider.overrideWith(
+          () => controller = HallOfFameScreenController(
+            seasonsRepositoryForTest: seasonsRepository,
+            fetchDriversStandingsForTest: fetchDriversStandingsForTest,
+            fetchConstructorsStandingsForTest: fetchConstructorsStandingsForTest,
+          ),
+        ),
+      ],
+    )..listen(hallOfFameScreenControllerProvider, (_, _) {});
+    controller = container.read(hallOfFameScreenControllerProvider.notifier);
+    return (controller, container);
+  }
+
   group('HallOfFameScreenController', () {
     group('checkFields', () {
-      mobxTest(
-        'marks fields as valid for 4-digit year',
-        build: HallOfFameScreenController.new,
-        value: (store) => store.fieldsInputted,
-        act: (store) => store.checkFields(),
-        expect: () => [true],
-      );
+      test('marks fields as valid for 4-digit year', () {
+        final (controller, container) = createController();
 
-      mobxTest(
-        'marks fields as invalid for short year',
-        build: HallOfFameScreenController.new,
-        value: (store) => store.fieldsInputted,
-        act: (store) {
-          store.yearController.text = '20';
-          store.checkFields();
-        },
-        expect: () => [true, false],
-      );
+        controller.checkFields();
+
+        expect(container.read(hallOfFameScreenControllerProvider).fieldsInputted, isTrue);
+      });
+
+      test('marks fields as invalid for short year', () {
+        final (controller, container) = createController();
+        controller.yearController.text = '20';
+
+        controller.checkFields();
+
+        expect(container.read(hallOfFameScreenControllerProvider).fieldsInputted, isFalse);
+      });
     });
 
     group('loadDriversStandings', () {
-      mobxTest(
-        'sets value on success',
-        build: () =>
-            HallOfFameScreenController(fetchDriversStandingsForTest: (_) async => ControllerFixtures.driversStandingsModel),
-        value: (store) => store.driversStandings,
-        act: (store) => store.loadDriversStandings(year: '2024'),
-        expect: () => [
-          isA<AsyncValue<List<StandingsListsModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
-          isA<AsyncValue<List<StandingsListsModel>>>()
-              .having((e) => e.status, 'status', AsyncStatus.value)
-              .having((e) => e.value?.length, 'length', 1),
-        ],
-      );
+      test('sets value on success', () async {
+        final (controller, container) = createController(
+          fetchDriversStandingsForTest: (_) async => ControllerFixtures.driversStandingsModel,
+        );
+
+        await controller.loadDriversStandings(year: '2024');
+
+        final state = container.read(hallOfFameScreenControllerProvider);
+        expect(state.driversStandings.isValue, isTrue);
+        expect(state.driversStandings.value, hasLength(1));
+      });
     });
 
     group('loadAllData', () {
       test('loads standings for selected year', () async {
-        final controller = HallOfFameScreenController(
+        final (controller, container) = createController(
           fetchDriversStandingsForTest: (_) async => ControllerFixtures.driversStandingsModel,
           fetchConstructorsStandingsForTest: (_) async => ControllerFixtures.constructorsStandingsModel,
         );
 
         await controller.loadAllData();
 
-        expect(controller.driversStandings.isValue, isTrue);
-        expect(controller.constructorsStandings.isValue, isTrue);
-        controller.dispose();
+        final state = container.read(hallOfFameScreenControllerProvider);
+        expect(state.driversStandings.isValue, isTrue);
+        expect(state.constructorsStandings.isValue, isTrue);
       });
     });
 
     test('bootstrap sets year from seasons and loads data', () async {
-      final controller = HallOfFameScreenController(
+      final (controller, container) = createController(
         seasonsRepository: FakeSeasonsRepository(years: ['2024', '2023']),
         fetchDriversStandingsForTest: (_) async => ControllerFixtures.driversStandingsModel,
         fetchConstructorsStandingsForTest: (_) async => ControllerFixtures.constructorsStandingsModel,
@@ -73,14 +90,14 @@ void main() {
       await controller.bootstrap();
 
       expect(controller.yearController.text, '2024');
-      expect(controller.driversStandings.isValue, isTrue);
-      expect(controller.constructorsStandings.isValue, isTrue);
-      controller.dispose();
+      final state = container.read(hallOfFameScreenControllerProvider);
+      expect(state.driversStandings.isValue, isTrue);
+      expect(state.constructorsStandings.isValue, isTrue);
     });
 
     test('refreshAll reloads both tables', () async {
       var calls = 0;
-      final controller = HallOfFameScreenController(
+      final (controller, container) = createController(
         fetchDriversStandingsForTest: (_) async {
           calls++;
           return ControllerFixtures.driversStandingsModel;
@@ -94,19 +111,17 @@ void main() {
       await controller.refreshAll();
 
       expect(calls, 2);
-      expect(controller.driversStandings.isValue, isTrue);
-      controller.dispose();
+      expect(container.read(hallOfFameScreenControllerProvider).driversStandings.isValue, isTrue);
     });
 
     test('screenError when drivers standings fail', () async {
-      final controller = HallOfFameScreenController(
+      final (controller, container) = createController(
         fetchDriversStandingsForTest: (_) async => throw Exception('drivers down'),
         fetchConstructorsStandingsForTest: (_) async => ControllerFixtures.constructorsStandingsModel,
       );
 
       await controller.loadDriversStandings(year: '2024');
-      expect(controller.screenError, isNotNull);
-      controller.dispose();
+      expect(container.read(hallOfFameScreenControllerProvider).screenError, isNotNull);
     });
   });
 }

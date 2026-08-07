@@ -5,10 +5,11 @@ import 'package:f1_pet_project/common/utils/theme/app_theme_data.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/l10n/app_localizations_en.dart';
 import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
 
 import '../../helpers/controller_fixtures.dart';
 
@@ -40,8 +41,8 @@ void main() {
   group('ShareHelper', () {
     testWidgets('no-ops when overlay is missing', (tester) async {
       await tester.pumpWidget(
-        Provider<AnalyticsGateway>.value(
-          value: const NoOpAnalyticsGateway(),
+        ProviderScope(
+          overrides: [analyticsGatewayProvider.overrideWithValue(const NoOpAnalyticsGateway())],
           child: Directionality(
             textDirection: TextDirection.ltr,
             child: Builder(
@@ -74,13 +75,13 @@ void main() {
 
     testWidgets('shareCareerCard passes deepLink text', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppThemeData.light(),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Provider<AnalyticsGateway>.value(
-            value: const NoOpAnalyticsGateway(),
-            child: Scaffold(
+        ProviderScope(
+          overrides: [analyticsGatewayProvider.overrideWithValue(const NoOpAnalyticsGateway())],
+          child: MaterialApp(
+            theme: AppThemeData.light(),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
               body: Builder(
                 builder: (context) => TextButton(
                   onPressed: () => ShareHelper.shareCareerCard(
@@ -114,13 +115,13 @@ void main() {
 
     testWidgets('shareRaceResultsCard completes with overlay present', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppThemeData.light(),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Provider<AnalyticsGateway>.value(
-            value: const NoOpAnalyticsGateway(),
-            child: Scaffold(
+        ProviderScope(
+          overrides: [analyticsGatewayProvider.overrideWithValue(const NoOpAnalyticsGateway())],
+          child: MaterialApp(
+            theme: AppThemeData.light(),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
               body: Builder(
                 builder: (context) => TextButton(
                   onPressed: () => ShareHelper.shareRaceResultsCard(
@@ -145,13 +146,13 @@ void main() {
 
     testWidgets('shareWeekendSummary completes with overlay present', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppThemeData.light(),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Provider<AnalyticsGateway>.value(
-            value: const NoOpAnalyticsGateway(),
-            child: Scaffold(
+        ProviderScope(
+          overrides: [analyticsGatewayProvider.overrideWithValue(const NoOpAnalyticsGateway())],
+          child: MaterialApp(
+            theme: AppThemeData.light(),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
               body: Builder(
                 builder: (context) => TextButton(
                   onPressed: () => ShareHelper.shareWeekendSummary(
@@ -191,11 +192,11 @@ void main() {
 
     testWidgets('shareDeepLink completes', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: AppThemeData.light(),
-          home: Provider<AnalyticsGateway>.value(
-            value: const NoOpAnalyticsGateway(),
-            child: Scaffold(
+        ProviderScope(
+          overrides: [analyticsGatewayProvider.overrideWithValue(const NoOpAnalyticsGateway())],
+          child: MaterialApp(
+            theme: AppThemeData.light(),
+            home: Scaffold(
               body: Builder(
                 builder: (context) => TextButton(
                   onPressed: () => ShareHelper.shareDeepLink(

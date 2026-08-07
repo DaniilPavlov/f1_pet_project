@@ -6,8 +6,7 @@ import 'package:f1_pet_project/common/packages/custom_yandex_map/src/map_control
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 /// Виджет Яндекс.Карты с метками, кластерами и геопозицией.
@@ -55,43 +54,56 @@ class CustomMap extends StatefulWidget {
 
 /// Состояние виджета карты: создание контроллера и обработка жестов.
 class _CustomMapState extends State<CustomMap> {
-  late final CustomMapController _controller;
+  late final ProviderContainer _container;
 
   @override
   void initState() {
     super.initState();
-    _controller = CustomMapController(
-      mapController: widget.mapController,
-      points: widget.points,
-      clusterColor: widget.clusterColor ?? Theme.of(context).primaryColor,
-      mapObjectIcon: widget.mapObjectIcon,
-      selectedMapObjectIcon: widget.selectedMapObjectIcon,
-      userIcon: widget.userIcon,
-      placemarkIconSize: widget.placemarkIconSize,
-      selectedPlacemarkIconSize: widget.selectedPlacemarkIconSize,
-      clusterTextStyle: widget.clusterTextStyle,
+    _container = ProviderContainer(
+      overrides: [
+        customMapControllerProvider.overrideWith(
+          () => CustomMapController(
+            mapController: widget.mapController,
+            points: widget.points,
+            clusterColor: widget.clusterColor ?? Theme.of(context).primaryColor,
+            mapObjectIcon: widget.mapObjectIcon,
+            selectedMapObjectIcon: widget.selectedMapObjectIcon,
+            userIcon: widget.userIcon,
+            placemarkIconSize: widget.placemarkIconSize,
+            selectedPlacemarkIconSize: widget.selectedPlacemarkIconSize,
+            clusterTextStyle: widget.clusterTextStyle,
+          ),
+        ),
+      ],
     );
   }
 
   @override
   void didUpdateWidget(CustomMap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _controller.updatePoints(widget.points);
+    // Нельзя менять provider state синхронно в didUpdateWidget.
+    Future(() {
+      if (!mounted) {
+        return;
+      }
+      _container.read(customMapControllerProvider.notifier).updatePoints(widget.points);
+    });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _container.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Provider<CustomMapController>.value(
-      value: _controller,
-      child: Observer(
-        builder: (context) {
-          final controller = context.read<CustomMapController>();
+    return UncontrolledProviderScope(
+      container: _container,
+      child: Consumer(
+        builder: (context, ref, _) {
+          final state = ref.watch(customMapControllerProvider);
+          final controller = ref.read(customMapControllerProvider.notifier);
           return Stack(
             children: [
               Listener(
@@ -101,7 +113,7 @@ class _CustomMapState extends State<CustomMap> {
                   mode2DEnabled: true,
                   tiltGesturesEnabled: false,
                   rotateGesturesEnabled: false,
-                  mapObjects: List<MapObject>.from(controller.streamedMapObjects),
+                  mapObjects: List<MapObject>.from(state.streamedMapObjects),
                   key: controller.mapKey,
                   onCameraPositionChanged: widget.onCameraPositionChanged,
                   gestureRecognizers: {}..add(const Factory<EagerGestureRecognizer>(EagerGestureRecognizer.new)),
@@ -123,7 +135,7 @@ class _CustomMapState extends State<CustomMap> {
               if (widget.userInterface != null) widget.userInterface!,
               if (widget.onCameraPositionChanged != null)
                 IgnorePointer(
-                  child: Center(child: AnimatedMapPin(isDragging: controller.isDragging)),
+                  child: Center(child: AnimatedMapPin(isDragging: state.isDragging)),
                 ),
             ],
           );

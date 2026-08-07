@@ -5,10 +5,12 @@ import 'package:f1_pet_project/data/models/standings/driver/driver_standings_mod
 import 'package:f1_pet_project/data/models/standings/standings_lists_model.dart';
 import 'package:f1_pet_project/data/models/standings/standings_model.dart';
 import 'package:f1_pet_project/data/models/standings/standings_table_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../helpers/controller_fixtures.dart';
 import '../../../../helpers/fake_repositories.dart';
+import '../../../../helpers/riverpod_container.dart';
 
 RacesModel _race({required String round, required String name, required String date}) {
   final base = ControllerFixtures.race;
@@ -83,6 +85,31 @@ StandingsModel _standingsConstructors({required String round, String points = '2
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  (SeasonRewindScreenController, ProviderContainer) createController({
+    FakeSeasonsRepository? seasonsRepository,
+    Future<List<RacesModel>> Function(String year)? fetchSeasonRacesForTest,
+    Future<StandingsModel> Function(String year, String round)? fetchDriversStandingsForTest,
+    Future<StandingsModel> Function(String year, String round)? fetchConstructorsStandingsForTest,
+    Duration playInterval = const Duration(milliseconds: 1500),
+  }) {
+    late SeasonRewindScreenController controller;
+    final container = createNotifierContainer(
+      overrides: [
+        seasonRewindScreenControllerProvider.overrideWith(
+          () => controller = SeasonRewindScreenController(
+            seasonsRepositoryForTest: seasonsRepository,
+            fetchSeasonRacesForTest: fetchSeasonRacesForTest,
+            fetchDriversStandingsForTest: fetchDriversStandingsForTest,
+            fetchConstructorsStandingsForTest: fetchConstructorsStandingsForTest,
+            playInterval: playInterval,
+          ),
+        ),
+      ],
+    )..listen(seasonRewindScreenControllerProvider, (_, _) {});
+    controller = container.read(seasonRewindScreenControllerProvider.notifier);
+    return (controller, container);
+  }
+
   group('SeasonRewindScreenController', () {
     test('completedRacesAsOf drops future rounds', () {
       final races = [
@@ -91,16 +118,13 @@ void main() {
         _race(round: '3', name: 'C', date: '2099-12-01'),
       ];
 
-      final completed = SeasonRewindScreenControllerBase.completedRacesAsOf(
-        races,
-        DateTime.utc(2024, 3, 15),
-      );
+      final completed = SeasonRewindScreenController.completedRacesAsOf(races, DateTime.utc(2024, 3, 15));
 
       expect(completed.map((r) => r.round), ['1', '2']);
     });
 
     test('bootstrap sets year, races and standings', () async {
-      final controller = SeasonRewindScreenController(
+      final (controller, container) = createController(
         seasonsRepository: FakeSeasonsRepository(years: ['2024', '2023']),
         fetchSeasonRacesForTest: (_) async => _threeRaces,
         fetchDriversStandingsForTest: (_, round) async => _standingsDrivers(round: round),
@@ -110,16 +134,16 @@ void main() {
       await controller.bootstrap();
 
       expect(controller.yearController.text, '2024');
-      expect(controller.races.value?.length, 3);
-      expect(controller.selectedRoundIndex, 2);
-      expect(controller.selectedRace?.raceName, 'Australian Grand Prix');
-      expect(controller.chartRound, '3');
-      expect(controller.hasChartData, isTrue);
-      controller.dispose();
+      final state = container.read(seasonRewindScreenControllerProvider);
+      expect(state.races.value?.length, 3);
+      expect(state.selectedRoundIndex, 2);
+      expect(state.selectedRace?.raceName, 'Australian Grand Prix');
+      expect(state.chartRound, '3');
+      expect(state.hasChartData, isTrue);
     });
 
     test('selectRound updates chart only after load for that round', () async {
-      final controller = SeasonRewindScreenController(
+      final (controller, container) = createController(
         fetchSeasonRacesForTest: (_) async => _threeRaces,
         fetchDriversStandingsForTest: (_, round) async =>
             _standingsDrivers(round: round, points: round == '1' ? '25' : '50'),
@@ -127,45 +151,43 @@ void main() {
       );
 
       await controller.loadSeason();
-      expect(controller.chartRound, '3');
-      expect(controller.selectedRace?.raceName, 'Australian Grand Prix');
+      SeasonRewindState state() => container.read(seasonRewindScreenControllerProvider);
+      expect(state().chartRound, '3');
+      expect(state().selectedRace?.raceName, 'Australian Grand Prix');
 
       controller.previewRound(0);
-      expect(controller.selectedRoundIndex, 0);
-      expect(controller.selectedRace?.raceName, 'Bahrain Grand Prix');
-      expect(controller.isChartStale, isTrue);
-      expect(controller.chartLoading, isFalse);
-      expect(controller.chartDrivers.first.points, '50');
+      expect(state().selectedRoundIndex, 0);
+      expect(state().selectedRace?.raceName, 'Bahrain Grand Prix');
+      expect(state().isChartStale, isTrue);
+      expect(state().chartLoading, isFalse);
+      expect(state().chartDrivers.first.points, '50');
 
       await controller.selectRound(0);
-      expect(controller.chartLoading, isFalse);
-      expect(controller.isChartStale, isFalse);
-      expect(controller.chartRound, '1');
-      expect(controller.selectedRace?.raceName, 'Bahrain Grand Prix');
-      expect(controller.chartDrivers.first.points, '25');
-      controller.dispose();
+      expect(state().chartLoading, isFalse);
+      expect(state().isChartStale, isFalse);
+      expect(state().chartRound, '1');
+      expect(state().selectedRace?.raceName, 'Bahrain Grand Prix');
+      expect(state().chartDrivers.first.points, '25');
     });
 
     test('empty completed races clears standings', () async {
-      final controller = SeasonRewindScreenController(
-        fetchSeasonRacesForTest: (_) async => [
-          _race(round: '1', name: 'Future GP', date: '2099-01-01'),
-        ],
+      final (controller, container) = createController(
+        fetchSeasonRacesForTest: (_) async => [_race(round: '1', name: 'Future GP', date: '2099-01-01')],
         fetchDriversStandingsForTest: (_, round) async => _standingsDrivers(round: round),
         fetchConstructorsStandingsForTest: (_, round) async => _standingsConstructors(round: round),
       );
 
       await controller.loadSeason();
 
-      expect(controller.races.value, isEmpty);
-      expect(controller.hasChartData, isFalse);
-      expect(controller.chartRound, isNull);
-      controller.dispose();
+      final state = container.read(seasonRewindScreenControllerProvider);
+      expect(state.races.value, isEmpty);
+      expect(state.hasChartData, isFalse);
+      expect(state.chartRound, isNull);
     });
 
     test('refreshAll reloads season', () async {
       var raceCalls = 0;
-      final controller = SeasonRewindScreenController(
+      final (controller, container) = createController(
         fetchSeasonRacesForTest: (_) async {
           raceCalls++;
           return _threeRaces;
@@ -177,13 +199,13 @@ void main() {
       await controller.refreshAll();
 
       expect(raceCalls, 1);
-      expect(controller.races.isValue, isTrue);
-      expect(controller.hasChartData, isTrue);
-      controller.dispose();
+      final state = container.read(seasonRewindScreenControllerProvider);
+      expect(state.races.isValue, isTrue);
+      expect(state.hasChartData, isTrue);
     });
 
     test('togglePlayback starts and stops', () async {
-      final controller = SeasonRewindScreenController(
+      final (controller, container) = createController(
         fetchSeasonRacesForTest: (_) async => _threeRaces,
         fetchDriversStandingsForTest: (_, round) async => _standingsDrivers(round: round),
         fetchConstructorsStandingsForTest: (_, round) async => _standingsConstructors(round: round),
@@ -191,18 +213,17 @@ void main() {
       );
 
       await controller.loadSeason();
-      expect(controller.isPlaying, isFalse);
+      expect(container.read(seasonRewindScreenControllerProvider).isPlaying, isFalse);
 
       controller.togglePlayback();
-      expect(controller.isPlaying, isTrue);
+      expect(container.read(seasonRewindScreenControllerProvider).isPlaying, isTrue);
 
       controller.togglePlayback();
-      expect(controller.isPlaying, isFalse);
-      controller.dispose();
+      expect(container.read(seasonRewindScreenControllerProvider).isPlaying, isFalse);
     });
 
     test('startPlayback from last round restarts at first', () async {
-      final controller = SeasonRewindScreenController(
+      final (controller, container) = createController(
         fetchSeasonRacesForTest: (_) async => _threeRaces,
         fetchDriversStandingsForTest: (_, round) async => _standingsDrivers(round: round),
         fetchConstructorsStandingsForTest: (_, round) async => _standingsConstructors(round: round),
@@ -210,18 +231,18 @@ void main() {
       );
 
       await controller.loadSeason();
-      expect(controller.selectedRoundIndex, 2);
+      expect(container.read(seasonRewindScreenControllerProvider).selectedRoundIndex, 2);
 
       controller.startPlayback();
       await Future<void>.delayed(Duration.zero);
 
-      expect(controller.selectedRoundIndex, 0);
-      expect(controller.isPlaying, isTrue);
-      controller.dispose();
+      final state = container.read(seasonRewindScreenControllerProvider);
+      expect(state.selectedRoundIndex, 0);
+      expect(state.isPlaying, isTrue);
     });
 
     test('screenError when races fail', () async {
-      final controller = SeasonRewindScreenController(
+      final (controller, container) = createController(
         fetchSeasonRacesForTest: (_) async => throw Exception('races down'),
         fetchDriversStandingsForTest: (_, round) async => _standingsDrivers(round: round),
         fetchConstructorsStandingsForTest: (_, round) async => _standingsConstructors(round: round),
@@ -229,24 +250,21 @@ void main() {
 
       await controller.loadSeason();
 
-      expect(controller.races.isError, isTrue);
-      expect(controller.screenError, isNotNull);
-      controller.dispose();
+      final state = container.read(seasonRewindScreenControllerProvider);
+      expect(state.races.isError, isTrue);
+      expect(state.screenError, isNotNull);
     });
 
     test('canPlay is false for a single race', () async {
-      final controller = SeasonRewindScreenController(
-        fetchSeasonRacesForTest: (_) async => [
-          _race(round: '1', name: 'Only GP', date: '2024-03-02'),
-        ],
+      final (controller, container) = createController(
+        fetchSeasonRacesForTest: (_) async => [_race(round: '1', name: 'Only GP', date: '2024-03-02')],
         fetchDriversStandingsForTest: (_, round) async => _standingsDrivers(round: round),
         fetchConstructorsStandingsForTest: (_, round) async => _standingsConstructors(round: round),
       );
 
       await controller.loadSeason();
 
-      expect(controller.canPlay, isFalse);
-      controller.dispose();
+      expect(container.read(seasonRewindScreenControllerProvider).canPlay, isFalse);
     });
   });
 }

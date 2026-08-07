@@ -1,5 +1,6 @@
 import 'package:f1_pet_project/core/predictor/controllers/predictor_leaderboard_controller/predictor_leaderboard_controller.dart';
 import 'package:f1_pet_project/core/predictor/repositories/predictor_leaderboard_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -100,68 +101,84 @@ void main() {
   });
 
   group('PredictorLeaderboardController', () {
+    ProviderContainer buildContainer({
+      required PredictorLeaderboardRepository repo,
+      required PredictorLeaderboardArgs args,
+    }) {
+      return ProviderContainer(
+        overrides: [
+          predictorLeaderboardControllerProvider(args).overrideWith(
+            () => PredictorLeaderboardController(args, repositoryForTest: repo),
+          ),
+        ],
+      );
+    }
+
     test('join requires opt-in checkbox', () async {
       final repo = PredictorLeaderboardRepository.memory(uidProvider: () => 'uid-1');
-      final controller = PredictorLeaderboardController(
-        repository: repo,
-        year: '2026',
-        myPoints: 5,
-      );
+      const args = PredictorLeaderboardArgs(year: '2026', myPoints: 5);
+      final container = buildContainer(repo: repo, args: args);
+      addTearDown(container.dispose);
 
+      final controller = container.read(predictorLeaderboardControllerProvider(args).notifier);
       await controller.load();
       controller.setNicknameDraft('racer');
       final ok = await controller.join();
       expect(ok, isFalse);
-      expect(controller.formErrorKey, 'predictorLeaderboardOptInRequired');
+      expect(
+        container.read(predictorLeaderboardControllerProvider(args)).formErrorKey,
+        'predictorLeaderboardOptInRequired',
+      );
     });
 
     test('successful join loads ranked board with my entry', () async {
       final repo = PredictorLeaderboardRepository.memory(uidProvider: () => 'uid-1');
-      final controller = PredictorLeaderboardController(
-        repository: repo,
-        year: '2026',
-        myPoints: 11,
-      );
+      const args = PredictorLeaderboardArgs(year: '2026', myPoints: 11);
+      final container = buildContainer(repo: repo, args: args);
+      addTearDown(container.dispose);
 
+      final controller = container.read(predictorLeaderboardControllerProvider(args).notifier);
       await controller.load();
       controller
         ..setNicknameDraft('racer')
         ..setOptInAgreed(true);
       final ok = await controller.join();
+      final state = container.read(predictorLeaderboardControllerProvider(args));
       expect(ok, isTrue);
-      expect(controller.showJoinForm, isFalse);
+      expect(state.showJoinForm, isFalse);
       expect(controller.myEntry?.rank, 1);
-      expect(controller.rankedEntries, hasLength(1));
+      expect(state.rankedEntries, hasLength(1));
     });
 
     test('leave returns to join form', () async {
       final repo = PredictorLeaderboardRepository.memory(uidProvider: () => 'uid-1');
-      final controller = PredictorLeaderboardController(
-        repository: repo,
-        year: '2026',
-        myPoints: 4,
-      );
+      const args = PredictorLeaderboardArgs(year: '2026', myPoints: 4);
+      final container = buildContainer(repo: repo, args: args);
+      addTearDown(container.dispose);
+
+      final controller = container.read(predictorLeaderboardControllerProvider(args).notifier);
       await controller.load();
       controller
         ..setNicknameDraft('racer')
         ..setOptInAgreed(true);
       await controller.join();
-      expect(controller.showJoinForm, isFalse);
+      expect(container.read(predictorLeaderboardControllerProvider(args)).showJoinForm, isFalse);
 
       final ok = await controller.leave();
+      final state = container.read(predictorLeaderboardControllerProvider(args));
       expect(ok, isTrue);
-      expect(controller.showJoinForm, isTrue);
+      expect(state.showJoinForm, isTrue);
       expect(controller.myEntry, isNull);
-      expect(controller.profile.nickname, 'racer');
+      expect(state.profile.nickname, 'racer');
     });
 
     test('saveNickname updates draft and board entry', () async {
       final repo = PredictorLeaderboardRepository.memory(uidProvider: () => 'uid-1');
-      final controller = PredictorLeaderboardController(
-        repository: repo,
-        year: '2026',
-        myPoints: 4,
-      );
+      const args = PredictorLeaderboardArgs(year: '2026', myPoints: 4);
+      final container = buildContainer(repo: repo, args: args);
+      addTearDown(container.dispose);
+
+      final controller = container.read(predictorLeaderboardControllerProvider(args).notifier);
       await controller.load();
       controller
         ..setNicknameDraft('OldNick')
@@ -170,8 +187,9 @@ void main() {
 
       controller.setNicknameDraft('NewNick');
       final ok = await controller.saveNickname();
+      final state = container.read(predictorLeaderboardControllerProvider(args));
       expect(ok, isTrue);
-      expect(controller.profile.nickname, 'NewNick');
+      expect(state.profile.nickname, 'NewNick');
       expect(controller.myEntry?.nickname, 'NewNick');
     });
   });

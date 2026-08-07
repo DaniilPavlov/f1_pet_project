@@ -12,20 +12,22 @@ import 'package:f1_pet_project/core/news/models/news_article_model.dart';
 import 'package:f1_pet_project/core/results/race_search/components/search_fields_section.dart';
 import 'package:f1_pet_project/core/results/race_search/components/search_result_section.dart';
 import 'package:f1_pet_project/core/results/race_search/controllers/race_search_screen_controller/race_search_screen_controller.dart';
-import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/race_table_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/l10n/app_localizations_en.dart';
+import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
 
 import '../../helpers/controller_fixtures.dart';
 import '../../helpers/fake_repositories.dart';
 import '../../helpers/pump_app.dart';
+import '../../helpers/riverpod_container.dart';
 import '../../helpers/widget_fixtures.dart';
 
 void main() {
@@ -39,12 +41,7 @@ void main() {
               circuitId: 'unknown_track',
               url: 'http://example.com',
               circuitName: 'Unknown GP',
-              location: CircuitLocationModel(
-                lat: '0',
-                long: '0',
-                locality: 'Somewhere',
-                country: 'Nowhere',
-              ),
+              location: CircuitLocationModel(lat: '0', long: '0', locality: 'Somewhere', country: 'Nowhere'),
             ),
           ],
         ),
@@ -59,9 +56,7 @@ void main() {
   group('RedBorderContainer', () {
     testWidgets('shows arrow when tappable', (tester) async {
       var taps = 0;
-      await tester.pumpApp(
-        RedBorderContainer(title: 'Drivers', onTap: () => taps++),
-      );
+      await tester.pumpApp(RedBorderContainer(title: 'Drivers', onTap: () => taps++));
 
       expect(find.byIcon(Icons.arrow_right_alt), findsOneWidget);
       await tester.tap(find.text('Drivers'));
@@ -82,10 +77,7 @@ void main() {
       await tester.pumpApp(
         SizedBox(
           height: 280,
-          child: BottomSheetPermissions(
-            text: 'Allow notifications',
-            onTapSettings: () => settings++,
-          ),
+          child: BottomSheetPermissions(text: 'Allow notifications', onTapSettings: () => settings++),
         ),
       );
 
@@ -98,7 +90,10 @@ void main() {
 
   group('EspnDriverNewsSection', () {
     testWidgets('hides when empty', (tester) async {
-      await tester.pumpApp(const EspnDriverNewsSection(news: []));
+      await tester.pumpApp(
+        const EspnDriverNewsSection(news: []),
+        wrapApp: (app) => ProviderScope(child: app),
+      );
       expect(find.byType(EspnDriverNewsSection), findsOneWidget);
     });
 
@@ -107,10 +102,12 @@ void main() {
         SingleChildScrollView(
           child: EspnDriverNewsSection(
             title: 'Related',
-            news: const [
-              NewsArticleModel(id: 1, headline: 'Max news', description: 'd', webUrl: 'https://x.com'),
-            ],
+            news: const [NewsArticleModel(id: 1, headline: 'Max news', description: 'd', webUrl: 'https://x.com')],
           ),
+        ),
+        wrapApp: (app) => ProviderScope(
+          overrides: [analyticsGatewayProvider.overrideWithValue(const NoOpAnalyticsGateway())],
+          child: app,
         ),
       );
 
@@ -131,18 +128,21 @@ void main() {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                builder: (_) => Provider<RaceWeekendRepository>.value(
-                  value: FakeRaceWeekendRepository(
-                    seasonRaces: ControllerFixtures.scheduleModel.raceTable.races,
-                  ),
-                  child: const RacePickerBottomSheet(seasonYear: '2024', selectedRound: '5'),
-                ),
+                builder: (_) => const RacePickerBottomSheet(seasonYear: '2024', selectedRound: '5'),
               );
             },
             child: const Text('open'),
           ),
         ),
         surfaceSize: const Size(400, 2000),
+        wrapApp: (app) => ProviderScope(
+          overrides: [
+            raceWeekendRepositoryProvider.overrideWithValue(
+              FakeRaceWeekendRepository(seasonRaces: ControllerFixtures.scheduleModel.raceTable.races),
+            ),
+          ],
+          child: app,
+        ),
       );
 
       await tester.tap(find.text('open'));
@@ -164,15 +164,20 @@ void main() {
               context: context,
               isScrollControlled: true,
               backgroundColor: Colors.transparent,
-              builder: (_) => Provider<RaceWeekendRepository>.value(
-                value: FakeRaceWeekendRepository(seasonRaces: const [], throwOnSeasonRaces: true),
-                child: const RacePickerBottomSheet(seasonYear: '2024', selectedRound: null),
-              ),
+              builder: (_) => const RacePickerBottomSheet(seasonYear: '2024', selectedRound: null),
             ),
             child: const Text('open'),
           ),
         ),
         surfaceSize: const Size(400, 2000),
+        wrapApp: (app) => ProviderScope(
+          overrides: [
+            raceWeekendRepositoryProvider.overrideWithValue(
+              FakeRaceWeekendRepository(seasonRaces: const [], throwOnSeasonRaces: true),
+            ),
+          ],
+          child: app,
+        ),
       );
 
       await tester.tap(find.text('open'));
@@ -193,16 +198,19 @@ void main() {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                builder: (_) => SeasonPickerBottomSheet(
-                  seasonsRepository: FakeSeasonsRepository(years: ['2025', '2024']),
-                  selectedYear: '2024',
-                ),
+                builder: (_) => const SeasonPickerBottomSheet(selectedYear: '2024'),
               );
             },
             child: const Text('open'),
           ),
         ),
         surfaceSize: const Size(400, 2000),
+        wrapApp: (app) => ProviderScope(
+          overrides: [
+            seasonsRepositoryProvider.overrideWithValue(FakeSeasonsRepository(years: ['2025', '2024'])),
+          ],
+          child: app,
+        ),
       );
 
       await tester.tap(find.text('open'));
@@ -218,13 +226,7 @@ void main() {
       final display = TextEditingController();
       addTearDown(display.dispose);
 
-      await tester.pumpApp(
-        RacePickerField(
-          displayController: display,
-          seasonYear: '2024',
-          onPicked: (_) {},
-        ),
-      );
+      await tester.pumpApp(RacePickerField(displayController: display, seasonYear: '2024', onPicked: (_) {}));
 
       expect(find.text(AppLocalizationsEn().selectRace), findsOneWidget);
       expect(find.byIcon(Icons.expand_more), findsOneWidget);
@@ -233,24 +235,32 @@ void main() {
 
   group('SearchFieldsSection / SearchResultSection', () {
     testWidgets('renders fields and error message', (tester) async {
-      final controller = RaceSearchScreenController(
-        l10n: AppLocalizationsEn(),
-        fetchRaceResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
-      );
-      addTearDown(controller.dispose);
+      const languageCode = 'en';
+      final container = createNotifierContainer(
+        overrides: [
+          raceSearchScreenControllerProvider(languageCode).overrideWith(
+            () => RaceSearchScreenController(
+              languageCode,
+              fetchRaceResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
+              analyticsForTest: const NoOpAnalyticsGateway(),
+            ),
+          ),
+        ],
+      )..listen(raceSearchScreenControllerProvider(languageCode), (_, _) {});
+      final controller = container.read(raceSearchScreenControllerProvider(languageCode).notifier);
       controller.yearController.text = '2024';
-      controller.selectedSeason = '2024';
+      controller.onSeasonSelected();
       controller.roundController.text = '1';
       await controller.loadRaceResults();
 
       await tester.pumpApp(
-        Provider.value(
-          value: controller,
+        UncontrolledProviderScope(
+          container: container,
           child: const SingleChildScrollView(
             child: Column(
               children: [
-                SearchFieldsSection(),
-                SearchResultSection(),
+                SearchFieldsSection(languageCode: languageCode),
+                SearchResultSection(languageCode: languageCode),
               ],
             ),
           ),
@@ -262,6 +272,7 @@ void main() {
     });
 
     testWidgets('shows race name when results loaded', (tester) async {
+      const languageCode = 'ru';
       final base = WidgetFixtures.race;
       final race = RacesModel(
         season: base.season,
@@ -276,21 +287,25 @@ void main() {
         thirdPractice: null,
         qualifying: null,
         sprint: null,
-        results: [
-          ...?base.results,
-          WidgetFixtures.raceResultSecond,
-        ],
+        results: [...?base.results, WidgetFixtures.raceResultSecond],
         qualifyingResults: null,
         pitStops: null,
       );
 
-      final controller = RaceSearchScreenController(
-        l10n: AppLocalizationsEn(),
-        fetchRaceResultsForTest: ({required year, required round}) async => ScheduleModel(
-          raceTable: RaceTableModel(season: '2024', round: '5', races: [race]),
-        ),
-      );
-      addTearDown(controller.dispose);
+      final container = createNotifierContainer(
+        overrides: [
+          raceSearchScreenControllerProvider(languageCode).overrideWith(
+            () => RaceSearchScreenController(
+              languageCode,
+              fetchRaceResultsForTest: ({required year, required round}) async => ScheduleModel(
+                raceTable: RaceTableModel(season: '2024', round: '5', races: [race]),
+              ),
+              analyticsForTest: const NoOpAnalyticsGateway(),
+            ),
+          ),
+        ],
+      )..listen(raceSearchScreenControllerProvider(languageCode), (_, _) {});
+      final controller = container.read(raceSearchScreenControllerProvider(languageCode).notifier);
       controller.yearController.text = '2024';
       controller.roundController.text = '5';
       await controller.loadRaceResults();
@@ -298,9 +313,9 @@ void main() {
       await tester.pump(const Duration(milliseconds: 150));
 
       await tester.pumpApp(
-        Provider.value(
-          value: controller,
-          child: const SingleChildScrollView(child: SearchResultSection()),
+        UncontrolledProviderScope(
+          container: container,
+          child: const SingleChildScrollView(child: SearchResultSection(languageCode: languageCode)),
         ),
         surfaceSize: const Size(800, 1200),
         locale: const Locale('ru'),
@@ -318,9 +333,7 @@ void main() {
       final controller = TextEditingController();
       addTearDown(controller.dispose);
 
-      await tester.pumpApp(
-        CustomTextField(controller: controller, label: 'Code', hintText: 'VER'),
-      );
+      await tester.pumpApp(CustomTextField(controller: controller, label: 'Code', hintText: 'VER'));
 
       expect(find.byType(CupertinoTextField), findsOneWidget);
       debugDefaultTargetPlatformOverride = null;

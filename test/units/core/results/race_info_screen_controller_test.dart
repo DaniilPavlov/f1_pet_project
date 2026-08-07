@@ -1,6 +1,4 @@
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/core/results/models/pit_stops_model.dart';
-import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
 import 'package:f1_pet_project/core/results/models/results_model.dart';
 import 'package:f1_pet_project/core/results/race_info/controllers/race_info_screen_controller/race_info_screen_controller.dart';
 import 'package:f1_pet_project/core/schedule/models/race_date_model.dart';
@@ -9,107 +7,124 @@ import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/controller_fixtures.dart';
 import '../../../helpers/fake_repositories.dart';
+import '../../../helpers/riverpod_container.dart';
 import '../../../helpers/widget_fixtures.dart';
-import '../../../mobx/mobx_testing.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  final race = ControllerFixtures.race;
+
+  (RaceInfoScreenController, ProviderContainer) createController({
+    RacesModel? raceModel,
+    FakeScheduleRepository? scheduleRepository,
+    Future<bool> Function()? weekendHasSprintForTest,
+    Future<ScheduleModel> Function({required String year, required String round})? fetchQualifyingResultsForTest,
+    Future<ScheduleModel> Function({required String year, required String round})? fetchPitStopsForTest,
+    Future<ScheduleModel> Function({required String year, required String round})? fetchSprintResultsForTest,
+  }) {
+    final model = raceModel ?? race;
+    late RaceInfoScreenController controller;
+    final container = createNotifierContainer(
+      overrides: [
+        raceInfoScreenControllerProvider(model).overrideWith(
+          () => controller = RaceInfoScreenController(
+            model,
+            scheduleRepositoryForTest: scheduleRepository,
+            weekendHasSprintForTest: weekendHasSprintForTest,
+            fetchQualifyingResultsForTest: fetchQualifyingResultsForTest,
+            fetchPitStopsForTest: fetchPitStopsForTest,
+            fetchSprintResultsForTest: fetchSprintResultsForTest,
+          ),
+        ),
+      ],
+    )..listen(raceInfoScreenControllerProvider(model), (_, _) {});
+    controller = container.read(raceInfoScreenControllerProvider(model).notifier);
+    return (controller, container);
+  }
+
+  RaceInfoState stateOf(ProviderContainer container, [RacesModel? model]) =>
+      container.read(raceInfoScreenControllerProvider(model ?? race));
+
   group('RaceInfoScreenController', () {
     group('loadQualifyingResults', () {
-      mobxTest(
-        'sets value on success',
-        build: () => RaceInfoScreenController(
-          raceModel: ControllerFixtures.race,
+      test('sets value on success', () async {
+        final (controller, container) = createController(
           fetchQualifyingResultsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
-        ),
-        value: (store) => store.qualifyingResults,
-        act: (store) => store.loadQualifyingResults(),
-        expect: () => [
-          isA<AsyncValue<List<QualifyingResultsModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
-          isA<AsyncValue<List<QualifyingResultsModel>>>()
-              .having((e) => e.status, 'status', AsyncStatus.value)
-              .having((e) => e.value?.length, 'length', 1),
-        ],
-      );
+        );
 
-      mobxTest(
-        'sets error on failure',
-        build: () => RaceInfoScreenController(
-          raceModel: ControllerFixtures.race,
+        await controller.loadQualifyingResults();
+
+        final state = stateOf(container);
+        expect(state.qualifyingResults.isValue, isTrue);
+        expect(state.qualifyingResults.value, hasLength(1));
+      });
+
+      test('sets error on failure', () async {
+        final (controller, container) = createController(
           fetchQualifyingResultsForTest: ({required year, required round}) async =>
               throw ResponseParseException('parse error'),
-        ),
-        value: (store) => store.qualifyingResults,
-        act: (store) => store.loadQualifyingResults(),
-        expect: () => [
-          isA<AsyncValue<List<QualifyingResultsModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
-          isA<AsyncValue<List<QualifyingResultsModel>>>().having((e) => e.status, 'status', AsyncStatus.error),
-        ],
-        verify: (store) {
-          expect(store.screenError, isNotNull);
-        },
-      );
+        );
+
+        await controller.loadQualifyingResults();
+
+        final state = stateOf(container);
+        expect(state.qualifyingResults.isError, isTrue);
+        expect(state.screenError, isNotNull);
+      });
     });
 
     group('loadPitStops', () {
-      mobxTest(
-        'resolves driver names from race results without extra API calls',
-        build: () => RaceInfoScreenController(
-          raceModel: ControllerFixtures.race,
+      test('resolves driver names from race results without extra API calls', () async {
+        final (controller, container) = createController(
           fetchPitStopsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
-        ),
-        value: (store) => store.pitStops,
-        act: (store) => store.loadPitStops(),
-        expect: () => [
-          isA<AsyncValue<List<PitStopsModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
-          isA<AsyncValue<List<PitStopsModel>>>()
-              .having((e) => e.status, 'status', AsyncStatus.value)
-              .having((e) => e.value?.single.driverId, 'driverId', 'Max Verstappen'),
-        ],
-      );
+        );
+
+        await controller.loadPitStops();
+
+        final state = stateOf(container);
+        expect(state.pitStops.isValue, isTrue);
+        expect(state.pitStops.value?.single.driverId, 'Max Verstappen');
+      });
     });
 
     group('loadAllData', () {
-      mobxTest(
-        'marks data as loaded',
-        build: () => RaceInfoScreenController(
-          raceModel: ControllerFixtures.race,
+      test('marks data as loaded', () async {
+        final (controller, container) = createController(
           weekendHasSprintForTest: () async => false,
           fetchQualifyingResultsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
           fetchPitStopsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
           fetchSprintResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
-        ),
-        value: (store) => store.allDataIsLoaded,
-        act: (store) => store.loadAllData(),
-        expect: () => [false, true],
-      );
+        );
+
+        await controller.loadAllData();
+
+        expect(stateOf(container).allDataIsLoaded, isTrue);
+      });
     });
 
     group('loadSprintResults', () {
-      mobxTest(
-        'sets empty list when weekend has no sprint',
-        build: () => RaceInfoScreenController(
-          raceModel: ControllerFixtures.race,
+      test('sets empty list when weekend has no sprint', () async {
+        final (controller, container) = createController(
           fetchSprintResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
-        ),
-        value: (store) => store.sprintResults,
-        act: (store) => store.loadSprintResults(),
-        expect: () => [
-          isA<AsyncValue<List<ResultsModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
-          isA<AsyncValue<List<ResultsModel>>>()
-              .having((e) => e.status, 'status', AsyncStatus.value)
-              .having((e) => e.value, 'value', isEmpty),
-        ],
-      );
+        );
+
+        await controller.loadSprintResults();
+
+        final state = stateOf(container);
+        expect(state.sprintResults.isValue, isTrue);
+        expect(state.sprintResults.value, isEmpty);
+      });
     });
 
     test('loadAllData loads sprint when weekendHasSprint is true', () async {
       var sprintCalls = 0;
-      final controller = RaceInfoScreenController(
-        raceModel: ControllerFixtures.race,
+      final (controller, container) = createController(
         weekendHasSprintForTest: () async => true,
         fetchQualifyingResultsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
         fetchPitStopsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
@@ -122,14 +137,13 @@ void main() {
       await controller.loadAllData();
 
       expect(sprintCalls, 1);
-      expect(controller.allDataIsLoaded, isTrue);
-      expect(controller.hasSprintResults, isFalse); // fixture has no sprintResults
+      expect(stateOf(container).allDataIsLoaded, isTrue);
+      expect(stateOf(container).hasSprintResults, isFalse); // fixture has no sprintResults
     });
 
     test('loadAllData skips sprint fetch when raceModel.sprint is null and hook says false', () async {
       var sprintCalls = 0;
-      final controller = RaceInfoScreenController(
-        raceModel: ControllerFixtures.race,
+      final (controller, container) = createController(
         weekendHasSprintForTest: () async => false,
         fetchQualifyingResultsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
         fetchPitStopsForTest: ({required year, required round}) async => ControllerFixtures.scheduleModel,
@@ -142,13 +156,12 @@ void main() {
       await controller.loadAllData();
 
       expect(sprintCalls, 0);
-      expect(controller.sprintResults.value, isEmpty);
+      expect(stateOf(container).sprintResults.value, isEmpty);
     });
 
     test('refreshAll reloads sections', () async {
       var calls = 0;
-      final controller = RaceInfoScreenController(
-        raceModel: ControllerFixtures.race,
+      final (controller, container) = createController(
         weekendHasSprintForTest: () async => false,
         fetchQualifyingResultsForTest: ({required year, required round}) async {
           calls++;
@@ -163,12 +176,11 @@ void main() {
       await controller.refreshAll();
 
       expect(calls, 2);
-      expect(controller.qualifyingResults.isValue, isTrue);
+      expect(stateOf(container).qualifyingResults.isValue, isTrue);
     });
 
     test('empty race tables yield empty lists', () async {
-      final controller = RaceInfoScreenController(
-        raceModel: ControllerFixtures.race,
+      final (controller, container) = createController(
         fetchQualifyingResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
         fetchPitStopsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
       );
@@ -176,8 +188,9 @@ void main() {
       await controller.loadQualifyingResults();
       await controller.loadPitStops();
 
-      expect(controller.qualifyingResults.value, isEmpty);
-      expect(controller.pitStops.value, isEmpty);
+      final state = stateOf(container);
+      expect(state.qualifyingResults.value, isEmpty);
+      expect(state.pitStops.value, isEmpty);
     });
 
     test('weekendHasSprint uses scheduleRepository when present', () async {
@@ -217,10 +230,10 @@ void main() {
       );
 
       var sprintCalls = 0;
-      final controller = RaceInfoScreenController(
+      final (controller, container) = createController(
         raceModel: raceWithoutSprint,
         scheduleRepository: FakeScheduleRepository(
-          result:           ScheduleLoadResult(
+          result: ScheduleLoadResult(
             schedule: ScheduleModel(
               raceTable: RaceTableModel(season: '2024', round: '5', races: [scheduled]),
             ),
@@ -237,18 +250,14 @@ void main() {
 
       await controller.loadAllData();
       expect(sprintCalls, 1);
+      expect(stateOf(container, raceWithoutSprint).allDataIsLoaded, isTrue);
     });
 
     test('weekendHasSprint defaults true when schedule misses race or throws', () async {
-      final race = ControllerFixtures.race; // sprint null
       var sprintCalls = 0;
-      final miss = RaceInfoScreenController(
-        raceModel: race,
+      final (miss, _) = createController(
         scheduleRepository: FakeScheduleRepository(
-          result:           ScheduleLoadResult(
-            schedule: ControllerFixtures.emptyScheduleModel,
-            fetchedFromNetwork: false,
-          ),
+          result: ScheduleLoadResult(schedule: ControllerFixtures.emptyScheduleModel, fetchedFromNetwork: false),
         ),
         fetchQualifyingResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
         fetchPitStopsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
@@ -261,13 +270,9 @@ void main() {
       expect(sprintCalls, 1);
 
       sprintCalls = 0;
-      final boom = RaceInfoScreenController(
-        raceModel: race,
+      final (boom, _) = createController(
         scheduleRepository: FakeScheduleRepository(
-          result:           ScheduleLoadResult(
-            schedule: ControllerFixtures.emptyScheduleModel,
-            fetchedFromNetwork: false,
-          ),
+          result: ScheduleLoadResult(schedule: ControllerFixtures.emptyScheduleModel, fetchedFromNetwork: false),
           throwOnLoad: true,
         ),
         fetchQualifyingResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
@@ -295,7 +300,7 @@ void main() {
         time: null,
         fastestLap: null,
       );
-      final race = RacesModel(
+      final raceWithSprint = RacesModel(
         season: '2024',
         round: '5',
         url: 'http://example.com',
@@ -313,8 +318,8 @@ void main() {
         pitStops: null,
       );
 
-      final controller = RaceInfoScreenController(
-        raceModel: race,
+      final (controller, container) = createController(
+        raceModel: raceWithSprint,
         fetchSprintResultsForTest: ({required year, required round}) async => ScheduleModel(
           raceTable: RaceTableModel(
             season: '2024',
@@ -361,9 +366,7 @@ void main() {
                 sprint: null,
                 results: null,
                 qualifyingResults: null,
-                pitStops: [
-                  PitStopsModel(driverId: 'norris', lap: '5', stop: '1', time: '14:00:00', duration: '2.3'),
-                ],
+                pitStops: [PitStopsModel(driverId: 'norris', lap: '5', stop: '1', time: '14:00:00', duration: '2.3')],
               ),
             ],
           ),
@@ -372,7 +375,7 @@ void main() {
 
       await controller.loadSprintResults();
       await controller.loadPitStops();
-      expect(controller.pitStops.value?.single.driverId, 'Lando Norris');
+      expect(stateOf(container, raceWithSprint).pitStops.value?.single.driverId, 'Lando Norris');
     });
   });
 }

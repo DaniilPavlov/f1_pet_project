@@ -1,31 +1,44 @@
-import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
-import 'package:mobx/mobx.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-part 'season_picker_sheet_controller.g.dart';
+/// Состояние bottom sheet выбора сезона.
+@immutable
+class SeasonPickerSheetState {
+  const SeasonPickerSheetState({this.years = const Loadable.loading()});
 
-/// MobX-контроллер bottom sheet выбора сезона.
-class SeasonPickerSheetController = SeasonPickerSheetControllerBase with _$SeasonPickerSheetController;
+  final Loadable<List<String>> years;
+
+  SeasonPickerSheetState copyWith({Loadable<List<String>>? years}) {
+    return SeasonPickerSheetState(years: years ?? this.years);
+  }
+}
 
 /// Загружает список годов сезонов.
-abstract class SeasonPickerSheetControllerBase with Store {
-  SeasonPickerSheetControllerBase({required SeasonsRepository seasonsRepository})
-    : _seasonsRepository = seasonsRepository;
-
-  final SeasonsRepository _seasonsRepository;
-
-  @observable
-  AsyncValue<List<String>> years = const AsyncValue.loading();
+class SeasonPickerSheetController extends Notifier<SeasonPickerSheetState> {
+  @override
+  SeasonPickerSheetState build() => const SeasonPickerSheetState();
 
   /// Подтягивает годы (новые сверху).
-  @action
   Future<void> load() async {
-    years = years.toLoading();
+    state = state.copyWith(years: state.years.toLoading());
     try {
-      final data = await _seasonsRepository.getSeasonYears();
-      years = years.toValue(data);
+      final data = await ref.read(seasonsRepositoryProvider).getSeasonYears();
+      if (!ref.mounted) {
+        return;
+      }
+      state = state.copyWith(years: state.years.toValue(data));
     } on Object catch (error) {
-      years = years.toError(error.toString());
+      if (!ref.mounted) {
+        return;
+      }
+      state = state.copyWith(years: state.years.toError(error.toString()));
     }
   }
 }
+
+final seasonPickerSheetControllerProvider =
+    NotifierProvider.autoDispose<SeasonPickerSheetController, SeasonPickerSheetState>(
+      SeasonPickerSheetController.new,
+    );

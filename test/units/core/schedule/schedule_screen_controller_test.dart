@@ -1,5 +1,5 @@
 import 'package:f1_pet_project/common/utils/constants/assets.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
 import 'package:f1_pet_project/core/schedule/controllers/schedule_screen_controller/schedule_screen_controller.dart';
 import 'package:f1_pet_project/core/schedule/models/race_date_model.dart';
@@ -7,186 +7,175 @@ import 'package:f1_pet_project/core/schedule/models/race_table_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
-import 'package:f1_pet_project/l10n/app_localizations_ru.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/controller_fixtures.dart';
-import '../../../mobx/mobx_testing.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  ProviderContainer buildContainer(Future<ScheduleModel> Function() fetch) {
+    return ProviderContainer(
+      overrides: [
+        scheduleScreenControllerProvider.overrideWith(
+          () => ScheduleScreenController(fetchScheduleForTest: fetch),
+        ),
+      ],
+    );
+  }
+
   group('ScheduleScreenController', () {
     group('loadAllData', () {
-      mobxTest(
-        'loads races and marks data as loaded',
-        build: () => ScheduleScreenController(
-          l10n: AppLocalizationsRu(),
-          fetchScheduleForTest: () async => ControllerFixtures.scheduleModel,
-        ),
-        value: (store) => store.racesElements,
-        act: (store) => store.loadAllData(),
-        expect: () => [
-          isA<AsyncValue<List<RacesModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
-          isA<AsyncValue<List<RacesModel>>>()
-              .having((e) => e.status, 'status', AsyncStatus.value)
-              .having((e) => e.value?.length, 'length', 1),
-        ],
-        verify: (store) {
-          expect(store.allDataIsLoaded, isTrue);
-          store.dispose();
-        },
-      );
+      test('loads races and marks data as loaded', () async {
+        final container = buildContainer(() async => ControllerFixtures.scheduleModel);
+        addTearDown(container.dispose);
 
-      mobxTest(
-        'sets error on failure',
-        build: () => ScheduleScreenController(
-          l10n: AppLocalizationsRu(),
-          fetchScheduleForTest: () async => throw ResponseParseException('parse error'),
-        ),
-        value: (store) => store.racesElements,
-        act: (store) => store.loadAllData(),
-        expect: () => [
-          isA<AsyncValue<List<RacesModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
-          isA<AsyncValue<List<RacesModel>>>().having((e) => e.status, 'status', AsyncStatus.error),
-        ],
-        verify: (store) {
-          expect(store.screenError, isNotNull);
-          store.dispose();
-        },
-      );
+        final controller = container.read(scheduleScreenControllerProvider.notifier);
+        final pending = controller.loadAllData();
+        expect(container.read(scheduleScreenControllerProvider).racesElements.status, LoadableStatus.loading);
+        await pending;
+
+        final state = container.read(scheduleScreenControllerProvider);
+        expect(state.racesElements.status, LoadableStatus.value);
+        expect(state.racesElements.value?.length, 1);
+        expect(state.allDataIsLoaded, isTrue);
+      });
+
+      test('sets error on failure', () async {
+        final container = buildContainer(() async => throw ResponseParseException('parse error'));
+        addTearDown(container.dispose);
+
+        await container.read(scheduleScreenControllerProvider.notifier).loadAllData();
+        final state = container.read(scheduleScreenControllerProvider);
+
+        expect(state.racesElements.status, LoadableStatus.error);
+        expect(state.screenError, isNotNull);
+      });
     });
 
     group('onSelectDay', () {
       test('updates selected and focused date and shows sessions on race day', () async {
-        final controller = ScheduleScreenController(
-          l10n: AppLocalizationsRu(),
-          fetchScheduleForTest: () async => ControllerFixtures.scheduleModel,
-        );
+        final container = buildContainer(() async => ControllerFixtures.scheduleModel);
+        addTearDown(container.dispose);
 
+        final controller = container.read(scheduleScreenControllerProvider.notifier);
         await controller.loadAllData();
         controller.onSelectDay(DateTime.parse('2024-05-26'), DateTime.parse('2024-05-26'));
 
-        expect(controller.selectedDate, DateTime.parse('2024-05-26'));
-        expect(controller.focusedDate, DateTime.parse('2024-05-26'));
-        expect(controller.selectedDayHasSessions, isTrue);
-        controller.dispose();
+        final state = container.read(scheduleScreenControllerProvider);
+        expect(state.selectedDate, DateTime.parse('2024-05-26'));
+        expect(state.focusedDate, DateTime.parse('2024-05-26'));
+        expect(state.selectedDayHasSessions, isTrue);
       });
 
       test('onPageChanged keeps focused month without changing selected day', () async {
-        final controller = ScheduleScreenController(
-          l10n: AppLocalizationsRu(),
-          fetchScheduleForTest: () async => ControllerFixtures.scheduleModel,
-        );
+        final container = buildContainer(() async => ControllerFixtures.scheduleModel);
+        addTearDown(container.dispose);
 
+        final controller = container.read(scheduleScreenControllerProvider.notifier);
         await controller.loadAllData();
-        final selected = controller.selectedDate;
+        final selected = container.read(scheduleScreenControllerProvider).selectedDate;
         controller.onPageChanged(DateTime.parse('2024-08-01'));
 
-        expect(controller.focusedDate, DateTime.parse('2024-08-01'));
-        expect(controller.selectedDate, selected);
-        controller.dispose();
+        final state = container.read(scheduleScreenControllerProvider);
+        expect(state.focusedDate, DateTime.parse('2024-08-01'));
+        expect(state.selectedDate, selected);
       });
 
       test('empty day exposes upcoming race fallback', () async {
-        final controller = ScheduleScreenController(
-          l10n: AppLocalizationsRu(),
-          fetchScheduleForTest: () async => ControllerFixtures.scheduleModel,
-        );
+        final container = buildContainer(() async => ControllerFixtures.scheduleModel);
+        addTearDown(container.dispose);
 
+        final controller = container.read(scheduleScreenControllerProvider.notifier);
         await controller.loadAllData();
         // Fixture race is in the past, so upcomingRace is null — empty day has no sessions.
         controller.onSelectDay(DateTime.parse('2024-01-01'), DateTime.parse('2024-01-01'));
 
-        expect(controller.selectedDayHasSessions, isFalse);
-        expect(controller.upcomingRace, isNull);
-        controller.dispose();
+        final state = container.read(scheduleScreenControllerProvider);
+        expect(state.selectedDayHasSessions, isFalse);
+        expect(state.upcomingRace, isNull);
       });
     });
 
     group('getLogoPath', () {
       test('returns finish icon for race day', () async {
-        final controller = ScheduleScreenController(
-          l10n: AppLocalizationsRu(),
-          fetchScheduleForTest: () async => ControllerFixtures.scheduleModel,
-        );
+        final container = buildContainer(() async => ControllerFixtures.scheduleModel);
+        addTearDown(container.dispose);
 
+        final controller = container.read(scheduleScreenControllerProvider.notifier);
         await controller.loadAllData();
 
         expect(controller.getLogoPath(DateTime.parse('2024-05-26')), Assets.calendar.finish);
-        controller.dispose();
       });
 
       test('returns car icon for practice day', () async {
-        final race = _raceWithSessions(
-          raceDate: '2024-05-26',
-          practiceDate: '2024-05-24',
-        );
-        final controller = ScheduleScreenController(
-          l10n: AppLocalizationsRu(),
-          fetchScheduleForTest: () async => ScheduleModel(
+        final race = _raceWithSessions(raceDate: '2024-05-26', practiceDate: '2024-05-24');
+        final container = buildContainer(
+          () async => ScheduleModel(
             raceTable: RaceTableModel(season: '2024', round: '5', races: [race]),
           ),
         );
+        addTearDown(container.dispose);
 
+        final controller = container.read(scheduleScreenControllerProvider.notifier);
         await controller.loadAllData();
 
         expect(controller.getLogoPath(DateTime.parse('2024-05-24')), Assets.calendar.car);
         expect(controller.getLogoPath(DateTime.parse('2024-05-01')), isNull);
-        controller.dispose();
       });
     });
 
     test('refreshAll reloads schedule', () async {
       var calls = 0;
-      final controller = ScheduleScreenController(
-        l10n: AppLocalizationsRu(),
-        fetchScheduleForTest: () async {
-          calls++;
-          return ControllerFixtures.scheduleModel;
-        },
-      );
+      final container = buildContainer(() async {
+        calls++;
+        return ControllerFixtures.scheduleModel;
+      });
+      addTearDown(container.dispose);
 
-      await controller.refreshAll();
+      await container.read(scheduleScreenControllerProvider.notifier).refreshAll();
 
       expect(calls, 1);
-      expect(controller.racesElements.isValue, isTrue);
-      controller.dispose();
+      expect(container.read(scheduleScreenControllerProvider).racesElements.isValue, isTrue);
     });
 
     test('upcomingRace and countdown use future race', () async {
       final race = _raceWithSessions(raceDate: '2099-06-15', practiceDate: '2099-06-13');
-      final controller = ScheduleScreenController(
-        l10n: AppLocalizationsRu(),
-        fetchScheduleForTest: () async => ScheduleModel(
+      final container = buildContainer(
+        () async => ScheduleModel(
           raceTable: RaceTableModel(season: '2099', round: '1', races: [race]),
         ),
       );
+      addTearDown(container.dispose);
 
+      final controller = container.read(scheduleScreenControllerProvider.notifier);
       await controller.loadAllData();
       controller.onSelectDay(DateTime.parse('2099-01-01'), DateTime.parse('2099-01-01'));
 
-      expect(controller.upcomingRace?.raceName, 'Monaco Grand Prix');
-      expect(controller.upcomingCountdown.days, greaterThan(0));
-      expect(controller.selectedDayHasSessions, isFalse);
-      controller.dispose();
+      final state = container.read(scheduleScreenControllerProvider);
+      expect(state.upcomingRace?.raceName, 'Monaco Grand Prix');
+      expect(state.upcomingCountdown.days, greaterThan(0));
+      expect(state.selectedDayHasSessions, isFalse);
     });
 
-    test('selecting practice day fills session widgets', () async {
+    test('selecting practice day fills session data', () async {
       final race = _raceWithSessions(raceDate: '2024-05-26', practiceDate: '2024-05-24');
-      final controller = ScheduleScreenController(
-        l10n: AppLocalizationsRu(),
-        fetchScheduleForTest: () async => ScheduleModel(
+      final container = buildContainer(
+        () async => ScheduleModel(
           raceTable: RaceTableModel(season: '2024', round: '5', races: [race]),
         ),
       );
+      addTearDown(container.dispose);
 
+      final controller = container.read(scheduleScreenControllerProvider.notifier);
       await controller.loadAllData();
       controller.onSelectDay(DateTime.parse('2024-05-24'), DateTime.parse('2024-05-24'));
 
-      expect(controller.selectedDayHasSessions, isTrue);
-      expect(controller.scheduleOfSelectedDate, isNotEmpty);
-      controller.dispose();
+      final state = container.read(scheduleScreenControllerProvider);
+      expect(state.selectedDayHasSessions, isTrue);
+      expect(state.selectedDay.sessions, isNotEmpty);
+      expect(state.selectedDay.raceName, isNotNull);
     });
   });
 

@@ -1,99 +1,136 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_comparison.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_weekend_prediction.dart';
 import 'package:f1_pet_project/core/predictor/services/predictor_score_service.dart';
-import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
 import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
 import 'package:f1_pet_project/core/results/models/results_model.dart';
 import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/foundation.dart';
-import 'package:mobx/mobx.dart';
-
-part 'predictor_weekend_detail_controller.g.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Какая сессия показана на экране сравнения.
 enum PredictorDetailSession { qualifying, race }
 
-/// MobX-контроллер экрана сравнения предикта с фактом.
-class PredictorWeekendDetailController = PredictorWeekendDetailControllerBase
-    with _$PredictorWeekendDetailController;
+/// Аргументы семейства экрана сравнения уикенда.
+@immutable
+class PredictorWeekendDetailArgs {
+  const PredictorWeekendDetailArgs({required this.season, required this.weekend});
+
+  final String season;
+  final PredictorWeekendPrediction weekend;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PredictorWeekendDetailArgs && season == other.season && weekend.round == other.weekend.round;
+
+  @override
+  int get hashCode => Object.hash(season, weekend.round);
+}
+
+/// Состояние экрана сравнения предикта с фактом.
+@immutable
+class PredictorWeekendDetailState {
+  const PredictorWeekendDetailState({
+    this.qualifyingCompare = const Loadable.loading(),
+    this.raceCompare = const Loadable.loading(),
+    this.driversById = const {},
+    this.selectedSession = PredictorDetailSession.qualifying,
+    this.allDataIsLoaded = false,
+  });
+
+  final Loadable<PredictorSessionCompare> qualifyingCompare;
+  final Loadable<PredictorSessionCompare> raceCompare;
+  final Map<String, DriverModel> driversById;
+  final PredictorDetailSession selectedSession;
+  final bool allDataIsLoaded;
+
+  CustomException? get screenError => firstException([qualifyingCompare, raceCompare]);
+
+  PredictorSessionCompare? get activeCompare =>
+      selectedSession == PredictorDetailSession.qualifying ? qualifyingCompare.value : raceCompare.value;
+
+  PredictorWeekendDetailState copyWith({
+    Loadable<PredictorSessionCompare>? qualifyingCompare,
+    Loadable<PredictorSessionCompare>? raceCompare,
+    Map<String, DriverModel>? driversById,
+    PredictorDetailSession? selectedSession,
+    bool? allDataIsLoaded,
+  }) {
+    return PredictorWeekendDetailState(
+      qualifyingCompare: qualifyingCompare ?? this.qualifyingCompare,
+      raceCompare: raceCompare ?? this.raceCompare,
+      driversById: driversById ?? this.driversById,
+      selectedSession: selectedSession ?? this.selectedSession,
+      allDataIsLoaded: allDataIsLoaded ?? this.allDataIsLoaded,
+    );
+  }
+}
 
 /// Загружает actuals квалификации/гонки и строит [PredictorSessionCompare].
-abstract class PredictorWeekendDetailControllerBase with Store {
-  PredictorWeekendDetailControllerBase({
-    required this.season,
-    required this.weekend,
-    RaceWeekendRepository? raceWeekendRepository,
-    DriverCatalogRepository? driverCatalogRepository,
+class PredictorWeekendDetailController extends Notifier<PredictorWeekendDetailState> {
+  PredictorWeekendDetailController(
+    this.args, {
     @visibleForTesting
     Future<ScheduleModel> Function({required String year, required String round})? fetchQualifyingForTest,
     @visibleForTesting
     Future<ScheduleModel> Function({required String year, required String round})? fetchRaceResultsForTest,
     @visibleForTesting Future<List<DriverModel>> Function()? loadDriversForTest,
-  }) : _raceWeekendRepository = raceWeekendRepository ?? const RaceWeekendRepository(),
-       _fetchQualifyingForTest = fetchQualifyingForTest,
+    @visibleForTesting RaceWeekendRepository? raceWeekendRepositoryForTest,
+  }) : _fetchQualifyingForTest = fetchQualifyingForTest,
        _fetchRaceResultsForTest = fetchRaceResultsForTest,
-       _loadDrivers = loadDriversForTest ?? driverCatalogRepository!.loadCurrent;
+       _loadDriversForTest = loadDriversForTest,
+       _raceWeekendRepositoryForTest = raceWeekendRepositoryForTest;
 
-  final String season;
-  final PredictorWeekendPrediction weekend;
-  final RaceWeekendRepository _raceWeekendRepository;
+  final PredictorWeekendDetailArgs args;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchQualifyingForTest;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchRaceResultsForTest;
-  final Future<List<DriverModel>> Function() _loadDrivers;
+  final Future<List<DriverModel>> Function()? _loadDriversForTest;
+  final RaceWeekendRepository? _raceWeekendRepositoryForTest;
 
-  @observable
-  AsyncValue<PredictorSessionCompare> qualifyingCompare = const AsyncValue.loading();
+  String get season => args.season;
+  PredictorWeekendPrediction get weekend => args.weekend;
 
-  @observable
-  AsyncValue<PredictorSessionCompare> raceCompare = const AsyncValue.loading();
+  RaceWeekendRepository get _raceWeekendRepository =>
+      _raceWeekendRepositoryForTest ?? ref.read(raceWeekendRepositoryProvider);
 
-  @observable
-  ObservableMap<String, DriverModel> driversById = ObservableMap();
+  @override
+  PredictorWeekendDetailState build() => const PredictorWeekendDetailState();
 
-  @observable
-  PredictorDetailSession selectedSession = PredictorDetailSession.qualifying;
-
-  @observable
-  bool allDataIsLoaded = false;
-
-  @computed
-  CustomException? get screenError => firstException([qualifyingCompare, raceCompare]);
-
-  @computed
-  PredictorSessionCompare? get activeCompare =>
-      selectedSession == PredictorDetailSession.qualifying ? qualifyingCompare.value : raceCompare.value;
-
-  @action
   void selectSession(PredictorDetailSession session) {
-    selectedSession = session;
+    state = state.copyWith(selectedSession: session);
   }
 
-  @action
   Future<void> load() async {
-    allDataIsLoaded = false;
+    state = state.copyWith(allDataIsLoaded: false);
     await Future.wait([_loadDriversMap(), _loadQualifying(), _loadRace()]);
-    allDataIsLoaded = screenError == null || qualifyingCompare.value != null || raceCompare.value != null;
+    if (!ref.mounted) {
+      return;
+    }
+    state = state.copyWith(
+      allDataIsLoaded: state.screenError == null || state.qualifyingCompare.value != null || state.raceCompare.value != null,
+    );
   }
 
-  @action
   Future<void> refreshAll() => load();
 
-  @action
   Future<void> _loadDriversMap() async {
     try {
       final list = await _loadDrivers();
-      driversById = ObservableMap.of({for (final d in list) d.driverId: d});
+      if (!ref.mounted) {
+        return;
+      }
+      state = state.copyWith(driversById: {for (final d in list) d.driverId: d});
     } on Object {
       // Каталог опционален — подписи упадут на driverId.
     }
   }
 
-  @action
   Future<void> _loadQualifying() async {
     await runAsyncLoad<List<String>, PredictorSessionCompare>(
       fetch: () async {
@@ -111,20 +148,21 @@ abstract class PredictorWeekendDetailControllerBase with Store {
           return const <String>[];
         }
       },
-      getField: () => qualifyingCompare,
-      setField: (value) => qualifyingCompare = value,
+      getField: () => state.qualifyingCompare,
+      setField: (value) => state = state.copyWith(qualifyingCompare: value),
       onSuccess: (actual) {
-        qualifyingCompare = qualifyingCompare.toValue(
-          PredictorSessionCompare.fromOrders(
-            predicted: weekend.qualifyingOrder,
-            actual: actual ?? const [],
+        state = state.copyWith(
+          qualifyingCompare: state.qualifyingCompare.toValue(
+            PredictorSessionCompare.fromOrders(
+              predicted: weekend.qualifyingOrder,
+              actual: actual ?? const [],
+            ),
           ),
         );
       },
     );
   }
 
-  @action
   Future<void> _loadRace() async {
     await runAsyncLoad<List<String>, PredictorSessionCompare>(
       fetch: () async {
@@ -142,17 +180,27 @@ abstract class PredictorWeekendDetailControllerBase with Store {
           return const <String>[];
         }
       },
-      getField: () => raceCompare,
-      setField: (value) => raceCompare = value,
+      getField: () => state.raceCompare,
+      setField: (value) => state = state.copyWith(raceCompare: value),
       onSuccess: (actual) {
-        raceCompare = raceCompare.toValue(
-          PredictorSessionCompare.fromOrders(
-            predicted: weekend.raceOrder,
-            actual: actual ?? const [],
+        state = state.copyWith(
+          raceCompare: state.raceCompare.toValue(
+            PredictorSessionCompare.fromOrders(
+              predicted: weekend.raceOrder,
+              actual: actual ?? const [],
+            ),
           ),
         );
       },
     );
+  }
+
+  Future<List<DriverModel>> _loadDrivers() {
+    final forTest = _loadDriversForTest;
+    if (forTest != null) {
+      return forTest();
+    }
+    return ref.read(driverCatalogRepositoryProvider).loadCurrent();
   }
 
   Future<ScheduleModel> _fetchQualifying({required String year, required String round}) {
@@ -171,3 +219,8 @@ abstract class PredictorWeekendDetailControllerBase with Store {
     return _raceWeekendRepository.raceResults(year: year, round: round);
   }
 }
+
+final predictorWeekendDetailControllerProvider = NotifierProvider.autoDispose
+    .family<PredictorWeekendDetailController, PredictorWeekendDetailState, PredictorWeekendDetailArgs>(
+      PredictorWeekendDetailController.new,
+    );

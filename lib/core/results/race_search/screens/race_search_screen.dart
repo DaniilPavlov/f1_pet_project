@@ -8,61 +8,42 @@ import 'package:f1_pet_project/core/results/race_search/components/search_button
 import 'package:f1_pet_project/core/results/race_search/components/search_fields_section.dart';
 import 'package:f1_pet_project/core/results/race_search/components/search_result_section.dart';
 import 'package:f1_pet_project/core/results/race_search/controllers/race_search_screen_controller/race_search_screen_controller.dart';
-import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
-import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Экран поиска результатов гонки по сезону и раунду.
 @RoutePage()
-class RaceSearchScreen extends StatelessWidget {
+class RaceSearchScreen extends ConsumerWidget {
   const RaceSearchScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final localeController = context.read<LocaleController>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final languageCode = ref.watch(localeControllerProvider).locale.languageCode;
+    final controller = ref.read(raceSearchScreenControllerProvider(languageCode).notifier);
+    final l10n = context.l10n;
 
-    return Observer(
-      builder: (context) {
-        final localeCode = localeController.locale.languageCode;
-        final l10n = context.l10n;
-
-        return Provider<RaceSearchScreenController>(
-          key: ValueKey('race_search_$localeCode'),
-          create: (context) => RaceSearchScreenController(
-            l10n: l10n,
-            raceWeekendRepository: context.read<RaceWeekendRepository>(),
-            analytics: context.read<AnalyticsGateway>(),
-          ),
-          dispose: (_, controller) => controller.dispose(),
-          child: Builder(
-            builder: (context) {
-              final controller = context.read<RaceSearchScreenController>();
-              return Scaffold(
-                appBar: CustomAppBar(title: l10n.raceSearchTitle, onPop: () => context.router.maybePop()),
-                body: SafeArea(
-                  child: CustomScrollView(
-                    controller: controller.scrollController,
-                    shrinkWrap: true,
-                    scrollBehavior: AntiGlowBehavior(),
-                    slivers: const [
-                      SliverToBoxAdapter(child: InfoMessageSection()),
-                      SliverToBoxAdapter(child: SearchFieldsSection()),
-                      SliverToBoxAdapter(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [SearchButtonSection(), SearchResultSection()],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        );
-      },
+    return Scaffold(
+      appBar: CustomAppBar(title: l10n.raceSearchTitle, onPop: () => context.router.maybePop()),
+      body: SafeArea(
+        child: CustomScrollView(
+          controller: controller.scrollController,
+          shrinkWrap: true,
+          scrollBehavior: AntiGlowBehavior(),
+          slivers: [
+            const SliverToBoxAdapter(child: InfoMessageSection()),
+            SliverToBoxAdapter(child: SearchFieldsSection(languageCode: languageCode)),
+            SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SearchButtonSection(languageCode: languageCode),
+                  SearchResultSection(languageCode: languageCode),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

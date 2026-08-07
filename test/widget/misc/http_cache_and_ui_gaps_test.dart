@@ -1,7 +1,7 @@
 import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
 import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
 import 'package:f1_pet_project/common/utils/helpers/career_api_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/common/widgets/share/share_race_results_card.dart';
 import 'package:f1_pet_project/core/results/components/weekend_scoreboard_section.dart';
 import 'package:f1_pet_project/core/results/components/weekend_session_results_sheet.dart';
@@ -16,6 +16,7 @@ import 'package:f1_pet_project/services/api_loader.dart';
 import 'package:f1_pet_project/services/cache/prefs_json_store.dart';
 import 'package:f1_pet_project/services/http/app_dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -197,10 +198,12 @@ void main() {
       );
 
       await tester.pumpApp(
-        SingleChildScrollView(
-          child: WeekendScoreboardSection(
-            scoreboard: AsyncValue.value(value: event),
-            locale: const Locale('en'),
+        ProviderScope(
+          child: SingleChildScrollView(
+            child: WeekendScoreboardSection(
+              scoreboardForTest: Loadable.value(value: event),
+              localeForTest: const Locale('en'),
+            ),
           ),
         ),
         surfaceSize: const Size(400, 2000),

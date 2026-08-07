@@ -1,12 +1,12 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('AsyncValue', () {
+  group('Loadable', () {
     test('flags and transitions', () {
-      const loading = AsyncValue<int>.loading();
+      const loading = Loadable<int>.loading();
       expect(loading.isLoading, isTrue);
 
       final value = loading.toValue(7);
@@ -24,20 +24,20 @@ void main() {
     });
 
     test('equality and toString', () {
-      const a = AsyncValue.value(value: 1);
-      const b = AsyncValue.value(value: 1);
+      const a = Loadable.value(value: 1);
+      const b = Loadable.value(value: 1);
       expect(a, b);
       expect(a.hashCode, b.hashCode);
       expect(a.toString(), contains('value'));
-      expect(const AsyncError(errorMessage: 'x').toString(), contains('x'));
+      expect(const LoadableError(errorMessage: 'x').toString(), contains('x'));
 
-      const errA = AsyncError(errorMessage: 'x', errorObject: 1);
-      const errB = AsyncError(errorMessage: 'x', errorObject: 1);
+      const errA = LoadableError(errorMessage: 'x', errorObject: 1);
+      const errB = LoadableError(errorMessage: 'x', errorObject: 1);
       expect(errA, errB);
       expect(errA.hashCode, errB.hashCode);
-      expect(errA == const AsyncError(errorMessage: 'y'), isFalse);
+      expect(errA == const LoadableError(errorMessage: 'y'), isFalse);
 
-      const raw = AsyncValue<int>(status: AsyncStatus.value, value: 7);
+      const raw = Loadable<int>(status: LoadableStatus.value, value: 7);
       expect(raw.value, 7);
       expect(raw.isValue, isTrue);
     });
@@ -47,20 +47,20 @@ void main() {
     test('returns first CustomException', () {
       const ex = CustomException(title: 'a');
       final values = [
-        const AsyncValue<int>.value(value: 1),
-        const AsyncValue<int>.error(error: AsyncError(errorMessage: 'a', errorObject: ex)),
-        const AsyncValue<int>.error(
-          error: AsyncError(errorMessage: 'b', errorObject: CustomException(title: 'b')),
+        const Loadable<int>.value(value: 1),
+        const Loadable<int>.error(error: LoadableError(errorMessage: 'a', errorObject: ex)),
+        const Loadable<int>.error(
+          error: LoadableError(errorMessage: 'b', errorObject: CustomException(title: 'b')),
         ),
       ];
       expect(firstException(values)?.title, 'a');
-      expect(firstException(const [AsyncValue.value(value: 1)]), isNull);
+      expect(firstException(const [Loadable.value(value: 1)]), isNull);
     });
   });
 
   group('runAsyncLoad', () {
     test('sets value on success', () async {
-      var field = const AsyncValue<int>.loading();
+      var field = const Loadable<int>.loading();
       await runAsyncLoad<int, int>(
         fetch: () async => 42,
         getField: () => field,
@@ -71,7 +71,7 @@ void main() {
     });
 
     test('sets error on failure', () async {
-      var field = const AsyncValue<int>.loading();
+      var field = const Loadable<int>.loading();
       await runAsyncLoad<int, int>(
         fetch: () async => throw Exception('nope'),
         getField: () => field,

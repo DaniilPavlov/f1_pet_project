@@ -6,20 +6,20 @@ import 'package:f1_pet_project/common/utils/trusted_url.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
 import 'package:f1_pet_project/services/analytics/analytics_event.dart';
-import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 /// Плитка статьи: превью, заголовок, описание; тап открывает ESPN.
-class NewsArticleTile extends StatelessWidget {
+class NewsArticleTile extends ConsumerWidget {
   const NewsArticleTile({required this.article, required this.locale, super.key});
 
   final NewsArticleModel article;
   final Locale locale;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final byline = article.byline;
     final published = article.published == null
         ? null
@@ -31,7 +31,7 @@ class NewsArticleTile extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          context.read<AnalyticsGateway>().log(NewsOpened(headline: article.headline));
+          ref.read(analyticsGatewayProvider).log(NewsOpened(headline: article.headline));
           Utils.openUrl(rawUrl: article.webUrl, externalApplication: true);
         },
         child: ExcludeSemantics(

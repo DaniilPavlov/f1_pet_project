@@ -5,6 +5,8 @@ import 'package:f1_pet_project/core/circuits/models/circuit_race_win.dart';
 import 'package:f1_pet_project/core/circuits/stats/circuit_stats_repository.dart';
 import 'package:f1_pet_project/core/circuits/stats/models/circuit_stats.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/controller_fixtures.dart';
@@ -23,82 +25,104 @@ void main() {
     constructor: ControllerFixtures.constructor,
   );
 
-  CircuitScreenController build({
+  final circuit = ControllerFixtures.circuit;
+
+  ProviderContainer buildContainer({
     Future<List<CircuitRaceWin>> Function({required String circuitId})? winners,
     Future<String?> Function(String articleUrl)? photo,
     Future<CircuitStats?> Function(String circuitId)? circuitStats,
   }) {
-    return CircuitScreenController(
-      circuit: ControllerFixtures.circuit,
-      statsRepository: CircuitStatsRepository(bundle: EmptyTestAssetBundle()),
-      fetchWinnersForTest: winners ?? ({required circuitId}) async => [win],
-      fetchPhotoUrlForTest: photo ?? (_) async => 'https://example.com/monaco.jpg',
-      fetchStatsForTest: circuitStats ?? (_) async => stats,
+    return ProviderContainer(
+      overrides: [
+        circuitStatsRepositoryProvider.overrideWithValue(
+          CircuitStatsRepository(bundle: EmptyTestAssetBundle()),
+        ),
+        circuitScreenControllerProvider(circuit).overrideWith(
+          () => CircuitScreenController(
+            circuit,
+            fetchWinnersForTest: winners ?? ({required circuitId}) async => [win],
+            fetchPhotoUrlForTest: photo ?? (_) async => 'https://example.com/monaco.jpg',
+            fetchStatsForTest: circuitStats ?? (_) async => stats,
+          ),
+        ),
+      ],
     );
   }
 
   group('CircuitScreenController', () {
     test('loadAll sets winners, photo and stats', () async {
-      final controller = build();
+      final container = buildContainer();
+      addTearDown(container.dispose);
 
-      await controller.loadAll();
+      await container.read(circuitScreenControllerProvider(circuit).notifier).loadAll();
+      final state = container.read(circuitScreenControllerProvider(circuit));
 
-      expect(controller.isLoaded, isTrue);
-      expect(controller.winners.value, hasLength(1));
-      expect(controller.circuitPhotoUrl, 'https://example.com/monaco.jpg');
-      expect(controller.circuitStats?.laps, 78);
-      expect(controller.screenError, isNull);
+      expect(state.isLoaded, isTrue);
+      expect(state.winners.value, hasLength(1));
+      expect(state.circuitPhotoUrl, 'https://example.com/monaco.jpg');
+      expect(state.circuitStats?.laps, 78);
+      expect(state.screenError, isNull);
     });
 
     test('photo and stats failures do not fail the screen', () async {
-      final controller = build(
+      final container = buildContainer(
         photo: (_) async => throw Exception('wiki down'),
         circuitStats: (_) async => throw Exception('stats down'),
       );
+      addTearDown(container.dispose);
 
-      await controller.loadAll();
+      await container.read(circuitScreenControllerProvider(circuit).notifier).loadAll();
+      final state = container.read(circuitScreenControllerProvider(circuit));
 
-      expect(controller.isLoaded, isTrue);
-      expect(controller.circuitPhotoUrl, isNull);
-      expect(controller.circuitStats, isNull);
-      expect(controller.screenError, isNull);
+      expect(state.isLoaded, isTrue);
+      expect(state.circuitPhotoUrl, isNull);
+      expect(state.circuitStats, isNull);
+      expect(state.screenError, isNull);
     });
 
     test('winners failure sets screenError', () async {
-      final controller = build(winners: ({required circuitId}) async => throw ResponseParseException('fail'));
+      final container = buildContainer(
+        winners: ({required circuitId}) async => throw ResponseParseException('fail'),
+      );
+      addTearDown(container.dispose);
 
-      await controller.loadWinners();
+      await container.read(circuitScreenControllerProvider(circuit).notifier).loadWinners();
+      final state = container.read(circuitScreenControllerProvider(circuit));
 
-      expect(controller.winners.isError, isTrue);
-      expect(controller.screenError, isNotNull);
+      expect(state.winners.isError, isTrue);
+      expect(state.screenError, isNotNull);
     });
 
     test('photo loading flag flips while fetch is in flight', () async {
       final gate = Completer<String?>();
-      final controller = build(photo: (_) => gate.future);
+      final container = buildContainer(photo: (_) => gate.future);
+      addTearDown(container.dispose);
 
+      final controller = container.read(circuitScreenControllerProvider(circuit).notifier);
       final pending = controller.loadPhoto();
-      expect(controller.isPhotoLoading, isTrue);
+      expect(container.read(circuitScreenControllerProvider(circuit)).isPhotoLoading, isTrue);
 
       gate.complete('https://example.com/x.jpg');
       await pending;
 
-      expect(controller.isPhotoLoading, isFalse);
-      expect(controller.circuitPhotoUrl, 'https://example.com/x.jpg');
+      final state = container.read(circuitScreenControllerProvider(circuit));
+      expect(state.isPhotoLoading, isFalse);
+      expect(state.circuitPhotoUrl, 'https://example.com/x.jpg');
     });
 
     test('refreshAll reloads winners', () async {
       var calls = 0;
-      final controller = build(
+      final container = buildContainer(
         winners: ({required circuitId}) async {
           calls++;
           return [win];
         },
       );
+      addTearDown(container.dispose);
 
-      await controller.refreshAll();
+      await container.read(circuitScreenControllerProvider(circuit).notifier).refreshAll();
       expect(calls, 1);
-      expect(controller.isLoaded, isTrue);
+      expect(container.read(circuitScreenControllerProvider(circuit)).isLoaded, isTrue);
     });
   });
 }

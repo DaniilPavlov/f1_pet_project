@@ -1,87 +1,98 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/common/utils/helpers/offline_cached_banner.dart';
 import 'package:f1_pet_project/core/results/repositories/results_repository.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:f1_pet_project/services/live_weekend/live_weekend_controller.dart';
 import 'package:flutter/foundation.dart';
-import 'package:mobx/mobx.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-part 'results_screen_controller.g.dart';
+/// Состояние экрана результатов.
+@immutable
+class ResultsState {
+  const ResultsState({this.lastRace = const Loadable.loading(), this.showingCachedData = false});
 
-/// MobX-контроллер экрана результатов.
-class ResultsScreenController = ResultsScreenControllerBase with _$ResultsScreenController;
-
-/// Управляет загрузкой результатов последней гонки; scoreboard — через [LiveWeekendController].
-abstract class ResultsScreenControllerBase with Store {
-  ResultsScreenControllerBase({
-    ResultsRepository? resultsRepository,
-    LiveWeekendController? liveWeekend,
-    AppDataRefresh? dataRefresh,
-    @visibleForTesting Future<ScheduleModel> Function()? fetchLastRaceResultsForTest,
-  }) : _resultsRepository = resultsRepository,
-       _liveWeekend = liveWeekend,
-       _dataRefresh = dataRefresh,
-       _fetchLastRaceResultsForTest = fetchLastRaceResultsForTest;
-
-  final ResultsRepository? _resultsRepository;
-  final LiveWeekendController? _liveWeekend;
-  final AppDataRefresh? _dataRefresh;
-  final Future<ScheduleModel> Function()? _fetchLastRaceResultsForTest;
-
-  @observable
-  AsyncValue<RacesModel> lastRace = const AsyncValue.loading();
+  final Loadable<RacesModel> lastRace;
 
   /// Офлайн + есть кэш last race / scoreboard.
-  @observable
-  bool showingCachedData = false;
+  final bool showingCachedData;
 
-  @computed
   CustomException? get screenError => lastRace.exception;
 
+  ResultsState copyWith({Loadable<RacesModel>? lastRace, bool? showingCachedData}) {
+    return ResultsState(
+      lastRace: lastRace ?? this.lastRace,
+      showingCachedData: showingCachedData ?? this.showingCachedData,
+    );
+  }
+}
+
+/// Управляет загрузкой результатов последней гонки; scoreboard — через [LiveWeekendController].
+class ResultsScreenController extends Notifier<ResultsState> {
+  ResultsScreenController({
+    @visibleForTesting Future<ScheduleModel> Function()? fetchLastRaceResultsForTest,
+    @visibleForTesting AppDataRefresh? dataRefreshForTest,
+  }) : _fetchLastRaceResultsForTest = fetchLastRaceResultsForTest,
+       _dataRefreshForTest = dataRefreshForTest;
+
+  final Future<ScheduleModel> Function()? _fetchLastRaceResultsForTest;
+  final AppDataRefresh? _dataRefreshForTest;
+
+  ResultsRepository get _resultsRepository => ref.read(resultsRepositoryProvider);
+
+  @override
+  ResultsState build() => const ResultsState();
+
   /// Загружает последнюю гонку (scoreboard уже грузит [LiveWeekendController]).
-  @action
   Future<void> loadAllData() async {
     await loadLastRaceResults();
     await _syncOfflineBanner();
   }
 
   /// Pull-to-refresh: единый сброс кэшей и принудительная перезагрузка.
-  @action
   Future<void> refreshAll() async {
-    await _dataRefresh?.clearAll();
+    if (_dataRefreshForTest != null) {
+      await _dataRefreshForTest.clearAll();
+    } else if (_fetchLastRaceResultsForTest == null) {
+      await ref.read(appDataRefreshProvider).clearAll();
+    }
     await Future.wait([
       loadLastRaceResults(),
-      if (_liveWeekend != null) _liveWeekend.loadScoreboard(forceRefresh: true),
+      ref.read(liveWeekendControllerProvider.notifier).loadScoreboard(forceRefresh: true),
     ]);
     await _syncOfflineBanner();
   }
 
   /// Запрашивает результаты последней завершённой гонки.
-  @action
   Future<void> loadLastRaceResults() async {
     await runAsyncLoad<ScheduleModel, RacesModel>(
       fetch: _fetchLastRaceResults,
-      getField: () => lastRace,
-      setField: (value) => lastRace = value,
-      onSuccess: (data) => lastRace = lastRace.toValue(data!.raceTable.races[0]),
+      getField: () => state.lastRace,
+      setField: (value) => state = state.copyWith(lastRace: value),
+      onSuccess: (data) => state = state.copyWith(lastRace: state.lastRace.toValue(data!.raceTable.races[0])),
     );
   }
 
   Future<void> _syncOfflineBanner() async {
-    final hasScoreboard = _liveWeekend?.scoreboard.isValue ?? false;
-    showingCachedData = await shouldShowOfflineCachedBanner(
-      hasCachedContent: lastRace.isValue || hasScoreboard,
-    );
+    final hasScoreboard = ref.read(liveWeekendControllerProvider).scoreboard.isValue;
+    final showing = await shouldShowOfflineCachedBanner(hasCachedContent: state.lastRace.isValue || hasScoreboard);
+    if (!ref.mounted) {
+      return;
+    }
+    state = state.copyWith(showingCachedData: showing);
   }
 
   /// После появления сети — спрятать баннер без перезагрузки.
-  @action
   Future<void> dismissOfflineBannerIfOnline() async {
-    showingCachedData = await clearOfflineBannerIfOnline(currentlyShowing: showingCachedData);
+    final showing = await clearOfflineBannerIfOnline(currentlyShowing: state.showingCachedData);
+    if (!ref.mounted) {
+      return;
+    }
+    state = state.copyWith(showingCachedData: showing);
   }
 
   Future<ScheduleModel> _fetchLastRaceResults() {
@@ -89,6 +100,10 @@ abstract class ResultsScreenControllerBase with Store {
     if (forTest != null) {
       return forTest();
     }
-    return _resultsRepository!.lastRace();
+    return _resultsRepository.lastRace();
   }
 }
+
+final resultsScreenControllerProvider = NotifierProvider.autoDispose<ResultsScreenController, ResultsState>(
+  ResultsScreenController.new,
+);

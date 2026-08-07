@@ -1,33 +1,30 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
-import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.dart';
-import 'package:f1_pet_project/core/results/constructor/repositories/constructor_catalog_repository.dart';
-import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
-import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/router/app_router.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:f1_pet_project/services/live_weekend/live_weekend_controller.dart';
 import 'package:f1_pet_project/services/live_weekend/live_weekend_resolver.dart';
 import 'package:f1_pet_project/services/notifications/race_reminder_service.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Слушает `f1pet://…` и открывает экран во вкладке с корректным nested-стеком.
 ///
 /// Также подписывается на [RaceReminderService.notificationTaps] (тот же контракт URI).
 /// `race/…` ведёт на Schedule / Results — не на Race Info (там пусто до конца уикенда).
-class F1PetDeepLinkHandler extends StatefulWidget {
+class F1PetDeepLinkHandler extends ConsumerStatefulWidget {
   const F1PetDeepLinkHandler({required this.forceUpdate, required this.router, super.key});
 
   final bool forceUpdate;
   final AppRouter router;
 
   @override
-  State<F1PetDeepLinkHandler> createState() => _F1PetDeepLinkHandlerState();
+  ConsumerState<F1PetDeepLinkHandler> createState() => _F1PetDeepLinkHandlerState();
 }
 
-class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
+class _F1PetDeepLinkHandlerState extends ConsumerState<F1PetDeepLinkHandler> {
   final _appLinks = AppLinks();
   StreamSubscription<Uri>? _linkSub;
   StreamSubscription<Uri>? _reminderTapSub;
@@ -48,7 +45,7 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
       return;
     }
     _subscribedToReminders = true;
-    _reminderTapSub = context.read<RaceReminderService>().notificationTaps.listen((uri) {
+    _reminderTapSub = ref.read(raceReminderServiceProvider).notificationTaps.listen((uri) {
       unawaited(_handleIncomingUri(uri));
     });
   }
@@ -88,7 +85,7 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
           if (id.isEmpty) {
             return;
           }
-          final driver = await context.read<DriverCatalogRepository>().findByDriverId(id);
+          final driver = await ref.read(driverCatalogRepositoryProvider).findByDriverId(id);
           if (driver == null || !mounted) {
             return;
           }
@@ -117,7 +114,7 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
           if (id.isEmpty) {
             return;
           }
-          final constructor = await context.read<ConstructorCatalogRepository>().findByConstructorId(id);
+          final constructor = await ref.read(constructorCatalogRepositoryProvider).findByConstructorId(id);
           if (constructor == null || !mounted) {
             return;
           }
@@ -146,7 +143,7 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
           if (id.isEmpty) {
             return;
           }
-          final circuit = await context.read<CircuitsRepository>().findByCircuitId(id);
+          final circuit = await ref.read(circuitsRepositoryProvider).findByCircuitId(id);
           if (circuit == null || !mounted) {
             return;
           }
@@ -213,8 +210,9 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
   }
 
   Future<void> _ensureScoreboardLoaded() async {
-    final liveWeekend = context.read<LiveWeekendController>();
-    if (!liveWeekend.scoreboard.isValue) {
+    final liveWeekend = ref.read(liveWeekendControllerProvider.notifier);
+    final liveState = ref.read(liveWeekendControllerProvider);
+    if (!liveState.scoreboard.isValue) {
       await liveWeekend.loadScoreboard();
     }
   }
@@ -225,14 +223,14 @@ class _F1PetDeepLinkHandlerState extends State<F1PetDeepLinkHandler> {
     if (!mounted) {
       return false;
     }
-    final liveWeekend = context.read<LiveWeekendController>();
-    if (!liveWeekend.isLive) {
+    final liveState = ref.read(liveWeekendControllerProvider);
+    if (!liveState.isLive) {
       return false;
     }
-    final schedule = await context.read<ScheduleRepository>().getSchedule();
+    final schedule = await ref.read(scheduleRepositoryProvider).getSchedule();
     final liveRace = LiveWeekendResolver.resolve(
       races: schedule.schedule.raceTable.races,
-      scoreboard: liveWeekend.scoreboard.value,
+      scoreboard: liveState.scoreboard.value,
     );
     return liveRace != null && liveRace.season == season && liveRace.round == round;
   }

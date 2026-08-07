@@ -14,37 +14,35 @@ import 'package:f1_pet_project/router/app_router.dart';
 import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
 import 'package:f1_pet_project/services/analytics/analytics_navigation_observer.dart';
 import 'package:f1_pet_project/services/deeplinks/f1pet_deep_link_handler.dart';
-import 'package:f1_pet_project/services/firebase/remote_config_service.dart';
-import 'package:f1_pet_project/services/home_widget/app_widget_sync_service.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:f1_pet_project/services/live_weekend/live_weekend_controller.dart';
-import 'package:f1_pet_project/services/notifications/race_reminder_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 /// Корневой виджет: bootstrap + MaterialApp.
-class App extends StatefulWidget {
+class App extends ConsumerStatefulWidget {
   const App({super.key});
 
   @override
-  State<App> createState() => _AppState();
+  ConsumerState<App> createState() => _AppState();
 }
 
-class _AppState extends State<App> with WidgetsBindingObserver {
+class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   late final AppRouter _router;
   late final AnalyticsGateway _analytics;
   var _remindersReady = false;
   var _routerInitialized = false;
   var _forceUpdate = false;
+  var _scoreboardKickoff = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_routerInitialized) {
-      _analytics = context.read<AnalyticsGateway>();
+      _analytics = ref.read(analyticsGatewayProvider);
       _router = AppRouter();
       _routerInitialized = true;
     }
@@ -69,19 +67,26 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     if (!mounted) {
       return;
     }
-    context.read<LiveWeekendController>().onAppLifecycleChanged(state);
+    ref.read(liveWeekendControllerProvider.notifier).onAppLifecycleChanged(state);
     if (state == AppLifecycleState.resumed) {
       unawaited(_onResumed());
     }
   }
 
   Future<void> _bootstrap() async {
+    if (!_scoreboardKickoff) {
+      _scoreboardKickoff = true;
+      unawaited(ref.read(liveWeekendControllerProvider.notifier).loadScoreboard());
+    }
     await _refreshForceUpdateGate();
     if (!mounted) {
       return;
     }
     if (_forceUpdate) {
-      await Future.wait([context.read<LocaleController>().load(), context.read<ThemeController>().load()]);
+      await Future.wait([
+        ref.read(localeControllerProvider.notifier).load(),
+        ref.read(themeControllerProvider.notifier).load(),
+      ]);
       return;
     }
     await Future.wait([_startRemindersIfNeeded(), _syncHomeWidgets()]);
@@ -91,7 +96,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     if (!mounted) {
       return;
     }
-    final remoteConfig = context.read<RemoteConfigService>();
+    final remoteConfig = ref.read(remoteConfigServiceProvider);
     await remoteConfig.refresh();
     await _refreshForceUpdateGate();
     if (!mounted || _forceUpdate) {
@@ -105,7 +110,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       return;
     }
     try {
-      await context.read<AppWidgetSyncService>().sync();
+      await ref.read(appWidgetSyncServiceProvider).sync();
     } on Object catch (error, stackTrace) {
       logger.e('App home widget sync failed', error: error, stackTrace: stackTrace);
     }
@@ -115,7 +120,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     if (!mounted) {
       return;
     }
-    final required = await context.read<RemoteConfigService>().isUpdateRequired();
+    final required = await ref.read(remoteConfigServiceProvider).isUpdateRequired();
     if (mounted && required != _forceUpdate) {
       setState(() => _forceUpdate = required);
     }
@@ -125,10 +130,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     if (!mounted) {
       return;
     }
-    final localeController = context.read<LocaleController>();
-    final themeController = context.read<ThemeController>();
-    final reminders = context.read<RaceReminderService>();
-    final notificationPrefs = context.read<NotificationsPreferenceController>();
+    final localeController = ref.read(localeControllerProvider.notifier);
+    final themeController = ref.read(themeControllerProvider.notifier);
+    final reminders = ref.read(raceReminderServiceProvider);
+    final notificationPrefs = ref.read(notificationsPreferenceControllerProvider.notifier);
     await Future.wait([
       localeController.load(),
       themeController.load(),
@@ -142,7 +147,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       return;
     }
 
-    if (!notificationPrefs.userEnabled) {
+    final prefsState = ref.read(notificationsPreferenceControllerProvider);
+    if (!prefsState.userEnabled) {
       return;
     }
 
@@ -150,8 +156,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       await reminders.init();
       await reminders.requestPermissions();
       await reminders.sync(
-        locale: localeController.locale,
-        includePractices: notificationPrefs.practiceRemindersEnabled,
+        locale: ref.read(localeControllerProvider).locale,
+        includePractices: prefsState.practiceRemindersEnabled,
       );
       _remindersReady = true;
     } on Object catch (error, stackTrace) {
@@ -163,9 +169,9 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     if (!PlatformCapabilities.hasLocalNotifications || !mounted) {
       return;
     }
-    final locale = context.read<LocaleController>().locale;
-    final reminders = context.read<RaceReminderService>();
-    final notificationPrefs = context.read<NotificationsPreferenceController>();
+    final locale = ref.read(localeControllerProvider).locale;
+    final reminders = ref.read(raceReminderServiceProvider);
+    final notificationPrefs = ref.read(notificationsPreferenceControllerProvider);
 
     if (!notificationPrefs.userEnabled) {
       await reminders.cancelAll();
@@ -194,33 +200,29 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final localeController = context.read<LocaleController>();
-    final themeController = context.read<ThemeController>();
+    final localeState = ref.watch(localeControllerProvider);
+    final themeState = ref.watch(themeControllerProvider);
 
-    return Observer(
-      builder: (context) {
-        return MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          theme: AppThemeData.light(),
-          darkTheme: AppThemeData.dark(),
-          themeMode: themeController.themeMode,
-          locale: localeController.locale,
-          supportedLocales: LocaleControllerBase.supportedLocales,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          routerDelegate: _router.delegate(navigatorObservers: () => [AnalyticsNavigationObserver(_analytics)]),
-          routeInformationParser: _router.defaultRouteParser(),
-          builder: (context, child) => _AppFrame(
-            forceUpdate: _forceUpdate,
-            router: _router,
-            child: child,
-          ),
-        );
-      },
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      theme: AppThemeData.light(),
+      darkTheme: AppThemeData.dark(),
+      themeMode: themeState.themeMode,
+      locale: localeState.locale,
+      supportedLocales: LocaleController.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      routerDelegate: _router.delegate(navigatorObservers: () => [AnalyticsNavigationObserver(_analytics)]),
+      routeInformationParser: _router.defaultRouteParser(),
+      builder: (context, child) => _AppFrame(
+        forceUpdate: _forceUpdate,
+        router: _router,
+        child: child,
+      ),
     );
   }
 }

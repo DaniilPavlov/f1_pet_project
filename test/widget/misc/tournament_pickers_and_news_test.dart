@@ -1,4 +1,3 @@
-import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/schedule_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/screen_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/constructor_picker_bottom_sheet.dart';
@@ -9,14 +8,13 @@ import 'package:f1_pet_project/core/circuits/map/components/map_controls_widget.
 import 'package:f1_pet_project/core/news/components/news_article_tile.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
 import 'package:f1_pet_project/core/results/race_search/components/info_message_section.dart';
-import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:f1_pet_project/l10n/app_localizations_en.dart';
 import 'package:f1_pet_project/services/analytics/analytics_event.dart';
-import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
 
 import '../../helpers/controller_fixtures.dart';
 import '../../helpers/fake_repositories.dart';
@@ -176,16 +174,22 @@ void main() {
           controller: controller,
           onChanged: () => changed++,
         ),
-        surfaceSize: const Size(400, 2000),
-        wrapApp: (app) => Provider<SeasonsRepository>.value(
-          value: FakeSeasonsRepository(years: ['2025', '2024']),
+        // Tall surface: sheet ListTiles can lay out below the fold in widget tests.
+        surfaceSize: const Size(400, 3000),
+        wrapApp: (app) => ProviderScope(
+          overrides: [
+            seasonsRepositoryProvider.overrideWithValue(FakeSeasonsRepository(years: ['2025', '2024'])),
+          ],
           child: app,
         ),
       );
 
       await tester.tap(find.byType(SeasonPickerField));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('2025'));
+      await tester.pump(); // open sheet
+      await tester.pump(); // post-frame callback
+      await tester.pump(); // load() completes
+      final tile = tester.widget<ListTile>(find.widgetWithText(ListTile, '2025'));
+      tile.onTap!();
       await tester.pumpAndSettle();
 
       expect(controller.text, '2025');
@@ -205,18 +209,25 @@ void main() {
           seasonYear: '2024',
           onPicked: (p) => picked = p,
         ),
-        surfaceSize: const Size(400, 2000),
-        wrapApp: (app) => Provider<RaceWeekendRepository>.value(
-          value: FakeRaceWeekendRepository(
-            seasonRaces: ControllerFixtures.scheduleModel.raceTable.races,
-          ),
+        surfaceSize: const Size(400, 3000),
+        wrapApp: (app) => ProviderScope(
+          overrides: [
+            raceWeekendRepositoryProvider.overrideWithValue(
+              FakeRaceWeekendRepository(
+                seasonRaces: ControllerFixtures.scheduleModel.raceTable.races,
+              ),
+            ),
+          ],
           child: app,
         ),
       );
 
       await tester.tap(find.byType(RacePickerField));
-      await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(ListTile, '5. Monaco Grand Prix'));
+      await tester.pump(); // open sheet
+      await tester.pump(); // post-frame callback
+      await tester.pump(); // load() completes
+      final tile = tester.widget<ListTile>(find.widgetWithText(ListTile, '5. Monaco Grand Prix'));
+      tile.onTap!();
       await tester.pumpAndSettle();
 
       expect(picked?.round, '5');
@@ -244,18 +255,19 @@ void main() {
       });
 
       await tester.pumpApp(
-        Provider<AnalyticsGateway>.value(
-          value: gateway,
-          child: NewsArticleTile(
-            article: const NewsArticleModel(
-              id: 1,
-              headline: 'No meta',
-              description: '',
-              webUrl: 'https://www.espn.com/f1/story',
-              imageUrl: 'https://example.com/img.png',
-            ),
-            locale: const Locale('en'),
+        NewsArticleTile(
+          article: const NewsArticleModel(
+            id: 1,
+            headline: 'No meta',
+            description: '',
+            webUrl: 'https://www.espn.com/f1/story',
+            imageUrl: 'https://example.com/img.png',
           ),
+          locale: const Locale('en'),
+        ),
+        wrapApp: (app) => ProviderScope(
+          overrides: [analyticsGatewayProvider.overrideWithValue(gateway)],
+          child: app,
         ),
       );
 

@@ -1,7 +1,7 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/common/utils/helpers/share_helper.dart';
 import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
@@ -9,18 +9,27 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/country_flag.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/weekend_scoreboard_shimmer.dart';
 import 'package:f1_pet_project/core/results/components/weekend_session_results_sheet.dart';
+import 'package:f1_pet_project/services/live_weekend/live_weekend_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 /// Карточка текущего уикенда F1 (ESPN scoreboard) на Results.
-class WeekendScoreboardSection extends StatelessWidget {
-  const WeekendScoreboardSection({required this.scoreboard, required this.locale, super.key});
+class WeekendScoreboardSection extends ConsumerWidget {
+  const WeekendScoreboardSection({
+    super.key,
+    @visibleForTesting this.scoreboardForTest,
+    @visibleForTesting this.localeForTest,
+  });
 
-  final AsyncValue<EspnScoreboardEvent?> scoreboard;
-  final Locale locale;
+  /// Тестовый override scoreboard (иначе — [liveWeekendControllerProvider]).
+  final Loadable<EspnScoreboardEvent?>? scoreboardForTest;
+  final Locale? localeForTest;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scoreboard = scoreboardForTest ?? ref.watch(liveWeekendControllerProvider).scoreboard;
+    final locale = localeForTest ?? Localizations.localeOf(context);
     final event = scoreboard.value;
     if (event != null) {
       return Padding(

@@ -7,18 +7,35 @@ import 'package:f1_pet_project/common/packages/custom_yandex_map/src/services/cl
 import 'package:f1_pet_project/common/packages/custom_yandex_map/src/services/geometry_service.dart';
 import 'package:f1_pet_project/common/packages/custom_yandex_map/src/services/user_position_getter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mobx/mobx.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
-part 'custom_map_controller.g.dart';
+/// Состояние кастомной Яндекс.Карты.
+@immutable
+class CustomMapState {
+  const CustomMapState({
+    this.streamedMapObjects = const [],
+    this.isDragging = false,
+  });
 
-/// MobX-контроллер кастомной Яндекс.Карты.
-class CustomMapController = CustomMapControllerBase with _$CustomMapController;
+  final List<MapObject<dynamic>> streamedMapObjects;
+  final bool isDragging;
+
+  CustomMapState copyWith({
+    List<MapObject<dynamic>>? streamedMapObjects,
+    bool? isDragging,
+  }) {
+    return CustomMapState(
+      streamedMapObjects: streamedMapObjects ?? this.streamedMapObjects,
+      isDragging: isDragging ?? this.isDragging,
+    );
+  }
+}
 
 /// Управляет метками, кластерами и геопозицией на карте.
-abstract class CustomMapControllerBase with Store {
-  CustomMapControllerBase({
+class CustomMapController extends Notifier<CustomMapState> {
+  CustomMapController({
     required this.mapController,
     required this.points,
     required this.clusterColor,
@@ -28,9 +45,7 @@ abstract class CustomMapControllerBase with Store {
     this.placemarkIconSize,
     this.selectedPlacemarkIconSize,
     this.clusterTextStyle,
-  }) {
-    _listenMapController();
-  }
+  });
 
   final MapController mapController;
   List<Point> points;
@@ -48,6 +63,7 @@ abstract class CustomMapControllerBase with Store {
   final animation = const MapAnimation(duration: 0.3);
 
   StreamSubscription<Position>? userPositionStream;
+  StreamSubscription<MapEvent>? _mapControllerSub;
 
   YandexMapController? controller;
   Point? userPosition;
@@ -58,25 +74,22 @@ abstract class CustomMapControllerBase with Store {
   void Function(Exception exception)? onGetUserPositionError;
   void Function(bool status)? onUserPositionStatusUpdate;
 
-  @observable
-  ObservableList<MapObject<dynamic>> streamedMapObjects = ObservableList<MapObject<dynamic>>();
-
-  @observable
-  bool isDragging = false;
-
-  /// Отменяет подписку на поток геопозиции.
-  void dispose() {
-    userPositionStream?.cancel();
+  @override
+  CustomMapState build() {
+    _listenMapController();
+    ref.onDispose(() {
+      userPositionStream?.cancel();
+      _mapControllerSub?.cancel();
+    });
+    return const CustomMapState();
   }
 
   /// Обновляет состояние перетаскивания карты для анимации метки.
-  @action
   void changeIsDraggingState(bool value) {
-    isDragging = value;
+    state = state.copyWith(isDragging: value);
   }
 
   /// Обновляет точки и перестраивает кластеры на карте.
-  @action
   void updatePoints(List<Point> newPoints) {
     points = newPoints;
     unawaited(_updateClusterMapObject(points));
@@ -84,7 +97,8 @@ abstract class CustomMapControllerBase with Store {
   }
 
   void _listenMapController() {
-    mapController.stream.listen((event) {
+    _mapControllerSub?.cancel();
+    _mapControllerSub = mapController.stream.listen((event) {
       if (event.type == 'updateUserPosition') {
         _enableListenUserPosition();
       }
@@ -108,7 +122,6 @@ abstract class CustomMapControllerBase with Store {
   }
 
   /// Загружает иконки и отображает начальные метки на карте.
-  @action
   Future<void> init() async {
     if (mapObjectIcon != null) {
       mapIcon ??= BitmapDescriptor.fromAssetImage(mapObjectIcon!);
@@ -157,18 +170,20 @@ abstract class CustomMapControllerBase with Store {
       },
     );
 
+    if (!ref.mounted) {
+      return;
+    }
     _setStreamedMapObjects([
-      ...streamedMapObjects.where((obj) => obj.mapId != clusterMapId),
+      ...state.streamedMapObjects.where((obj) => obj.mapId != clusterMapId),
       placemarkCollection,
     ]);
   }
 
-  @action
   void _setStreamedMapObjects(List<MapObject<dynamic>> objects) {
     // Пин пользователя всегда поверх кластеров/трасс.
     final user = objects.where((obj) => obj.mapId == userMapId);
     final rest = objects.where((obj) => obj.mapId != userMapId);
-    streamedMapObjects = ObservableList.of([...rest, ...user]);
+    state = state.copyWith(streamedMapObjects: [...rest, ...user]);
   }
 
   Future<void> _enableListenUserPosition() async {
@@ -218,8 +233,11 @@ abstract class CustomMapControllerBase with Store {
 
       final iconAsset = userIcon;
       if (iconAsset != null) {
+        if (!ref.mounted) {
+          return;
+        }
         _setStreamedMapObjects([
-          ...streamedMapObjects.where((obj) => obj.mapId != userMapId),
+          ...state.streamedMapObjects.where((obj) => obj.mapId != userMapId),
           PlacemarkMapObject(
             mapId: userMapId,
             point: position,
@@ -244,3 +262,8 @@ abstract class CustomMapControllerBase with Store {
     }
   }
 }
+
+/// Виджет-локальный провайдер: переопределяется в [CustomMap].
+final customMapControllerProvider = NotifierProvider.autoDispose<CustomMapController, CustomMapState>(
+  () => throw UnsupportedError('Override customMapControllerProvider in CustomMap'),
+);

@@ -1,142 +1,159 @@
 import 'package:f1_pet_project/core/profile/utils/auth_form_validators.dart';
 import 'package:f1_pet_project/services/auth/auth_service.dart';
-import 'package:mobx/mobx.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-part 'auth_controller.g.dart';
-
-/// Observer (MobX): состояние форм входа / регистрации.
-class AuthController = AuthControllerBase with _$AuthController;
-
-/// Поля формы + вызовы [AuthFormGateway]; ошибки как l10n-ключи.
-abstract class AuthControllerBase with Store {
-  AuthControllerBase({required AuthFormGateway authService}) : _authService = authService;
-
-  final AuthFormGateway _authService;
+/// Состояние форм входа / регистрации.
+@immutable
+class AuthState {
+  const AuthState({
+    this.email = '',
+    this.password = '',
+    this.isLoading = false,
+    this.errorKey,
+  });
 
   /// Email из поля ввода.
-  @observable
-  String email = '';
+  final String email;
 
   /// Пароль из поля ввода.
-  @observable
-  String password = '';
+  final String password;
 
   /// Идёт сетевой запрос auth.
-  @observable
-  bool isLoading = false;
+  final bool isLoading;
 
   /// Ключ l10n ошибки или `null`.
-  @observable
-  String? errorKey;
+  final String? errorKey;
+
+  AuthState copyWith({
+    String? email,
+    String? password,
+    bool? isLoading,
+    String? errorKey,
+    bool clearErrorKey = false,
+  }) {
+    return AuthState(
+      email: email ?? this.email,
+      password: password ?? this.password,
+      isLoading: isLoading ?? this.isLoading,
+      errorKey: clearErrorKey ? null : (errorKey ?? this.errorKey),
+    );
+  }
+}
+
+/// Поля формы + вызовы [AuthFormGateway]; ошибки как l10n-ключи.
+class AuthController extends Notifier<AuthState> {
+  AuthController({@visibleForTesting AuthFormGateway? authServiceForTest})
+    : _authServiceForTest = authServiceForTest;
+
+  final AuthFormGateway? _authServiceForTest;
+
+  AuthFormGateway get _authService => _authServiceForTest ?? ref.read(authServiceProvider);
+
+  @override
+  AuthState build() => const AuthState();
 
   /// Обновляет email и сбрасывает ошибку.
-  @action
   void setEmail(String value) {
-    email = value;
-    errorKey = null;
+    state = state.copyWith(email: value, clearErrorKey: true);
   }
 
   /// Обновляет пароль и сбрасывает ошибку.
-  @action
   void setPassword(String value) {
-    password = value;
-    errorKey = null;
+    state = state.copyWith(password: value, clearErrorKey: true);
   }
 
   /// Вход; `true` при успехе.
-  @action
   Future<bool> signIn() async {
     if (!_validateSignIn()) {
       return false;
     }
-    isLoading = true;
-    errorKey = null;
+    state = state.copyWith(isLoading: true, clearErrorKey: true);
     try {
-      final result = await _authService.signIn(email: email, password: password);
+      final result = await _authService.signIn(email: state.email, password: state.password);
       if (!result.isSuccess) {
-        errorKey = result.errorMessage;
+        state = state.copyWith(errorKey: result.errorMessage);
         return false;
       }
       return true;
     } finally {
-      isLoading = false;
+      state = state.copyWith(isLoading: false);
     }
   }
 
   /// Регистрация; `true` при успехе.
-  @action
   Future<bool> register() async {
     if (!_validateRegister()) {
       return false;
     }
-    isLoading = true;
-    errorKey = null;
+    state = state.copyWith(isLoading: true, clearErrorKey: true);
     try {
-      final result = await _authService.register(email: email, password: password);
+      final result = await _authService.register(email: state.email, password: state.password);
       if (!result.isSuccess) {
-        errorKey = result.errorMessage;
+        state = state.copyWith(errorKey: result.errorMessage);
         return false;
       }
       return true;
     } finally {
-      isLoading = false;
+      state = state.copyWith(isLoading: false);
     }
   }
 
-  /// Письмо сброса пароля на [email] (пароль не нужен).
-  @action
+  /// Письмо сброса пароля на email (пароль не нужен).
   Future<bool> sendPasswordReset() async {
-    if (email.trim().isEmpty) {
-      errorKey = 'authErrorEmptyEmail';
+    if (state.email.trim().isEmpty) {
+      state = state.copyWith(errorKey: 'authErrorEmptyEmail');
       return false;
     }
-    if (!AuthFormValidators.isEmailFormatOk(email)) {
-      errorKey = 'authErrorInvalidEmail';
+    if (!AuthFormValidators.isEmailFormatOk(state.email)) {
+      state = state.copyWith(errorKey: 'authErrorInvalidEmail');
       return false;
     }
-    isLoading = true;
-    errorKey = null;
+    state = state.copyWith(isLoading: true, clearErrorKey: true);
     try {
-      final result = await _authService.sendPasswordResetEmail(email: email);
+      final result = await _authService.sendPasswordResetEmail(email: state.email);
       if (!result.isSuccess) {
-        errorKey = result.errorMessage;
+        state = state.copyWith(errorKey: result.errorMessage);
         return false;
       }
       return true;
     } finally {
-      isLoading = false;
+      state = state.copyWith(isLoading: false);
     }
   }
 
   bool _validateSignIn() {
-    if (email.trim().isEmpty || password.isEmpty) {
-      errorKey = 'authErrorEmptyFields';
+    if (state.email.trim().isEmpty || state.password.isEmpty) {
+      state = state.copyWith(errorKey: 'authErrorEmptyFields');
       return false;
     }
-    if (!AuthFormValidators.isEmailFormatOk(email)) {
-      errorKey = 'authErrorInvalidEmail';
+    if (!AuthFormValidators.isEmailFormatOk(state.email)) {
+      state = state.copyWith(errorKey: 'authErrorInvalidEmail');
       return false;
     }
     return true;
   }
 
   bool _validateRegister() {
-    if (email.trim().isEmpty || password.isEmpty) {
-      errorKey = 'authErrorEmptyFields';
+    if (state.email.trim().isEmpty || state.password.isEmpty) {
+      state = state.copyWith(errorKey: 'authErrorEmptyFields');
       return false;
     }
-    if (!AuthFormValidators.isEmailFormatOk(email)) {
-      errorKey = 'authErrorInvalidEmail';
+    if (!AuthFormValidators.isEmailFormatOk(state.email)) {
+      state = state.copyWith(errorKey: 'authErrorInvalidEmail');
       return false;
     }
-    if (AuthFormValidators.isDisposableEmail(email)) {
-      errorKey = 'authErrorDisposableEmail';
+    if (AuthFormValidators.isDisposableEmail(state.email)) {
+      state = state.copyWith(errorKey: 'authErrorDisposableEmail');
       return false;
     }
-    if (!AuthFormValidators.isPasswordStrongEnough(password)) {
-      errorKey = 'authErrorWeakPassword';
+    if (!AuthFormValidators.isPasswordStrongEnough(state.password)) {
+      state = state.copyWith(errorKey: 'authErrorWeakPassword');
       return false;
     }
     return true;
   }
 }
+
+final authControllerProvider = NotifierProvider.autoDispose<AuthController, AuthState>(AuthController.new);

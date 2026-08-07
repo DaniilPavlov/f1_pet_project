@@ -34,18 +34,18 @@ Same idea, other stacks:
 | Layer | Tech |
 |------|------------|
 | UI | Flutter, Material 3, light/dark themes |
-| State | MobX + Provider |
+| State | Riverpod (`Notifier` + `Loadable`) |
 | Navigation | Auto Route + `app_links` deep links |
 | Network | Dio (`AppDio`, Jolpica `RequestHandler`) |
 | Data | Feature repositories + `AppDataRefresh` (pull-to-refresh) |
-| Codegen | json_serializable, mobx_codegen, auto_route_generator, envied |
+| Codegen | json_serializable, auto_route_generator, envied |
 | Map | Yandex MapKit |
 | Backend | Firebase (Core, Auth, App Check, Firestore, Analytics, Crashlytics, Remote Config), AppMetrica |
 | Tests | unit + widget/golden (`test/units/`, `test/widget/`, shared `test/helpers/`) |
 
 ## Architecture
 
-- **DI** — root `MultiProvider` in `lib/main.dart` (repos, `AppDataRefresh`, reminders). ESPN `Dio` is created in `main` and passed into repos.
+- **DI** — root `ProviderScope` overrides in `lib/main.dart` via `lib/services/di/app_providers.dart` (repos, `AppDataRefresh`, reminders). ESPN `Dio` is created in `main` and passed into repos.
 - **Jolpica** — one `RequestHandler` wired via `ApiLoader.configure` (static access from repos); screens do not call Dio.
 - **Repositories** — Jolpica/ESPN/Wikipedia live in `*/repositories/`.
 - **`AppDataRefresh.clearAll()`** — soft-invalidate on pull-to-refresh; cached data kept for offline.

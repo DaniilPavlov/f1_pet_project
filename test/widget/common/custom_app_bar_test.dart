@@ -1,9 +1,8 @@
-import 'package:f1_pet_project/common/localization/locale_controller.dart';
 import 'package:f1_pet_project/common/utils/theme/theme_controller.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../helpers/pump_app.dart';
@@ -16,25 +15,14 @@ void main() {
   group('CustomAppBar', () {
     testWidgets('shows title and share action', (tester) async {
       var shares = 0;
-      final locale = LocaleController();
-      final theme = ThemeController();
 
       await tester.pumpApp(
-        MultiProvider(
-          providers: [
-            Provider<LocaleController>.value(value: locale),
-            Provider<ThemeController>.value(value: theme),
-          ],
-          child: Scaffold(
-            appBar: CustomAppBar(
-              title: 'Results',
-              showPreferences: false,
-              onShare: () => shares++,
-            ),
-            body: const SizedBox.shrink(),
-          ),
+        Scaffold(
+          appBar: CustomAppBar(title: 'Results', showPreferences: false, onShare: () => shares++),
+          body: const SizedBox.shrink(),
         ),
         wrapInScaffold: false,
+        wrapApp: (app) => ProviderScope(child: app),
       );
 
       expect(find.text('Results'), findsOneWidget);
@@ -44,51 +32,40 @@ void main() {
     });
 
     testWidgets('cycles theme preference', (tester) async {
-      final locale = LocaleController();
-      final theme = ThemeController();
-      await theme.load();
+      late ProviderContainer container;
 
       await tester.pumpApp(
-        MultiProvider(
-          providers: [
-            Provider<LocaleController>.value(value: locale),
-            Provider<ThemeController>.value(value: theme),
-          ],
-          child: Scaffold(
-            appBar: const CustomAppBar(title: 'Home', showPreferences: true),
-            body: const SizedBox.shrink(),
-          ),
+        const Scaffold(
+          appBar: CustomAppBar(title: 'Home', showPreferences: true),
+          body: SizedBox.shrink(),
         ),
         wrapInScaffold: false,
+        wrapApp: (app) {
+          container = ProviderContainer();
+          addTearDown(container.dispose);
+          return UncontrolledProviderScope(container: container, child: app);
+        },
       );
+
+      await container.read(themeControllerProvider.notifier).load();
+      await tester.pump();
 
       expect(find.text('RU'), findsOneWidget);
       await tester.tap(find.byIcon(Icons.brightness_auto));
       await tester.pump();
-      expect(theme.preference, AppThemePreference.light);
+      expect(container.read(themeControllerProvider).preference, AppThemePreference.light);
     });
 
     testWidgets('shows back when onPop is set', (tester) async {
       var pops = 0;
-      final locale = LocaleController();
-      final theme = ThemeController();
 
       await tester.pumpApp(
-        MultiProvider(
-          providers: [
-            Provider<LocaleController>.value(value: locale),
-            Provider<ThemeController>.value(value: theme),
-          ],
-          child: Scaffold(
-            appBar: CustomAppBar(
-              title: 'News',
-              showPreferences: false,
-              onPop: () => pops++,
-            ),
-            body: const SizedBox.shrink(),
-          ),
+        Scaffold(
+          appBar: CustomAppBar(title: 'News', showPreferences: false, onPop: () => pops++),
+          body: const SizedBox.shrink(),
         ),
         wrapInScaffold: false,
+        wrapApp: (app) => ProviderScope(child: app),
       );
 
       expect(find.byIcon(Icons.arrow_back_ios_new), findsOneWidget);
@@ -98,21 +75,13 @@ void main() {
     });
 
     testWidgets('hides back on root without onPop', (tester) async {
-      final locale = LocaleController();
-      final theme = ThemeController();
-
       await tester.pumpApp(
-        MultiProvider(
-          providers: [
-            Provider<LocaleController>.value(value: locale),
-            Provider<ThemeController>.value(value: theme),
-          ],
-          child: const Scaffold(
-            appBar: CustomAppBar(title: 'Home', showPreferences: false),
-            body: SizedBox.shrink(),
-          ),
+        const Scaffold(
+          appBar: CustomAppBar(title: 'Home', showPreferences: false),
+          body: SizedBox.shrink(),
         ),
         wrapInScaffold: false,
+        wrapApp: (app) => ProviderScope(child: app),
       );
 
       expect(find.byIcon(Icons.arrow_back_ios_new), findsNothing);

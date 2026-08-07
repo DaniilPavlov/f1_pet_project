@@ -1,19 +1,30 @@
-import 'package:mobx/mobx.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-part 'tournament_tables_section_controller.g.dart';
+/// Состояние переключателя таблиц пилоты/конструкторы.
+@immutable
+class TournamentTablesSectionState {
+  const TournamentTablesSectionState({this.activeTable = 0});
 
-/// MobX-контроллер секции турнирных таблиц.
-class TournamentTablesSectionController = TournamentTablesSectionControllerBase
-    with _$TournamentTablesSectionController;
+  final int activeTable;
 
-/// Переключает активную таблицу между пилотами и конструкторами.
-abstract class TournamentTablesSectionControllerBase with Store {
-  @observable
-  int activeTable = 0;
-
-  /// Устанавливает индекс отображаемой таблицы.
-  @action
-  void changeActiveTable(int value) {
-    activeTable = value;
+  TournamentTablesSectionState copyWith({int? activeTable}) {
+    return TournamentTablesSectionState(activeTable: activeTable ?? this.activeTable);
   }
 }
+
+/// Переключает активную таблицу между пилотами и конструкторами.
+class TournamentTablesSectionController extends Notifier<TournamentTablesSectionState> {
+  @override
+  TournamentTablesSectionState build() => const TournamentTablesSectionState();
+
+  /// Устанавливает индекс отображаемой таблицы.
+  void changeActiveTable(int value) {
+    state = state.copyWith(activeTable: value);
+  }
+}
+
+final tournamentTablesSectionControllerProvider =
+    NotifierProvider.autoDispose<TournamentTablesSectionController, TournamentTablesSectionState>(
+      TournamentTablesSectionController.new,
+    );

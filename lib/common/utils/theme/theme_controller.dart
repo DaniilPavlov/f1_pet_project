@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobx/mobx.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-part 'theme_controller.g.dart';
 
 /// Предпочтение темы: система / светлая / тёмная.
 enum AppThemePreference {
@@ -11,62 +9,72 @@ enum AppThemePreference {
   dark,
 }
 
-/// MobX-контроллер темы приложения (system по умолчанию).
-class ThemeController = ThemeControllerBase with _$ThemeController;
+/// Состояние темы приложения.
+@immutable
+class ThemeState {
+  const ThemeState({
+    this.preference = AppThemePreference.system,
+    this.isLoaded = false,
+  });
 
-/// Хранит и переключает [ThemeMode] приложения.
-abstract class ThemeControllerBase with Store {
+  final AppThemePreference preference;
+  final bool isLoaded;
+
+  ThemeMode get themeMode => switch (preference) {
+    AppThemePreference.system => ThemeMode.system,
+    AppThemePreference.light => ThemeMode.light,
+    AppThemePreference.dark => ThemeMode.dark,
+  };
+
+  IconData get preferenceIcon => switch (preference) {
+    AppThemePreference.system => Icons.brightness_auto,
+    AppThemePreference.light => Icons.light_mode,
+    AppThemePreference.dark => Icons.dark_mode,
+  };
+
+  ThemeState copyWith({AppThemePreference? preference, bool? isLoaded}) {
+    return ThemeState(
+      preference: preference ?? this.preference,
+      isLoaded: isLoaded ?? this.isLoaded,
+    );
+  }
+}
+
+/// Хранит и переключает [ThemeMode] приложения (system по умолчанию).
+class ThemeController extends Notifier<ThemeState> {
   static const _prefsKey = 'app_theme_preference';
 
-  @observable
-  AppThemePreference preference = AppThemePreference.system;
-
-  @observable
-  bool isLoaded = false;
-
-  @computed
-  ThemeMode get themeMode => switch (preference) {
-        AppThemePreference.system => ThemeMode.system,
-        AppThemePreference.light => ThemeMode.light,
-        AppThemePreference.dark => ThemeMode.dark,
-      };
-
-  @computed
-  IconData get preferenceIcon => switch (preference) {
-        AppThemePreference.system => Icons.brightness_auto,
-        AppThemePreference.light => Icons.light_mode,
-        AppThemePreference.dark => Icons.dark_mode,
-      };
+  @override
+  ThemeState build() => const ThemeState();
 
   /// Загружает сохранённое предпочтение; без значения — system.
-  @action
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getString(_prefsKey);
-    preference = switch (raw) {
-      'light' => AppThemePreference.light,
-      'dark' => AppThemePreference.dark,
-      _ => AppThemePreference.system,
-    };
-    isLoaded = true;
+    state = state.copyWith(
+      preference: switch (raw) {
+        'light' => AppThemePreference.light,
+        'dark' => AppThemePreference.dark,
+        _ => AppThemePreference.system,
+      },
+      isLoaded: true,
+    );
   }
 
   /// Цикл: system → light → dark → system.
-  @action
   Future<void> cycle() async {
-    await setPreference(switch (preference) {
+    await setPreference(switch (state.preference) {
       AppThemePreference.system => AppThemePreference.light,
       AppThemePreference.light => AppThemePreference.dark,
       AppThemePreference.dark => AppThemePreference.system,
     });
   }
 
-  @action
   Future<void> setPreference(AppThemePreference value) async {
-    if (preference == value) {
+    if (state.preference == value) {
       return;
     }
-    preference = value;
+    state = state.copyWith(preference: value);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
       _prefsKey,
@@ -78,3 +86,5 @@ abstract class ThemeControllerBase with Store {
     );
   }
 }
+
+final themeControllerProvider = NotifierProvider<ThemeController, ThemeState>(ThemeController.new);

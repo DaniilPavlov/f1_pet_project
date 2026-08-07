@@ -4,6 +4,8 @@ import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/core/results/components/race_info_table.dart';
+import 'package:f1_pet_project/core/results/models/pit_stops_model.dart';
+import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart';
 import 'package:f1_pet_project/core/results/models/results_model.dart';
 import 'package:f1_pet_project/core/results/race_info/components/pit_stops_table.dart';
 import 'package:f1_pet_project/core/results/race_info/components/pit_stops_table_appbar.dart';
@@ -12,13 +14,21 @@ import 'package:f1_pet_project/core/results/race_info/components/qualification_t
 import 'package:f1_pet_project/core/results/race_info/components/race_info_section_pin_tracker.dart';
 import 'package:f1_pet_project/core/results/race_info/components/race_info_table_appbar.dart';
 import 'package:f1_pet_project/core/results/race_info/controllers/race_info_screen_controller/race_info_screen_controller.dart';
+import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:flutter/material.dart';
 
 /// Скролл секций race info с взаимоисключающим pin шапок.
 class RaceInfoScrollBody extends StatefulWidget {
-  const RaceInfoScrollBody({required this.controller, super.key});
+  const RaceInfoScrollBody({
+    required this.raceModel,
+    required this.state,
+    required this.onRefresh,
+    super.key,
+  });
 
-  final RaceInfoScreenController controller;
+  final RacesModel raceModel;
+  final RaceInfoState state;
+  final Future<void> Function() onRefresh;
 
   @override
   State<RaceInfoScrollBody> createState() => _RaceInfoScrollBodyState();
@@ -27,20 +37,22 @@ class RaceInfoScrollBody extends StatefulWidget {
 class _RaceInfoScrollBodyState extends State<RaceInfoScrollBody> {
   late final RaceInfoSectionPinTracker _pinTracker;
 
-  RaceInfoScreenController get _controller => widget.controller;
+  List<ResultsModel> get _sprintResults => widget.state.sprintResults.value ?? const <ResultsModel>[];
+
+  List<QualifyingResultsModel> get _qualifyingResults => widget.state.qualifyingResults.value ?? const [];
+
+  List<PitStopsModel> get _pitStops => widget.state.pitStops.value ?? const [];
 
   @override
   void initState() {
     super.initState();
-    _pinTracker = RaceInfoSectionPinTracker(
-      hasSprint: _controller.sprintResults.value?.isNotEmpty ?? false,
-    );
+    _pinTracker = RaceInfoSectionPinTracker(hasSprint: _sprintResults.isNotEmpty);
   }
 
   @override
   void didUpdateWidget(covariant RaceInfoScrollBody oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _pinTracker.hasSprint = _controller.sprintResults.value?.isNotEmpty ?? false;
+    _pinTracker.hasSprint = _sprintResults.isNotEmpty;
   }
 
   @override
@@ -51,11 +63,11 @@ class _RaceInfoScrollBodyState extends State<RaceInfoScrollBody> {
 
   @override
   Widget build(BuildContext context) {
-    final sprintResults = _controller.sprintResults.value ?? const <ResultsModel>[];
+    final sprintResults = _sprintResults;
 
     return RefreshIndicator(
       color: AppTheme.red,
-      onRefresh: _controller.refreshAll,
+      onRefresh: widget.onRefresh,
       child: ListenableBuilder(
         listenable: _pinTracker,
         builder: (context, _) {
@@ -63,7 +75,7 @@ class _RaceInfoScrollBodyState extends State<RaceInfoScrollBody> {
             physics: const AlwaysScrollableScrollPhysics(),
             scrollBehavior: AntiGlowBehavior(),
             slivers: [
-              SliverToBoxAdapter(child: _RaceInfoHeader(controller: _controller)),
+              SliverToBoxAdapter(child: _RaceInfoHeader(raceModel: widget.raceModel)),
               raceInfoSectionSliverAppBar(
                 pinned: _pinTracker.racePinned,
                 title: RaceInfoSectionTitle(context.l10n.race),
@@ -73,7 +85,7 @@ class _RaceInfoScrollBodyState extends State<RaceInfoScrollBody> {
                 child: RaceInfoSectionVisibility(
                   section: RaceInfoPinnedSection.race,
                   tracker: _pinTracker,
-                  child: RaceInfoTable(raceModel: _controller.raceModel, withPrimaryRow: false),
+                  child: RaceInfoTable(raceModel: widget.raceModel, withPrimaryRow: false),
                 ),
               ),
               if (sprintResults.isNotEmpty) ...[
@@ -88,7 +100,7 @@ class _RaceInfoScrollBodyState extends State<RaceInfoScrollBody> {
                     section: RaceInfoPinnedSection.sprint,
                     tracker: _pinTracker,
                     child: RaceInfoTable(
-                      raceModel: _controller.raceModel,
+                      raceModel: widget.raceModel,
                       results: sprintResults,
                       withPrimaryRow: false,
                     ),
@@ -105,7 +117,7 @@ class _RaceInfoScrollBodyState extends State<RaceInfoScrollBody> {
                 child: RaceInfoSectionVisibility(
                   section: RaceInfoPinnedSection.qualification,
                   tracker: _pinTracker,
-                  child: QualificationTable(qualifyingResults: _controller.qualifyingResults.value!),
+                  child: QualificationTable(qualifyingResults: _qualifyingResults),
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: StaticData.defaultVerticalPadding)),
@@ -118,7 +130,7 @@ class _RaceInfoScrollBodyState extends State<RaceInfoScrollBody> {
                 child: RaceInfoSectionVisibility(
                   section: RaceInfoPinnedSection.pitStops,
                   tracker: _pinTracker,
-                  child: PitStopsTable(pitStops: _controller.pitStops.value ?? []),
+                  child: PitStopsTable(pitStops: _pitStops),
                 ),
               ),
             ],
@@ -130,9 +142,9 @@ class _RaceInfoScrollBodyState extends State<RaceInfoScrollBody> {
 }
 
 class _RaceInfoHeader extends StatelessWidget {
-  const _RaceInfoHeader({required this.controller});
+  const _RaceInfoHeader({required this.raceModel});
 
-  final RaceInfoScreenController controller;
+  final RacesModel raceModel;
 
   @override
   Widget build(BuildContext context) {
@@ -146,14 +158,14 @@ class _RaceInfoHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(controller.raceModel.raceName, style: AppStyles.h2),
+          Text(raceModel.raceName, style: AppStyles.h2),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: StaticData.defaultVerticalPadding),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(context.l10n.seasonLabel(controller.raceModel.season), style: AppStyles.h2),
-                Text(context.l10n.roundLabel(controller.raceModel.round), style: AppStyles.h2),
+                Text(context.l10n.seasonLabel(raceModel.season), style: AppStyles.h2),
+                Text(context.l10n.roundLabel(raceModel.round), style: AppStyles.h2),
               ],
             ),
           ),

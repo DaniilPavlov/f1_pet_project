@@ -1,4 +1,6 @@
 import 'package:f1_pet_project/common/widgets/text_fields/controllers/race_picker_sheet_controller/race_picker_sheet_controller.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../helpers/controller_fixtures.dart';
@@ -9,31 +11,40 @@ void main() {
 
   group('RacePickerSheetController', () {
     test('load sets races on success', () async {
-      final controller = RacePickerSheetController(
-        seasonYear: '2024',
-        raceWeekendRepository: FakeRaceWeekendRepository(
-          seasonRaces: ControllerFixtures.scheduleModel.raceTable.races,
-        ),
+      final container = ProviderContainer(
+        overrides: [
+          raceWeekendRepositoryProvider.overrideWithValue(
+            FakeRaceWeekendRepository(
+              seasonRaces: ControllerFixtures.scheduleModel.raceTable.races,
+            ),
+          ),
+        ],
       );
+      addTearDown(container.dispose);
 
-      await controller.load();
+      await container.read(racePickerSheetControllerProvider('2024').notifier).load();
 
-      expect(controller.races.isValue, isTrue);
-      expect(controller.races.value, isNotEmpty);
+      final state = container.read(racePickerSheetControllerProvider('2024'));
+      expect(state.races.isValue, isTrue);
+      expect(state.races.value, isNotEmpty);
     });
 
     test('load sets error on failure', () async {
-      final controller = RacePickerSheetController(
-        seasonYear: '2024',
-        raceWeekendRepository: FakeRaceWeekendRepository(
-          seasonRaces: const [],
-          throwOnSeasonRaces: true,
-        ),
+      final container = ProviderContainer(
+        overrides: [
+          raceWeekendRepositoryProvider.overrideWithValue(
+            FakeRaceWeekendRepository(
+              seasonRaces: const [],
+              throwOnSeasonRaces: true,
+            ),
+          ),
+        ],
       );
+      addTearDown(container.dispose);
 
-      await controller.load();
+      await container.read(racePickerSheetControllerProvider('2024').notifier).load();
 
-      expect(controller.races.isError, isTrue);
+      expect(container.read(racePickerSheetControllerProvider('2024')).races.isError, isTrue);
     });
   });
 }

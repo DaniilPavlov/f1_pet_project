@@ -1,84 +1,85 @@
 import 'dart:async';
 
 import 'package:f1_pet_project/common/utils/constants/assets.dart';
-import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/common/utils/helpers/offline_cached_banner.dart';
 import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/scroll_controller_extension.dart';
-import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
-import 'package:f1_pet_project/core/schedule/components/schedule_container.dart';
 import 'package:f1_pet_project/core/schedule/models/race_date_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
-import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:mobx/mobx.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-part 'schedule_screen_controller.g.dart';
+/// Тип сессии выбранного дня (локализация — в UI).
+enum ScheduleSessionKind {
+  firstPractice,
+  secondPractice,
+  thirdPractice,
+  sprintQualifying,
+  sprint,
+  qualifying,
+  race,
+}
 
-/// MobX-контроллер экрана расписания.
-class ScheduleScreenController = ScheduleScreenControllerBase with _$ScheduleScreenController;
+/// Одна сессия в расписании выбранного дня.
+@immutable
+class ScheduleDaySession {
+  const ScheduleDaySession({required this.kind, required this.date});
 
-/// Календарь сессий; если день пустой — ближайший ГП с countdown.
-abstract class ScheduleScreenControllerBase with Store {
-  ScheduleScreenControllerBase({
-    required this.l10n,
-    ScheduleRepository? scheduleRepository,
-    AppDataRefresh? dataRefresh,
-    @visibleForTesting
-    Future<ScheduleModel> Function()? fetchScheduleForTest,
-  }) : assert(
-         scheduleRepository != null || fetchScheduleForTest != null,
-         'Provide scheduleRepository or fetchScheduleForTest',
-       ),
-       _scheduleRepository = scheduleRepository,
-       _dataRefresh = dataRefresh,
-       _fetchScheduleForTest = fetchScheduleForTest;
+  final ScheduleSessionKind kind;
+  final RaceDateModel date;
+}
 
-  final AppLocalizations l10n;
-  final ScheduleRepository? _scheduleRepository;
-  final AppDataRefresh? _dataRefresh;
-  final Future<ScheduleModel> Function()? _fetchScheduleForTest;
+/// Данные расписания выбранного дня (без Widget).
+@immutable
+class ScheduleSelectedDay {
+  const ScheduleSelectedDay({this.raceName, this.sessions = const []});
 
-  final scrollController = ScrollController();
-  Timer? _ticker;
+  final String? raceName;
+  final List<ScheduleDaySession> sessions;
 
-  @observable
-  AsyncValue<List<RacesModel>> racesElements = const AsyncValue.loading();
+  bool get hasSessions => sessions.isNotEmpty;
 
-  @observable
-  bool allDataIsLoaded = false;
+  static const empty = ScheduleSelectedDay();
+}
 
-  @observable
-  DateTime now = DateTime.now();
+/// Состояние экрана расписания.
+@immutable
+class ScheduleScreenState {
+  ScheduleScreenState({
+    this.racesElements = const Loadable.loading(),
+    this.allDataIsLoaded = false,
+    DateTime? now,
+    DateTime? selectedDate,
+    DateTime? focusedDate,
+    this.selectedDay = ScheduleSelectedDay.empty,
+    this.showingCachedData = false,
+  }) : now = now ?? DateTime.now(),
+       selectedDate = selectedDate ?? DateTime.now(),
+       focusedDate = focusedDate ?? DateTime.now();
 
-  @observable
-  DateTime selectedDate = DateTime.now();
-
-  @observable
-  DateTime focusedDate = DateTime.now();
-
-  @observable
-  ObservableList<Widget> scheduleOfSelectedDate = ObservableList<Widget>();
+  final Loadable<List<RacesModel>> racesElements;
+  final bool allDataIsLoaded;
+  final DateTime now;
+  final DateTime selectedDate;
+  final DateTime focusedDate;
+  final ScheduleSelectedDay selectedDay;
 
   /// Офлайн-fallback: расписание из кэша после сбоя сети.
-  @observable
-  bool showingCachedData = false;
+  final bool showingCachedData;
 
-  @computed
   CustomException? get screenError => racesElements.exception;
 
-  @computed
-  bool get selectedDayHasSessions => scheduleOfSelectedDate.isNotEmpty;
+  bool get selectedDayHasSessions => selectedDay.hasSessions;
 
   /// Ближайшая ещё не стартовавшая гонка.
-  @computed
   RacesModel? get upcomingRace {
     final races = racesElements.value;
     if (races == null) {
@@ -89,7 +90,6 @@ abstract class ScheduleScreenControllerBase with Store {
     return upcoming.isEmpty ? null : upcoming.first;
   }
 
-  @computed
   CountdownParts get upcomingCountdown {
     final race = upcomingRace;
     if (race == null) {
@@ -98,51 +98,103 @@ abstract class ScheduleScreenControllerBase with Store {
     return CountdownParts.until(RaceDateTimeHelper.countdownTarget(race), now);
   }
 
-  /// Освобождает таймер и scroll controller.
-  void dispose() {
-    _ticker?.cancel();
-    _ticker = null;
-    scrollController.dispose();
+  ScheduleScreenState copyWith({
+    Loadable<List<RacesModel>>? racesElements,
+    bool? allDataIsLoaded,
+    DateTime? now,
+    DateTime? selectedDate,
+    DateTime? focusedDate,
+    ScheduleSelectedDay? selectedDay,
+    bool? showingCachedData,
+  }) {
+    return ScheduleScreenState(
+      racesElements: racesElements ?? this.racesElements,
+      allDataIsLoaded: allDataIsLoaded ?? this.allDataIsLoaded,
+      now: now ?? this.now,
+      selectedDate: selectedDate ?? this.selectedDate,
+      focusedDate: focusedDate ?? this.focusedDate,
+      selectedDay: selectedDay ?? this.selectedDay,
+      showingCachedData: showingCachedData ?? this.showingCachedData,
+    );
+  }
+}
+
+/// Календарь сессий; если день пустой — ближайший ГП с countdown.
+class ScheduleScreenController extends Notifier<ScheduleScreenState> {
+  ScheduleScreenController({
+    @visibleForTesting Future<ScheduleModel> Function()? fetchScheduleForTest,
+  }) : _fetchScheduleForTest = fetchScheduleForTest;
+
+  final Future<ScheduleModel> Function()? _fetchScheduleForTest;
+
+  final scrollController = ScrollController();
+  Timer? _ticker;
+  var _lastOfflineFallback = false;
+
+  ScheduleRepository? get _scheduleRepository {
+    if (_fetchScheduleForTest != null) {
+      return null;
+    }
+    return ref.read(scheduleRepositoryProvider);
+  }
+
+  AppDataRefresh? get _dataRefresh {
+    if (_fetchScheduleForTest != null) {
+      return null;
+    }
+    return ref.read(appDataRefreshProvider);
+  }
+
+  @override
+  ScheduleScreenState build() {
+    ref.onDispose(() {
+      _ticker?.cancel();
+      _ticker = null;
+      scrollController.dispose();
+    });
+    final now = DateTime.now();
+    return ScheduleScreenState(now: now, selectedDate: now, focusedDate: now);
   }
 
   /// Загружает расписание сезона и выбирает текущий день.
-  @action
   Future<void> loadAllData() async {
-    allDataIsLoaded = false;
+    state = state.copyWith(allDataIsLoaded: false);
     await _loadSchedule();
+    if (!ref.mounted) {
+      return;
+    }
 
-    if (screenError == null) {
+    if (state.screenError == null) {
       onSelectDay(DateTime.now(), DateTime.now());
       _startTicker();
     }
 
-    allDataIsLoaded = screenError == null;
+    state = state.copyWith(allDataIsLoaded: state.screenError == null);
   }
 
   /// Pull-to-refresh: единый сброс кэшей и перезагрузка календаря.
-  @action
   Future<void> refreshAll() async {
     await _dataRefresh?.clearAll();
+    if (!ref.mounted) {
+      return;
+    }
     await loadAllData();
   }
 
   /// Обрабатывает выбор даты в календаре и обновляет список сессий.
-  @action
   void onSelectDay(DateTime newSelectedDate, DateTime focusedDay) {
-    selectedDate = newSelectedDate;
-    focusedDate = focusedDay;
+    state = state.copyWith(selectedDate: newSelectedDate, focusedDate: focusedDay);
     _showScheduleOfSelectedDate();
   }
 
   /// Сохраняет видимый месяц при свайпе/стрелках календаря.
-  @action
   void onPageChanged(DateTime focusedDay) {
-    focusedDate = focusedDay;
+    state = state.copyWith(focusedDate: focusedDay);
   }
 
   /// Возвращает иконку для дня с гонкой или сессией, иначе null.
   String? getLogoPath(DateTime day) {
-    final races = racesElements.value;
+    final races = state.racesElements.value;
     if (races == null) {
       return null;
     }
@@ -169,62 +221,58 @@ abstract class ScheduleScreenControllerBase with Store {
     race.qualifying,
   ];
 
-  void _addSessionsForDay(RacesModel race, DateTime day, List<Widget> schedule) {
-    final sessions = [
-      (race.firstPractice, l10n.firstPractice),
-      (race.secondPractice, l10n.secondPractice),
-      (race.thirdPractice, l10n.thirdPractice),
-      (race.sprintQualifying, l10n.sprintQualifying),
-      (race.sprint, l10n.sprint),
-      (race.qualifying, l10n.qualifying),
+  void _addSessionsForDay(RacesModel race, DateTime day, List<ScheduleDaySession> schedule) {
+    final sessions = <(RaceDateModel?, ScheduleSessionKind)>[
+      (race.firstPractice, ScheduleSessionKind.firstPractice),
+      (race.secondPractice, ScheduleSessionKind.secondPractice),
+      (race.thirdPractice, ScheduleSessionKind.thirdPractice),
+      (race.sprintQualifying, ScheduleSessionKind.sprintQualifying),
+      (race.sprint, ScheduleSessionKind.sprint),
+      (race.qualifying, ScheduleSessionKind.qualifying),
     ];
 
-    for (final (session, title) in sessions) {
+    for (final (session, kind) in sessions) {
       if (session != null && isSameDay(DateTime.parse(session.date), day)) {
-        schedule.add(ScheduleContainer(title: title, date: session));
+        schedule.add(ScheduleDaySession(kind: kind, date: session));
       }
     }
   }
 
-  @action
   void _showScheduleOfSelectedDate() {
-    scheduleOfSelectedDate.clear();
-
-    final races = racesElements.value;
+    final races = state.racesElements.value;
     if (races == null) {
+      state = state.copyWith(selectedDay: ScheduleSelectedDay.empty);
       return;
     }
 
-    final newSchedule = <Widget>[];
+    final selectedDate = state.selectedDate;
     for (var i = 0; i < races.length; i++) {
       final race = races[i];
       if (isSameDay(DateTime.parse(race.date), selectedDate) || DateTime.parse(race.date).isAfter(selectedDate)) {
-        _addSessionsForDay(race, selectedDate, newSchedule);
+        final newSessions = <ScheduleDaySession>[];
+        _addSessionsForDay(race, selectedDate, newSessions);
         if (isSameDay(DateTime.parse(race.date), selectedDate)) {
-          newSchedule.add(
-            ScheduleContainer(
-              title: l10n.race,
+          newSessions.add(
+            ScheduleDaySession(
+              kind: ScheduleSessionKind.race,
               date: RaceDateModel(date: race.date, time: race.time ?? ''),
             ),
           );
         }
-        if (newSchedule.isNotEmpty) {
-          newSchedule.insert(
-            0,
-            Padding(
-              padding: const EdgeInsets.only(bottom: StaticData.defaultHorizontalPadding),
-              child: Text(race.raceName, style: AppStyles.h3),
-            ),
-          );
-        }
 
-        scheduleOfSelectedDate.replaceRange(0, scheduleOfSelectedDate.length, newSchedule);
-        if (newSchedule.isNotEmpty) {
+        final selectedDay = newSessions.isEmpty
+            ? ScheduleSelectedDay.empty
+            : ScheduleSelectedDay(raceName: race.raceName, sessions: newSessions);
+
+        state = state.copyWith(selectedDay: selectedDay);
+        if (selectedDay.hasSessions) {
           Future<void>.delayed(const Duration(milliseconds: 100), scrollController.animateToBottom);
         }
-        break;
+        return;
       }
     }
+
+    state = state.copyWith(selectedDay: ScheduleSelectedDay.empty);
   }
 
   void _startTicker() {
@@ -233,31 +281,35 @@ abstract class ScheduleScreenControllerBase with Store {
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tickNow());
   }
 
-  @action
   void _tickNow() {
-    now = DateTime.now();
+    if (!ref.mounted) {
+      return;
+    }
+    state = state.copyWith(now: DateTime.now());
   }
 
-  @action
   Future<void> _loadSchedule() async {
     await runAsyncLoad<ScheduleModel, List<RacesModel>>(
       fetch: _fetchSchedule,
-      getField: () => racesElements,
-      setField: (value) => racesElements = value,
+      getField: () => state.racesElements,
+      setField: (value) => state = state.copyWith(racesElements: value),
       onSuccess: (data) {
-        racesElements = racesElements.toValue(data!.raceTable.races);
-        showingCachedData = _lastOfflineFallback;
+        state = state.copyWith(
+          racesElements: state.racesElements.toValue(data!.raceTable.races),
+          showingCachedData: _lastOfflineFallback,
+        );
       },
     );
   }
 
   /// После появления сети — спрятать баннер без перезагрузки.
-  @action
   Future<void> dismissOfflineBannerIfOnline() async {
-    showingCachedData = await clearOfflineBannerIfOnline(currentlyShowing: showingCachedData);
+    final next = await clearOfflineBannerIfOnline(currentlyShowing: state.showingCachedData);
+    if (!ref.mounted) {
+      return;
+    }
+    state = state.copyWith(showingCachedData: next);
   }
-
-  var _lastOfflineFallback = false;
 
   Future<ScheduleModel> _fetchSchedule() async {
     final forTest = _fetchScheduleForTest;
@@ -270,3 +322,6 @@ abstract class ScheduleScreenControllerBase with Store {
     return result.schedule;
   }
 }
+
+final scheduleScreenControllerProvider =
+    NotifierProvider.autoDispose<ScheduleScreenController, ScheduleScreenState>(ScheduleScreenController.new);

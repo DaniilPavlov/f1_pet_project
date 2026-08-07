@@ -14,113 +14,108 @@ import 'package:f1_pet_project/core/circuits/components/circuits_list.dart';
 import 'package:f1_pet_project/core/circuits/components/circuits_map_stub.dart'
     if (dart.library.io) 'package:f1_pet_project/core/circuits/components/circuits_map.dart';
 import 'package:f1_pet_project/core/circuits/controllers/circuits_screen_controller/circuits_screen_controller.dart';
-import 'package:f1_pet_project/core/circuits/repositories/circuits_repository.dart';
-import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Экран списка трасс с переключением между картой и списком (на web — только список).
 ///
 /// GoF Structural Bridge — абстракция `CircuitsMap` отделена от платформы:
 /// stub на web и MapKit на IO через conditional import.
 @RoutePage()
-class CircuitsScreen extends StatelessWidget {
+class CircuitsScreen extends ConsumerStatefulWidget {
   const CircuitsScreen({super.key});
 
   @override
+  ConsumerState<CircuitsScreen> createState() => _CircuitsScreenState();
+}
+
+class _CircuitsScreenState extends ConsumerState<CircuitsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(circuitsScreenControllerProvider.notifier).loadCircuits());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Provider<CircuitsScreenController>(
-      create: (context) => CircuitsScreenController(
-        circuitsRepository: context.read<CircuitsRepository>(),
-        dataRefresh: context.read<AppDataRefresh>(),
-      )..loadCircuits(),
-      dispose: (_, controller) => controller.dispose(),
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: context.l10n.navCircuits,
-          onPop: () => context.router.maybePop(),
-        ),
-        body: SafeArea(
+    final state = ref.watch(circuitsScreenControllerProvider);
+    final controller = ref.read(circuitsScreenControllerProvider.notifier);
+
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: context.l10n.navCircuits,
+        onPop: () => context.router.maybePop(),
+      ),
+      body: SafeArea(
+        child: OnAppResumed(
+          onResumed: () {
+            unawaited(controller.dismissOfflineBannerIfOnline());
+          },
           child: Builder(
             builder: (context) {
-              return OnAppResumed(
-                onResumed: () {
-                  unawaited(
-                    context.read<CircuitsScreenController>().dismissOfflineBannerIfOnline(),
-                  );
-                },
-                child: Observer(
-                  builder: (context) {
-                    final controller = context.read<CircuitsScreenController>();
-                    if (controller.circuits.isLoading) {
-                      return const CustomLoadingIndicator();
-                    }
-                    if (controller.circuits.isError) {
-                      return ErrorBody(
-                        onTap: controller.refreshAll,
-                        title: controller.screenError!.title,
-                        subtitle: controller.screenError!.subtitle,
-                      );
-                    }
+              if (state.circuits.isLoading) {
+                return const CustomLoadingIndicator();
+              }
+              if (state.circuits.isError) {
+                return ErrorBody(
+                  onTap: controller.refreshAll,
+                  title: state.screenError!.title,
+                  subtitle: state.screenError!.subtitle,
+                );
+              }
 
-                    final circuits = controller.circuits.value ?? [];
+              final circuits = state.circuits.value ?? [];
 
-                    if (!PlatformCapabilities.hasYandexMap) {
-                      return Column(
-                        children: [
-                          if (controller.showingCachedData)
-                            CachedDataBanner(message: context.l10n.showingCachedData),
-                          const SizedBox(height: 12),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text(
-                              context.l10n.circuitsMapWebUnavailable,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Expanded(
-                            child: RefreshIndicator(
-                              color: AppTheme.red,
-                              onRefresh: controller.refreshAll,
-                              child: CircuitsList(circuits: circuits),
-                            ),
-                          ),
-                        ],
-                      );
-                    }
+              if (!PlatformCapabilities.hasYandexMap) {
+                return Column(
+                  children: [
+                    if (state.showingCachedData) CachedDataBanner(message: context.l10n.showingCachedData),
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Text(
+                        context.l10n.circuitsMapWebUnavailable,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: RefreshIndicator(
+                        color: AppTheme.red,
+                        onRefresh: controller.refreshAll,
+                        child: CircuitsList(circuits: circuits),
+                      ),
+                    ),
+                  ],
+                );
+              }
 
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if (state.showingCachedData) CachedDataBanner(message: context.l10n.showingCachedData),
+                  const SizedBox(height: 12),
+                  CustomSwitcher(
+                    firstTitle: context.l10n.onMap,
+                    secondTitle: context.l10n.asList,
+                    onChanged: controller.changeActivePage,
+                    activeValue: state.activePage,
+                  ),
+                  Expanded(
+                    child: PageView(
+                      onPageChanged: controller.changeActivePage,
+                      controller: controller.pageController,
                       children: [
-                        if (controller.showingCachedData)
-                          CachedDataBanner(message: context.l10n.showingCachedData),
-                        const SizedBox(height: 12),
-                        CustomSwitcher(
-                          firstTitle: context.l10n.onMap,
-                          secondTitle: context.l10n.asList,
-                          onChanged: controller.changeActivePage,
-                          activeValue: controller.activePage,
-                        ),
-                        Expanded(
-                          child: PageView(
-                            onPageChanged: controller.changeActivePage,
-                            controller: controller.pageController,
-                            children: [
-                              CircuitsMap(circuits: circuits),
-                              RefreshIndicator(
-                                color: AppTheme.red,
-                                onRefresh: controller.refreshAll,
-                                child: CircuitsList(circuits: circuits),
-                              ),
-                            ],
-                          ),
+                        CircuitsMap(circuits: circuits),
+                        RefreshIndicator(
+                          color: AppTheme.red,
+                          onRefresh: controller.refreshAll,
+                          child: CircuitsList(circuits: circuits),
                         ),
                       ],
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                ],
               );
             },
           ),

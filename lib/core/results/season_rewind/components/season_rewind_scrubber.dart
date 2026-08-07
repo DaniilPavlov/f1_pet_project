@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 /// Слайдер раундов + play/pause для Season Rewind.
 ///
-/// Thumb во время драга живёт в локальном state — иначе MobX-rebuild в
+/// Thumb во время драга живёт в локальном state — иначе rebuild родителя в
 /// [onChanged] отменяет жест и [onChangeEnd] не вызывается (очки не грузятся).
 class SeasonRewindScrubber extends StatefulWidget {
   const SeasonRewindScrubber({

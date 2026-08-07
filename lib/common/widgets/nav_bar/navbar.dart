@@ -5,29 +5,29 @@ import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/nav_bar/nav_bar_item.dart';
 import 'package:f1_pet_project/services/analytics/analytics_event.dart';
-import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Нижняя панель навигации приложения.
-class NavBar extends StatelessWidget {
+class NavBar extends ConsumerWidget {
   const NavBar({this.tabsRouter, super.key});
   final TabsRouter? tabsRouter;
 
   static const _tabNames = ['home', 'results', 'schedule', 'predictor', 'profile'];
 
-  void _switchTab(BuildContext context, int index) {
+  void _switchTab(WidgetRef ref, int index) {
     final router = tabsRouter;
     if (router != null && router.activeIndex == index) {
       router.stackRouterOfIndex(index)?.popUntilRoot();
       return;
     }
     router?.setActiveIndex(index);
-    context.read<AnalyticsGateway>().log(TabSwitched(tab: _tabNames[index]));
+    ref.read(analyticsGatewayProvider).log(TabSwitched(tab: _tabNames[index]));
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final bottomInset = MediaQuery.paddingOf(context).bottom;
 
     return Stack(
@@ -49,31 +49,31 @@ class NavBar extends StatelessWidget {
                   imageAsset: Assets.navBar.home,
                   title: context.l10n.navHome,
                   isSelected: tabsRouter?.activeIndex == 0,
-                  onPressed: () => _switchTab(context, 0),
+                  onPressed: () => _switchTab(ref, 0),
                 ),
                 NavBarItem(
                   imageAsset: Assets.navBar.racingCar,
                   title: context.l10n.navResults,
                   isSelected: tabsRouter?.activeIndex == 1,
-                  onPressed: () => _switchTab(context, 1),
+                  onPressed: () => _switchTab(ref, 1),
                 ),
                 NavBarItem(
                   imageAsset: Assets.navBar.lights,
                   title: context.l10n.navCalendar,
                   isSelected: tabsRouter?.activeIndex == 2,
-                  onPressed: () => _switchTab(context, 2),
+                  onPressed: () => _switchTab(ref, 2),
                 ),
                 NavBarItem(
                   imageAsset: Assets.navBar.trophy,
                   title: context.l10n.navPredictor,
                   isSelected: tabsRouter?.activeIndex == 3,
-                  onPressed: () => _switchTab(context, 3),
+                  onPressed: () => _switchTab(ref, 3),
                 ),
                 NavBarItem(
                   imageAsset: Assets.navBar.helmet,
                   title: context.l10n.navProfile,
                   isSelected: tabsRouter?.activeIndex == 4,
-                  onPressed: () => _switchTab(context, 4),
+                  onPressed: () => _switchTab(ref, 4),
                 ),
               ],
             ),

@@ -12,6 +12,7 @@ import 'package:f1_pet_project/data/models/standings/driver/driver_standings_mod
 import 'package:f1_pet_project/data/models/standings/standings_lists_model.dart';
 import 'package:f1_pet_project/data/models/standings/standings_model.dart';
 import 'package:f1_pet_project/data/models/standings/standings_table_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/controller_fixtures.dart';
@@ -143,84 +144,91 @@ void main() {
       repo = PredictorRepository.memory(uidProvider: () => 'uid-test');
     });
 
-    Future<PredictorScreenController> buildLoaded({
+    Future<(ProviderContainer, PredictorScreenController)> buildLoaded({
       List<String> championshipIds = const ['ham', 'ver', 'lec'],
       ScheduleModel? schedule,
+      PredictorRepository? repository,
     }) async {
       final drivers = championshipIds.map((id) => _driver(id: id, code: _codeFor(id))).toList();
-      final controller = PredictorScreenController(
-        predictorRepository: repo,
-        fetchScheduleForTest: () async =>
-            schedule ??
-            ScheduleModel(
-              raceTable: RaceTableModel(season: '2026', round: '12', races: [_futureRace()]),
+      final container = ProviderContainer(
+        overrides: [
+          predictorScreenControllerProvider.overrideWith(
+            () => PredictorScreenController(
+              predictorRepositoryForTest: repository ?? repo,
+              fetchScheduleForTest: () async =>
+                  schedule ??
+                  ScheduleModel(
+                    raceTable: RaceTableModel(season: '2026', round: '12', races: [_futureRace()]),
+                  ),
+              loadDriversForTest: () async => drivers,
+              fetchDriverStandingsForTest: () async => _standings(championshipIds),
+              fetchQualifyingForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
+              fetchRaceResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
             ),
-        loadDriversForTest: () async => drivers,
-        fetchDriverStandingsForTest: () async => _standings(championshipIds),
-        fetchQualifyingForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
-        fetchRaceResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
+          ),
+        ],
       );
+      final controller = container.read(predictorScreenControllerProvider.notifier);
       await controller.load();
-      return controller;
+      return (container, controller);
     }
 
     test('initial draft follows championship order', () async {
-      final controller = await buildLoaded(championshipIds: ['lec', 'ver', 'ham']);
-      expect(controller.allDataIsLoaded, isTrue);
-      expect(controller.screenError, isNull);
-      expect(controller.draftQualifyingOrder.toList(), ['lec', 'ver', 'ham']);
-      expect(controller.draftRaceOrder.toList(), ['lec', 'ver', 'ham']);
-      expect(controller.constructorsByDriverId.containsKey('lec'), isTrue);
-      controller.dispose();
+      final (container, _) = await buildLoaded(championshipIds: ['lec', 'ver', 'ham']);
+      addTearDown(container.dispose);
+      final state = container.read(predictorScreenControllerProvider);
+      expect(state.allDataIsLoaded, isTrue);
+      expect(state.screenError, isNull);
+      expect(state.draftQualifyingOrder, ['lec', 'ver', 'ham']);
+      expect(state.draftRaceOrder, ['lec', 'ver', 'ham']);
+      expect(state.constructorsByDriverId.containsKey('lec'), isTrue);
     });
 
     test('moveDraftTo swaps without shifting others', () async {
-      final controller = await buildLoaded(championshipIds: ['a', 'b', 'c', 'd']);
+      final (container, controller) = await buildLoaded(championshipIds: ['a', 'b', 'c', 'd']);
+      addTearDown(container.dispose);
       // a b c d → swap index 0 with 2 → c b a d
       await controller.moveDraftTo(fromIndex: 0, toIndex: 2);
-      expect(controller.draftQualifyingOrder.toList(), ['c', 'b', 'a', 'd']);
-      controller.dispose();
+      expect(container.read(predictorScreenControllerProvider).draftQualifyingOrder, ['c', 'b', 'a', 'd']);
     });
 
     test('copyQualifyingToRace copies current quali draft', () async {
-      final controller = await buildLoaded(championshipIds: ['a', 'b', 'c']);
+      final (container, controller) = await buildLoaded(championshipIds: ['a', 'b', 'c']);
+      addTearDown(container.dispose);
       await controller.moveDraftTo(fromIndex: 0, toIndex: 2);
       controller.selectGrid(PredictorGridKind.race);
       await controller.copyQualifyingToRace();
-      expect(controller.draftRaceOrder.toList(), controller.draftQualifyingOrder.toList());
-      expect(controller.draftRaceOrder.toList(), ['c', 'b', 'a']);
-      controller.dispose();
+      final state = container.read(predictorScreenControllerProvider);
+      expect(state.draftRaceOrder, state.draftQualifyingOrder);
+      expect(state.draftRaceOrder, ['c', 'b', 'a']);
     });
 
     test('reorderDraft inserts with shift', () async {
-      final controller = await buildLoaded(championshipIds: ['a', 'b', 'c']);
+      final (container, controller) = await buildLoaded(championshipIds: ['a', 'b', 'c']);
+      addTearDown(container.dispose);
       await controller.reorderDraft(oldIndex: 0, newIndex: 2);
       // remove a → [b,c], insert at 2 → [b,c,a]
-      expect(controller.draftQualifyingOrder.toList(), ['b', 'c', 'a']);
-      controller.dispose();
+      expect(container.read(predictorScreenControllerProvider).draftQualifyingOrder, ['b', 'c', 'a']);
     });
 
     test('storage load error becomes screenError', () async {
-      final controller = PredictorScreenController(
-        predictorRepository: _ThrowingPredictorRepository(),
-        fetchScheduleForTest: () async => ScheduleModel(
-          raceTable: RaceTableModel(season: '2026', round: '12', races: [_futureRace()]),
-        ),
-        loadDriversForTest: () async => [_driver(id: 'a', code: 'AAA')],
-        fetchDriverStandingsForTest: () async => _standings(['a']),
+      final (container, _) = await buildLoaded(
+        championshipIds: ['a'],
+        repository: _ThrowingPredictorRepository(),
       );
-      await controller.load();
-      expect(controller.screenError, isNotNull);
-      expect(controller.allDataIsLoaded, isFalse);
-      expect(controller.predictions.isError, isTrue);
-      controller.dispose();
+      addTearDown(container.dispose);
+      final state = container.read(predictorScreenControllerProvider);
+      expect(state.screenError, isNotNull);
+      expect(state.allDataIsLoaded, isFalse);
+      expect(state.predictions.isError, isTrue);
     });
 
     test('no upcoming race clears drafts', () async {
-      final controller = await buildLoaded(schedule: ControllerFixtures.emptyScheduleModel);
-      expect(controller.upcomingRace, isNull);
-      expect(controller.draftQualifyingOrder, isEmpty);
-      controller.dispose();
+      final (container, _) = await buildLoaded(schedule: ControllerFixtures.emptyScheduleModel);
+      addTearDown(container.dispose);
+      final state = container.read(predictorScreenControllerProvider);
+      expect(state.upcomingRace, isNull);
+      expect(state.draftQualifyingOrder, isEmpty);
     });
   });
 }

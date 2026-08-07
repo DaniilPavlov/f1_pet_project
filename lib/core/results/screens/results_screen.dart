@@ -14,125 +14,104 @@ import 'package:f1_pet_project/common/widgets/shimmer/race_section_shimmer.dart'
 import 'package:f1_pet_project/core/results/components/last_race_table_section.dart';
 import 'package:f1_pet_project/core/results/components/weekend_scoreboard_section.dart';
 import 'package:f1_pet_project/core/results/controllers/results_screen_controller/results_screen_controller.dart';
-import 'package:f1_pet_project/core/results/repositories/results_repository.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
-import 'package:f1_pet_project/services/app_data_refresh.dart';
-import 'package:f1_pet_project/services/live_weekend/live_weekend_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Экран результатов: уикенд, последняя гонка и переход к поиску.
 @RoutePage()
-class ResultsScreen extends StatelessWidget {
+class ResultsScreen extends ConsumerStatefulWidget {
   const ResultsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Provider<ResultsScreenController>(
-      create: (context) => ResultsScreenController(
-        resultsRepository: context.read<ResultsRepository>(),
-        liveWeekend: context.read<LiveWeekendController>(),
-        dataRefresh: context.read<AppDataRefresh>(),
-      )..loadAllData(),
-      child: Scaffold(
-        appBar: const CustomAppBar(),
-        body: SafeArea(
-          child: Builder(
-            builder: (context) {
-              return OnAppResumed(
-                onResumed: () {
-                  unawaited(
-                    context.read<ResultsScreenController>().dismissOfflineBannerIfOnline(),
-                  );
-                },
-                child: Observer(
-                  builder: (context) {
-                    final controller = context.read<ResultsScreenController>();
-                    final liveWeekend = context.read<LiveWeekendController>();
-                    final hasRace = controller.lastRace.value != null;
-                    final raceFailed =
-                        !hasRace && (controller.lastRace.isError || controller.screenError != null);
+  ConsumerState<ResultsScreen> createState() => _ResultsScreenState();
+}
 
-                    return RefreshIndicator(
-                      color: AppTheme.red,
-                      onRefresh: controller.refreshAll,
-                      child: CustomScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        scrollBehavior: AntiGlowBehavior(),
-                        slivers: [
-                          if (controller.showingCachedData)
-                            SliverToBoxAdapter(
-                              child: CachedDataBanner(message: context.l10n.showingCachedData),
-                            ),
-                          Observer(
-                            builder: (context) => SliverToBoxAdapter(
-                              child: WeekendScoreboardSection(
-                                scoreboard: liveWeekend.scoreboard,
-                                locale: Localizations.localeOf(context),
-                              ),
-                            ),
+class _ResultsScreenState extends ConsumerState<ResultsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(resultsScreenControllerProvider.notifier).loadAllData());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(resultsScreenControllerProvider);
+    final controller = ref.read(resultsScreenControllerProvider.notifier);
+    final hasRace = state.lastRace.value != null;
+    final raceFailed = !hasRace && (state.lastRace.isError || state.screenError != null);
+
+    return Scaffold(
+      appBar: const CustomAppBar(),
+      body: SafeArea(
+        child: OnAppResumed(
+          onResumed: () {
+            unawaited(controller.dismissOfflineBannerIfOnline());
+          },
+          child: RefreshIndicator(
+            color: AppTheme.red,
+            onRefresh: controller.refreshAll,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              scrollBehavior: AntiGlowBehavior(),
+              slivers: [
+                if (state.showingCachedData)
+                  SliverToBoxAdapter(
+                    child: CachedDataBanner(message: context.l10n.showingCachedData),
+                  ),
+                const SliverToBoxAdapter(child: WeekendScoreboardSection()),
+                SliverToBoxAdapter(
+                  child: hasRace
+                      ? LastRaceTableSection(lastRace: state.lastRace.value!)
+                      : raceFailed
+                      ? Padding(
+                          padding: const EdgeInsets.all(StaticData.defaultHorizontalPadding),
+                          child: ErrorBody(
+                            onTap: controller.refreshAll,
+                            title: state.screenError?.title ?? state.lastRace.error?.errorMessage ?? '',
+                            subtitle: state.screenError?.subtitle,
                           ),
-                          SliverToBoxAdapter(
-                            child: hasRace
-                                ? LastRaceTableSection(lastRace: controller.lastRace.value!)
-                                : raceFailed
-                                ? Padding(
-                                    padding: const EdgeInsets.all(StaticData.defaultHorizontalPadding),
-                                    child: ErrorBody(
-                                      onTap: controller.refreshAll,
-                                      title: controller.screenError?.title ??
-                                          controller.lastRace.error?.errorMessage ??
-                                          '',
-                                      subtitle: controller.screenError?.subtitle,
-                                    ),
-                                  )
-                                : const LastRaceSectionShimmer(),
-                          ),
-                          SliverToBoxAdapter(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: StaticData.defaultHorizontalPadding,
-                                vertical: StaticData.defaultVerticalPadding,
-                              ),
-                              child: Column(
-                                children: [
-                                  RedBorderContainer(
-                                    title: context.l10n.chooseSpecificRace,
-                                    onTap: () async => context.router.push(const RaceSearchRoute()),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  RedBorderContainer(
-                                    title: context.l10n.hallOfFameTitle,
-                                    onTap: () async => context.router.push(const HallOfFameRoute()),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  RedBorderContainer(
-                                    title: context.l10n.seasonRewindTitle,
-                                    onTap: () async => context.router.push(const SeasonRewindRoute()),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  RedBorderContainer(
-                                    title: context.l10n.h2hTitle,
-                                    onTap: () async => context.router.push(H2hRoute()),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  RedBorderContainer(
-                                    title: context.l10n.finishStatusTitle,
-                                    onTap: () async =>
-                                        context.router.push(const FinishStatusRoute()),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                        )
+                      : const LastRaceSectionShimmer(),
                 ),
-              );
-            },
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: StaticData.defaultHorizontalPadding,
+                      vertical: StaticData.defaultVerticalPadding,
+                    ),
+                    child: Column(
+                      children: [
+                        RedBorderContainer(
+                          title: context.l10n.chooseSpecificRace,
+                          onTap: () async => context.router.push(const RaceSearchRoute()),
+                        ),
+                        const SizedBox(height: 12),
+                        RedBorderContainer(
+                          title: context.l10n.hallOfFameTitle,
+                          onTap: () async => context.router.push(const HallOfFameRoute()),
+                        ),
+                        const SizedBox(height: 12),
+                        RedBorderContainer(
+                          title: context.l10n.seasonRewindTitle,
+                          onTap: () async => context.router.push(const SeasonRewindRoute()),
+                        ),
+                        const SizedBox(height: 12),
+                        RedBorderContainer(
+                          title: context.l10n.h2hTitle,
+                          onTap: () async => context.router.push(H2hRoute()),
+                        ),
+                        const SizedBox(height: 12),
+                        RedBorderContainer(
+                          title: context.l10n.finishStatusTitle,
+                          onTap: () async => context.router.push(const FinishStatusRoute()),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

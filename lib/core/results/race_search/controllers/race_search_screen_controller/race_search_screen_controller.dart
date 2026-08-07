@@ -1,5 +1,5 @@
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/common/utils/helpers/scroll_controller_extension.dart';
 import 'package:f1_pet_project/common/utils/helpers/text_editing_controller_extension.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/race_picker_field.dart';
@@ -7,115 +7,144 @@ import 'package:f1_pet_project/core/results/repositories/race_weekend_repository
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
+import 'package:f1_pet_project/l10n/app_localizations_en.dart';
+import 'package:f1_pet_project/l10n/app_localizations_ru.dart';
 import 'package:f1_pet_project/services/analytics/analytics_event.dart';
 import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:mobx/mobx.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-part 'race_search_screen_controller.g.dart';
+/// Состояние экрана поиска гонки.
+@immutable
+class RaceSearchState {
+  const RaceSearchState({
+    this.searchedRace = const Loadable.value(),
+    this.dataIsLoaded = true,
+    this.fieldsInputted = false,
+    this.errorMessage = '',
+    this.selectedSeason = '',
+  });
 
-/// MobX-контроллер экрана поиска гонки.
-class RaceSearchScreenController = RaceSearchScreenControllerBase with _$RaceSearchScreenController;
+  final Loadable<RacesModel?> searchedRace;
+  final bool dataIsLoaded;
+  final bool fieldsInputted;
+  final String errorMessage;
+  final String selectedSeason;
+
+  RaceSearchState copyWith({
+    Loadable<RacesModel?>? searchedRace,
+    bool? dataIsLoaded,
+    bool? fieldsInputted,
+    String? errorMessage,
+    String? selectedSeason,
+  }) {
+    return RaceSearchState(
+      searchedRace: searchedRace ?? this.searchedRace,
+      dataIsLoaded: dataIsLoaded ?? this.dataIsLoaded,
+      fieldsInputted: fieldsInputted ?? this.fieldsInputted,
+      errorMessage: errorMessage ?? this.errorMessage,
+      selectedSeason: selectedSeason ?? this.selectedSeason,
+    );
+  }
+}
 
 /// Управляет полями поиска и загрузкой результатов гонки.
-abstract class RaceSearchScreenControllerBase with Store {
-  RaceSearchScreenControllerBase({
-    required this.l10n,
-    RaceWeekendRepository? raceWeekendRepository,
-    AnalyticsGateway? analytics,
+class RaceSearchScreenController extends Notifier<RaceSearchState> {
+  RaceSearchScreenController(
+    this.languageCode, {
     @visibleForTesting
     Future<ScheduleModel> Function({required String year, required String round})? fetchRaceResultsForTest,
-  }) : _raceWeekendRepository = raceWeekendRepository,
-       _analytics = analytics ?? const NoOpAnalyticsGateway(),
-       _fetchRaceResultsForTest = fetchRaceResultsForTest {
-    yearController = TextEditingController();
-    raceDisplayController = TextEditingController();
-    roundController = TextEditingController();
-  }
+    @visibleForTesting AnalyticsGateway? analyticsForTest,
+  }) : _fetchRaceResultsForTest = fetchRaceResultsForTest,
+       _analyticsForTest = analyticsForTest;
 
-  final AppLocalizations l10n;
-  final RaceWeekendRepository? _raceWeekendRepository;
-  final AnalyticsGateway _analytics;
+  final String languageCode;
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchRaceResultsForTest;
+  final AnalyticsGateway? _analyticsForTest;
 
   late final TextEditingController yearController;
   late final TextEditingController raceDisplayController;
   late final TextEditingController roundController;
-  final scrollController = ScrollController();
+  late final ScrollController scrollController;
 
-  @observable
-  AsyncValue<RacesModel?> searchedRace = const AsyncValue.value();
+  AppLocalizations get l10n => languageCode == 'ru' ? AppLocalizationsRu() : AppLocalizationsEn();
 
-  @observable
-  bool dataIsLoaded = true;
+  RaceWeekendRepository get _raceWeekendRepository => ref.read(raceWeekendRepositoryProvider);
 
-  @observable
-  bool fieldsInputted = false;
+  AnalyticsGateway get _analytics => _analyticsForTest ?? ref.read(analyticsGatewayProvider);
 
-  @observable
-  String errorMessage = '';
-
-  @observable
-  String selectedSeason = '';
-
-  /// Освобождает контроллеры ввода и прокрутки.
-  void dispose() {
-    yearController.dispose();
-    raceDisplayController.dispose();
-    roundController.dispose();
-    scrollController.dispose();
+  @override
+  RaceSearchState build() {
+    yearController = TextEditingController();
+    raceDisplayController = TextEditingController();
+    roundController = TextEditingController();
+    scrollController = ScrollController();
+    ref.onDispose(() {
+      yearController.dispose();
+      raceDisplayController.dispose();
+      roundController.dispose();
+      scrollController.dispose();
+    });
+    return const RaceSearchState();
   }
 
   /// Проверяет заполненность сезона и гонки.
-  @action
   void checkFields() {
-    fieldsInputted = yearController.isValidYear && roundController.isValidRound;
+    state = state.copyWith(fieldsInputted: yearController.isValidYear && roundController.isValidRound);
   }
 
   /// Смена сезона сбрасывает выбранную гонку.
-  @action
   void onSeasonSelected() {
-    selectedSeason = yearController.text;
     raceDisplayController.clear();
     roundController.clear();
+    state = state.copyWith(selectedSeason: yearController.text);
     checkFields();
   }
 
   /// Выбор гонки из списка сезона.
-  @action
   void onRacePicked(RacePick pick) {
     roundController.text = pick.round;
     checkFields();
   }
 
   /// Ищет гонку по выбранным сезону и раунду.
-  @action
   Future<void> loadRaceResults() async {
-    dataIsLoaded = false;
+    state = state.copyWith(dataIsLoaded: false);
     FocusManager.instance.primaryFocus?.unfocus();
 
     await runAsyncLoad<ScheduleModel, RacesModel?>(
       fetch: () => _fetchRaceResults(year: yearController.text, round: roundController.text),
-      getField: () => searchedRace,
-      setField: (value) => searchedRace = value,
+      getField: () => state.searchedRace,
+      setField: (value) => state = state.copyWith(searchedRace: value),
       onSuccess: (data) {
-        errorMessage = '';
         if (data!.raceTable.races.isNotEmpty) {
-          searchedRace = searchedRace.toValue(data.raceTable.races[0]);
+          state = state.copyWith(
+            errorMessage: '',
+            searchedRace: state.searchedRace.toValue(data.raceTable.races[0]),
+          );
           _analytics.log(RaceSearched(query: '${yearController.text} R${roundController.text}'));
           Future<void>.delayed(const Duration(milliseconds: 100), scrollController.animateToBottom);
         } else {
-          searchedRace = const AsyncValue.value();
-          errorMessage = l10n.raceNotFound;
+          state = state.copyWith(
+            searchedRace: const Loadable.value(),
+            errorMessage: l10n.raceNotFound,
+          );
         }
       },
     );
 
-    if (searchedRace.isError) {
-      errorMessage = searchedRace.exception?.title ?? searchedRace.error!.errorMessage;
+    if (!ref.mounted) {
+      return;
     }
 
-    dataIsLoaded = true;
+    if (state.searchedRace.isError) {
+      state = state.copyWith(
+        errorMessage: state.searchedRace.exception?.title ?? state.searchedRace.error!.errorMessage,
+      );
+    }
+
+    state = state.copyWith(dataIsLoaded: true);
   }
 
   Future<ScheduleModel> _fetchRaceResults({required String year, required String round}) {
@@ -123,6 +152,11 @@ abstract class RaceSearchScreenControllerBase with Store {
     if (forTest != null) {
       return forTest(year: year, round: round);
     }
-    return _raceWeekendRepository!.raceResults(year: year, round: round);
+    return _raceWeekendRepository.raceResults(year: year, round: round);
   }
 }
+
+final raceSearchScreenControllerProvider =
+    NotifierProvider.autoDispose.family<RaceSearchScreenController, RaceSearchState, String>(
+      RaceSearchScreenController.new,
+    );

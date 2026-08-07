@@ -6,15 +6,15 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/bottom_sheets/default_bottom_sheet.dart';
 import 'package:f1_pet_project/common/widgets/country_flag.dart';
-import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 /// Нижний лист с протоколом сессии уикенда (ESPN).
-class WeekendSessionResultsSheet extends StatefulWidget {
+class WeekendSessionResultsSheet extends ConsumerStatefulWidget {
   const WeekendSessionResultsSheet({required this.session, super.key});
 
   final EspnScoreboardSession session;
@@ -29,10 +29,10 @@ class WeekendSessionResultsSheet extends StatefulWidget {
   }
 
   @override
-  State<WeekendSessionResultsSheet> createState() => _WeekendSessionResultsSheetState();
+  ConsumerState<WeekendSessionResultsSheet> createState() => _WeekendSessionResultsSheetState();
 }
 
-class _WeekendSessionResultsSheetState extends State<WeekendSessionResultsSheet> {
+class _WeekendSessionResultsSheetState extends ConsumerState<WeekendSessionResultsSheet> {
   String? _openingDisplayName;
 
   Future<void> _openDriver(EspnScoreboardResultEntry entry) async {
@@ -43,7 +43,7 @@ class _WeekendSessionResultsSheetState extends State<WeekendSessionResultsSheet>
     setState(() => _openingDisplayName = entry.displayName);
     try {
       final router = context.router;
-      final driver = await context.read<DriverCatalogRepository>().findByDisplayName(entry.displayName);
+      final driver = await ref.read(driverCatalogRepositoryProvider).findByDisplayName(entry.displayName);
       if (!mounted) {
         return;
       }

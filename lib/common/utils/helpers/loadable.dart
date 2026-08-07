@@ -4,32 +4,32 @@ import 'package:flutter/foundation.dart';
 /// Обёртка над асинхронным значением с состояниями загрузки, данных и ошибки.
 ///
 /// GoF Behavioral State — поведение UI/контроллера зависит от текущего
-/// [AsyncStatus] (loading / value / error); переходы через `toLoading` /
+/// [LoadableStatus] (loading / value / error); переходы через `toLoading` /
 /// `toValue` / `toErrorFrom` вместо разрозненных флагов.
 @immutable
-class AsyncValue<T> {
-  const AsyncValue({required this.status, this.value, this.error});
+class Loadable<T> {
+  const Loadable({required this.status, this.value, this.error});
 
-  const AsyncValue.loading({this.value, this.error}) : status = AsyncStatus.loading;
+  const Loadable.loading({this.value, this.error}) : status = LoadableStatus.loading;
 
-  const AsyncValue.value({this.value, this.error}) : status = AsyncStatus.value;
+  const Loadable.value({this.value, this.error}) : status = LoadableStatus.value;
 
-  const AsyncValue.error({this.value, this.error}) : status = AsyncStatus.error;
+  const Loadable.error({this.value, this.error}) : status = LoadableStatus.error;
 
-  final AsyncStatus status;
+  final LoadableStatus status;
   final T? value;
-  final AsyncError? error;
+  final LoadableError? error;
 
-  bool get isLoading => status == AsyncStatus.loading;
+  bool get isLoading => status == LoadableStatus.loading;
 
-  bool get isValue => status == AsyncStatus.value;
+  bool get isValue => status == LoadableStatus.value;
 
-  bool get isError => status == AsyncStatus.error;
+  bool get isError => status == LoadableStatus.error;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AsyncValue &&
+      other is Loadable &&
           runtimeType == other.runtimeType &&
           status == other.status &&
           value == other.value &&
@@ -40,17 +40,17 @@ class AsyncValue<T> {
 
   @override
   String toString() {
-    return 'AsyncValue{status: $status, value: $value, error: $error}';
+    return 'Loadable{status: $status, value: $value, error: $error}';
   }
 }
 
 /// Статус асинхронного значения.
-enum AsyncStatus { loading, error, value }
+enum LoadableStatus { loading, error, value }
 
 /// Описание ошибки асинхронной операции.
 @immutable
-class AsyncError {
-  const AsyncError({required this.errorMessage, this.errorObject});
+class LoadableError {
+  const LoadableError({required this.errorMessage, this.errorObject});
 
   final String errorMessage;
   final Object? errorObject;
@@ -58,7 +58,7 @@ class AsyncError {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AsyncError &&
+      other is LoadableError &&
           runtimeType == other.runtimeType &&
           errorMessage == other.errorMessage &&
           errorObject == other.errorObject;
@@ -68,25 +68,25 @@ class AsyncError {
 
   @override
   String toString() {
-    return 'AsyncError{errorMessage: $errorMessage, errorObject: $errorObject}';
+    return 'LoadableError{errorMessage: $errorMessage, errorObject: $errorObject}';
   }
 }
 
-/// Методы преобразования [AsyncValue] между состояниями.
-extension AsyncValueX<T> on AsyncValue<T> {
+/// Методы преобразования [Loadable] между состояниями.
+extension LoadableX<T> on Loadable<T> {
   /// Переводит значение в состояние загрузки.
-  AsyncValue<T> toLoading() => AsyncValue.loading(value: value);
+  Loadable<T> toLoading() => Loadable.loading(value: value);
 
   /// Переводит значение в состояние успеха с данными.
-  AsyncValue<T> toValue(T newValue) => AsyncValue.value(value: newValue);
+  Loadable<T> toValue(T newValue) => Loadable.value(value: newValue);
 
   /// Переводит значение в состояние ошибки с сообщением.
-  AsyncValue<T> toError(String message) => AsyncValue.error(error: AsyncError(errorMessage: message));
+  Loadable<T> toError(String message) => Loadable.error(error: LoadableError(errorMessage: message));
 
   /// Переводит значение в состояние ошибки из [CustomException], сохраняя данные.
-  AsyncValue<T> toErrorFrom(CustomException exception) => AsyncValue.error(
+  Loadable<T> toErrorFrom(CustomException exception) => Loadable.error(
     value: value,
-    error: AsyncError(errorMessage: exception.title, errorObject: exception),
+    error: LoadableError(errorMessage: exception.title, errorObject: exception),
   );
 
   CustomException? get exception => error?.errorObject as CustomException?;

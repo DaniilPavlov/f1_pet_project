@@ -13,51 +13,21 @@ import 'package:f1_pet_project/common/widgets/shimmer/tournament_tables_shimmer.
 import 'package:f1_pet_project/common/widgets/tables/tournament_tables_section.dart';
 import 'package:f1_pet_project/core/home/components/home_headlines_section.dart';
 import 'package:f1_pet_project/core/home/controllers/home_screen_controller/home_screen_controller.dart';
-import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
 import 'package:f1_pet_project/core/news/controllers/news_screen_controller/news_screen_controller.dart';
-import 'package:f1_pet_project/core/news/repositories/news_repository.dart';
-import 'package:f1_pet_project/services/app_data_refresh.dart';
-import 'package:f1_pet_project/services/home_widget/app_widget_sync_service.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Главный экран: турнирные таблицы + заголовки новостей.
 @RoutePage()
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Provider<HomeScreenController>(
-      create: (context) {
-        final controller = HomeScreenController(
-          standingsRepository: context.read<CurrentStandingsRepository>(),
-          dataRefresh: context.read<AppDataRefresh>(),
-        );
-        final widgets = PlatformCapabilities.hasHomeWidgets ? context.read<AppWidgetSyncService>() : null;
-        unawaited(controller.loadAllData().then((_) => widgets?.sync()));
-        return controller;
-      },
-      child: Provider<NewsScreenController>(
-        create: (context) => NewsScreenController(
-          newsRepository: context.read<NewsRepository>(),
-          dataRefresh: context.read<AppDataRefresh>(),
-        )..loadArticles(),
-        child: const _HomeView(),
-      ),
-    );
-  }
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeView extends StatefulWidget {
-  const _HomeView();
-
-  @override
-  State<_HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<_HomeView> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// Запас после ухода заголовка «Новости», прежде чем показать FAB.
   static const _fabExtraOffset = 500.0;
 
@@ -65,11 +35,31 @@ class _HomeViewState extends State<_HomeView> {
   final _newsTitleKey = GlobalKey();
 
   var _showScrollToNews = false;
+  var _initialLoadStarted = false;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_handleScroll);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_initialLoadStarted) {
+      return;
+    }
+    _initialLoadStarted = true;
+    final widgets = PlatformCapabilities.hasHomeWidgets ? ref.read(appWidgetSyncServiceProvider) : null;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      unawaited(
+        ref.read(homeScreenControllerProvider.notifier).loadAllData().then((_) => widgets?.sync()),
+      );
+      unawaited(ref.read(newsScreenControllerProvider.notifier).loadArticles());
+    });
   }
 
   @override
@@ -133,16 +123,24 @@ class _HomeViewState extends State<_HomeView> {
     }
   }
 
-  Future<void> _refresh(HomeScreenController controller) async {
-    final news = context.read<NewsScreenController>();
-    await Future.wait([controller.refreshAll(), news.refreshAll()]);
+  Future<void> _refresh() async {
+    await Future.wait([
+      ref.read(homeScreenControllerProvider.notifier).refreshAll(),
+      ref.read(newsScreenControllerProvider.notifier).refreshAll(),
+    ]);
     if (PlatformCapabilities.hasHomeWidgets && mounted) {
-      await context.read<AppWidgetSyncService>().sync();
+      await ref.read(appWidgetSyncServiceProvider).sync();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final home = ref.watch(homeScreenControllerProvider);
+    // Держим autoDispose-провайдер новостей живым, пока открыт Home
+    // (иначе loadArticles из post-frame dispose'ится до появления секции).
+    ref.watch(newsScreenControllerProvider);
+    final hasData = home.currentDrivers.value != null && home.currentConstructors.value != null;
+
     return Scaffold(
       appBar: const CustomAppBar(),
       floatingActionButton: AnimatedSwitcher(
@@ -162,60 +160,57 @@ class _HomeViewState extends State<_HomeView> {
       body: SafeArea(
         child: OnAppResumed(
           onResumed: () {
-            final controller = context.read<HomeScreenController>();
-            unawaited(controller.dismissOfflineBannerIfOnline());
+            unawaited(ref.read(homeScreenControllerProvider.notifier).dismissOfflineBannerIfOnline());
           },
-          child: Observer(
-          builder: (context) {
-            final controller = context.read<HomeScreenController>();
-            final hasData = controller.currentDrivers.value != null && controller.currentConstructors.value != null;
-            if (!hasData && (controller.currentDrivers.isLoading || controller.currentConstructors.isLoading)) {
-              return const SingleChildScrollView(child: TournamentTablesShimmer());
-            }
-            if (controller.screenError != null && !hasData) {
-              return ErrorBody(
-                onTap: () => _refresh(controller),
-                title: controller.screenError!.title,
-                subtitle: controller.screenError!.subtitle,
-              );
-            }
-
-            return RefreshIndicator(
-              color: AppTheme.red,
-              onRefresh: () => _refresh(controller),
-              child: NotificationListener<ScrollNotification>(
-                onNotification: (notification) {
-                  if (notification.metrics.extentAfter < 480) {
-                    context.read<NewsScreenController>().revealMore();
-                  }
-                  return false;
-                },
-                child: CustomScrollView(
-                  controller: _scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  scrollBehavior: AntiGlowBehavior(),
-                  slivers: [
-                    if (controller.showingCachedData)
-                      SliverToBoxAdapter(
-                        child: CachedDataBanner(message: context.l10n.showingCachedData),
-                      ),
-                    SliverToBoxAdapter(
-                      child: TournamentTablesSection(
-                        driversStandings: controller.currentDrivers.value!,
-                        constructorsStandings: controller.currentConstructors.value!,
-                        title: context.l10n.homeStandingsTitle,
-                        season: controller.currentSeason,
-                        round: controller.currentRound,
-                        passCurrentRoster: true,
-                      ),
-                    ),
-                    SliverToBoxAdapter(child: HomeHeadlinesSection(titleKey: _newsTitleKey)),
-                  ],
-                ),
-              ),
-            );
-          },
+          child: _buildBody(context, home: home, hasData: hasData),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, {required HomeState home, required bool hasData}) {
+    if (!hasData && (home.currentDrivers.isLoading || home.currentConstructors.isLoading)) {
+      return const SingleChildScrollView(child: TournamentTablesShimmer());
+    }
+    if (home.screenError != null && !hasData) {
+      return ErrorBody(
+        onTap: _refresh,
+        title: home.screenError!.title,
+        subtitle: home.screenError!.subtitle,
+      );
+    }
+
+    return RefreshIndicator(
+      color: AppTheme.red,
+      onRefresh: _refresh,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          if (notification.metrics.extentAfter < 480) {
+            ref.read(newsScreenControllerProvider.notifier).revealMore();
+          }
+          return false;
+        },
+        child: CustomScrollView(
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          scrollBehavior: AntiGlowBehavior(),
+          slivers: [
+            if (home.showingCachedData)
+              SliverToBoxAdapter(
+                child: CachedDataBanner(message: context.l10n.showingCachedData),
+              ),
+            SliverToBoxAdapter(
+              child: TournamentTablesSection(
+                driversStandings: home.currentDrivers.value!,
+                constructorsStandings: home.currentConstructors.value!,
+                title: context.l10n.homeStandingsTitle,
+                season: home.currentSeason,
+                round: home.currentRound,
+                passCurrentRoster: true,
+              ),
+            ),
+            SliverToBoxAdapter(child: HomeHeadlinesSection(titleKey: _newsTitleKey)),
+          ],
         ),
       ),
     );

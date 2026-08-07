@@ -1,101 +1,113 @@
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/core/home/controllers/home_screen_controller/home_screen_controller.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
-import 'package:f1_pet_project/data/models/standings/constructor/constructor_standings_model.dart';
-import 'package:f1_pet_project/data/models/standings/driver/driver_standings_model.dart';
+import 'package:f1_pet_project/data/models/standings/standings_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/controller_fixtures.dart';
-import '../../../mobx/mobx_testing.dart';
 
 void main() {
   group('HomeScreenController', () {
-    group('loadCurrentDriversStandings', () {
-      mobxTest(
-        'sets value on success',
-        build: () => HomeScreenController(
-          fetchCurrentDriversStandingsForTest: () async => ControllerFixtures.driversStandingsModel,
-        ),
-        value: (store) => store.currentDrivers,
-        act: (store) => store.loadCurrentDriversStandings(),
-        expect: () => [
-          isA<AsyncValue<List<DriverStandingsModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
-          isA<AsyncValue<List<DriverStandingsModel>>>()
-              .having((e) => e.status, 'status', AsyncStatus.value)
-              .having((e) => e.value?.length, 'length', 1),
+    ProviderContainer createContainer({
+      Future<StandingsModel> Function()? fetchDrivers,
+      Future<StandingsModel> Function()? fetchConstructors,
+    }) {
+      final container = ProviderContainer(
+        overrides: [
+          homeScreenControllerProvider.overrideWith(
+            () => HomeScreenController(
+              fetchCurrentDriversStandingsForTest: fetchDrivers,
+              fetchCurrentConstructorsStandingsForTest: fetchConstructors,
+            ),
+          ),
         ],
-        verify: (store) {
-          expect(store.currentSeason, '2024');
-          expect(store.currentRound, '5');
-        },
       );
+      addTearDown(container.dispose);
+      return container;
+    }
 
-      mobxTest(
-        'sets error on failure',
-        build: () => HomeScreenController(
-          fetchCurrentDriversStandingsForTest: () async => throw ResponseParseException('parse error'),
-        ),
-        value: (store) => store.currentDrivers,
-        act: (store) => store.loadCurrentDriversStandings(),
-        expect: () => [
-          isA<AsyncValue<List<DriverStandingsModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
-          isA<AsyncValue<List<DriverStandingsModel>>>().having((e) => e.status, 'status', AsyncStatus.error),
-        ],
-        verify: (store) {
-          expect(store.screenError, isNotNull);
-        },
-      );
+    group('loadCurrentDriversStandings', () {
+      test('sets value on success', () async {
+        final container = createContainer(
+          fetchDrivers: () async => ControllerFixtures.driversStandingsModel,
+        );
+        final controller = container.read(homeScreenControllerProvider.notifier);
+
+        await controller.loadCurrentDriversStandings();
+
+        final state = container.read(homeScreenControllerProvider);
+        expect(state.currentDrivers.status, LoadableStatus.value);
+        expect(state.currentDrivers.value, hasLength(1));
+        expect(state.currentSeason, '2024');
+        expect(state.currentRound, '5');
+      });
+
+      test('sets error on failure', () async {
+        final container = createContainer(
+          fetchDrivers: () async => throw ResponseParseException('parse error'),
+        );
+        final controller = container.read(homeScreenControllerProvider.notifier);
+
+        await controller.loadCurrentDriversStandings();
+
+        final state = container.read(homeScreenControllerProvider);
+        expect(state.currentDrivers.status, LoadableStatus.error);
+        expect(state.screenError, isNotNull);
+      });
     });
 
     group('loadCurrentConstructorsStandings', () {
-      mobxTest(
-        'sets value on success',
-        build: () => HomeScreenController(
-          fetchCurrentConstructorsStandingsForTest: () async => ControllerFixtures.constructorsStandingsModel,
-        ),
-        value: (store) => store.currentConstructors,
-        act: (store) => store.loadCurrentConstructorsStandings(),
-        expect: () => [
-          isA<AsyncValue<List<ConstructorStandingsModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
-          isA<AsyncValue<List<ConstructorStandingsModel>>>()
-              .having((e) => e.status, 'status', AsyncStatus.value)
-              .having((e) => e.value?.length, 'length', 1),
-        ],
-      );
+      test('sets value on success', () async {
+        final container = createContainer(
+          fetchConstructors: () async => ControllerFixtures.constructorsStandingsModel,
+        );
+        final controller = container.read(homeScreenControllerProvider.notifier);
+
+        await controller.loadCurrentConstructorsStandings();
+
+        final state = container.read(homeScreenControllerProvider);
+        expect(state.currentConstructors.status, LoadableStatus.value);
+        expect(state.currentConstructors.value, hasLength(1));
+      });
     });
 
     group('loadAllData', () {
       test('loads drivers and constructors standings', () async {
-        final controller = HomeScreenController(
-          fetchCurrentDriversStandingsForTest: () async => ControllerFixtures.driversStandingsModel,
-          fetchCurrentConstructorsStandingsForTest: () async => ControllerFixtures.constructorsStandingsModel,
+        final container = createContainer(
+          fetchDrivers: () async => ControllerFixtures.driversStandingsModel,
+          fetchConstructors: () async => ControllerFixtures.constructorsStandingsModel,
         );
+        final controller = container.read(homeScreenControllerProvider.notifier);
 
         await controller.loadAllData();
 
-        expect(controller.currentDrivers.isValue, isTrue);
-        expect(controller.currentConstructors.isValue, isTrue);
+        final state = container.read(homeScreenControllerProvider);
+        expect(state.currentDrivers.isValue, isTrue);
+        expect(state.currentConstructors.isValue, isTrue);
       });
     });
 
     test('refreshAll reloads both tables', () async {
       var calls = 0;
-      final controller = HomeScreenController(
-        fetchCurrentDriversStandingsForTest: () async {
+      final container = createContainer(
+        fetchDrivers: () async {
           calls++;
           return ControllerFixtures.driversStandingsModel;
         },
-        fetchCurrentConstructorsStandingsForTest: () async {
+        fetchConstructors: () async {
           calls++;
           return ControllerFixtures.constructorsStandingsModel;
         },
       );
+      final controller = container.read(homeScreenControllerProvider.notifier);
 
       await controller.refreshAll();
 
+      final state = container.read(homeScreenControllerProvider);
       expect(calls, 2);
-      expect(controller.currentDrivers.isValue, isTrue);
-      expect(controller.currentConstructors.isValue, isTrue);
+      expect(state.currentDrivers.isValue, isTrue);
+      expect(state.currentConstructors.isValue, isTrue);
     });
   });
 }

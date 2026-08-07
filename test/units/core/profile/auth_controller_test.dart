@@ -1,5 +1,6 @@
 import 'package:f1_pet_project/core/profile/controllers/auth_controller/auth_controller.dart';
 import 'package:f1_pet_project/services/auth/auth_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _FakeAuthGateway implements AuthFormGateway {
@@ -53,31 +54,42 @@ void main() {
 
   group('AuthController', () {
     late _FakeAuthGateway gateway;
+    late ProviderContainer container;
     late AuthController controller;
+
+    AuthState readState() => container.read(authControllerProvider);
 
     setUp(() {
       gateway = _FakeAuthGateway();
-      controller = AuthController(authService: gateway);
+      container = ProviderContainer(
+        overrides: [authControllerProvider.overrideWith(() => AuthController(authServiceForTest: gateway))],
+      );
+      controller = container.read(authControllerProvider.notifier);
     });
 
-    test('setEmail / setPassword clear errorKey', () {
-      controller
-        ..errorKey = 'authErrorGeneric'
-        ..setEmail('a@b.co');
-      expect(controller.email, 'a@b.co');
-      expect(controller.errorKey, isNull);
-      controller
-        ..errorKey = 'authErrorGeneric'
-        ..setPassword('Passw0rd');
-      expect(controller.password, 'Passw0rd');
-      expect(controller.errorKey, isNull);
+    tearDown(() => container.dispose());
+
+    test('setEmail / setPassword clear errorKey', () async {
+      expect(await controller.signIn(), isFalse);
+      expect(readState().errorKey, 'authErrorEmptyFields');
+
+      controller.setEmail('a@b.co');
+      expect(readState().email, 'a@b.co');
+      expect(readState().errorKey, isNull);
+
+      expect(await controller.signIn(), isFalse);
+      expect(readState().errorKey, 'authErrorEmptyFields');
+
+      controller.setPassword('Passw0rd');
+      expect(readState().password, 'Passw0rd');
+      expect(readState().errorKey, isNull);
     });
 
     test('signIn rejects empty fields', () async {
       expect(await controller.signIn(), isFalse);
-      expect(controller.errorKey, 'authErrorEmptyFields');
+      expect(readState().errorKey, 'authErrorEmptyFields');
       expect(gateway.signInCalls, 0);
-      expect(controller.isLoading, isFalse);
+      expect(readState().isLoading, isFalse);
     });
 
     test('signIn rejects invalid email', () async {
@@ -85,7 +97,7 @@ void main() {
         ..setEmail('not-an-email')
         ..setPassword('Passw0rd');
       expect(await controller.signIn(), isFalse);
-      expect(controller.errorKey, 'authErrorInvalidEmail');
+      expect(readState().errorKey, 'authErrorInvalidEmail');
       expect(gateway.signInCalls, 0);
     });
 
@@ -96,8 +108,8 @@ void main() {
       expect(await controller.signIn(), isTrue);
       expect(gateway.signInCalls, 1);
       expect(gateway.lastEmail, 'user@gmail.com');
-      expect(controller.errorKey, isNull);
-      expect(controller.isLoading, isFalse);
+      expect(readState().errorKey, isNull);
+      expect(readState().isLoading, isFalse);
     });
 
     test('signIn maps service failure', () async {
@@ -106,8 +118,8 @@ void main() {
         ..setEmail('user@gmail.com')
         ..setPassword('Passw0rd');
       expect(await controller.signIn(), isFalse);
-      expect(controller.errorKey, 'authErrorWrongPassword');
-      expect(controller.isLoading, isFalse);
+      expect(readState().errorKey, 'authErrorWrongPassword');
+      expect(readState().isLoading, isFalse);
     });
 
     test('register rejects disposable email', () async {
@@ -115,7 +127,7 @@ void main() {
         ..setEmail('a@mailinator.com')
         ..setPassword('Passw0rd');
       expect(await controller.register(), isFalse);
-      expect(controller.errorKey, 'authErrorDisposableEmail');
+      expect(readState().errorKey, 'authErrorDisposableEmail');
       expect(gateway.registerCalls, 0);
     });
 
@@ -124,7 +136,7 @@ void main() {
         ..setEmail('user@gmail.com')
         ..setPassword('password');
       expect(await controller.register(), isFalse);
-      expect(controller.errorKey, 'authErrorWeakPassword');
+      expect(readState().errorKey, 'authErrorWeakPassword');
       expect(gateway.registerCalls, 0);
     });
 
@@ -134,7 +146,7 @@ void main() {
         ..setPassword('Passw0rd1');
       expect(await controller.register(), isTrue);
       expect(gateway.registerCalls, 1);
-      expect(controller.isLoading, isFalse);
+      expect(readState().isLoading, isFalse);
     });
 
     test('register maps service failure', () async {
@@ -143,16 +155,16 @@ void main() {
         ..setEmail('user@gmail.com')
         ..setPassword('Passw0rd1');
       expect(await controller.register(), isFalse);
-      expect(controller.errorKey, 'authErrorEmailInUse');
+      expect(readState().errorKey, 'authErrorEmailInUse');
     });
 
     test('sendPasswordReset validates email', () async {
       expect(await controller.sendPasswordReset(), isFalse);
-      expect(controller.errorKey, 'authErrorEmptyEmail');
+      expect(readState().errorKey, 'authErrorEmptyEmail');
 
       controller.setEmail('bad');
       expect(await controller.sendPasswordReset(), isFalse);
-      expect(controller.errorKey, 'authErrorInvalidEmail');
+      expect(readState().errorKey, 'authErrorInvalidEmail');
       expect(gateway.resetCalls, 0);
     });
 
@@ -163,8 +175,8 @@ void main() {
 
       gateway.resetResult = const AuthResult.fail('authErrorTooManyRequests');
       expect(await controller.sendPasswordReset(), isFalse);
-      expect(controller.errorKey, 'authErrorTooManyRequests');
-      expect(controller.isLoading, isFalse);
+      expect(readState().errorKey, 'authErrorTooManyRequests');
+      expect(readState().isLoading, isFalse);
     });
   });
 }

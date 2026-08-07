@@ -1,11 +1,12 @@
-import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/core/news/controllers/news_screen_controller/news_screen_controller.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/fake_repositories.dart';
-import '../../../mobx/mobx_testing.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -13,53 +14,70 @@ void main() {
   const article = NewsArticleModel(id: 1, headline: 'Test', description: 'Desc', webUrl: 'https://example.com');
 
   group('NewsScreenController', () {
-    mobxTest(
-      'loadArticles sets value on success',
-      build: () => NewsScreenController(fetchArticlesForTest: () async => [article]),
-      value: (store) => store.articles,
-      act: (store) => store.loadArticles(),
-      expect: () => [
-        isA<AsyncValue<List<NewsArticleModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
-        isA<AsyncValue<List<NewsArticleModel>>>()
-            .having((e) => e.status, 'status', AsyncStatus.value)
-            .having((e) => e.value?.length, 'length', 1),
-      ],
-    );
+    ProviderContainer createContainer({
+      Future<List<NewsArticleModel>> Function()? fetchArticles,
+      FakeNewsRepository? newsRepository,
+    }) {
+      final container = ProviderContainer(
+        overrides: [
+          if (newsRepository != null) newsRepositoryProvider.overrideWithValue(newsRepository),
+          newsScreenControllerProvider.overrideWith(
+            () => NewsScreenController(fetchArticlesForTest: fetchArticles),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      return container;
+    }
 
-    mobxTest(
-      'loadArticles sets error on failure',
-      build: () => NewsScreenController(fetchArticlesForTest: () async => throw ResponseParseException('parse error')),
-      value: (store) => store.articles,
-      act: (store) => store.loadArticles(),
-      expect: () => [
-        isA<AsyncValue<List<NewsArticleModel>>>().having((e) => e.status, 'status', AsyncStatus.loading),
-        isA<AsyncValue<List<NewsArticleModel>>>().having((e) => e.status, 'status', AsyncStatus.error),
-      ],
-    );
+    test('loadArticles sets value on success', () async {
+      final container = createContainer(fetchArticles: () async => [article]);
+      final controller = container.read(newsScreenControllerProvider.notifier);
+
+      await controller.loadArticles();
+
+      final state = container.read(newsScreenControllerProvider);
+      expect(state.articles.status, LoadableStatus.value);
+      expect(state.articles.value, hasLength(1));
+    });
+
+    test('loadArticles sets error on failure', () async {
+      final container = createContainer(
+        fetchArticles: () async => throw ResponseParseException('parse error'),
+      );
+      final controller = container.read(newsScreenControllerProvider.notifier);
+
+      await controller.loadArticles();
+
+      expect(container.read(newsScreenControllerProvider).articles.status, LoadableStatus.error);
+    });
 
     test('refreshAll reloads articles via forTest hook', () async {
       var calls = 0;
-      final controller = NewsScreenController(
-        fetchArticlesForTest: () async {
+      final container = createContainer(
+        fetchArticles: () async {
           calls++;
           return [article];
         },
       );
+      final controller = container.read(newsScreenControllerProvider.notifier);
 
       await controller.refreshAll();
 
+      final state = container.read(newsScreenControllerProvider);
       expect(calls, 1);
-      expect(controller.articles.isValue, isTrue);
-      expect(controller.articles.value, hasLength(1));
+      expect(state.articles.isValue, isTrue);
+      expect(state.articles.value, hasLength(1));
     });
 
     test('uses fresh shared cache without network', () async {
       final repo = FakeNewsRepository(articles: [article], isFresh: true);
-      final controller = NewsScreenController(newsRepository: repo);
+      final container = createContainer(newsRepository: repo);
+      final controller = container.read(newsScreenControllerProvider.notifier);
 
       await controller.loadArticles();
 
-      expect(controller.articles.value, [article]);
+      expect(container.read(newsScreenControllerProvider).articles.value, [article]);
       expect(repo.loadCalls, 0);
     });
 
@@ -69,21 +87,23 @@ void main() {
         const NewsArticleModel(id: 2, headline: 'Two', description: '', webUrl: 'https://x.com'),
       ];
       final repo = FakeNewsRepository(articles: [article], isFresh: false, next: updated);
-      final controller = NewsScreenController(newsRepository: repo);
+      final container = createContainer(newsRepository: repo);
+      final controller = container.read(newsScreenControllerProvider.notifier);
 
       await controller.loadArticles();
 
-      expect(controller.articles.value, updated);
+      expect(container.read(newsScreenControllerProvider).articles.value, updated);
       expect(repo.loadCalls, 1);
     });
 
     test('stale cache keeps value when refresh fails', () async {
       final repo = FakeNewsRepository(articles: [article], isFresh: false, throwOnLoad: true);
-      final controller = NewsScreenController(newsRepository: repo);
+      final container = createContainer(newsRepository: repo);
+      final controller = container.read(newsScreenControllerProvider.notifier);
 
       await controller.loadArticles();
 
-      expect(controller.articles.value, [article]);
+      expect(container.read(newsScreenControllerProvider).articles.value, [article]);
       expect(repo.loadCalls, 1);
     });
 
@@ -93,11 +113,12 @@ void main() {
         isFresh: true,
         next: [const NewsArticleModel(id: 9, headline: 'New', description: '', webUrl: 'https://x.com')],
       );
-      final controller = NewsScreenController(newsRepository: repo);
+      final container = createContainer(newsRepository: repo);
+      final controller = container.read(newsScreenControllerProvider.notifier);
 
       await controller.loadArticles(forceRefresh: true);
 
-      expect(controller.articles.value?.single.id, 9);
+      expect(container.read(newsScreenControllerProvider).articles.value?.single.id, 9);
       expect(repo.lastForceRefresh, isTrue);
     });
 
@@ -109,23 +130,25 @@ void main() {
         throwOnlyForceRefresh: true,
         next: [article],
       );
-      final controller = NewsScreenController(newsRepository: repo);
+      final container = createContainer(newsRepository: repo);
+      final controller = container.read(newsScreenControllerProvider.notifier);
 
       await controller.loadArticles(forceRefresh: true);
 
-      // First forceRefresh throws; fallback _fetchArticles succeeds without force.
-      expect(controller.articles.isValue, isTrue);
-      expect(controller.articles.value, [article]);
+      final state = container.read(newsScreenControllerProvider);
+      expect(state.articles.isValue, isTrue);
+      expect(state.articles.value, [article]);
     });
 
     test('screenError exposes CustomException from articles', () async {
-      final controller = NewsScreenController(
-        fetchArticlesForTest: () async => throw ResponseParseException('parse error'),
+      final container = createContainer(
+        fetchArticles: () async => throw ResponseParseException('parse error'),
       );
+      final controller = container.read(newsScreenControllerProvider.notifier);
 
       await controller.loadArticles();
 
-      expect(controller.articles.isError, isTrue);
+      expect(container.read(newsScreenControllerProvider).articles.isError, isTrue);
     });
 
     test('revealMore paginates visible articles', () async {
@@ -133,21 +156,25 @@ void main() {
         25,
         (i) => NewsArticleModel(id: i, headline: 'H$i', description: '', webUrl: 'https://example.com/$i'),
       );
-      final controller = NewsScreenController(fetchArticlesForTest: () async => many);
+      final container = createContainer(fetchArticles: () async => many);
+      final controller = container.read(newsScreenControllerProvider.notifier);
 
       await controller.loadArticles();
 
-      expect(controller.visibleArticles, hasLength(10));
-      expect(controller.canRevealMore, isTrue);
+      var state = container.read(newsScreenControllerProvider);
+      expect(state.visibleArticles, hasLength(10));
+      expect(state.canRevealMore, isTrue);
 
       controller.revealMore();
-      expect(controller.visibleArticles, hasLength(20));
+      state = container.read(newsScreenControllerProvider);
+      expect(state.visibleArticles, hasLength(20));
 
       controller
         ..revealMore()
         ..revealMore();
-      expect(controller.visibleArticles, hasLength(25));
-      expect(controller.canRevealMore, isFalse);
+      state = container.read(newsScreenControllerProvider);
+      expect(state.visibleArticles, hasLength(25));
+      expect(state.canRevealMore, isFalse);
     });
   });
 }

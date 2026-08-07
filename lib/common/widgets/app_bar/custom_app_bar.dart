@@ -11,14 +11,13 @@ import 'package:f1_pet_project/common/utils/theme/theme_controller.dart';
 import 'package:f1_pet_project/common/widgets/buttons/circle_button.dart';
 import 'package:f1_pet_project/core/profile/controllers/notifications_preference_controller/notifications_preference_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Кастомный AppBar с логотипом или заголовком и кнопкой «назад».
 ///
 /// Кнопка назад показывается, если передан [onPop] или стек можно pop
 /// ([Navigator.canPop]) — чтобы вложенные экраны не забывали про back.
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const CustomAppBar({this.title, this.onPop, this.onShare, this.showPreferences = false, super.key});
   final String? title;
 
@@ -51,9 +50,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final localeController = context.read<LocaleController>();
-    final themeController = context.read<ThemeController>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final localeState = showPreferences ? ref.watch(localeControllerProvider) : null;
+    final themeState = showPreferences ? ref.watch(themeControllerProvider) : null;
     final showBack = _shouldShowBack(context);
 
     return ColorfulSafeArea(
@@ -107,51 +106,43 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                       const SizedBox(width: 8),
                     ],
-                    if (showPreferences) ...[
-                      Observer(
-                        builder: (context) {
-                          return GestureDetector(
-                            onTap: themeController.cycle,
-                            behavior: HitTestBehavior.opaque,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                              child: Icon(
-                                themeController.preferenceIcon,
-                                size: 20,
-                                color: AppTheme.onChrome,
-                              ),
-                            ),
-                          );
-                        },
+                    if (showPreferences && themeState != null && localeState != null) ...[
+                      GestureDetector(
+                        onTap: () => ref.read(themeControllerProvider.notifier).cycle(),
+                        behavior: HitTestBehavior.opaque,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                          child: Icon(
+                            themeState.preferenceIcon,
+                            size: 20,
+                            color: AppTheme.onChrome,
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 8),
-                      Observer(
-                        builder: (context) {
-                          return GestureDetector(
-                            onTap: () async {
-                              await localeController.toggle();
-                              if (!context.mounted) {
-                                return;
-                              }
-                              unawaited(
-                                context.read<NotificationsPreferenceController>().resync(
-                                  locale: localeController.locale,
-                                ),
-                              );
-                            },
-                            behavior: HitTestBehavior.opaque,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                              child: Text(
-                                localeController.localeCodeLabel,
-                                style: AppStyles.body.copyWith(
-                                  color: AppTheme.onChrome,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                      GestureDetector(
+                        onTap: () async {
+                          await ref.read(localeControllerProvider.notifier).toggle();
+                          if (!context.mounted) {
+                            return;
+                          }
+                          unawaited(
+                            ref.read(notificationsPreferenceControllerProvider.notifier).resync(
+                              locale: ref.read(localeControllerProvider).locale,
                             ),
                           );
                         },
+                        behavior: HitTestBehavior.opaque,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                          child: Text(
+                            localeState.localeCodeLabel,
+                            style: AppStyles.body.copyWith(
+                              color: AppTheme.onChrome,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ],
