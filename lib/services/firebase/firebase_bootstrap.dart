@@ -13,19 +13,22 @@ Future<RemoteConfigService> bootstrapFirebase() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await _activateAppCheck();
 
-  FlutterError.onError = (details) {
-    if (shouldReportUncaughtErrorToCrashlytics(details.exception)) {
-      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
-    }
-  };
-  PlatformDispatcher.instance.onError = (error, stack) {
-    if (shouldReportUncaughtErrorToCrashlytics(error)) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    }
-    return true;
-  };
+  // Crashlytics не поддерживает web — иначе bootstrap падает до runApp (белый экран).
+  if (!kIsWeb) {
+    FlutterError.onError = (details) {
+      if (shouldReportUncaughtErrorToCrashlytics(details.exception)) {
+        FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+      }
+    };
+    PlatformDispatcher.instance.onError = (error, stack) {
+      if (shouldReportUncaughtErrorToCrashlytics(error)) {
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      }
+      return true;
+    };
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(!kDebugMode);
+  }
 
-  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(!kDebugMode);
   await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(!kDebugMode);
 
   final remoteConfig = RemoteConfigService();
