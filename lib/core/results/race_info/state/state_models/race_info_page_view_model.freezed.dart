@@ -14,7 +14,11 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RaceInfoPageViewModel {
 
- bool get allDataIsLoaded; Loadable<List<ResultsModel>> get sprintResults; Loadable<List<QualifyingResultsModel>> get qualifyingResults; Loadable<List<PitStopsModel>> get pitStops;
+/// Все данные загружены.
+ bool get allDataIsLoaded;/// Результаты спринта.
+ Loadable<List<ResultsModel>> get sprintResults;/// Результаты квалификации.
+ Loadable<List<QualifyingResultsModel>> get qualifyingResults;/// Пит-стопы.
+ Loadable<List<PitStopsModel>> get pitStops;
 /// Create a copy of RaceInfoPageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -212,9 +216,13 @@ class _RaceInfoPageViewModel extends RaceInfoPageViewModel {
   const _RaceInfoPageViewModel({this.allDataIsLoaded = false, this.sprintResults = const Loadable.loading(), this.qualifyingResults = const Loadable.loading(), this.pitStops = const Loadable.loading()}): super._();
   
 
+/// Все данные загружены.
 @override@JsonKey() final  bool allDataIsLoaded;
+/// Результаты спринта.
 @override@JsonKey() final  Loadable<List<ResultsModel>> sprintResults;
+/// Результаты квалификации.
 @override@JsonKey() final  Loadable<List<QualifyingResultsModel>> qualifyingResults;
+/// Пит-стопы.
 @override@JsonKey() final  Loadable<List<PitStopsModel>> pitStops;
 
 /// Create a copy of RaceInfoPageViewModel

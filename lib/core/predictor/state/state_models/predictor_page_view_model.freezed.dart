@@ -14,7 +14,18 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PredictorPageViewModel {
 
- DateTime get now; Loadable<List<RacesModel>> get races; Loadable<List<DriverModel>> get drivers; Map<String, ConstructorModel> get constructorsByDriverId; List<String> get championshipDriverOrder; PredictorStore get store; Loadable<PredictorStore> get predictions; bool get allDataIsLoaded; PredictorGridKind get selectedGrid; List<String> get draftQualifyingOrder; List<String> get draftRaceOrder;
+/// Текущее время для блокировки.
+ DateTime get now;/// Раунды сезона.
+ Loadable<List<RacesModel>> get races;/// Ростер пилотов.
+ Loadable<List<DriverModel>> get drivers;/// Команды по ID пилота.
+ Map<String, ConstructorModel> get constructorsByDriverId;/// Порядок чемпионата.
+ List<String> get championshipDriverOrder;/// Локальное хранилище предиктов.
+ PredictorStore get store;/// Store с сервера (может отличаться по пункты).
+ Loadable<PredictorStore> get predictions;/// Данные полностью загружены.
+ bool get allDataIsLoaded;/// Активная вкладка (квалификация / гонка).
+ PredictorGridKind get selectedGrid;/// Черновик предикта квалификации.
+ List<String> get draftQualifyingOrder;/// Черновик предикта гонки.
+ List<String> get draftRaceOrder;
 /// Create a copy of PredictorPageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -219,35 +230,50 @@ class _PredictorPageViewModel extends PredictorPageViewModel {
   const _PredictorPageViewModel({required this.now, this.races = const Loadable.loading(), this.drivers = const Loadable.loading(), final  Map<String, ConstructorModel> constructorsByDriverId = const <String, ConstructorModel>{}, final  List<String> championshipDriverOrder = const <String>[], this.store = const PredictorStore(seasons: {}), this.predictions = const Loadable.loading(), this.allDataIsLoaded = false, this.selectedGrid = PredictorGridKind.qualifying, final  List<String> draftQualifyingOrder = const <String>[], final  List<String> draftRaceOrder = const <String>[]}): _constructorsByDriverId = constructorsByDriverId,_championshipDriverOrder = championshipDriverOrder,_draftQualifyingOrder = draftQualifyingOrder,_draftRaceOrder = draftRaceOrder,super._();
   
 
+/// Текущее время для блокировки.
 @override final  DateTime now;
+/// Раунды сезона.
 @override@JsonKey() final  Loadable<List<RacesModel>> races;
+/// Ростер пилотов.
 @override@JsonKey() final  Loadable<List<DriverModel>> drivers;
+/// Команды по ID пилота.
  final  Map<String, ConstructorModel> _constructorsByDriverId;
+/// Команды по ID пилота.
 @override@JsonKey() Map<String, ConstructorModel> get constructorsByDriverId {
   if (_constructorsByDriverId is EqualUnmodifiableMapView) return _constructorsByDriverId;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_constructorsByDriverId);
 }
 
+/// Порядок чемпионата.
  final  List<String> _championshipDriverOrder;
+/// Порядок чемпионата.
 @override@JsonKey() List<String> get championshipDriverOrder {
   if (_championshipDriverOrder is EqualUnmodifiableListView) return _championshipDriverOrder;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_championshipDriverOrder);
 }
 
+/// Локальное хранилище предиктов.
 @override@JsonKey() final  PredictorStore store;
+/// Store с сервера (может отличаться по пункты).
 @override@JsonKey() final  Loadable<PredictorStore> predictions;
+/// Данные полностью загружены.
 @override@JsonKey() final  bool allDataIsLoaded;
+/// Активная вкладка (квалификация / гонка).
 @override@JsonKey() final  PredictorGridKind selectedGrid;
+/// Черновик предикта квалификации.
  final  List<String> _draftQualifyingOrder;
+/// Черновик предикта квалификации.
 @override@JsonKey() List<String> get draftQualifyingOrder {
   if (_draftQualifyingOrder is EqualUnmodifiableListView) return _draftQualifyingOrder;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_draftQualifyingOrder);
 }
 
+/// Черновик предикта гонки.
  final  List<String> _draftRaceOrder;
+/// Черновик предикта гонки.
 @override@JsonKey() List<String> get draftRaceOrder {
   if (_draftRaceOrder is EqualUnmodifiableListView) return _draftRaceOrder;
   // ignore: implicit_dynamic_type

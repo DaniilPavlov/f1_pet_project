@@ -6,14 +6,14 @@ part of 'base_response_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-BaseResponseModel _$BaseResponseModelFromJson(Map<String, dynamic> json) =>
-    BaseResponseModel(
+_BaseResponseModel _$BaseResponseModelFromJson(Map<String, dynamic> json) =>
+    _BaseResponseModel(
       mrData: json['MRData'],
-      code: (json['code'] as num?)?.toInt(),
       message: json['message'] as String?,
+      code: (json['code'] as num?)?.toInt(),
     );
 
-Map<String, dynamic> _$BaseResponseModelToJson(BaseResponseModel instance) =>
+Map<String, dynamic> _$BaseResponseModelToJson(_BaseResponseModel instance) =>
     <String, dynamic>{
       'MRData': instance.mrData,
       'message': instance.message,

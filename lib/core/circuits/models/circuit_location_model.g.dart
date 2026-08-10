@@ -6,9 +6,9 @@ part of 'circuit_location_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-CircuitLocationModel _$CircuitLocationModelFromJson(
+_CircuitLocationModel _$CircuitLocationModelFromJson(
   Map<String, dynamic> json,
-) => CircuitLocationModel(
+) => _CircuitLocationModel(
   lat: json['lat'] as String,
   long: json['long'] as String,
   locality: json['locality'] as String,
@@ -16,7 +16,7 @@ CircuitLocationModel _$CircuitLocationModelFromJson(
 );
 
 Map<String, dynamic> _$CircuitLocationModelToJson(
-  CircuitLocationModel instance,
+  _CircuitLocationModel instance,
 ) => <String, dynamic>{
   'lat': instance.lat,
   'long': instance.long,

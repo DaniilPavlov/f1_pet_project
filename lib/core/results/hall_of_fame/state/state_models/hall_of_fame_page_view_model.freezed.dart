@@ -14,7 +14,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HallOfFamePageViewModel {
 
- Loadable<List<StandingsListsModel>> get driversStandings; Loadable<List<StandingsListsModel>> get constructorsStandings; bool get fieldsInputted;
+/// Зачёт пилотов.
+ Loadable<List<StandingsListsModel>> get driversStandings;/// Зачёт конструкторов.
+ Loadable<List<StandingsListsModel>> get constructorsStandings;/// Год заполнен и валиден.
+ bool get fieldsInputted;
 /// Create a copy of HallOfFamePageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -211,8 +214,11 @@ class _HallOfFamePageViewModel extends HallOfFamePageViewModel {
   const _HallOfFamePageViewModel({this.driversStandings = const Loadable.loading(), this.constructorsStandings = const Loadable.loading(), this.fieldsInputted = true}): super._();
   
 
+/// Зачёт пилотов.
 @override@JsonKey() final  Loadable<List<StandingsListsModel>> driversStandings;
+/// Зачёт конструкторов.
 @override@JsonKey() final  Loadable<List<StandingsListsModel>> constructorsStandings;
+/// Год заполнен и валиден.
 @override@JsonKey() final  bool fieldsInputted;
 
 /// Create a copy of HallOfFamePageViewModel

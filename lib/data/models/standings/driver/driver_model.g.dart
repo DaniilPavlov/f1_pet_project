@@ -6,18 +6,18 @@ part of 'driver_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-DriverModel _$DriverModelFromJson(Map<String, dynamic> json) => DriverModel(
+_DriverModel _$DriverModelFromJson(Map<String, dynamic> json) => _DriverModel(
   driverId: json['driverId'] as String,
   url: json['url'] as String? ?? '',
   givenName: json['givenName'] as String,
   familyName: json['familyName'] as String,
   dateOfBirth: json['dateOfBirth'] as String? ?? '',
   nationality: json['nationality'] as String? ?? '',
-  code: json['code'] as String?,
   permanentNumber: json['permanentNumber'] as String?,
+  code: json['code'] as String?,
 );
 
-Map<String, dynamic> _$DriverModelToJson(DriverModel instance) =>
+Map<String, dynamic> _$DriverModelToJson(_DriverModel instance) =>
     <String, dynamic>{
       'driverId': instance.driverId,
       'url': instance.url,

@@ -14,7 +14,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CircuitPageViewModel {
 
- Loadable<List<CircuitRaceWin>> get winners; Loadable<String?> get photoUrl; Loadable<CircuitStats?> get stats;
+/// Историческое победители на трассе.
+ Loadable<List<CircuitRaceWin>> get winners;/// URL фото трассы (мягкое издаётся на ошибку).
+ Loadable<String?> get photoUrl;/// Статистика трассы (мягкое издаётся на ошибку).
+ Loadable<CircuitStats?> get stats;
 /// Create a copy of CircuitPageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -211,8 +214,11 @@ class _CircuitPageViewModel extends CircuitPageViewModel {
   const _CircuitPageViewModel({this.winners = const Loadable.loading(), this.photoUrl = const Loadable.loading(), this.stats = const Loadable.loading()}): super._();
   
 
+/// Историческое победители на трассе.
 @override@JsonKey() final  Loadable<List<CircuitRaceWin>> winners;
+/// URL фото трассы (мягкое издаётся на ошибку).
 @override@JsonKey() final  Loadable<String?> photoUrl;
+/// Статистика трассы (мягкое издаётся на ошибку).
 @override@JsonKey() final  Loadable<CircuitStats?> stats;
 
 /// Create a copy of CircuitPageViewModel

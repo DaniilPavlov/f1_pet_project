@@ -14,7 +14,12 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RaceSearchPageViewModel {
 
- Loadable<RacesModel?> get searchedRace; bool get dataIsLoaded; bool get fieldsInputted; String get errorMessage; String get selectedSeason;
+/// Найденная гонка.
+ Loadable<RacesModel?> get searchedRace;/// Данные полностью загружены.
+ bool get dataIsLoaded;/// Сезон и раунд заполнены.
+ bool get fieldsInputted;/// Сообщение об ошибке.
+ String get errorMessage;/// Выбранный сезон.
+ String get selectedSeason;
 /// Create a copy of RaceSearchPageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -213,10 +218,15 @@ class _RaceSearchPageViewModel implements RaceSearchPageViewModel {
   const _RaceSearchPageViewModel({this.searchedRace = const Loadable.value(), this.dataIsLoaded = true, this.fieldsInputted = false, this.errorMessage = '', this.selectedSeason = ''});
   
 
+/// Найденная гонка.
 @override@JsonKey() final  Loadable<RacesModel?> searchedRace;
+/// Данные полностью загружены.
 @override@JsonKey() final  bool dataIsLoaded;
+/// Сезон и раунд заполнены.
 @override@JsonKey() final  bool fieldsInputted;
+/// Сообщение об ошибке.
 @override@JsonKey() final  String errorMessage;
+/// Выбранный сезон.
 @override@JsonKey() final  String selectedSeason;
 
 /// Create a copy of RaceSearchPageViewModel

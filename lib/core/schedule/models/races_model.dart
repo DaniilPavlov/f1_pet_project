@@ -4,32 +4,36 @@ import 'package:f1_pet_project/core/results/models/qualifying_results_model.dart
 import 'package:f1_pet_project/core/results/models/results_model.dart';
 import 'package:f1_pet_project/core/schedule/models/race_date_model.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'races_model.freezed.dart';
 part 'races_model.g.dart';
 
 /// Данные гонки с сессиями, результатами и пит-стопами.
-@JsonSerializable()
-class RacesModel {
-  RacesModel({
-    required this.season,
-    required this.round,
-    required this.url,
-    required this.raceName,
-    required this.circuit,
-    required this.date,
-    required this.time,
-    required this.firstPractice,
-    required this.secondPractice,
-    required this.thirdPractice,
-    required this.qualifying,
-    required this.sprint,
-    required this.results,
-    required this.qualifyingResults,
-    required this.pitStops,
-    this.sprintQualifying,
-    this.sprintResults,
-  });
+@Freezed(fromJson: true, toJson: true)
+abstract class RacesModel with _$RacesModel {
+  const RacesModel._();
+
+  const factory RacesModel({
+    required String season,
+    required String round,
+    required String url,
+    required String raceName,
+    @JsonKey(name: 'Circuit') required CircuitModel circuit,
+    required String date,
+    String? time,
+    @JsonKey(name: 'FirstPractice') RaceDateModel? firstPractice,
+    @JsonKey(name: 'SecondPractice') RaceDateModel? secondPractice,
+    @JsonKey(name: 'ThirdPractice') RaceDateModel? thirdPractice,
+    @JsonKey(name: 'Qualifying') RaceDateModel? qualifying,
+    /// Дата и время спринт-квалификации (сетка на спринт).
+    @JsonKey(name: 'SprintQualifying') RaceDateModel? sprintQualifying,
+    @JsonKey(name: 'Sprint') RaceDateModel? sprint,
+    @JsonKey(name: 'Results') List<ResultsModel>? results,
+    @JsonKey(name: 'SprintResults') List<ResultsModel>? sprintResults,
+    @JsonKey(name: 'QualifyingResults') List<QualifyingResultsModel>? qualifyingResults,
+    @JsonKey(name: 'PitStops') List<PitStopsModel>? pitStops,
+  }) = _RacesModel;
 
   /// Парсит JSON-ответ в [RacesModel].
   factory RacesModel.fromJson(Map<String, dynamic> json) {
@@ -39,43 +43,10 @@ class RacesModel {
       Error.throwWithStackTrace(ResponseParseException('RacesModel: $e'), StackTrace.current);
     }
   }
-  final String season;
-  final String round;
-  final String url;
-  final String raceName;
-  @JsonKey(name: 'Circuit')
-  final CircuitModel circuit;
-  final String date;
-  final String? time;
-  @JsonKey(name: 'FirstPractice')
-  final RaceDateModel? firstPractice;
-  @JsonKey(name: 'SecondPractice')
-  final RaceDateModel? secondPractice;
-  @JsonKey(name: 'ThirdPractice')
-  final RaceDateModel? thirdPractice;
-  @JsonKey(name: 'Qualifying')
-  final RaceDateModel? qualifying;
-
-  /// Дата и время спринт-квалификации (сетка на спринт).
-  @JsonKey(name: 'SprintQualifying')
-  final RaceDateModel? sprintQualifying;
-  @JsonKey(name: 'Sprint')
-  final RaceDateModel? sprint;
-  @JsonKey(name: 'Results')
-  final List<ResultsModel>? results;
-  @JsonKey(name: 'SprintResults')
-  final List<ResultsModel>? sprintResults;
-  @JsonKey(name: 'QualifyingResults')
-  final List<QualifyingResultsModel>? qualifyingResults;
-  @JsonKey(name: 'PitStops')
-  final List<PitStopsModel>? pitStops;
-
   /// Находит лучший круг среди результатов гонки.
   String get fastestLapTime => fastestLapAmong(results);
-
   /// Находит лучший круг среди результатов спринта.
   String get fastestSprintLapTime => fastestLapAmong(sprintResults);
-
   /// Находит лучший круг в переданном списке результатов.
   static String fastestLapAmong(List<ResultsModel>? list) {
     var fastest = '999999';

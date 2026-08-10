@@ -14,6 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TournamentTablesSectionViewModel {
 
+/// Активная вкладка (0 — пилоты, 1 — конструкторы).
  int get activeTable;
 /// Create a copy of TournamentTablesSectionViewModel
 /// with the given fields replaced by the non-null parameter values.
@@ -209,6 +210,7 @@ class _TournamentTablesSectionViewModel implements TournamentTablesSectionViewMo
   const _TournamentTablesSectionViewModel({this.activeTable = 0});
   
 
+/// Активная вкладка (0 — пилоты, 1 — конструкторы).
 @override@JsonKey() final  int activeTable;
 
 /// Create a copy of TournamentTablesSectionViewModel

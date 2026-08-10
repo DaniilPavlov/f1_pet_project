@@ -14,7 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DriverPageViewModel {
 
- Loadable<CareerStats<ConstructorModel>> get careerStats; Loadable<EspnDriverCardData> get espnCard;
+/// Карьерная статистика (тоталы и список гонок).
+ Loadable<CareerStats<ConstructorModel>> get careerStats;/// Данные из ESPN (фото, флаг, новости).
+ Loadable<EspnDriverCardData> get espnCard;
 /// Create a copy of DriverPageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -210,7 +212,9 @@ class _DriverPageViewModel extends DriverPageViewModel {
   const _DriverPageViewModel({this.careerStats = const Loadable.loading(), this.espnCard = const Loadable.loading()}): super._();
   
 
+/// Карьерная статистика (тоталы и список гонок).
 @override@JsonKey() final  Loadable<CareerStats<ConstructorModel>> careerStats;
+/// Данные из ESPN (фото, флаг, новости).
 @override@JsonKey() final  Loadable<EspnDriverCardData> espnCard;
 
 /// Create a copy of DriverPageViewModel

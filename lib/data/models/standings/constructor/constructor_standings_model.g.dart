@@ -6,9 +6,9 @@ part of 'constructor_standings_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ConstructorStandingsModel _$ConstructorStandingsModelFromJson(
+_ConstructorStandingsModel _$ConstructorStandingsModelFromJson(
   Map<String, dynamic> json,
-) => ConstructorStandingsModel(
+) => _ConstructorStandingsModel(
   position: json['position'] as String? ?? '',
   positionText: json['positionText'] as String? ?? '',
   points: json['points'] as String? ?? '0',
@@ -19,7 +19,7 @@ ConstructorStandingsModel _$ConstructorStandingsModelFromJson(
 );
 
 Map<String, dynamic> _$ConstructorStandingsModelToJson(
-  ConstructorStandingsModel instance,
+  _ConstructorStandingsModel instance,
 ) => <String, dynamic>{
   'position': instance.position,
   'positionText': instance.positionText,

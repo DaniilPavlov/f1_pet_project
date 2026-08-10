@@ -6,9 +6,9 @@ part of 'qualifying_results_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-QualifyingResultsModel _$QualifyingResultsModelFromJson(
+_QualifyingResultsModel _$QualifyingResultsModelFromJson(
   Map<String, dynamic> json,
-) => QualifyingResultsModel(
+) => _QualifyingResultsModel(
   number: json['number'] as String,
   position: json['position'] as String,
   driver: DriverModel.fromJson(json['Driver'] as Map<String, dynamic>),
@@ -21,7 +21,7 @@ QualifyingResultsModel _$QualifyingResultsModelFromJson(
 );
 
 Map<String, dynamic> _$QualifyingResultsModelToJson(
-  QualifyingResultsModel instance,
+  _QualifyingResultsModel instance,
 ) => <String, dynamic>{
   'number': instance.number,
   'position': instance.position,

@@ -6,12 +6,12 @@ part of 'standings_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-StandingsModel _$StandingsModelFromJson(Map<String, dynamic> json) =>
-    StandingsModel(
+_StandingsModel _$StandingsModelFromJson(Map<String, dynamic> json) =>
+    _StandingsModel(
       standingsTable: StandingsTableModel.fromJson(
         json['StandingsTable'] as Map<String, dynamic>,
       ),
     );
 
-Map<String, dynamic> _$StandingsModelToJson(StandingsModel instance) =>
+Map<String, dynamic> _$StandingsModelToJson(_StandingsModel instance) =>
     <String, dynamic>{'StandingsTable': instance.standingsTable};

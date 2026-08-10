@@ -14,7 +14,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NotificationsPreferenceViewModel {
 
- bool get userEnabled; bool get practiceRemindersEnabled; bool get isLoaded;
+/// Пользователь включил напоминания.
+ bool get userEnabled;/// Включены напоминания о практиках.
+ bool get practiceRemindersEnabled;/// Настройки загружены.
+ bool get isLoaded;
 /// Create a copy of NotificationsPreferenceViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -211,8 +214,11 @@ class _NotificationsPreferenceViewModel extends NotificationsPreferenceViewModel
   const _NotificationsPreferenceViewModel({this.userEnabled = true, this.practiceRemindersEnabled = true, this.isLoaded = false}): super._();
   
 
+/// Пользователь включил напоминания.
 @override@JsonKey() final  bool userEnabled;
+/// Включены напоминания о практиках.
 @override@JsonKey() final  bool practiceRemindersEnabled;
+/// Настройки загружены.
 @override@JsonKey() final  bool isLoaded;
 
 /// Create a copy of NotificationsPreferenceViewModel

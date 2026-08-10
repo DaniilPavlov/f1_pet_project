@@ -14,7 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NewsPageViewModel {
 
- Loadable<List<NewsArticleModel>> get articles; int get visibleCount;
+/// Статьи новостей из ESPN.
+ Loadable<List<NewsArticleModel>> get articles;/// Количество видимых статей (пагинация).
+ int get visibleCount;
 /// Create a copy of NewsPageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -210,7 +212,9 @@ class _NewsPageViewModel extends NewsPageViewModel {
   const _NewsPageViewModel({this.articles = const Loadable.loading(), this.visibleCount = newsPageSize}): super._();
   
 
+/// Статьи новостей из ESPN.
 @override@JsonKey() final  Loadable<List<NewsArticleModel>> articles;
+/// Количество видимых статей (пагинация).
 @override@JsonKey() final  int visibleCount;
 
 /// Create a copy of NewsPageViewModel

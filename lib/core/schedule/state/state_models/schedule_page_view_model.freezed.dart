@@ -14,7 +14,14 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SchedulePageViewModel implements DiagnosticableTreeMixin {
 
- DateTime get now; DateTime get selectedDate; DateTime get focusedDate; Loadable<List<RacesModel>> get racesElements; bool get allDataIsLoaded; ScheduleSelectedDay get selectedDay; bool get showingCachedData;
+/// Текущее время для countdown'а.
+ DateTime get now;/// Выбранная дата в календаре.
+ DateTime get selectedDate;/// Видимый месяц в календаре.
+ DateTime get focusedDate;/// Раунды сезона.
+ Loadable<List<RacesModel>> get racesElements;/// Все данные загружены.
+ bool get allDataIsLoaded;/// Расписание выбранного дня.
+ ScheduleSelectedDay get selectedDay;/// Показываем кэшированные данные (офлайн).
+ bool get showingCachedData;
 /// Create a copy of SchedulePageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -221,12 +228,19 @@ class _SchedulePageViewModel extends SchedulePageViewModel with DiagnosticableTr
   const _SchedulePageViewModel({required this.now, required this.selectedDate, required this.focusedDate, this.racesElements = const Loadable.loading(), this.allDataIsLoaded = false, this.selectedDay = ScheduleSelectedDay.empty, this.showingCachedData = false}): super._();
   
 
+/// Текущее время для countdown'а.
 @override final  DateTime now;
+/// Выбранная дата в календаре.
 @override final  DateTime selectedDate;
+/// Видимый месяц в календаре.
 @override final  DateTime focusedDate;
+/// Раунды сезона.
 @override@JsonKey() final  Loadable<List<RacesModel>> racesElements;
+/// Все данные загружены.
 @override@JsonKey() final  bool allDataIsLoaded;
+/// Расписание выбранного дня.
 @override@JsonKey() final  ScheduleSelectedDay selectedDay;
+/// Показываем кэшированные данные (офлайн).
 @override@JsonKey() final  bool showingCachedData;
 
 /// Create a copy of SchedulePageViewModel

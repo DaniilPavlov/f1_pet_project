@@ -1,13 +1,16 @@
 import 'package:f1_pet_project/common/models/seasons/season_model.dart';
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'season_table_model.freezed.dart';
 part 'season_table_model.g.dart';
 
 /// Таблица сезонов из ответа API.
-@JsonSerializable()
-class SeasonTableModel {
-  SeasonTableModel({required this.seasons});
+@Freezed(fromJson: true, toJson: true)
+abstract class SeasonTableModel with _$SeasonTableModel {
+  const factory SeasonTableModel({
+    @JsonKey(name: 'Seasons') required List<SeasonModel> seasons,
+  }) = _SeasonTableModel;
 
   factory SeasonTableModel.fromJson(Map<String, dynamic> json) {
     try {
@@ -16,7 +19,4 @@ class SeasonTableModel {
       Error.throwWithStackTrace(ResponseParseException('SeasonTableModel: $e'), StackTrace.current);
     }
   }
-
-  @JsonKey(name: 'Seasons')
-  final List<SeasonModel> seasons;
 }

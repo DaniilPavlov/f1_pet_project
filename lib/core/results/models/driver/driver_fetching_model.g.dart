@@ -6,13 +6,13 @@ part of 'driver_fetching_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-DriverFetchingModel _$DriverFetchingModelFromJson(Map<String, dynamic> json) =>
-    DriverFetchingModel(
+_DriverFetchingModel _$DriverFetchingModelFromJson(Map<String, dynamic> json) =>
+    _DriverFetchingModel(
       driverTable: DriverTableModel.fromJson(
         json['DriverTable'] as Map<String, dynamic>,
       ),
     );
 
 Map<String, dynamic> _$DriverFetchingModelToJson(
-  DriverFetchingModel instance,
+  _DriverFetchingModel instance,
 ) => <String, dynamic>{'DriverTable': instance.driverTable};

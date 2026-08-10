@@ -6,8 +6,8 @@ part of 'standings_lists_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-StandingsListsModel _$StandingsListsModelFromJson(Map<String, dynamic> json) =>
-    StandingsListsModel(
+_StandingsListsModel _$StandingsListsModelFromJson(Map<String, dynamic> json) =>
+    _StandingsListsModel(
       season: json['season'] as String,
       round: json['round'] as String,
       constructorStandings: (json['ConstructorStandings'] as List<dynamic>?)
@@ -22,7 +22,7 @@ StandingsListsModel _$StandingsListsModelFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$StandingsListsModelToJson(
-  StandingsListsModel instance,
+  _StandingsListsModel instance,
 ) => <String, dynamic>{
   'season': instance.season,
   'round': instance.round,

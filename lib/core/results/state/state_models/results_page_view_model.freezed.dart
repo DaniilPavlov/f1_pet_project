@@ -14,7 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ResultsPageViewModel {
 
- Loadable<RacesModel> get lastRace; bool get showingCachedData;
+/// Последняя завершённая гонка.
+ Loadable<RacesModel> get lastRace;/// Показываем кэшированные данные (офлайн).
+ bool get showingCachedData;
 /// Create a copy of ResultsPageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -210,7 +212,9 @@ class _ResultsPageViewModel extends ResultsPageViewModel {
   const _ResultsPageViewModel({this.lastRace = const Loadable.loading(), this.showingCachedData = false}): super._();
   
 
+/// Последняя завершённая гонка.
 @override@JsonKey() final  Loadable<RacesModel> lastRace;
+/// Показываем кэшированные данные (офлайн).
 @override@JsonKey() final  bool showingCachedData;
 
 /// Create a copy of ResultsPageViewModel

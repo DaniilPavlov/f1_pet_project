@@ -14,7 +14,16 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SeasonRewindPageViewModel {
 
- Loadable<List<RacesModel>> get races; Loadable<List<StandingsListsModel>> get driversStandings; Loadable<List<StandingsListsModel>> get constructorsStandings; int get selectedRoundIndex; bool get isPlaying; List<DriverStandingsModel> get chartDrivers; List<ConstructorStandingsModel> get chartConstructors; String? get chartRound; bool get chartLoading;
+/// Раунды сезона.
+ Loadable<List<RacesModel>> get races;/// Зачёт пилотов для выбранного раунда.
+ Loadable<List<StandingsListsModel>> get driversStandings;/// Зачёт конструкторов для выбранного раунда.
+ Loadable<List<StandingsListsModel>> get constructorsStandings;/// Индекс выбранного раунда в списке.
+ int get selectedRoundIndex;/// Идёт автопрокрутка раундов.
+ bool get isPlaying;/// Данные для графика пилотов.
+ List<DriverStandingsModel> get chartDrivers;/// Данные для графика конструкторов.
+ List<ConstructorStandingsModel> get chartConstructors;/// Раунд, для которого загружены chart данные.
+ String? get chartRound;/// График загружается.
+ bool get chartLoading;
 /// Create a copy of SeasonRewindPageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -217,26 +226,37 @@ class _SeasonRewindPageViewModel extends SeasonRewindPageViewModel {
   const _SeasonRewindPageViewModel({this.races = const Loadable.loading(), this.driversStandings = const Loadable.loading(), this.constructorsStandings = const Loadable.loading(), this.selectedRoundIndex = 0, this.isPlaying = false, final  List<DriverStandingsModel> chartDrivers = const [], final  List<ConstructorStandingsModel> chartConstructors = const [], this.chartRound, this.chartLoading = false}): _chartDrivers = chartDrivers,_chartConstructors = chartConstructors,super._();
   
 
+/// Раунды сезона.
 @override@JsonKey() final  Loadable<List<RacesModel>> races;
+/// Зачёт пилотов для выбранного раунда.
 @override@JsonKey() final  Loadable<List<StandingsListsModel>> driversStandings;
+/// Зачёт конструкторов для выбранного раунда.
 @override@JsonKey() final  Loadable<List<StandingsListsModel>> constructorsStandings;
+/// Индекс выбранного раунда в списке.
 @override@JsonKey() final  int selectedRoundIndex;
+/// Идёт автопрокрутка раундов.
 @override@JsonKey() final  bool isPlaying;
+/// Данные для графика пилотов.
  final  List<DriverStandingsModel> _chartDrivers;
+/// Данные для графика пилотов.
 @override@JsonKey() List<DriverStandingsModel> get chartDrivers {
   if (_chartDrivers is EqualUnmodifiableListView) return _chartDrivers;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_chartDrivers);
 }
 
+/// Данные для графика конструкторов.
  final  List<ConstructorStandingsModel> _chartConstructors;
+/// Данные для графика конструкторов.
 @override@JsonKey() List<ConstructorStandingsModel> get chartConstructors {
   if (_chartConstructors is EqualUnmodifiableListView) return _chartConstructors;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_chartConstructors);
 }
 
+/// Раунд, для которого загружены chart данные.
 @override final  String? chartRound;
+/// График загружается.
 @override@JsonKey() final  bool chartLoading;
 
 /// Create a copy of SeasonRewindPageViewModel

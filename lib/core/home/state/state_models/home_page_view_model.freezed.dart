@@ -14,7 +14,12 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HomePageViewModel {
 
- Loadable<List<DriverStandingsModel>> get currentDrivers; Loadable<List<ConstructorStandingsModel>> get currentConstructors; String get currentSeason; String get currentRound; bool get showingCachedData;
+/// Зачёт пилотов.
+ Loadable<List<DriverStandingsModel>> get currentDrivers;/// Зачёт конструкторов.
+ Loadable<List<ConstructorStandingsModel>> get currentConstructors;/// Текущий сезон.
+ String get currentSeason;/// Текущий раунд.
+ String get currentRound;/// Показываем кэшированные данные (офлайн).
+ bool get showingCachedData;
 /// Create a copy of HomePageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -213,10 +218,15 @@ class _HomePageViewModel extends HomePageViewModel {
   const _HomePageViewModel({this.currentDrivers = const Loadable.loading(), this.currentConstructors = const Loadable.loading(), this.currentSeason = '', this.currentRound = '', this.showingCachedData = false}): super._();
   
 
+/// Зачёт пилотов.
 @override@JsonKey() final  Loadable<List<DriverStandingsModel>> currentDrivers;
+/// Зачёт конструкторов.
 @override@JsonKey() final  Loadable<List<ConstructorStandingsModel>> currentConstructors;
+/// Текущий сезон.
 @override@JsonKey() final  String currentSeason;
+/// Текущий раунд.
 @override@JsonKey() final  String currentRound;
+/// Показываем кэшированные данные (офлайн).
 @override@JsonKey() final  bool showingCachedData;
 
 /// Create a copy of HomePageViewModel

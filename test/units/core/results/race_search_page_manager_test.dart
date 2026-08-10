@@ -39,9 +39,7 @@ void main() {
     group('checkFields', () {
       test('marks fields as invalid when empty', () {
         final container = createContainer();
-        final manager = container.read(raceSearchPageManagerProvider(languageCode));
-
-        manager.checkFields();
+        final _ = container.read(raceSearchPageManagerProvider(languageCode))..checkFields();
 
         expect(container.read(raceSearchPageStateHolderProvider(languageCode)).fieldsInputted, isFalse);
       });

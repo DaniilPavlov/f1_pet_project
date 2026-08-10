@@ -14,7 +14,14 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PredictorLeaderboardPageViewModel {
 
- PredictorLeaderboardProfile get profile; Loadable<List<PredictorLeaderboardEntry>> get entries; String get nicknameDraft; bool get optInAgreed; bool get isSaving; String? get formErrorKey; bool get allDataIsLoaded;
+/// Мой профиль на лидерборде.
+ PredictorLeaderboardProfile get profile;/// Записи лидерборда.
+ Loadable<List<PredictorLeaderboardEntry>> get entries;/// Черновик никнейма.
+ String get nicknameDraft;/// Согласие на opt-in.
+ bool get optInAgreed;/// Идёт сохранение.
+ bool get isSaving;/// Ключ ошибки формы (локализация).
+ String? get formErrorKey;/// Данные полностью загружены.
+ bool get allDataIsLoaded;
 /// Create a copy of PredictorLeaderboardPageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -215,12 +222,19 @@ class _PredictorLeaderboardPageViewModel extends PredictorLeaderboardPageViewMod
   const _PredictorLeaderboardPageViewModel({this.profile = const PredictorLeaderboardProfile(), this.entries = const Loadable.loading(), this.nicknameDraft = '', this.optInAgreed = false, this.isSaving = false, this.formErrorKey, this.allDataIsLoaded = false}): super._();
   
 
+/// Мой профиль на лидерборде.
 @override@JsonKey() final  PredictorLeaderboardProfile profile;
+/// Записи лидерборда.
 @override@JsonKey() final  Loadable<List<PredictorLeaderboardEntry>> entries;
+/// Черновик никнейма.
 @override@JsonKey() final  String nicknameDraft;
+/// Согласие на opt-in.
 @override@JsonKey() final  bool optInAgreed;
+/// Идёт сохранение.
 @override@JsonKey() final  bool isSaving;
+/// Ключ ошибки формы (локализация).
 @override final  String? formErrorKey;
+/// Данные полностью загружены.
 @override@JsonKey() final  bool allDataIsLoaded;
 
 /// Create a copy of PredictorLeaderboardPageViewModel

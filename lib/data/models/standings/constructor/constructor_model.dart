@@ -1,17 +1,18 @@
 import 'package:f1_pet_project/data/exceptions/response_parse_exception.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'constructor_model.freezed.dart';
 part 'constructor_model.g.dart';
 
 /// Данные команды F1.
-@JsonSerializable()
-class ConstructorModel {
-  ConstructorModel({
-    required this.constructorId,
-    required this.url,
-    required this.nationality,
-    required this.name,
-  });
+@Freezed(fromJson: true, toJson: true)
+abstract class ConstructorModel with _$ConstructorModel {
+  const factory ConstructorModel({
+    required String constructorId,
+    @JsonKey(defaultValue: '') required String url,
+    required String name,
+    @JsonKey(defaultValue: '') required String nationality,
+  }) = _ConstructorModel;
 
   /// Парсит JSON-ответ в [ConstructorModel].
   factory ConstructorModel.fromJson(Map<String, dynamic> json) {
@@ -21,11 +22,4 @@ class ConstructorModel {
       Error.throwWithStackTrace(ResponseParseException('ConstructorModel: $e'), StackTrace.current);
     }
   }
-
-  final String constructorId;
-  @JsonKey(defaultValue: '')
-  final String url;
-  final String name;
-  @JsonKey(defaultValue: '')
-  final String nationality;
 }

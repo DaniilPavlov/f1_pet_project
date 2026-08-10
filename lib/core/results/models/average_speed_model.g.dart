@@ -6,11 +6,11 @@ part of 'average_speed_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-AverageSpeedModel _$AverageSpeedModelFromJson(Map<String, dynamic> json) =>
-    AverageSpeedModel(
+_AverageSpeedModel _$AverageSpeedModelFromJson(Map<String, dynamic> json) =>
+    _AverageSpeedModel(
       units: json['units'] as String,
       speed: json['speed'] as String,
     );
 
-Map<String, dynamic> _$AverageSpeedModelToJson(AverageSpeedModel instance) =>
+Map<String, dynamic> _$AverageSpeedModelToJson(_AverageSpeedModel instance) =>
     <String, dynamic>{'units': instance.units, 'speed': instance.speed};

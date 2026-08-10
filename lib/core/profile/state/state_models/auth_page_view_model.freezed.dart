@@ -14,7 +14,11 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AuthPageViewModel {
 
- String get email; String get password; bool get isLoading; String? get errorKey;
+/// Email пользователя.
+ String get email;/// Пароль.
+ String get password;/// Идёт аутентификация.
+ bool get isLoading;/// Ключ ошибки (локализация).
+ String? get errorKey;
 /// Create a copy of AuthPageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -212,9 +216,13 @@ class _AuthPageViewModel implements AuthPageViewModel {
   const _AuthPageViewModel({this.email = '', this.password = '', this.isLoading = false, this.errorKey});
   
 
+/// Email пользователя.
 @override@JsonKey() final  String email;
+/// Пароль.
 @override@JsonKey() final  String password;
+/// Идёт аутентификация.
 @override@JsonKey() final  bool isLoading;
+/// Ключ ошибки (локализация).
 @override final  String? errorKey;
 
 /// Create a copy of AuthPageViewModel

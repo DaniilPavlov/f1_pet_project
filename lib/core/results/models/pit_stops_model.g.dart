@@ -6,8 +6,8 @@ part of 'pit_stops_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-PitStopsModel _$PitStopsModelFromJson(Map<String, dynamic> json) =>
-    PitStopsModel(
+_PitStopsModel _$PitStopsModelFromJson(Map<String, dynamic> json) =>
+    _PitStopsModel(
       driverId: json['driverId'] as String,
       lap: json['lap'] as String,
       stop: json['stop'] as String,
@@ -15,7 +15,7 @@ PitStopsModel _$PitStopsModelFromJson(Map<String, dynamic> json) =>
       duration: json['duration'] as String,
     );
 
-Map<String, dynamic> _$PitStopsModelToJson(PitStopsModel instance) =>
+Map<String, dynamic> _$PitStopsModelToJson(_PitStopsModel instance) =>
     <String, dynamic>{
       'driverId': instance.driverId,
       'lap': instance.lap,

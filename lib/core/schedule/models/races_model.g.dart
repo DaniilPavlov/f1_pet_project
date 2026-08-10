@@ -6,7 +6,7 @@ part of 'races_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-RacesModel _$RacesModelFromJson(Map<String, dynamic> json) => RacesModel(
+_RacesModel _$RacesModelFromJson(Map<String, dynamic> json) => _RacesModel(
   season: json['season'] as String,
   round: json['round'] as String,
   url: json['url'] as String,
@@ -26,10 +26,18 @@ RacesModel _$RacesModelFromJson(Map<String, dynamic> json) => RacesModel(
   qualifying: json['Qualifying'] == null
       ? null
       : RaceDateModel.fromJson(json['Qualifying'] as Map<String, dynamic>),
+  sprintQualifying: json['SprintQualifying'] == null
+      ? null
+      : RaceDateModel.fromJson(
+          json['SprintQualifying'] as Map<String, dynamic>,
+        ),
   sprint: json['Sprint'] == null
       ? null
       : RaceDateModel.fromJson(json['Sprint'] as Map<String, dynamic>),
   results: (json['Results'] as List<dynamic>?)
+      ?.map((e) => ResultsModel.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  sprintResults: (json['SprintResults'] as List<dynamic>?)
       ?.map((e) => ResultsModel.fromJson(e as Map<String, dynamic>))
       .toList(),
   qualifyingResults: (json['QualifyingResults'] as List<dynamic>?)
@@ -38,17 +46,9 @@ RacesModel _$RacesModelFromJson(Map<String, dynamic> json) => RacesModel(
   pitStops: (json['PitStops'] as List<dynamic>?)
       ?.map((e) => PitStopsModel.fromJson(e as Map<String, dynamic>))
       .toList(),
-  sprintQualifying: json['SprintQualifying'] == null
-      ? null
-      : RaceDateModel.fromJson(
-          json['SprintQualifying'] as Map<String, dynamic>,
-        ),
-  sprintResults: (json['SprintResults'] as List<dynamic>?)
-      ?.map((e) => ResultsModel.fromJson(e as Map<String, dynamic>))
-      .toList(),
 );
 
-Map<String, dynamic> _$RacesModelToJson(RacesModel instance) =>
+Map<String, dynamic> _$RacesModelToJson(_RacesModel instance) =>
     <String, dynamic>{
       'season': instance.season,
       'round': instance.round,

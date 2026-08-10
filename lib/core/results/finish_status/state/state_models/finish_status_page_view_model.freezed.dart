@@ -14,6 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$FinishStatusPageViewModel {
 
+/// Статусы финиша (loading/value/error).
  Loadable<List<FinishStatusItem>> get statuses;
 /// Create a copy of FinishStatusPageViewModel
 /// with the given fields replaced by the non-null parameter values.
@@ -209,6 +210,7 @@ class _FinishStatusPageViewModel extends FinishStatusPageViewModel {
   const _FinishStatusPageViewModel({this.statuses = const Loadable.loading()}): super._();
   
 
+/// Статусы финиша (loading/value/error).
 @override@JsonKey() final  Loadable<List<FinishStatusItem>> statuses;
 
 /// Create a copy of FinishStatusPageViewModel

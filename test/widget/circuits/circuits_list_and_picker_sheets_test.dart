@@ -5,9 +5,9 @@ import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart
 import 'package:f1_pet_project/common/widgets/text_fields/race_picker_bottom_sheet.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/race_picker_field.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/season_picker_bottom_sheet.dart';
-import 'package:f1_pet_project/core/circuits/view/widgets/circuits_list.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_location_model.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
+import 'package:f1_pet_project/core/circuits/view/widgets/circuits_list.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
 import 'package:f1_pet_project/core/results/race_search/components/search_fields_section.dart';
 import 'package:f1_pet_project/core/results/race_search/components/search_result_section.dart';

@@ -6,15 +6,15 @@ part of 'constructor_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ConstructorModel _$ConstructorModelFromJson(Map<String, dynamic> json) =>
-    ConstructorModel(
+_ConstructorModel _$ConstructorModelFromJson(Map<String, dynamic> json) =>
+    _ConstructorModel(
       constructorId: json['constructorId'] as String,
       url: json['url'] as String? ?? '',
-      nationality: json['nationality'] as String? ?? '',
       name: json['name'] as String,
+      nationality: json['nationality'] as String? ?? '',
     );
 
-Map<String, dynamic> _$ConstructorModelToJson(ConstructorModel instance) =>
+Map<String, dynamic> _$ConstructorModelToJson(_ConstructorModel instance) =>
     <String, dynamic>{
       'constructorId': instance.constructorId,
       'url': instance.url,

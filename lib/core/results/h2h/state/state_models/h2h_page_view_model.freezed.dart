@@ -14,10 +14,18 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$H2hPageViewModel {
 
+/// Режим сравнения (пилоты / команды).
  H2hMode get mode;/// 0 — карьера, 1 — сезон.
  int get scopeMode;/// В режиме сезона: true — актуальный год, false — выбор года.
  bool get useCurrentSeason;/// true — только current entities, false — полный каталог.
- bool get currentEntitiesOnly; String get latestSeason; bool get seasonSelected; DriverModel? get driverA; DriverModel? get driverB; ConstructorModel? get constructorA; ConstructorModel? get constructorB; Loadable<H2hCompareResult?> get comparison;
+ bool get currentEntitiesOnly;/// Актуальный / выбранный сезон.
+ String get latestSeason;/// Сезон выбран в пикере.
+ bool get seasonSelected;/// Первый пилот для сравнения.
+ DriverModel? get driverA;/// Второй пилот для сравнения.
+ DriverModel? get driverB;/// Первая команда для сравнения.
+ ConstructorModel? get constructorA;/// Вторая команда для сравнения.
+ ConstructorModel? get constructorB;/// Результат сравнения.
+ Loadable<H2hCompareResult?> get comparison;
 /// Create a copy of H2hPageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -52,7 +60,7 @@ $Res call({
 });
 
 
-
+$DriverModelCopyWith<$Res>? get driverA;$DriverModelCopyWith<$Res>? get driverB;$ConstructorModelCopyWith<$Res>? get constructorA;$ConstructorModelCopyWith<$Res>? get constructorB;
 
 }
 /// @nodoc
@@ -81,7 +89,55 @@ as ConstructorModel?,comparison: null == comparison ? _self.comparison : compari
 as Loadable<H2hCompareResult?>,
   ));
 }
+/// Create a copy of H2hPageViewModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DriverModelCopyWith<$Res>? get driverA {
+    if (_self.driverA == null) {
+    return null;
+  }
 
+  return $DriverModelCopyWith<$Res>(_self.driverA!, (value) {
+    return _then(_self.copyWith(driverA: value));
+  });
+}/// Create a copy of H2hPageViewModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DriverModelCopyWith<$Res>? get driverB {
+    if (_self.driverB == null) {
+    return null;
+  }
+
+  return $DriverModelCopyWith<$Res>(_self.driverB!, (value) {
+    return _then(_self.copyWith(driverB: value));
+  });
+}/// Create a copy of H2hPageViewModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConstructorModelCopyWith<$Res>? get constructorA {
+    if (_self.constructorA == null) {
+    return null;
+  }
+
+  return $ConstructorModelCopyWith<$Res>(_self.constructorA!, (value) {
+    return _then(_self.copyWith(constructorA: value));
+  });
+}/// Create a copy of H2hPageViewModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConstructorModelCopyWith<$Res>? get constructorB {
+    if (_self.constructorB == null) {
+    return null;
+  }
+
+  return $ConstructorModelCopyWith<$Res>(_self.constructorB!, (value) {
+    return _then(_self.copyWith(constructorB: value));
+  });
+}
 }
 
 
@@ -222,6 +278,7 @@ class _H2hPageViewModel extends H2hPageViewModel {
   const _H2hPageViewModel({this.mode = H2hMode.drivers, this.scopeMode = 0, this.useCurrentSeason = true, this.currentEntitiesOnly = true, this.latestSeason = '', this.seasonSelected = false, this.driverA, this.driverB, this.constructorA, this.constructorB, this.comparison = const Loadable.value()}): super._();
   
 
+/// Режим сравнения (пилоты / команды).
 @override@JsonKey() final  H2hMode mode;
 /// 0 — карьера, 1 — сезон.
 @override@JsonKey() final  int scopeMode;
@@ -229,12 +286,19 @@ class _H2hPageViewModel extends H2hPageViewModel {
 @override@JsonKey() final  bool useCurrentSeason;
 /// true — только current entities, false — полный каталог.
 @override@JsonKey() final  bool currentEntitiesOnly;
+/// Актуальный / выбранный сезон.
 @override@JsonKey() final  String latestSeason;
+/// Сезон выбран в пикере.
 @override@JsonKey() final  bool seasonSelected;
+/// Первый пилот для сравнения.
 @override final  DriverModel? driverA;
+/// Второй пилот для сравнения.
 @override final  DriverModel? driverB;
+/// Первая команда для сравнения.
 @override final  ConstructorModel? constructorA;
+/// Вторая команда для сравнения.
 @override final  ConstructorModel? constructorB;
+/// Результат сравнения.
 @override@JsonKey() final  Loadable<H2hCompareResult?> comparison;
 
 /// Create a copy of H2hPageViewModel
@@ -271,7 +335,7 @@ $Res call({
 });
 
 
-
+@override $DriverModelCopyWith<$Res>? get driverA;@override $DriverModelCopyWith<$Res>? get driverB;@override $ConstructorModelCopyWith<$Res>? get constructorA;@override $ConstructorModelCopyWith<$Res>? get constructorB;
 
 }
 /// @nodoc
@@ -301,7 +365,55 @@ as Loadable<H2hCompareResult?>,
   ));
 }
 
+/// Create a copy of H2hPageViewModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DriverModelCopyWith<$Res>? get driverA {
+    if (_self.driverA == null) {
+    return null;
+  }
 
+  return $DriverModelCopyWith<$Res>(_self.driverA!, (value) {
+    return _then(_self.copyWith(driverA: value));
+  });
+}/// Create a copy of H2hPageViewModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$DriverModelCopyWith<$Res>? get driverB {
+    if (_self.driverB == null) {
+    return null;
+  }
+
+  return $DriverModelCopyWith<$Res>(_self.driverB!, (value) {
+    return _then(_self.copyWith(driverB: value));
+  });
+}/// Create a copy of H2hPageViewModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConstructorModelCopyWith<$Res>? get constructorA {
+    if (_self.constructorA == null) {
+    return null;
+  }
+
+  return $ConstructorModelCopyWith<$Res>(_self.constructorA!, (value) {
+    return _then(_self.copyWith(constructorA: value));
+  });
+}/// Create a copy of H2hPageViewModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConstructorModelCopyWith<$Res>? get constructorB {
+    if (_self.constructorB == null) {
+    return null;
+  }
+
+  return $ConstructorModelCopyWith<$Res>(_self.constructorB!, (value) {
+    return _then(_self.copyWith(constructorB: value));
+  });
+}
 }
 
 // dart format on

@@ -14,7 +14,12 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PredictorWeekendDetailPageViewModel {
 
- Loadable<PredictorSessionCompare> get qualifyingCompare; Loadable<PredictorSessionCompare> get raceCompare; Map<String, DriverModel> get driversById; PredictorDetailSession get selectedSession; bool get allDataIsLoaded;
+/// Сравнение предикта квалификации с фактом.
+ Loadable<PredictorSessionCompare> get qualifyingCompare;/// Сравнение предикта гонки с фактом.
+ Loadable<PredictorSessionCompare> get raceCompare;/// Пилоты по ID (для подписей).
+ Map<String, DriverModel> get driversById;/// Выбранная сессия для отображения.
+ PredictorDetailSession get selectedSession;/// Все данные загружены.
+ bool get allDataIsLoaded;
 /// Create a copy of PredictorWeekendDetailPageViewModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -213,16 +218,22 @@ class _PredictorWeekendDetailPageViewModel extends PredictorWeekendDetailPageVie
   const _PredictorWeekendDetailPageViewModel({this.qualifyingCompare = const Loadable.loading(), this.raceCompare = const Loadable.loading(), final  Map<String, DriverModel> driversById = const <String, DriverModel>{}, this.selectedSession = PredictorDetailSession.qualifying, this.allDataIsLoaded = false}): _driversById = driversById,super._();
   
 
+/// Сравнение предикта квалификации с фактом.
 @override@JsonKey() final  Loadable<PredictorSessionCompare> qualifyingCompare;
+/// Сравнение предикта гонки с фактом.
 @override@JsonKey() final  Loadable<PredictorSessionCompare> raceCompare;
+/// Пилоты по ID (для подписей).
  final  Map<String, DriverModel> _driversById;
+/// Пилоты по ID (для подписей).
 @override@JsonKey() Map<String, DriverModel> get driversById {
   if (_driversById is EqualUnmodifiableMapView) return _driversById;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_driversById);
 }
 
+/// Выбранная сессия для отображения.
 @override@JsonKey() final  PredictorDetailSession selectedSession;
+/// Все данные загружены.
 @override@JsonKey() final  bool allDataIsLoaded;
 
 /// Create a copy of PredictorWeekendDetailPageViewModel

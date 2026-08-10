@@ -1,4 +1,3 @@
-import 'package:f1_pet_project/common/utils/helpers/loadable.dart';
 import 'package:f1_pet_project/core/results/managers/results_page_manager.dart';
 import 'package:f1_pet_project/core/results/providers.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
@@ -35,9 +34,7 @@ void main() {
 
     group('loadLastRaceResults', () {
       test('sets value on success', () async {
-        final container = createContainer(
-          fetchLastRaceResultsForTest: () async => ControllerFixtures.scheduleModel,
-        );
+        final container = createContainer(fetchLastRaceResultsForTest: () async => ControllerFixtures.scheduleModel);
         final manager = container.read(resultsPageManagerProvider);
 
         await manager.loadLastRaceResults();
@@ -61,9 +58,7 @@ void main() {
 
     group('loadAllData', () {
       test('loads last race', () async {
-        final container = createContainer(
-          fetchLastRaceResultsForTest: () async => ControllerFixtures.scheduleModel,
-        );
+        final container = createContainer(fetchLastRaceResultsForTest: () async => ControllerFixtures.scheduleModel);
         final manager = container.read(resultsPageManagerProvider);
 
         await manager.loadAllData();

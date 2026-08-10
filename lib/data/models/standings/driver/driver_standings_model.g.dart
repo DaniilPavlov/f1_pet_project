@@ -6,23 +6,23 @@ part of 'driver_standings_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-DriverStandingsModel _$DriverStandingsModelFromJson(
+_DriverStandingsModel _$DriverStandingsModelFromJson(
   Map<String, dynamic> json,
-) => DriverStandingsModel(
+) => _DriverStandingsModel(
+  position: json['position'] as String? ?? '',
+  positionText: json['positionText'] as String? ?? '',
+  points: json['points'] as String? ?? '0',
+  wins: json['wins'] as String? ?? '0',
+  driver: DriverModel.fromJson(json['Driver'] as Map<String, dynamic>),
   constructors:
       (json['Constructors'] as List<dynamic>?)
           ?.map((e) => ConstructorModel.fromJson(e as Map<String, dynamic>))
           .toList() ??
       [],
-  driver: DriverModel.fromJson(json['Driver'] as Map<String, dynamic>),
-  points: json['points'] as String? ?? '0',
-  wins: json['wins'] as String? ?? '0',
-  positionText: json['positionText'] as String? ?? '',
-  position: json['position'] as String? ?? '',
 );
 
 Map<String, dynamic> _$DriverStandingsModelToJson(
-  DriverStandingsModel instance,
+  _DriverStandingsModel instance,
 ) => <String, dynamic>{
   'position': instance.position,
   'positionText': instance.positionText,
