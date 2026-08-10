@@ -9,7 +9,7 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/theme/theme_controller.dart';
 import 'package:f1_pet_project/common/widgets/buttons/circle_button.dart';
-import 'package:f1_pet_project/core/profile/controllers/notifications_preference_controller/notifications_preference_controller.dart';
+import 'package:f1_pet_project/core/profile/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -127,7 +127,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                             return;
                           }
                           unawaited(
-                            ref.read(notificationsPreferenceControllerProvider.notifier).resync(
+                            ref.read(notificationsPreferenceManagerProvider).resync(
                               locale: ref.read(localeControllerProvider).locale,
                             ),
                           );

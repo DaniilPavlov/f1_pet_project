@@ -1,0 +1,168 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/utils/constants/static_data.dart';
+import 'package:f1_pet_project/common/utils/helpers/share_helper.dart';
+import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
+import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/utils/utils.dart';
+import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/career/career_list_tile.dart';
+import 'package:f1_pet_project/common/widgets/career/network_hero_photo.dart';
+import 'package:f1_pet_project/common/widgets/circuits/circuit_layout_image.dart';
+import 'package:f1_pet_project/common/widgets/circuits/circuit_stats_grid.dart';
+import 'package:f1_pet_project/common/widgets/country_flag.dart';
+import 'package:f1_pet_project/common/widgets/error_body.dart';
+import 'package:f1_pet_project/common/widgets/shimmer/circuit_screen_shimmer.dart';
+import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
+import 'package:f1_pet_project/core/circuits/providers.dart';
+import 'package:f1_pet_project/core/circuits/stats/circuit_layout_assets.dart';
+import 'package:f1_pet_project/router/app_router.gr.dart';
+import 'package:f1_pet_project/services/analytics/analytics_event.dart';
+import 'package:f1_pet_project/services/deeplinks/f1pet_deep_links.dart';
+import 'package:f1_pet_project/services/di/app_providers.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+/// Экран трассы: схема, stats, информация и история побед.
+@RoutePage()
+class CircuitScreen extends ConsumerStatefulWidget {
+  const CircuitScreen({required this.circuitModel, super.key});
+
+  final CircuitModel circuitModel;
+
+  @override
+  ConsumerState<CircuitScreen> createState() => _CircuitScreenState();
+}
+
+class _CircuitScreenState extends ConsumerState<CircuitScreen> {
+  var _analyticsLogged = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      if (!_analyticsLogged) {
+        _analyticsLogged = true;
+        ref.read(analyticsGatewayProvider).log(
+              CircuitOpened(
+                circuitId: widget.circuitModel.circuitId,
+                circuitName: widget.circuitModel.circuitName,
+              ),
+            );
+      }
+      ref.read(circuitPageManagerProvider(widget.circuitModel)).loadAll();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final circuitModel = widget.circuitModel;
+    final viewModel = ref.watch(circuitPageStateHolderProvider(circuitModel));
+    final manager = ref.watch(circuitPageManagerProvider(circuitModel));
+
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: context.l10n.circuitInfoTitle,
+        showPreferences: false,
+        onPop: () => context.router.maybePop(),
+        onShare: () => ShareHelper.shareDeepLink(
+          context: context,
+          deepLink: F1PetDeepLinks.circuit(circuitModel.circuitId),
+          contentType: 'circuit',
+        ),
+      ),
+      body: SafeArea(
+        child: Builder(
+          builder: (context) {
+            final error = viewModel.screenError;
+            if (error != null) {
+              return ErrorBody(onTap: manager.refreshAll, title: error.title, subtitle: error.subtitle);
+            }
+            if (!viewModel.isLoaded) {
+              return const CircuitScreenShimmer();
+            }
+
+            final wins = viewModel.winners.value!;
+            final hasLayout = CircuitLayoutAssets.hasLayout(circuitModel.circuitId);
+            final stats = viewModel.circuitStats;
+
+            return RefreshIndicator(
+              color: AppTheme.red,
+              onRefresh: manager.refreshAll,
+              child: CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                scrollBehavior: AntiGlowBehavior(),
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: StaticData.defaultHorizontalPadding,
+                        vertical: StaticData.defaultVerticalPadding,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (hasLayout)
+                            CircuitLayoutImage(circuitId: circuitModel.circuitId, height: 220)
+                          else
+                            NetworkHeroPhoto(
+                              photoUrl: viewModel.circuitPhotoUrl,
+                              isLoading: viewModel.isPhotoLoading,
+                              placeholderIcon: Icons.map_outlined,
+                              fit: BoxFit.contain,
+                            ),
+                          const SizedBox(height: 16),
+                          Text(circuitModel.circuitName, style: AppStyles.h1),
+                          if (stats != null) ...[
+                            const SizedBox(height: 16),
+                            CircuitStatsGrid(stats: stats),
+                          ],
+                          const SizedBox(height: 16),
+                          if (circuitModel.url.isNotEmpty)
+                            GestureDetector(
+                              onTap: () => Utils.openUrl(rawUrl: circuitModel.url, externalApplication: true),
+                              child: Text(
+                                context.l10n.readOnWikipedia,
+                                style: AppStyles.body.copyWith(decoration: TextDecoration.underline),
+                              ),
+                            ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Text('${context.l10n.country}: ', style: AppStyles.h3),
+                              CountryFlag(
+                                countryOrNationality: circuitModel.location.country,
+                                fontSize: 28,
+                                fallbackStyle: AppStyles.h3,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Text(context.l10n.cityLabel(circuitModel.location.locality), style: AppStyles.h3),
+                          const SizedBox(height: 28),
+                          Text(context.l10n.circuitWinnersTitle, style: AppStyles.h2),
+                          const SizedBox(height: 12),
+                          if (wins.isEmpty)
+                            Text(context.l10n.circuitWinnersEmpty, style: AppStyles.body)
+                          else
+                            ...wins.map(
+                              (win) => CareerListTile(
+                                title: '${win.season} · ${win.raceName}',
+                                subtitle: '${win.driverFullName} · ${win.constructor.name}',
+                                onTap: () => context.router.push(DriverRoute(driver: win.driver)),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}

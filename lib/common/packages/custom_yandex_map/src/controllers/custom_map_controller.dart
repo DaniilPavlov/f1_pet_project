@@ -123,15 +123,20 @@ class CustomMapController extends Notifier<CustomMapState> {
 
   /// Загружает иконки и отображает начальные метки на карте.
   Future<void> init() async {
-    if (mapObjectIcon != null) {
-      mapIcon ??= BitmapDescriptor.fromAssetImage(mapObjectIcon!);
-    }
-    if (selectedMapObjectIcon != null) {
-      selectedMapIcon ??= BitmapDescriptor.fromAssetImage(selectedMapObjectIcon!);
-    }
-
+    _ensureIconsLoaded();
     await _updateClusterMapObject(points);
     unawaited(setCenterOn(points));
+  }
+
+  void _ensureIconsLoaded() {
+    final icon = mapObjectIcon;
+    if (icon != null) {
+      mapIcon ??= BitmapDescriptor.fromAssetImage(icon);
+    }
+    final selectedIcon = selectedMapObjectIcon;
+    if (selectedIcon != null) {
+      selectedMapIcon ??= BitmapDescriptor.fromAssetImage(selectedIcon);
+    }
   }
 
   /// Центрирует камеру по ограничивающей рамке точек.
@@ -148,17 +153,23 @@ class CustomMapController extends Notifier<CustomMapState> {
   }
 
   Future<void> _updateClusterMapObject(List<Point> mapPoints, [int? indexOfPressedItem]) async {
+    // didUpdateWidget может вызвать updatePoints до завершения init().
+    _ensureIconsLoaded();
+
+    final placemarkImage = mapIcon;
+    final selectedPlacemarkImage = selectedMapIcon;
+
     final placemarkCollection = await ClusterDrawer.getCluster(
       clusterMapId: clusterMapId,
       points: mapPoints,
       clusterTextStyle: clusterTextStyle,
       selectedPointIndex: indexOfPressedItem,
-      placemarkIcon: mapObjectIcon != null
-          ? PlacemarkIcon.single(PlacemarkIconStyle(scale: placemarkIconSize ?? 0.5, image: mapIcon!))
+      placemarkIcon: placemarkImage != null
+          ? PlacemarkIcon.single(PlacemarkIconStyle(scale: placemarkIconSize ?? 0.5, image: placemarkImage))
           : null,
-      selectedPlacemarkIcon: selectedMapObjectIcon != null
+      selectedPlacemarkIcon: selectedPlacemarkImage != null
           ? PlacemarkIcon.single(
-              PlacemarkIconStyle(scale: selectedPlacemarkIconSize ?? 0.5, image: selectedMapIcon!),
+              PlacemarkIconStyle(scale: selectedPlacemarkIconSize ?? 0.5, image: selectedPlacemarkImage),
             )
           : null,
       clusterColor: clusterColor,

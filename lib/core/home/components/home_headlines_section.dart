@@ -6,12 +6,12 @@ import 'package:f1_pet_project/common/widgets/shimmer/screen_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/shimmer_loading_widget.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/shimmer_skeleton.dart';
 import 'package:f1_pet_project/core/news/components/news_article_tile.dart';
-import 'package:f1_pet_project/core/news/controllers/news_screen_controller/news_screen_controller.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
+import 'package:f1_pet_project/core/news/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Лента ESPN-новостей на Home (клиентская пагинация через [NewsScreenController]).
+/// Лента ESPN-новостей на Home (клиентская пагинация через [NewsPageManager]).
 ///
 /// Без вложенного [ListView]: секция живёт внутри [CustomScrollView] Home.
 class HomeHeadlinesSection extends ConsumerWidget {
@@ -22,7 +22,7 @@ class HomeHeadlinesSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final news = ref.watch(newsScreenControllerProvider);
+    final news = ref.watch(newsPageStateHolderProvider);
     final articles = news.articles.value;
     final locale = Localizations.localeOf(context);
 

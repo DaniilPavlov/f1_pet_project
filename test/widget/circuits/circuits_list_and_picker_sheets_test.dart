@@ -5,13 +5,14 @@ import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart
 import 'package:f1_pet_project/common/widgets/text_fields/race_picker_bottom_sheet.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/race_picker_field.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/season_picker_bottom_sheet.dart';
-import 'package:f1_pet_project/core/circuits/components/circuits_list.dart';
+import 'package:f1_pet_project/core/circuits/view/widgets/circuits_list.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_location_model.dart';
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
 import 'package:f1_pet_project/core/results/race_search/components/search_fields_section.dart';
 import 'package:f1_pet_project/core/results/race_search/components/search_result_section.dart';
-import 'package:f1_pet_project/core/results/race_search/controllers/race_search_screen_controller/race_search_screen_controller.dart';
+import 'package:f1_pet_project/core/results/race_search/managers/race_search_page_manager.dart';
+import 'package:f1_pet_project/core/results/race_search/providers.dart';
 import 'package:f1_pet_project/core/schedule/models/race_table_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
@@ -238,20 +239,23 @@ void main() {
       const languageCode = 'en';
       final container = createNotifierContainer(
         overrides: [
-          raceSearchScreenControllerProvider(languageCode).overrideWith(
-            () => RaceSearchScreenController(
-              languageCode,
+          raceSearchPageManagerProvider(languageCode).overrideWith((ref) {
+            final manager = RaceSearchPageManager(
+              languageCode: languageCode,
+              holder: ref.watch(raceSearchPageStateHolderProvider(languageCode).notifier),
               fetchRaceResultsForTest: ({required year, required round}) async => ControllerFixtures.emptyScheduleModel,
-              analyticsForTest: const NoOpAnalyticsGateway(),
-            ),
-          ),
+              analytics: const NoOpAnalyticsGateway(),
+            );
+            ref.onDispose(manager.dispose);
+            return manager;
+          }),
         ],
-      )..listen(raceSearchScreenControllerProvider(languageCode), (_, _) {});
-      final controller = container.read(raceSearchScreenControllerProvider(languageCode).notifier);
-      controller.yearController.text = '2024';
-      controller.onSeasonSelected();
-      controller.roundController.text = '1';
-      await controller.loadRaceResults();
+      );
+      final manager = container.read(raceSearchPageManagerProvider(languageCode));
+      manager.yearController.text = '2024';
+      manager.onSeasonSelected();
+      manager.roundController.text = '1';
+      await manager.loadRaceResults();
 
       await tester.pumpApp(
         UncontrolledProviderScope(
@@ -294,21 +298,24 @@ void main() {
 
       final container = createNotifierContainer(
         overrides: [
-          raceSearchScreenControllerProvider(languageCode).overrideWith(
-            () => RaceSearchScreenController(
-              languageCode,
+          raceSearchPageManagerProvider(languageCode).overrideWith((ref) {
+            final manager = RaceSearchPageManager(
+              languageCode: languageCode,
+              holder: ref.watch(raceSearchPageStateHolderProvider(languageCode).notifier),
               fetchRaceResultsForTest: ({required year, required round}) async => ScheduleModel(
                 raceTable: RaceTableModel(season: '2024', round: '5', races: [race]),
               ),
-              analyticsForTest: const NoOpAnalyticsGateway(),
-            ),
-          ),
+              analytics: const NoOpAnalyticsGateway(),
+            );
+            ref.onDispose(manager.dispose);
+            return manager;
+          }),
         ],
-      )..listen(raceSearchScreenControllerProvider(languageCode), (_, _) {});
-      final controller = container.read(raceSearchScreenControllerProvider(languageCode).notifier);
-      controller.yearController.text = '2024';
-      controller.roundController.text = '5';
-      await controller.loadRaceResults();
+      );
+      final manager = container.read(raceSearchPageManagerProvider(languageCode));
+      manager.yearController.text = '2024';
+      manager.roundController.text = '5';
+      await manager.loadRaceResults();
       // Clear animateToBottom delay scheduled by loadRaceResults.
       await tester.pump(const Duration(milliseconds: 150));
 

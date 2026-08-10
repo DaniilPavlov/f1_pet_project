@@ -4,7 +4,8 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/widgets/custom_switcher.dart';
 import 'package:f1_pet_project/common/widgets/tables/tournament_constructors_table.dart';
 import 'package:f1_pet_project/common/widgets/tables/tournament_drivers_table.dart';
-import 'package:f1_pet_project/core/home/controllers/tournament_tables_section_controller/tournament_tables_section_controller.dart';
+import 'package:f1_pet_project/core/home/providers.dart';
+import 'package:f1_pet_project/core/home/state/state_holders/tournament_tables_section_state_holder.dart';
 import 'package:f1_pet_project/data/models/standings/constructor/constructor_standings_model.dart';
 import 'package:f1_pet_project/data/models/standings/driver/driver_standings_model.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,7 @@ class TournamentTablesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
       overrides: [
-        tournamentTablesSectionControllerProvider.overrideWith(TournamentTablesSectionController.new),
+        tournamentTablesSectionStateHolderProvider.overrideWith(TournamentTablesSectionStateHolder.new),
       ],
       child: _TournamentTablesSectionView(
         driversStandings: driversStandings,
@@ -68,8 +69,8 @@ class _TournamentTablesSectionView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(tournamentTablesSectionControllerProvider);
-    final controller = ref.read(tournamentTablesSectionControllerProvider.notifier);
+    final viewModel = ref.watch(tournamentTablesSectionStateHolderProvider);
+    final manager = ref.watch(tournamentTablesSectionManagerProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,10 +102,10 @@ class _TournamentTablesSectionView extends ConsumerWidget {
         CustomSwitcher(
           firstTitle: context.l10n.drivers,
           secondTitle: context.l10n.constructors,
-          onChanged: controller.changeActiveTable,
-          activeValue: state.activeTable,
+          onChanged: manager.changeActiveTable,
+          activeValue: viewModel.activeTable,
         ),
-        if (state.activeTable == 0)
+        if (viewModel.activeTable == 0)
           TournamentDriversTable(
             drivers: driversStandings,
             passCurrentRoster: passCurrentRoster,

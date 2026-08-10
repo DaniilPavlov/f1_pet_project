@@ -1,5 +1,5 @@
-import 'package:f1_pet_project/core/predictor/controllers/predictor_screen_controller/predictor_screen_controller.dart';
 import 'package:f1_pet_project/core/predictor/services/predictor_lock.dart';
+import 'package:f1_pet_project/core/predictor/services/predictor_order.dart';
 import 'package:f1_pet_project/core/predictor/services/predictor_score_service.dart';
 import 'package:f1_pet_project/core/schedule/models/race_date_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';

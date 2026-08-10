@@ -3,7 +3,7 @@ import 'package:f1_pet_project/core/results/race_info/components/pit_stops_table
 import 'package:f1_pet_project/core/results/race_info/components/qualification_table_appbar.dart';
 import 'package:f1_pet_project/core/results/race_info/components/race_info_scroll_body.dart';
 import 'package:f1_pet_project/core/results/race_info/components/race_info_table_appbar.dart';
-import 'package:f1_pet_project/core/results/race_info/controllers/race_info_screen_controller/race_info_screen_controller.dart';
+import 'package:f1_pet_project/core/results/race_info/state/state_models/race_info_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -25,7 +25,7 @@ void main() {
       await tester.pumpApp(
         RaceInfoScrollBody(
           raceModel: race,
-          state: RaceInfoState(
+          viewModel: RaceInfoPageViewModel(
             allDataIsLoaded: true,
             sprintResults: const Loadable.value(value: []),
             qualifyingResults: Loadable.value(value: race.qualifyingResults ?? []),
@@ -48,7 +48,7 @@ void main() {
       await tester.pumpApp(
         RaceInfoScrollBody(
           raceModel: race,
-          state: RaceInfoState(
+          viewModel: RaceInfoPageViewModel(
             allDataIsLoaded: true,
             sprintResults: Loadable.value(value: race.results ?? []),
             qualifyingResults: Loadable.value(value: race.qualifyingResults ?? []),

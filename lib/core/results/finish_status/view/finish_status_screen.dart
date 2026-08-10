@@ -1,0 +1,154 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
+import 'package:f1_pet_project/common/utils/constants/static_data.dart';
+import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
+import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
+import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
+import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/error_body.dart';
+import 'package:f1_pet_project/common/widgets/shimmer/list_rows_shimmer.dart';
+import 'package:f1_pet_project/common/widgets/text_fields/season_picker_field.dart';
+import 'package:f1_pet_project/core/results/finish_status/models/finish_status_item.dart';
+import 'package:f1_pet_project/core/results/finish_status/providers.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+/// Статусы финиша сезона (Finished / Retired / DSQ / +N laps и т.д.).
+@RoutePage()
+class FinishStatusScreen extends ConsumerStatefulWidget {
+  const FinishStatusScreen({super.key});
+
+  @override
+  ConsumerState<FinishStatusScreen> createState() => _FinishStatusScreenState();
+}
+
+class _FinishStatusScreenState extends ConsumerState<FinishStatusScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(finishStatusPageManagerProvider).bootstrap());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = ref.watch(finishStatusPageStateHolderProvider);
+    final manager = ref.watch(finishStatusPageManagerProvider);
+
+    return Scaffold(
+      appBar: CustomAppBar(title: context.l10n.finishStatusTitle, onPop: () => context.router.maybePop()),
+      body: SafeArea(
+        child: RefreshIndicator(
+          color: AppTheme.red,
+          onRefresh: manager.refreshAll,
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            scrollBehavior: AntiGlowBehavior(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    StaticData.defaultHorizontalPadding,
+                    StaticData.defaultVerticalPadding,
+                    StaticData.defaultHorizontalPadding,
+                    StaticData.defaultVerticalPadding,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(context.l10n.finishStatusSubtitle, style: AppStyles.body),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: MediaQuery.sizeOf(context).width * 0.5,
+                        child: SeasonPickerField(
+                          controller: manager.yearController,
+                          onChanged: manager.loadAllData,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      if (viewModel.statuses.isLoading)
+                        const ListRowsShimmer(
+                          rowCount: 8,
+                          padding: EdgeInsets.zero,
+                          rowHeight: 20,
+                          rowRadius: 4,
+                          rowGap: 20,
+                        )
+                      else if (viewModel.statuses.isError)
+                        ErrorBody(
+                          onTap: manager.refreshAll,
+                          title: viewModel.screenError!.title,
+                          subtitle: viewModel.screenError!.subtitle,
+                        )
+                      else
+                        _StatusList(items: viewModel.statuses.value ?? const []),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StatusList extends StatelessWidget {
+  const _StatusList({required this.items});
+
+  final List<FinishStatusItem> items;
+
+  @override
+  Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Text(context.l10n.finishStatusEmpty, style: AppStyles.body),
+      );
+    }
+
+    final total = items.fold<int>(0, (sum, item) => sum + item.count);
+
+    return Column(
+      children: [
+        for (final item in items) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    item.status,
+                    style: AppStyles.body.copyWith(
+                      fontWeight: item.isHighlight ? FontWeight.w600 : FontWeight.w400,
+                      color: item.isHighlight ? AppTheme.red : context.colors.black,
+                    ),
+                  ),
+                ),
+                Text(
+                  '${item.count}',
+                  style: AppStyles.h3.copyWith(
+                    color: item.isHighlight ? AppTheme.red : context.colors.black,
+                  ),
+                ),
+                if (total > 0) ...[
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 48,
+                    child: Text(
+                      '${((item.count / total) * 100).round()}%',
+                      textAlign: TextAlign.right,
+                      style: AppStyles.caption.copyWith(color: context.colors.textGray),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          Divider(height: 1, color: context.colors.strokeGray),
+        ],
+      ],
+    );
+  }
+}

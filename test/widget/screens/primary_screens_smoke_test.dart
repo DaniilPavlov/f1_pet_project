@@ -1,10 +1,10 @@
 import 'package:f1_pet_project/common/models/espn/espn_scoreboard_models.dart';
-import 'package:f1_pet_project/core/circuits/screens/circuit_screen.dart';
-import 'package:f1_pet_project/core/home/screens/home_screen.dart';
-import 'package:f1_pet_project/core/results/constructor/screens/constructor_screen.dart';
-import 'package:f1_pet_project/core/results/driver/screens/driver_screen.dart';
-import 'package:f1_pet_project/core/results/screens/results_screen.dart';
-import 'package:f1_pet_project/core/schedule/screens/schedule_screen.dart';
+import 'package:f1_pet_project/core/circuits/view/circuit_screen.dart';
+import 'package:f1_pet_project/core/home/view/home_screen.dart';
+import 'package:f1_pet_project/core/results/constructor/view/constructor_screen.dart';
+import 'package:f1_pet_project/core/results/driver/view/driver_screen.dart';
+import 'package:f1_pet_project/core/results/view/results_screen.dart';
+import 'package:f1_pet_project/core/schedule/view/schedule_screen.dart';
 import 'package:f1_pet_project/l10n/app_localizations_en.dart';
 import 'package:f1_pet_project/services/live_weekend/live_weekend_controller.dart';
 import 'package:flutter/material.dart';

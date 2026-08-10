@@ -6,10 +6,11 @@ import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/custom_context_menu_builder.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart';
-import 'package:f1_pet_project/core/circuits/components/circuits_map_bottom_sheet.dart';
+import 'package:f1_pet_project/core/circuits/view/widgets/circuits_map_bottom_sheet.dart';
 import 'package:f1_pet_project/core/results/components/weekend_session_results_sheet.dart';
 import 'package:f1_pet_project/core/results/race_search/components/search_button_section.dart';
-import 'package:f1_pet_project/core/results/race_search/controllers/race_search_screen_controller/race_search_screen_controller.dart';
+import 'package:f1_pet_project/core/results/race_search/managers/race_search_page_manager.dart';
+import 'package:f1_pet_project/core/results/race_search/providers.dart';
 import 'package:f1_pet_project/core/schedule/models/schedule_model.dart';
 import 'package:f1_pet_project/l10n/app_localizations_en.dart';
 import 'package:f1_pet_project/l10n/app_localizations_ru.dart';
@@ -46,7 +47,15 @@ void main() {
       await tester.pumpApp(
         ProviderScope(
           overrides: [
-            raceSearchScreenControllerProvider('en').overrideWith(() => RaceSearchScreenController('en')),
+            raceSearchPageManagerProvider('en').overrideWith((ref) {
+              final manager = RaceSearchPageManager(
+                languageCode: 'en',
+                holder: ref.watch(raceSearchPageStateHolderProvider('en').notifier),
+                analytics: const NoOpAnalyticsGateway(),
+              );
+              ref.onDispose(manager.dispose);
+              return manager;
+            }),
           ],
           child: const SearchButtonSection(languageCode: 'en'),
         ),
@@ -60,13 +69,16 @@ void main() {
       final completer = Completer<ScheduleModel>();
       final container = createNotifierContainer(
         overrides: [
-          raceSearchScreenControllerProvider('en').overrideWith(
-            () => RaceSearchScreenController(
-              'en',
+          raceSearchPageManagerProvider('en').overrideWith((ref) {
+            final manager = RaceSearchPageManager(
+              languageCode: 'en',
+              holder: ref.watch(raceSearchPageStateHolderProvider('en').notifier),
               fetchRaceResultsForTest: ({required year, required round}) => completer.future,
-              analyticsForTest: const NoOpAnalyticsGateway(),
-            ),
-          ),
+              analytics: const NoOpAnalyticsGateway(),
+            );
+            ref.onDispose(manager.dispose);
+            return manager;
+          }),
         ],
       );
 
@@ -77,11 +89,11 @@ void main() {
         ),
       );
 
-      final controller = container.read(raceSearchScreenControllerProvider('en').notifier);
-      controller.yearController.text = '2024';
-      controller.roundController.text = '5';
-      controller.checkFields();
-      unawaited(controller.loadRaceResults());
+      final manager = container.read(raceSearchPageManagerProvider('en'));
+      manager.yearController.text = '2024';
+      manager.roundController.text = '5';
+      manager.checkFields();
+      unawaited(manager.loadRaceResults());
       await tester.pump();
 
       expect(find.byType(CustomLoadingIndicator), findsOneWidget);

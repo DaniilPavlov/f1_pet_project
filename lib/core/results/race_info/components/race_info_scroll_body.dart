@@ -13,7 +13,7 @@ import 'package:f1_pet_project/core/results/race_info/components/qualification_t
 import 'package:f1_pet_project/core/results/race_info/components/qualification_table_appbar.dart';
 import 'package:f1_pet_project/core/results/race_info/components/race_info_section_pin_tracker.dart';
 import 'package:f1_pet_project/core/results/race_info/components/race_info_table_appbar.dart';
-import 'package:f1_pet_project/core/results/race_info/controllers/race_info_screen_controller/race_info_screen_controller.dart';
+import 'package:f1_pet_project/core/results/race_info/state/state_models/race_info_page_view_model.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:flutter/material.dart';
 
@@ -21,13 +21,13 @@ import 'package:flutter/material.dart';
 class RaceInfoScrollBody extends StatefulWidget {
   const RaceInfoScrollBody({
     required this.raceModel,
-    required this.state,
+    required this.viewModel,
     required this.onRefresh,
     super.key,
   });
 
   final RacesModel raceModel;
-  final RaceInfoState state;
+  final RaceInfoPageViewModel viewModel;
   final Future<void> Function() onRefresh;
 
   @override
@@ -37,11 +37,11 @@ class RaceInfoScrollBody extends StatefulWidget {
 class _RaceInfoScrollBodyState extends State<RaceInfoScrollBody> {
   late final RaceInfoSectionPinTracker _pinTracker;
 
-  List<ResultsModel> get _sprintResults => widget.state.sprintResults.value ?? const <ResultsModel>[];
+  List<ResultsModel> get _sprintResults => widget.viewModel.sprintResults.value ?? const <ResultsModel>[];
 
-  List<QualifyingResultsModel> get _qualifyingResults => widget.state.qualifyingResults.value ?? const [];
+  List<QualifyingResultsModel> get _qualifyingResults => widget.viewModel.qualifyingResults.value ?? const [];
 
-  List<PitStopsModel> get _pitStops => widget.state.pitStops.value ?? const [];
+  List<PitStopsModel> get _pitStops => widget.viewModel.pitStops.value ?? const [];
 
   @override
   void initState() {

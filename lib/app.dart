@@ -8,7 +8,7 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme_data.dart';
 import 'package:f1_pet_project/common/utils/theme/theme_controller.dart';
 import 'package:f1_pet_project/common/widgets/force_update_screen.dart';
-import 'package:f1_pet_project/core/profile/controllers/notifications_preference_controller/notifications_preference_controller.dart';
+import 'package:f1_pet_project/core/profile/providers.dart';
 import 'package:f1_pet_project/l10n/app_localizations.dart';
 import 'package:f1_pet_project/router/app_router.dart';
 import 'package:f1_pet_project/services/analytics/analytics_gateway.dart';
@@ -133,7 +133,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
     final localeController = ref.read(localeControllerProvider.notifier);
     final themeController = ref.read(themeControllerProvider.notifier);
     final reminders = ref.read(raceReminderServiceProvider);
-    final notificationPrefs = ref.read(notificationsPreferenceControllerProvider.notifier);
+    final notificationPrefs = ref.read(notificationsPreferenceManagerProvider);
     await Future.wait([
       localeController.load(),
       themeController.load(),
@@ -147,7 +147,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
       return;
     }
 
-    final prefsState = ref.read(notificationsPreferenceControllerProvider);
+    final prefsState = ref.read(notificationsPreferenceStateHolderProvider);
     if (!prefsState.userEnabled) {
       return;
     }
@@ -171,7 +171,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
     }
     final locale = ref.read(localeControllerProvider).locale;
     final reminders = ref.read(raceReminderServiceProvider);
-    final notificationPrefs = ref.read(notificationsPreferenceControllerProvider);
+    final notificationPrefs = ref.read(notificationsPreferenceStateHolderProvider);
 
     if (!notificationPrefs.userEnabled) {
       await reminders.cancelAll();

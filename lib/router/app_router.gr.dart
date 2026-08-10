@@ -14,49 +14,44 @@ import 'package:collection/collection.dart' as _i28;
 import 'package:f1_pet_project/common/widgets/scaffold_with_navbar_screen.dart'
     as _i20;
 import 'package:f1_pet_project/core/circuits/models/circuit_model.dart' as _i24;
-import 'package:f1_pet_project/core/circuits/screens/circuit_screen.dart'
-    as _i2;
-import 'package:f1_pet_project/core/circuits/screens/circuits_screen.dart'
-    as _i3;
-import 'package:f1_pet_project/core/home/screens/home_screen.dart' as _i11;
+import 'package:f1_pet_project/core/circuits/view/circuit_screen.dart' as _i2;
+import 'package:f1_pet_project/core/circuits/view/circuits_screen.dart' as _i3;
+import 'package:f1_pet_project/core/home/view/home_screen.dart' as _i11;
 import 'package:f1_pet_project/core/predictor/models/predictor_season.dart'
     as _i30;
 import 'package:f1_pet_project/core/predictor/models/predictor_weekend_prediction.dart'
     as _i31;
-import 'package:f1_pet_project/core/predictor/screens/predictor_leaderboard_screen.dart'
+import 'package:f1_pet_project/core/predictor/view/predictor_leaderboard_screen.dart'
     as _i12;
-import 'package:f1_pet_project/core/predictor/screens/predictor_screen.dart'
+import 'package:f1_pet_project/core/predictor/view/predictor_screen.dart'
     as _i13;
-import 'package:f1_pet_project/core/predictor/screens/predictor_season_history_screen.dart'
+import 'package:f1_pet_project/core/predictor/view/predictor_season_history_screen.dart'
     as _i14;
-import 'package:f1_pet_project/core/predictor/screens/predictor_weekend_detail_screen.dart'
+import 'package:f1_pet_project/core/predictor/view/predictor_weekend_detail_screen.dart'
     as _i15;
-import 'package:f1_pet_project/core/profile/screens/auth_screens.dart' as _i1;
-import 'package:f1_pet_project/core/profile/screens/profile_screen.dart'
-    as _i16;
-import 'package:f1_pet_project/core/results/constructor/screens/constructor_screen.dart'
+import 'package:f1_pet_project/core/profile/view/auth_screens.dart' as _i1;
+import 'package:f1_pet_project/core/profile/view/profile_screen.dart' as _i16;
+import 'package:f1_pet_project/core/results/constructor/view/constructor_screen.dart'
     as _i4;
-import 'package:f1_pet_project/core/results/driver/screens/driver_screen.dart'
+import 'package:f1_pet_project/core/results/driver/view/driver_screen.dart'
     as _i5;
-import 'package:f1_pet_project/core/results/finish_status/screens/finish_status_screen.dart'
+import 'package:f1_pet_project/core/results/finish_status/view/finish_status_screen.dart'
     as _i6;
 import 'package:f1_pet_project/core/results/h2h/models/h2h_mode.dart' as _i29;
-import 'package:f1_pet_project/core/results/h2h/screens/h2h_constructors_screen.dart'
+import 'package:f1_pet_project/core/results/h2h/view/h2h_constructors_screen.dart'
     as _i7;
-import 'package:f1_pet_project/core/results/h2h/screens/h2h_screen.dart' as _i8;
-import 'package:f1_pet_project/core/results/hall_of_fame/screens/hall_of_fame_screen.dart'
+import 'package:f1_pet_project/core/results/h2h/view/h2h_screen.dart' as _i8;
+import 'package:f1_pet_project/core/results/hall_of_fame/view/hall_of_fame_screen.dart'
     as _i9;
-import 'package:f1_pet_project/core/results/race_info/screens/race_info_screen.dart'
+import 'package:f1_pet_project/core/results/race_info/view/race_info_screen.dart'
     as _i17;
-import 'package:f1_pet_project/core/results/race_search/screens/race_search_screen.dart'
+import 'package:f1_pet_project/core/results/race_search/view/race_search_screen.dart'
     as _i18;
-import 'package:f1_pet_project/core/results/screens/results_screen.dart'
-    as _i19;
-import 'package:f1_pet_project/core/results/season_rewind/screens/season_rewind_screen.dart'
+import 'package:f1_pet_project/core/results/season_rewind/view/season_rewind_screen.dart'
     as _i22;
+import 'package:f1_pet_project/core/results/view/results_screen.dart' as _i19;
 import 'package:f1_pet_project/core/schedule/models/races_model.dart' as _i32;
-import 'package:f1_pet_project/core/schedule/screens/schedule_screen.dart'
-    as _i21;
+import 'package:f1_pet_project/core/schedule/view/schedule_screen.dart' as _i21;
 import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart'
     as _i26;
 import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart'
