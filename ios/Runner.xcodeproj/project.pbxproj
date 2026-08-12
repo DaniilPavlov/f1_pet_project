@@ -23,6 +23,8 @@
 		A1F10001F1WIDGET00000013 /* WidgetSharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F10001F1WIDGET00000007 /* WidgetSharedStore.swift */; };
 		A1F10001F1WIDGET00000014 /* WidgetSharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F10001F1WIDGET00000007 /* WidgetSharedStore.swift */; };
 		A1F10001F1WIDGET00000015 /* F1Widgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A1F10001F1WIDGET00000001 /* F1Widgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A1F10002CACHEZLIB0000003 /* cache_zlib.c in Sources */ = {isa = PBXBuildFile; fileRef = A1F10002CACHEZLIB0000001 /* cache_zlib.c */; };
+		A1F10002CACHEZLIB0000004 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A1F10002CACHEZLIB0000002 /* libz.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -79,6 +81,9 @@
 		A1F10001F1WIDGET00000008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1F10001F1WIDGET00000009 /* F1Widgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = F1Widgets.entitlements; sourceTree = "<group>"; };
 		A1F10001F1WIDGET0000000A /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+		A1F10002CACHEZLIB0000001 /* cache_zlib.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = cache_zlib.c; path = ../native/cache_zlib/src/cache_zlib.c; sourceTree = SOURCE_ROOT; };
+		A1F10002CACHEZLIB0000002 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		A1F10002CACHEZLIB0000005 /* cache_zlib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cache_zlib.h; path = ../native/cache_zlib/include/cache_zlib.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 
@@ -106,6 +111,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				670591919EC3CEA7C925BB8E /* Pods_Runner.framework in Frameworks */,
+				A1F10002CACHEZLIB0000004 /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,8 +141,18 @@
 			isa = PBXGroup;
 			children = (
 				F48BF040232C4B2896BC792C /* Pods_Runner.framework */,
+				A1F10002CACHEZLIB0000002 /* libz.tbd */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A1F10002CACHEZLIB0000006 /* CacheZlib */ = {
+			isa = PBXGroup;
+			children = (
+				A1F10002CACHEZLIB0000005 /* cache_zlib.h */,
+				A1F10002CACHEZLIB0000001 /* cache_zlib.c */,
+			);
+			name = CacheZlib;
 			sourceTree = "<group>";
 		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
@@ -185,6 +201,7 @@
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				A1F10001F1WIDGET0000000A /* Runner.entitlements */,
+				A1F10002CACHEZLIB0000006 /* CacheZlib */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -414,6 +431,7 @@
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				A1F10001F1WIDGET00000014 /* WidgetSharedStore.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				A1F10002CACHEZLIB0000003 /* cache_zlib.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -511,10 +529,20 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../native/cache_zlib/include",
+				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl,-u,_cache_zlib_compress",
+					"-Wl,-u,_cache_zlib_decompress",
+					"-Wl,-u,_cache_zlib_free",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.f1PetProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -640,10 +668,20 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../native/cache_zlib/include",
+				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl,-u,_cache_zlib_compress",
+					"-Wl,-u,_cache_zlib_decompress",
+					"-Wl,-u,_cache_zlib_free",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.f1PetProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -663,10 +701,20 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../native/cache_zlib/include",
+				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl,-u,_cache_zlib_compress",
+					"-Wl,-u,_cache_zlib_decompress",
+					"-Wl,-u,_cache_zlib_free",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.f1PetProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";

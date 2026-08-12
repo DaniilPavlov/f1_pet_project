@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:f1_pet_project/common/utils/loggers/logger.dart';
+import 'package:f1_pet_project/services/cache/cache_payload_codec.dart';
 import 'package:f1_pet_project/services/cache/prefs_json_store.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,12 +13,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// GoF Structural Decorator — поведение кэша «навешивается» на Dio через
 /// interceptor, не меняя API клиента.
 ///
+/// Disk payloads сжимаются через Dart FFI → native zlib ([CachePayloadCodec]):
+/// - encode при [_writeDisk], decode при [_readDisk];
+/// - legacy uncompressed JSON (без префикса `z1:`) по-прежнему читается;
+/// - web / отсутствие dylib → identity codec (без сжатия).
+///
 /// Refresh: [invalidate] → для каждого URI следующий запрос идёт в сеть
 /// (параллельные GET после pull-to-refresh не бьют в same-day кэш).
 class CacheInterceptor extends Interceptor {
-  CacheInterceptor();
+  /// [diskCodec] — для тестов; в проде по умолчанию [CachePayloadCodec.platform].
+  CacheInterceptor({CachePayloadCodec? diskCodec}) : _diskCodec = diskCodec ?? CachePayloadCodec.platform();
 
   static const _diskPrefix = 'jolpica_http_cache_v1:';
+
+  /// Кодек строки SharedPreferences (FFI zlib или identity).
+  final CachePayloadCodec _diskCodec;
 
   final _memory = <Uri, ({Response<dynamic> response, DateTime cachedAt})>{};
 
@@ -26,6 +36,9 @@ class CacheInterceptor extends Interceptor {
 
   /// Последняя эпоха, для которой URI уже был принудительно отправлен в сеть.
   final _uriNetworkEpoch = <Uri, int>{};
+
+  @visibleForTesting
+  CachePayloadCodec get diskCodec => _diskCodec;
 
   void invalidate() => _preferNetworkEpoch++;
 
@@ -128,6 +141,7 @@ class CacheInterceptor extends Interceptor {
     handler.next(err);
   }
 
+  /// Читает prefs: [_diskCodec.decode] (zlib envelope или legacy JSON) → map.
   Future<({Response<dynamic> response, DateTime cachedAt})?> _readDisk(
     RequestOptions options, {
     bool allowStale = false,
@@ -138,7 +152,7 @@ class CacheInterceptor extends Interceptor {
       if (raw == null) {
         return null;
       }
-      final map = jsonDecode(raw) as Map<String, dynamic>;
+      final map = jsonDecode(_diskCodec.decode(raw)) as Map<String, dynamic>;
       final cachedAt = DateTime.tryParse(map['cachedAt'] as String? ?? '')?.toLocal();
       if (!allowStale && !isSameCalendarDay(cachedAt)) {
         return null;
@@ -157,6 +171,7 @@ class CacheInterceptor extends Interceptor {
     }
   }
 
+  /// Пишет prefs: JSON → [_diskCodec.encode] (в проде — FFI zlib `z1:` envelope).
   Future<void> _writeDisk(Uri uri, Response<dynamic> response) async {
     final data = response.data;
     if (data == null) {
@@ -164,14 +179,12 @@ class CacheInterceptor extends Interceptor {
     }
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
-        '$_diskPrefix$uri',
-        jsonEncode(<String, dynamic>{
-          'cachedAt': DateTime.now().toIso8601String(),
-          'statusCode': response.statusCode ?? 200,
-          'data': data,
-        }),
-      );
+      final payload = jsonEncode(<String, dynamic>{
+        'cachedAt': DateTime.now().toIso8601String(),
+        'statusCode': response.statusCode ?? 200,
+        'data': data,
+      });
+      await prefs.setString('$_diskPrefix$uri', _diskCodec.encode(payload));
     } on Object catch (error, stackTrace) {
       logger.w('CacheInterceptor disk write failed', error: error, stackTrace: stackTrace);
     }

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:f1_pet_project/services/cache/cache_payload_codec.dart';
 import 'package:f1_pet_project/services/cache_interceptor.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,7 +16,7 @@ void main() {
 
   group('CacheInterceptor', () {
     test('serves memory cache on same calendar day', () async {
-      final cache = CacheInterceptor();
+      final cache = CacheInterceptor(diskCodec: const IdentityCacheCodec());
       final opts = options('current/drivers.json');
       final response = ok(opts, {
         'MRData': {'total': '1'},
@@ -32,7 +33,7 @@ void main() {
     });
 
     test('invalidate forces one network pass per URI then cache works again', () async {
-      final cache = CacheInterceptor();
+      final cache = CacheInterceptor(diskCodec: const IdentityCacheCodec());
       final opts = options('current/drivers.json');
       final response = ok(opts, {'ok': true});
 
@@ -59,7 +60,7 @@ void main() {
     });
 
     test('invalidate forces network for parallel distinct URIs', () async {
-      final cache = CacheInterceptor();
+      final cache = CacheInterceptor(diskCodec: const IdentityCacheCodec());
       final drivers = options('current/driverStandings.json');
       final constructors = options('current/constructorStandings.json');
 
@@ -83,7 +84,7 @@ void main() {
     });
 
     test('non-connectivity errors pass through', () {
-      final cache = CacheInterceptor();
+      final cache = CacheInterceptor(diskCodec: const IdentityCacheCodec());
       final opts = options('x.json');
       final err = DioException(
         requestOptions: opts,
@@ -99,7 +100,7 @@ void main() {
     });
 
     test('clearMemory drops in-memory entries', () async {
-      final cache = CacheInterceptor();
+      final cache = CacheInterceptor(diskCodec: const IdentityCacheCodec());
       final opts = options('y.json');
       cache.onResponse(ok(opts, {'a': 1}), _ResponseHandler());
       await Future<void>.delayed(const Duration(milliseconds: 30));
@@ -120,7 +121,7 @@ void main() {
         'jolpica_http_cache_v1:${opts.uri}': 'not-json',
       });
 
-      final cache = CacheInterceptor();
+      final cache = CacheInterceptor(diskCodec: const IdentityCacheCodec());
       final request = _RequestHandler();
       cache.onRequest(opts, request);
       await Future<void>.delayed(const Duration(milliseconds: 50));
@@ -132,7 +133,58 @@ void main() {
       await Future<void>.delayed(const Duration(milliseconds: 50));
       expect(errorHandler.nextError, same(err));
     });
+
+    test('reads legacy uncompressed disk payload', () async {
+      final opts = options('legacy.json');
+      final cachedAt = DateTime.now().toIso8601String();
+      SharedPreferences.setMockInitialValues({
+        'jolpica_http_cache_v1:${opts.uri}':
+            '{"cachedAt":"$cachedAt","statusCode":200,"data":{"legacy":true}}',
+      });
+
+      final cache = CacheInterceptor(diskCodec: const IdentityCacheCodec());
+      final request = _RequestHandler();
+      cache.onRequest(opts, request);
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      expect(request.resolved?.data, {'legacy': true});
+    });
+
+    test('disk write uses injected codec envelope', () async {
+      final codec = _PrefixCodec();
+      final cache = CacheInterceptor(diskCodec: codec);
+      final opts = options('encoded.json');
+
+      cache.onResponse(ok(opts, {'n': 1}), _ResponseHandler());
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString('jolpica_http_cache_v1:${opts.uri}');
+      expect(raw, isNotNull);
+      expect(raw!.startsWith('test:'), isTrue);
+
+      cache.clearMemory();
+      final request = _RequestHandler();
+      cache.onRequest(opts, request);
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      expect(request.resolved?.data, {'n': 1});
+    });
   });
+}
+
+/// Tiny stand-in for FFI codec: proves interceptor round-trips through encode/decode.
+class _PrefixCodec extends CachePayloadCodec {
+  @override
+  String encode(String utf8Json) => 'test:$utf8Json';
+
+  @override
+  String decode(String stored) {
+    const prefix = 'test:';
+    if (stored.startsWith(prefix)) {
+      return stored.substring(prefix.length);
+    }
+    return stored;
+  }
 }
 
 class _RequestHandler extends RequestInterceptorHandler {

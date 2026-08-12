@@ -113,6 +113,18 @@ android {
         // Do not set archivesBaseName here — names like "1.6.1(202607230)" break install
         // on some devices ("App not installed").
         buildConfigField "String", "YANDEX_MAPKIT_API_KEY", "\"${yandexMapKitApiKey}\""
+        externalNativeBuild {
+            cmake {
+                // Match Flutter's preferred ABIs; NDK ships zlib.
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+        }
     }
 
     // Keep default Gradle/Flutter APK names (app-release.apk). Custom outputFileName
