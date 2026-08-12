@@ -52,7 +52,7 @@ dependencies:
   yandex_mapkit:
     git:
       url: https://github.com/DaniilPavlov/yandex_mapkit.git
-      ref: b8c4aef640ac280abd5ed9c7a0b4b5f1e30c2c56
+      ref: a6eb1b11e4470e6cf9763ddae365d6d5bfa1eed4
 
 dev_dependencies:
   # ^10.6 / build_runner ^2.15.2 blocked by mobx_codegen analyzer range
@@ -81,9 +81,8 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
-  # TODO: переключиться после решения вопроса с yandex_mapkit
   config:
-    enable-swift-package-manager: false
+    enable-swift-package-manager: true
   assets:
     - assets/
     - assets/calendar/

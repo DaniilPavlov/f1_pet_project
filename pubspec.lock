@@ -1559,11 +1559,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: b8c4aef640ac280abd5ed9c7a0b4b5f1e30c2c56
-      resolved-ref: b8c4aef640ac280abd5ed9c7a0b4b5f1e30c2c56
+      ref: a6eb1b11e4470e6cf9763ddae365d6d5bfa1eed4
+      resolved-ref: a6eb1b11e4470e6cf9763ddae365d6d5bfa1eed4
       url: "https://github.com/DaniilPavlov/yandex_mapkit.git"
     source: git
-    version: "4.3.1"
+    version: "4.3.2"
 sdks:
   dart: ">=3.12.0 <4.0.0"
   flutter: ">=3.44.0"

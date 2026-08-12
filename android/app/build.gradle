@@ -177,7 +177,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.2.0"
-    implementation 'com.yandex.android:maps.mobile:4.3.2-full'
+    implementation 'com.yandex.android:maps.mobile:4.42.0-full'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
     implementation "androidx.work:work-runtime:2.8.1"

@@ -137,7 +137,6 @@ Firebase files from FlutterFire are gitignored; CI uses stubs.
 ```bash
 firebase login
 flutterfire configure --yes --project=<PROJECT_ID> --platforms=android,ios,web
-# ios: cd ios && pod install
 ```
 
 Remote Config: `min_app_version` (string).
