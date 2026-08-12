@@ -3,15 +3,14 @@ import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
-import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/list_rows_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/season_picker_field.dart';
+import 'package:f1_pet_project/core/results/finish_status/components/finish_status_share_list.dart';
 import 'package:f1_pet_project/core/results/finish_status/controllers/finish_status_screen_controller/finish_status_screen_controller.dart';
-import 'package:f1_pet_project/core/results/finish_status/models/finish_status_item.dart';
 import 'package:f1_pet_project/core/results/finish_status/repositories/finish_status_repository.dart';
 import 'package:f1_pet_project/services/app_data_refresh.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +81,7 @@ class FinishStatusScreen extends StatelessWidget {
                                 subtitle: controller.screenError!.subtitle,
                               )
                             else
-                              _StatusList(items: controller.statuses.value ?? const []),
+                              FinishStatusShareList(items: controller.statuses.value ?? const []),
                           ],
                         ),
                       ),
@@ -94,65 +93,6 @@ class FinishStatusScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _StatusList extends StatelessWidget {
-  const _StatusList({required this.items});
-
-  final List<FinishStatusItem> items;
-
-  @override
-  Widget build(BuildContext context) {
-    if (items.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        child: Text(context.l10n.finishStatusEmpty, style: AppStyles.body),
-      );
-    }
-
-    final total = items.fold<int>(0, (sum, item) => sum + item.count);
-
-    return Column(
-      children: [
-        for (final item in items) ...[
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    item.status,
-                    style: AppStyles.body.copyWith(
-                      fontWeight: item.isHighlight ? FontWeight.w600 : FontWeight.w400,
-                      color: item.isHighlight ? AppTheme.red : context.colors.black,
-                    ),
-                  ),
-                ),
-                Text(
-                  '${item.count}',
-                  style: AppStyles.h3.copyWith(
-                    color: item.isHighlight ? AppTheme.red : context.colors.black,
-                  ),
-                ),
-                if (total > 0) ...[
-                  const SizedBox(width: 8),
-                  SizedBox(
-                    width: 48,
-                    child: Text(
-                      '${((item.count / total) * 100).round()}%',
-                      textAlign: TextAlign.right,
-                      style: AppStyles.caption.copyWith(color: context.colors.textGray),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          Divider(height: 1, color: context.colors.strokeGray),
-        ],
-      ],
     );
   }
 }

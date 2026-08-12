@@ -69,44 +69,53 @@ class TournamentConstructorsTable extends StatelessWidget {
         ),
         ExcludeSemantics(
           child: LayoutBuilder(
-            builder: (context, constraints) => SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                child: Table(
-                  columnWidths: const {
-                    0: FixedColumnWidth(32),
-                    1: FlexColumnWidth(0.37),
-                    2: FlexColumnWidth(0.16),
-                    3: FlexColumnWidth(0.17),
-                    4: FlexColumnWidth(0.15),
-                  },
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  children: [
-                    constructorsPrimaryRow(context.l10n),
-                    ...List.generate(constructors.length, (i) {
-                      final standing = constructors[i];
-                      return TableRow(
-                        decoration: ConstructorColors.tableRowDecoration(
-                          zebraColor: context.colors.grayBG,
-                          bottomBorderColor: context.colors.strokeGray,
-                          index: i,
-                          constructorId: standing.constructor.constructorId,
-                        ),
-                        children: tappableConstructorRowCells(
-                          context: context,
-                          constructor: standing.constructor,
-                          currentDrivers: passCurrentRoster
-                              ? _currentDriversFor(standing.constructor.constructorId)
-                              : const [],
-                          children: tournamentTableConstructorsDetailRowChildren(standing, i + 1),
-                        ),
-                      );
-                    }),
-                  ],
+            builder: (context, constraints) {
+              final maxPoints = constructors
+                  .map((c) => double.tryParse(c.points) ?? 0)
+                  .fold<double>(0, (a, b) => a > b ? a : b);
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: Table(
+                    columnWidths: const {
+                      0: FixedColumnWidth(32),
+                      1: FlexColumnWidth(0.37),
+                      2: FlexColumnWidth(0.16),
+                      3: FlexColumnWidth(0.17),
+                      4: FlexColumnWidth(0.15),
+                    },
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: [
+                      constructorsPrimaryRow(context.l10n),
+                      ...List.generate(constructors.length, (i) {
+                        final standing = constructors[i];
+                        return TableRow(
+                          decoration: ConstructorColors.tableRowDecoration(
+                            zebraColor: context.colors.grayBG,
+                            bottomBorderColor: context.colors.strokeGray,
+                            index: i,
+                            constructorId: standing.constructor.constructorId,
+                          ),
+                          children: tappableConstructorRowCells(
+                            context: context,
+                            constructor: standing.constructor,
+                            currentDrivers: passCurrentRoster
+                                ? _currentDriversFor(standing.constructor.constructorId)
+                                : const [],
+                            children: tournamentTableConstructorsDetailRowChildren(
+                              standing,
+                              i + 1,
+                              maxPoints: maxPoints,
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ],

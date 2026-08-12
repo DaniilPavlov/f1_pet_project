@@ -18,7 +18,6 @@ import 'package:f1_pet_project/core/predictor/utils/predictor_leaderboard_error_
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 /// Лидерборд предиктора за сезон + opt-in с ником.
@@ -278,10 +277,6 @@ class _LeaderboardActionLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LoadingAnimationWidget.twistingDots(
-      leftDotColor: context.colors.black,
-      rightDotColor: AppTheme.red,
-      size: 28,
-    );
+    return const CustomLoadingIndicator(size: 28);
   }
 }

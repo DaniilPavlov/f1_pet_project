@@ -3,9 +3,9 @@ import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
+import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart';
 import 'package:f1_pet_project/core/profile/controllers/auth_controller/auth_controller.dart';
 import 'package:f1_pet_project/core/profile/utils/auth_error_l10n.dart';
@@ -14,7 +14,6 @@ import 'package:f1_pet_project/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 /// Экран входа по email/password.
@@ -139,15 +138,9 @@ class _AuthForm extends StatelessWidget {
                 ],
                 const SizedBox(height: 12),
                 if (loading)
-                  SizedBox(
+                  const SizedBox(
                     height: _authPrimaryButtonHeight,
-                    child: Center(
-                      child: LoadingAnimationWidget.twistingDots(
-                        leftDotColor: context.colors.black,
-                        rightDotColor: AppTheme.red,
-                        size: 28,
-                      ),
-                    ),
+                    child: CustomLoadingIndicator(size: 28),
                   )
                 else
                   BlackButton(
