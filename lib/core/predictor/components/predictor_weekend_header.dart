@@ -1,12 +1,11 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
-import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/core/predictor/components/predictor_lock_status.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:flutter/material.dart';
 
-/// Шапка текущего уикенда: название, lock status / countdown.
+/// Шапка текущего уикенда: название, статус lock / countdown.
 class PredictorWeekendHeader extends StatelessWidget {
   const PredictorWeekendHeader({
     required this.race,
@@ -36,17 +35,10 @@ class PredictorWeekendHeader extends StatelessWidget {
           children: [
             Text(race.raceName, style: AppStyles.h3),
             const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              decoration: BoxDecoration(
-                color: isLocked ? AppTheme.pink.withValues(alpha: 0.35) : context.colors.grayBG,
-                borderRadius: AppTheme.defaultBorderRadius,
-              ),
-              child: Text(
-                status,
-                style: AppStyles.caption.copyWith(color: context.colors.black),
-              ),
+            PredictorLockStatus(
+              isLocked: isLocked && !missingQualifyingTime,
+              statusText: status,
+              countdown: lockCountdown,
             ),
           ],
         ),
@@ -54,6 +46,7 @@ class PredictorWeekendHeader extends StatelessWidget {
     );
   }
 
+  /// Текст статуса: нет quali / locked / countdown до закрытия.
   String _statusText(BuildContext context) {
     final l10n = context.l10n;
     if (missingQualifyingTime) {
