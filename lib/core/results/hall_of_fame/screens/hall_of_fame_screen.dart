@@ -3,8 +3,8 @@ import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/app_refresh_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/tournament_tables_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/tables/tournament_tables_section.dart';
@@ -54,8 +54,7 @@ class HallOfFameScreen extends StatelessWidget {
               final constructors = controller.constructorsStandings.value;
               final drivers = controller.driversStandings.value;
 
-              return RefreshIndicator(
-                color: AppTheme.red,
+              return AppRefreshIndicator(
                 onRefresh: controller.refreshAll,
                 child: CustomScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),

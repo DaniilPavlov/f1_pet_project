@@ -1,6 +1,7 @@
 import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/trusted_url.dart';
+import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:flutter/material.dart';
 
 /// Широкое сетевое фото с рамкой; при отсутствии URL — иконка-плейсхолдер.
@@ -36,13 +37,7 @@ class NetworkHeroPhoto extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(20)),
         ),
         child: isLoading
-            ? Center(
-                child: SizedBox(
-                  width: 28,
-                  height: 28,
-                  child: CircularProgressIndicator(strokeWidth: 2, color: borderColor),
-                ),
-              )
+            ? const Center(child: CustomLoadingIndicator(size: 40))
             : photoUrl == null
             ? _Placeholder(icon: placeholderIcon)
             : LayoutBuilder(
@@ -62,13 +57,7 @@ class NetworkHeroPhoto extends StatelessWidget {
                       if (progress == null) {
                         return child;
                       }
-                      return Center(
-                        child: SizedBox(
-                          width: 28,
-                          height: 28,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: borderColor),
-                        ),
-                      );
+                      return const Center(child: CustomLoadingIndicator(size: 40));
                     },
                   );
                 },

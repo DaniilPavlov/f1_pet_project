@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 /// Обёртка с анимацией нажатия и прыжка при выборе пункта навбара.
+///
+/// При выборе — scale-pulse через явный [AnimationController].
 class BounceAnimationWidget extends StatefulWidget {
   const BounceAnimationWidget({required this.onPressed, required this.child, super.key, this.isSelected = false});
 
@@ -12,7 +14,7 @@ class BounceAnimationWidget extends StatefulWidget {
   State<BounceAnimationWidget> createState() => _BounceAnimationWidgetState();
 }
 
-/// Состояние анимаций нажатия и прыжка [BounceAnimationWidget].
+/// Состояние анимаций нажатия, прыжка и pulse [BounceAnimationWidget].
 class _BounceAnimationWidgetState extends State<BounceAnimationWidget> with TickerProviderStateMixin {
   final _isHover = ValueNotifier(false);
   final _offsetDuration = const Duration(milliseconds: 600);
@@ -23,6 +25,9 @@ class _BounceAnimationWidgetState extends State<BounceAnimationWidget> with Tick
 
   late final AnimationController _jumpAnimationController;
   late final Animation<Offset> _jumpAnimation;
+
+  late final AnimationController _selectPulseController;
+  late final Animation<double> _selectPulse;
 
   @override
   void initState() {
@@ -46,6 +51,12 @@ class _BounceAnimationWidgetState extends State<BounceAnimationWidget> with Tick
       ),
     ]).animate(CurvedAnimation(parent: _jumpAnimationController, curve: Curves.easeInOutCubic));
 
+    _selectPulseController = AnimationController(vsync: this, duration: const Duration(milliseconds: 420));
+    _selectPulse = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 1, end: 1.18), weight: 0.45),
+      TweenSequenceItem(tween: Tween(begin: 1.18, end: 1), weight: 0.55),
+    ]).animate(CurvedAnimation(parent: _selectPulseController, curve: Curves.easeOutCubic));
+
     super.initState();
   }
 
@@ -54,6 +65,7 @@ class _BounceAnimationWidgetState extends State<BounceAnimationWidget> with Tick
     _isHover.dispose();
     _tapDownAnimationController.dispose();
     _jumpAnimationController.dispose();
+    _selectPulseController.dispose();
     super.dispose();
   }
 
@@ -61,7 +73,13 @@ class _BounceAnimationWidgetState extends State<BounceAnimationWidget> with Tick
   void didUpdateWidget(covariant BounceAnimationWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.isSelected != widget.isSelected) {
-      widget.isSelected ? _jumpAnimationController.forward() : _jumpAnimationController.reverse();
+      if (widget.isSelected) {
+        _jumpAnimationController.forward(from: 0);
+        _selectPulseController.forward(from: 0);
+      } else {
+        _jumpAnimationController.reverse();
+        _selectPulseController.value = 0;
+      }
     }
   }
 
@@ -78,9 +96,15 @@ class _BounceAnimationWidgetState extends State<BounceAnimationWidget> with Tick
             onPointerDown: _onTapDown,
             onPointerUp: _onTapUp,
             child: AnimatedBuilder(
-              animation: _jumpAnimation,
+              animation: Listenable.merge([_jumpAnimation, _selectPulse]),
               builder: (_, child) {
-                return Transform.translate(offset: _jumpAnimation.value, child: child);
+                return Transform.translate(
+                  offset: _jumpAnimation.value,
+                  child: Transform.scale(
+                    scale: _selectPulse.value,
+                    child: child,
+                  ),
+                );
               },
               child: ScaleTransition(scale: _scaleAnimation, child: widget.child),
             ),

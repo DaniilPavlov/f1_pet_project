@@ -2,7 +2,7 @@ import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/widgets/app_refresh_indicator.dart';
 import 'package:f1_pet_project/core/results/components/race_info_table.dart';
 import 'package:f1_pet_project/core/results/models/results_model.dart';
 import 'package:f1_pet_project/core/results/race_info/components/pit_stops_table.dart';
@@ -53,8 +53,7 @@ class _RaceInfoScrollBodyState extends State<RaceInfoScrollBody> {
   Widget build(BuildContext context) {
     final sprintResults = _controller.sprintResults.value ?? const <ResultsModel>[];
 
-    return RefreshIndicator(
-      color: AppTheme.red,
+    return AppRefreshIndicator(
       onRefresh: _controller.refreshAll,
       child: ListenableBuilder(
         listenable: _pinTracker,

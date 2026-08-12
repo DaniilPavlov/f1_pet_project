@@ -4,8 +4,8 @@ import 'package:f1_pet_project/common/repositories/seasons/seasons_repository.da
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/app_refresh_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/list_rows_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/season_picker_field.dart';
@@ -38,8 +38,7 @@ class FinishStatusScreen extends StatelessWidget {
             builder: (context) {
               final controller = context.read<FinishStatusScreenController>();
 
-              return RefreshIndicator(
-                color: AppTheme.red,
+              return AppRefreshIndicator(
                 onRefresh: controller.refreshAll,
                 child: CustomScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),

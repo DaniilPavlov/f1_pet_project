@@ -5,7 +5,6 @@ import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
-import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart';
 import 'package:f1_pet_project/core/profile/controllers/auth_controller/auth_controller.dart';
 import 'package:f1_pet_project/core/profile/utils/auth_error_l10n.dart';
@@ -60,9 +59,6 @@ class AuthRegisterScreen extends StatelessWidget {
 
 class _AuthForm extends StatelessWidget {
   const _AuthForm({required this.isRegister});
-
-  /// Высота [BlackButton]: vertical padding 12×2 + [AppStyles.h3] fontSize 25.
-  static const _authPrimaryButtonHeight = 49.0;
 
   final bool isRegister;
 
@@ -137,23 +133,18 @@ class _AuthForm extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: 12),
-                if (loading)
-                  const SizedBox(
-                    height: _authPrimaryButtonHeight,
-                    child: CustomLoadingIndicator(size: 28),
-                  )
-                else
-                  BlackButton(
-                    text: isRegister ? context.l10n.profileRegister : context.l10n.profileSignIn,
-                    isDisabled: false,
-                    onTap: () async {
-                      FocusScope.of(context).unfocus();
-                      final ok = isRegister ? await controller.register() : await controller.signIn();
-                      if (ok && context.mounted) {
-                        await context.router.replaceAll([const ProfileRoute()]);
-                      }
-                    },
-                  ),
+                BlackButton(
+                  text: isRegister ? context.l10n.profileRegister : context.l10n.profileSignIn,
+                  isDisabled: false,
+                  isLoading: loading,
+                  onTap: () async {
+                    FocusScope.of(context).unfocus();
+                    final ok = isRegister ? await controller.register() : await controller.signIn();
+                    if (ok && context.mounted) {
+                      await context.router.replaceAll([const ProfileRoute()]);
+                    }
+                  },
+                ),
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: loading
