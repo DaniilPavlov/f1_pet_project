@@ -73,13 +73,6 @@ if (keystorePropertiesFile.exists()) {
     println "____________"
 }
 
-// CI uses tool/ci/google-services.stub.json — Crashlytics mapping upload would 400 against it.
-def googleServicesJson = file('google-services.json')
-def isFirebaseCiStub = googleServicesJson.exists() && googleServicesJson.getText('UTF-8').contains('"project_id": "ci-stub"')
-if (isFirebaseCiStub) {
-    println "Firebase google-services.json is CI stub — Crashlytics mapping upload disabled"
-}
-
 android {
     namespace 'com.example.f1_pet_project'
     compileSdk 37
@@ -147,12 +140,6 @@ android {
                 signingConfig signingConfigs.release
             } else {
                 signingConfig signingConfigs.debug
-            }
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            firebaseCrashlytics {
-                mappingFileUploadEnabled = !isFirebaseCiStub
             }
         }
     }
