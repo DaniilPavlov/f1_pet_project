@@ -6,6 +6,7 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/common/widgets/text_fields/custom_text_field.dart';
+import 'package:f1_pet_project/core/profile/components/auth_success_snap.dart';
 import 'package:f1_pet_project/core/profile/controllers/auth_controller/auth_controller.dart';
 import 'package:f1_pet_project/core/profile/utils/auth_error_l10n.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
@@ -57,10 +58,30 @@ class AuthRegisterScreen extends StatelessWidget {
   }
 }
 
-class _AuthForm extends StatelessWidget {
+class _AuthForm extends StatefulWidget {
   const _AuthForm({required this.isRegister});
 
   final bool isRegister;
+
+  @override
+  State<_AuthForm> createState() => _AuthFormState();
+}
+
+/// Форма + короткий success-snap перед уходом на профиль.
+class _AuthFormState extends State<_AuthForm> {
+  bool _showSuccess = false;
+
+  Future<void> _onAuthSuccess() async {
+    if (!mounted) {
+      return;
+    }
+    setState(() => _showSuccess = true);
+    await Future<void>.delayed(const Duration(milliseconds: 750));
+    if (!mounted) {
+      return;
+    }
+    await context.router.replaceAll([const ProfileRoute()]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,101 +91,113 @@ class _AuthForm extends StatelessWidget {
       builder: (context) {
         final error = authErrorMessage(context.l10n, controller.errorKey);
         final loading = controller.isLoading;
-        return Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: StaticData.defaultHorizontalPadding,
-            vertical: 16,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                CustomTextField(
-                  label: context.l10n.authEmailLabel,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  onChanged: controller.setEmail,
-                  disabled: loading,
-                ),
-                const SizedBox(height: 12),
-                CustomTextField(
-                  label: context.l10n.authPasswordLabel,
-                  obscureText: true,
-                  textInputAction: TextInputAction.done,
-                  onChanged: controller.setPassword,
-                  disabled: loading,
-                  onSubmit: loading
-                      ? null
-                      : (_) async {
-                          FocusScope.of(context).unfocus();
-                          final ok = isRegister ? await controller.register() : await controller.signIn();
-                          if (ok && context.mounted) {
-                            // replaceAll — стек мог быть только [AuthSignIn] (вход с предиктора).
-                            await context.router.replaceAll([const ProfileRoute()]);
-                          }
-                        },
-                ),
-                if (error.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(error, style: AppStyles.caption.copyWith(color: context.colors.red)),
-                ],
-                if (!isRegister) ...[
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: loading
+        return Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: StaticData.defaultHorizontalPadding,
+                vertical: 16,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    CustomTextField(
+                      label: context.l10n.authEmailLabel,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      onChanged: controller.setEmail,
+                      disabled: loading || _showSuccess,
+                    ),
+                    const SizedBox(height: 12),
+                    CustomTextField(
+                      label: context.l10n.authPasswordLabel,
+                      obscureText: true,
+                      textInputAction: TextInputAction.done,
+                      onChanged: controller.setPassword,
+                      disabled: loading || _showSuccess,
+                      onSubmit: loading || _showSuccess
                           ? null
-                          : () async {
+                          : (_) async {
                               FocusScope.of(context).unfocus();
-                              final ok = await controller.sendPasswordReset();
-                              if (!context.mounted) {
-                                return;
+                              final ok = widget.isRegister
+                                  ? await controller.register()
+                                  : await controller.signIn();
+                              if (ok && context.mounted) {
+                                await _onAuthSuccess();
                               }
-                              if (ok) {
-                                await Fluttertoast.showToast(msg: context.l10n.authPasswordResetSent);
+                            },
+                    ),
+                    if (error.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Text(error, style: AppStyles.caption.copyWith(color: context.colors.red)),
+                    ],
+                    if (!widget.isRegister) ...[
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: loading || _showSuccess
+                              ? null
+                              : () async {
+                                  FocusScope.of(context).unfocus();
+                                  final ok = await controller.sendPasswordReset();
+                                  if (!context.mounted) {
+                                    return;
+                                  }
+                                  if (ok) {
+                                    await Fluttertoast.showToast(msg: context.l10n.authPasswordResetSent);
+                                  }
+                                },
+                          child: Text(
+                            context.l10n.authForgotPassword,
+                            style: AppStyles.caption.copyWith(color: context.colors.textGray),
+                          ),
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 12),
+                    BlackButton(
+                      text: widget.isRegister ? context.l10n.profileRegister : context.l10n.profileSignIn,
+                      isDisabled: false,
+                      isLoading: loading,
+                      onTap: () async {
+                        FocusScope.of(context).unfocus();
+                        final ok = widget.isRegister
+                            ? await controller.register()
+                            : await controller.signIn();
+                        if (ok && context.mounted) {
+                          await _onAuthSuccess();
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: loading || _showSuccess
+                          ? null
+                          : () {
+                              if (widget.isRegister) {
+                                context.router.replace(const AuthSignInRoute());
+                              } else {
+                                context.router.replace(const AuthRegisterRoute());
                               }
                             },
                       child: Text(
-                        context.l10n.authForgotPassword,
-                        style: AppStyles.caption.copyWith(color: context.colors.textGray),
+                        widget.isRegister ? context.l10n.authHaveAccount : context.l10n.authNoAccount,
+                        style: AppStyles.body.copyWith(color: context.colors.black),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                  ),
-                ],
-                const SizedBox(height: 12),
-                BlackButton(
-                  text: isRegister ? context.l10n.profileRegister : context.l10n.profileSignIn,
-                  isDisabled: false,
-                  isLoading: loading,
-                  onTap: () async {
-                    FocusScope.of(context).unfocus();
-                    final ok = isRegister ? await controller.register() : await controller.signIn();
-                    if (ok && context.mounted) {
-                      await context.router.replaceAll([const ProfileRoute()]);
-                    }
-                  },
+                  ],
                 ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: loading
-                      ? null
-                      : () {
-                          if (isRegister) {
-                            context.router.replace(const AuthSignInRoute());
-                          } else {
-                            context.router.replace(const AuthRegisterRoute());
-                          }
-                        },
-                  child: Text(
-                    isRegister ? context.l10n.authHaveAccount : context.l10n.authNoAccount,
-                    style: AppStyles.body.copyWith(color: context.colors.black),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            if (_showSuccess)
+              const ColoredBox(
+                color: Color(0xCC000000),
+                child: AuthSuccessSnap(),
+              ),
+          ],
         );
       },
     );

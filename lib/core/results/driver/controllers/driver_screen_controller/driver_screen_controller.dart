@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:f1_pet_project/common/localization/error_copy.dart';
 import 'package:f1_pet_project/common/models/career/career_stats.dart';
 import 'package:f1_pet_project/common/models/espn/espn_driver_card_data.dart';
 import 'package:f1_pet_project/common/repositories/espn/espn_media_repository.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/network_reachability.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_career_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
 import 'package:f1_pet_project/data/models/standings/constructor/constructor_model.dart';
@@ -33,6 +35,10 @@ abstract class DriverScreenControllerBase with Store {
        _careerRepository = careerRepository,
        _dataRefresh = dataRefresh,
        _fetchCareerStatsForTest = fetchCareerStatsForTest;
+
+  /// Потолок ожидания карьеры / ESPN — UI не должен висеть на лоадере.
+  static const _careerLoadTimeout = Duration(seconds: 40);
+  static const _espnLoadTimeout = Duration(seconds: 15);
 
   final DriverModel driver;
   final List<ConstructorModel> currentConstructors;
@@ -63,6 +69,16 @@ abstract class DriverScreenControllerBase with Store {
   /// Загружает карьеру и ESPN-данные параллельно.
   @action
   Future<void> loadAll() async {
+    if (await NetworkReachability.isOffline()) {
+      careerStats = careerStats.toErrorFrom(
+        CustomException(
+          title: ErrorCopy.noConnection,
+          subtitle: ErrorCopy.noConnectionSubtitle,
+        ),
+      );
+      espnCard = espnCard.toValue(const EspnDriverCardData());
+      return;
+    }
     await Future.wait([loadCareerStats(), loadEspnCard()]);
   }
 
@@ -91,29 +107,44 @@ abstract class DriverScreenControllerBase with Store {
       return;
     }
 
-    await runAsyncLoad(
-      fetch: () => _careerRepository!.loadTotals(
-        driverId: driver.driverId,
-        current: currentConstructors,
-      ),
-      getField: () => careerStats,
-      setField: (value) => careerStats = value,
-      onSuccess: (data) {
-        if (data != null) {
-          careerStats = careerStats.toValue(data);
-          unawaited(_completeRaceLists(data));
-        }
-      },
-    );
+    try {
+      await runAsyncLoad(
+        fetch: () => _careerRepository!.loadTotals(
+          driverId: driver.driverId,
+          current: currentConstructors,
+        ),
+        getField: () => careerStats,
+        setField: (value) => careerStats = value,
+        onSuccess: (data) {
+          if (data != null) {
+            careerStats = careerStats.toValue(data);
+            unawaited(_completeRaceLists(data));
+          }
+        },
+      ).timeout(_careerLoadTimeout);
+    } on TimeoutException catch (e, st) {
+      if (careerStats.value == null && careerStats.exception == null) {
+        careerStats = careerStats.toErrorFrom(
+          CustomException(
+            title: ErrorCopy.noConnection,
+            subtitle: ErrorCopy.noConnectionSubtitle,
+            parentException: e,
+            stackTrace: st,
+          ),
+        );
+      }
+    }
   }
 
   @action
   Future<void> _completeRaceLists(CareerStats<ConstructorModel> totals) async {
     try {
-      final complete = await _careerRepository!.loadRaceLists(
-        driverId: driver.driverId,
-        totals: totals,
-      );
+      final complete = await _careerRepository!
+          .loadRaceLists(
+            driverId: driver.driverId,
+            totals: totals,
+          )
+          .timeout(_careerLoadTimeout);
       final current = careerStats.value;
       if (current == null || current.races != totals.races || current.wins != totals.wins) {
         return;
@@ -128,11 +159,17 @@ abstract class DriverScreenControllerBase with Store {
   @action
   Future<void> loadEspnCard() async {
     espnCard = espnCard.toLoading();
+    if (await NetworkReachability.isOffline()) {
+      espnCard = espnCard.toValue(const EspnDriverCardData());
+      return;
+    }
     try {
-      final data = await _espnMediaRepository.driverCardData(
-        givenName: driver.givenName,
-        familyName: driver.familyName,
-      );
+      final data = await _espnMediaRepository
+          .driverCardData(
+            givenName: driver.givenName,
+            familyName: driver.familyName,
+          )
+          .timeout(_espnLoadTimeout);
       espnCard = espnCard.toValue(data);
     } on Object {
       espnCard = espnCard.toValue(const EspnDriverCardData());

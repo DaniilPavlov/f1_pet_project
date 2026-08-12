@@ -63,7 +63,7 @@ class BlackButton extends StatelessWidget {
                 child: SizedBox(
                   height: 25,
                   child: CustomLoadingIndicator(
-                    size: 28,
+                    size: 32,
                     onDarkBackground: !isDark,
                   ),
                 ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_leaderboard_entry.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_leaderboard_profile.dart';
@@ -37,6 +39,8 @@ class PredictorLeaderboardRepository {
       _memory = _MemoryBackend(),
       _uidProvider = uidProvider;
 
+  static const _firestoreTimeout = Duration(seconds: 40);
+
   final AuthService? _authService;
   final FirebaseFirestore? _firestore;
   final _MemoryBackend? _memory;
@@ -67,7 +71,7 @@ class PredictorLeaderboardRepository {
       if (memory != null) {
         return memory.profiles[uid] ?? const PredictorLeaderboardProfile();
       }
-      final snap = await _userDoc(uid).get();
+      final snap = await _userDoc(uid).get().timeout(_firestoreTimeout);
       return PredictorLeaderboardProfile.fromJson(snap.data());
     } on Object catch (e) {
       await _authService?.signOutIfSessionDead(e);
@@ -98,7 +102,8 @@ class PredictorLeaderboardRepository {
           .doc(year)
           .collection('entries')
           .orderBy('totalPoints', descending: true)
-          .get();
+          .get()
+          .timeout(_firestoreTimeout);
 
       final list = [
         for (final doc in snap.docs) PredictorLeaderboardEntry.fromJson(doc.id, doc.data()),

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:f1_pet_project/common/localization/error_copy.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/network_reachability.dart';
 import 'package:f1_pet_project/common/utils/helpers/race_datetime_helper.dart';
 import 'package:f1_pet_project/core/home/repositories/current_standings_repository.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_season.dart';
@@ -88,10 +89,18 @@ abstract class PredictorScreenControllerBase with Store {
   final Future<StandingsModel> Function()? _fetchDriverStandingsForTest;
   final PredictorScoringCoordinator _scoring;
 
+  /// Жёсткий потолок ожидания сети/Firestore, чтобы UI не завис на лоадере.
+  static const _predictorLoadTimeout = Duration(seconds: 40);
+
   late final PredictorLockTicker _ticker;
+
+  /// Поколение [load]: после таймаута инкремент, чтобы фоновый `runAsyncLoad` не вернул loading.
+  int _loadEpoch = 0;
 
   /// season+round текущего драфта — чтобы при смене upcomingRace перезагрузить порядок.
   String? _boundDraftKey;
+
+  bool _isLoadEpoch(int epoch) => epoch == _loadEpoch;
 
   @observable
   AsyncValue<List<RacesModel>> races = const AsyncValue.loading();
@@ -247,28 +256,133 @@ abstract class PredictorScreenControllerBase with Store {
   /// Первичная загрузка расписания, ростера, команд и store.
   @action
   Future<void> load() async {
+    final epoch = ++_loadEpoch;
     allDataIsLoaded = false;
     predictions = const AsyncValue.loading();
-    await Future.wait([_loadSchedule(), _loadDriversList(), _loadConstructorsByDriver()]);
-    await _loadPredictionsStore();
 
-    if (screenError == null) {
-      await _ensureCurrentDraft();
-      await _scoreAllPending();
-      await _syncLeaderboardPoints();
-      _ticker.start();
+    if (await NetworkReachability.isOffline()) {
+      if (!_isLoadEpoch(epoch)) {
+        return;
+      }
+      _applyNoConnection();
+      allDataIsLoaded = false;
+      return;
     }
 
+    try {
+      await _loadBody(epoch).timeout(_predictorLoadTimeout);
+    } on TimeoutException catch (e, st) {
+      if (!_isLoadEpoch(epoch)) {
+        return;
+      }
+      final hasCore = races.value != null && drivers.value != null && predictions.value != null;
+      if (!hasCore) {
+        _applyPredictorTimeout(e, st);
+      }
+      // Отсекаем поздние setField(toLoading) от незавершённых retry.
+      _loadEpoch++;
+      allDataIsLoaded = hasCore && screenError == null;
+      if (allDataIsLoaded) {
+        _ticker.start();
+      }
+      return;
+    }
+
+    if (!_isLoadEpoch(epoch)) {
+      return;
+    }
+    // Нет сети — сразу ErrorBody, без ожидания остальных запросов.
+    if (_isNoConnection(screenError)) {
+      _loadEpoch++;
+      allDataIsLoaded = false;
+      return;
+    }
     allDataIsLoaded = screenError == null;
+    if (allDataIsLoaded) {
+      _ticker.start();
+    }
+  }
+
+  Future<void> _loadBody(int epoch) async {
+    await Future.wait([
+      _loadSchedule(epoch),
+      _loadDriversList(epoch),
+      _loadConstructorsByDriver(epoch),
+    ]);
+    if (!_isLoadEpoch(epoch)) {
+      return;
+    }
+    if (_isNoConnection(screenError)) {
+      return;
+    }
+    await _loadPredictionsStore(epoch);
+    if (!_isLoadEpoch(epoch) || screenError != null) {
+      return;
+    }
+    await _ensureCurrentDraft();
+    if (!_isLoadEpoch(epoch)) {
+      return;
+    }
+    await _scoreAllPending();
+    if (!_isLoadEpoch(epoch)) {
+      return;
+    }
+    try {
+      await _syncLeaderboardPoints();
+    } on Object {
+      // Лидерборд не должен валить экран.
+    }
+  }
+
+  bool _isNoConnection(CustomException? error) => error?.title == ErrorCopy.noConnection;
+
+  void _applyNoConnection([Object? parent, StackTrace? st]) {
+    final exception = CustomException(
+      title: ErrorCopy.noConnection,
+      subtitle: ErrorCopy.noConnectionSubtitle,
+      parentException: parent is Exception ? parent : null,
+      stackTrace: st,
+    );
+    if (races.exception == null && races.value == null) {
+      races = races.toErrorFrom(exception);
+    }
+    if (drivers.exception == null && drivers.value == null) {
+      drivers = drivers.toErrorFrom(exception);
+    }
+    if (predictions.exception == null && predictions.value == null) {
+      predictions = predictions.toErrorFrom(exception);
+    }
+  }
+
+  void _applyPredictorTimeout(TimeoutException e, StackTrace st) {
+    _applyNoConnection(e, st);
   }
 
   @action
-  Future<void> _loadPredictionsStore() async {
+  Future<void> _loadPredictionsStore(int epoch) async {
     try {
       final loaded = await _predictorRepository.load();
+      if (!_isLoadEpoch(epoch)) {
+        return;
+      }
       store = loaded;
       predictions = predictions.toValue(loaded);
+    } on TimeoutException catch (e, st) {
+      if (!_isLoadEpoch(epoch)) {
+        return;
+      }
+      predictions = predictions.toErrorFrom(
+        CustomException(
+          title: ErrorCopy.noConnection,
+          subtitle: ErrorCopy.noConnectionSubtitle,
+          parentException: e,
+          stackTrace: st,
+        ),
+      );
     } on Object catch (e, st) {
+      if (!_isLoadEpoch(epoch)) {
+        return;
+      }
       predictions = predictions.toErrorFrom(
         CustomException(
           title: ErrorCopy.unexpectedError,
@@ -481,36 +595,61 @@ abstract class PredictorScreenControllerBase with Store {
   }
 
   @action
-  Future<void> _loadSchedule() async {
+  Future<void> _loadSchedule(int epoch) async {
     await runAsyncLoad<ScheduleModel, List<RacesModel>>(
       fetch: _fetchSchedule,
       getField: () => races,
-      setField: (value) => races = value,
-      onSuccess: (data) => races = races.toValue(data!.raceTable.races),
+      setField: (value) {
+        if (!_isLoadEpoch(epoch)) {
+          return;
+        }
+        races = value;
+      },
+      onSuccess: (data) {
+        if (!_isLoadEpoch(epoch)) {
+          return;
+        }
+        races = races.toValue(data!.raceTable.races);
+      },
     );
   }
 
   @action
-  Future<void> _loadDriversList() async {
+  Future<void> _loadDriversList(int epoch) async {
     await runAsyncLoad<List<DriverModel>, List<DriverModel>>(
       fetch: _loadDrivers,
       getField: () => drivers,
-      setField: (value) => drivers = value,
-      onSuccess: (data) => drivers = drivers.toValue(data!.where(hasUsableDriverCode).toList()),
+      setField: (value) {
+        if (!_isLoadEpoch(epoch)) {
+          return;
+        }
+        drivers = value;
+      },
+      onSuccess: (data) {
+        if (!_isLoadEpoch(epoch)) {
+          return;
+        }
+        drivers = drivers.toValue(data!.where(hasUsableDriverCode).toList());
+      },
     );
   }
 
   /// Карта команд и порядок чемпионата из current driver standings
   /// (не блокирует UI при ошибке).
   @action
-  Future<void> _loadConstructorsByDriver() async {
+  Future<void> _loadConstructorsByDriver(int epoch) async {
     if (_standingsRepository == null && _fetchDriverStandingsForTest == null) {
-      constructorsByDriverId = ObservableMap();
-      championshipDriverOrder = ObservableList();
+      if (_isLoadEpoch(epoch)) {
+        constructorsByDriverId = ObservableMap();
+        championshipDriverOrder = ObservableList();
+      }
       return;
     }
     try {
       final standings = await _fetchDriverStandings();
+      if (!_isLoadEpoch(epoch)) {
+        return;
+      }
       final lists = standings.standingsTable.standingsLists;
       if (lists.isEmpty) {
         constructorsByDriverId = ObservableMap();
@@ -529,6 +668,9 @@ abstract class PredictorScreenControllerBase with Store {
       });
       championshipDriverOrder = ObservableList.of(rows.map((row) => row.driver.driverId));
     } on Object {
+      if (!_isLoadEpoch(epoch)) {
+        return;
+      }
       constructorsByDriverId = ObservableMap();
       championshipDriverOrder = ObservableList();
     }

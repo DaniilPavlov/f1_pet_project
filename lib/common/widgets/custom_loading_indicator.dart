@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 
 /// Брендовый индикатор загрузки: вращающиеся дуги.
 ///
-/// Типовой лоадер приложения (не для pull-to-refresh).
-/// Рисует [CustomPainter]; вращение — два явных [AnimationController].
+/// Рисует [CustomPainter] каждый кадр через [AnimationController] —
+/// дуги остаются геометрически ровными (без ряби от rotate bitmap-слоя).
 class CustomLoadingIndicator extends StatefulWidget {
   const CustomLoadingIndicator({
-    this.size = 100,
+    this.size = 112,
     this.onDarkBackground = false,
     super.key,
   });
@@ -57,8 +57,6 @@ class _CustomLoadingIndicatorState extends State<CustomLoadingIndicator>
           animation: Listenable.merge([_outer, _inner]),
           builder: (context, _) {
             return CustomPaint(
-              isComplex: true,
-              willChange: true,
               painter: _BrandLoaderPainter(
                 outerT: _outer.value,
                 innerT: _inner.value,
@@ -73,7 +71,7 @@ class _CustomLoadingIndicatorState extends State<CustomLoadingIndicator>
   }
 }
 
-/// Дуги и штрихи; геометрия пропорциональна [Size], циклы без скачка.
+/// Дуги + солнышко; геометрия пропорциональна [Size].
 class _BrandLoaderPainter extends CustomPainter {
   _BrandLoaderPainter({
     required this.outerT,
@@ -93,67 +91,72 @@ class _BrandLoaderPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = width
       ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..isAntiAlias = true
-      ..filterQuality = FilterQuality.high;
+      ..isAntiAlias = true;
   }
 
   @override
   void paint(Canvas canvas, Size size) {
-    const scale = 2.0;
-    canvas
-      ..save()
-      ..scale(1 / scale, 1 / scale);
+    final center = Offset(size.width / 2, size.height / 2);
+    final minSide = math.min(size.width, size.height);
 
-    final w = size.width * scale;
-    final h = size.height * scale;
-    final center = Offset(w / 2, h / 2);
-    final minSide = math.min(w, h);
-    final inset = minSide * 0.08;
-    final radius = minSide / 2 - inset;
-
-    final outerStroke = math.max(2, minSide * 0.07).toDouble();
-    final innerStroke = math.max(1.5, minSide * 0.05);
-    final gap = math.max(outerStroke * 1.6, minSide * 0.1);
-    final innerRadius = math.max(minSide * 0.12, radius - gap);
+    final outerStroke = (minSide * 0.075).clamp(1.5, 8.0);
+    final innerStroke = (minSide * 0.05).clamp(1.2, 6.0);
+    final inset = minSide * 0.10;
+    final outerRadius = minSide / 2 - inset;
+    // Красная↔чёрная чуть плотнее.
+    final gap = outerStroke / 2 + innerStroke / 2 + minSide * 0.09;
+    final innerRadius = (outerRadius - gap).clamp(minSide * 0.12, outerRadius);
 
     final outerAngle = outerT * math.pi * 2;
     final innerAngle = -innerT * math.pi * 2;
 
     canvas
-      ..drawPath(
-        Path()..addArc(Rect.fromCircle(center: center, radius: radius), outerAngle, math.pi * 1.25),
+      ..drawArc(
+        Rect.fromCircle(center: center, radius: outerRadius),
+        outerAngle,
+        math.pi * 1.25,
+        false,
         _stroke(primary, outerStroke),
       )
-      ..drawPath(
-        Path()..addArc(Rect.fromCircle(center: center, radius: innerRadius), innerAngle, math.pi * 0.95),
+      ..drawArc(
+        Rect.fromCircle(center: center, radius: innerRadius),
+        innerAngle,
+        math.pi * 0.95,
+        false,
         _stroke(secondary, innerStroke),
       );
 
+    // Солнышко всегда: на мини — чуть толще лучи, чтобы не пропадали.
+    final tickRadius = innerRadius * 0.30;
+    final tickLen = (minSide * 0.022).clamp(1.5, 4.0);
+    final tickWidth = (minSide * 0.022).clamp(1.4, 3.0);
+    final hubRadius = (minSide * 0.045).clamp(1.5, 6.0);
+    final tickPaint = _stroke(primary.withValues(alpha: 0.55), tickWidth);
+
     const segments = 16;
-    final tickR = innerRadius * 0.55;
-    final tickLen = math.max(2, minSide * 0.04).toDouble();
-    final tickPaint = _stroke(primary.withValues(alpha: 0.55), math.max(1.2, minSide * 0.025));
     for (var i = 0; i < segments; i++) {
       if (i.isOdd) {
         continue;
       }
       final a = outerAngle + (math.pi * 2) * (i / segments);
-      final p1 = Offset(center.dx + (tickR - tickLen) * math.cos(a), center.dy + (tickR - tickLen) * math.sin(a));
-      final p2 = Offset(center.dx + (tickR + tickLen) * math.cos(a), center.dy + (tickR + tickLen) * math.sin(a));
+      final p1 = Offset(
+        center.dx + (tickRadius - tickLen) * math.cos(a),
+        center.dy + (tickRadius - tickLen) * math.sin(a),
+      );
+      final p2 = Offset(
+        center.dx + (tickRadius + tickLen) * math.cos(a),
+        center.dy + (tickRadius + tickLen) * math.sin(a),
+      );
       canvas.drawLine(p1, p2, tickPaint);
     }
 
-    canvas
-      ..drawCircle(
-        center,
-        math.max(2, minSide * 0.055).toDouble(),
-        Paint()
-          ..color = primary
-          ..isAntiAlias = true
-          ..filterQuality = FilterQuality.high,
-      )
-      ..restore();
+    canvas.drawCircle(
+      center,
+      hubRadius,
+      Paint()
+        ..color = primary
+        ..isAntiAlias = true,
+    );
   }
 
   @override

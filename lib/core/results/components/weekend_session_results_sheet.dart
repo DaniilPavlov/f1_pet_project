@@ -122,7 +122,7 @@ class _WeekendSessionResultsSheetState extends State<WeekendSessionResultsSheet>
                                   const SizedBox(
                                     width: 22,
                                     height: 22,
-                                    child: CustomLoadingIndicator(size: 22),
+                                    child: CustomLoadingIndicator(size: 28),
                                   )
                                 else if (entry.country != null)
                                   CountryFlag(countryOrNationality: entry.country, fontSize: 20),

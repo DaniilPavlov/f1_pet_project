@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:f1_pet_project/common/localization/error_copy.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/network_reachability.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_leaderboard_entry.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_leaderboard_profile.dart';
 import 'package:f1_pet_project/core/predictor/repositories/predictor_leaderboard_repository.dart';
@@ -21,6 +24,9 @@ abstract class PredictorLeaderboardControllerBase with Store {
        _myPoints = myPoints;
 
   final PredictorLeaderboardRepository _repository;
+
+  /// Жёсткий потолок ожидания Firestore.
+  static const _leaderboardLoadTimeout = Duration(seconds: 40);
 
   final String year;
   final int _myPoints;
@@ -76,13 +82,38 @@ abstract class PredictorLeaderboardControllerBase with Store {
     allDataIsLoaded = false;
     formErrorKey = null;
     entries = const AsyncValue.loading();
+
+    if (await NetworkReachability.isOffline()) {
+      entries = entries.toErrorFrom(
+        CustomException(
+          title: ErrorCopy.noConnection,
+          subtitle: ErrorCopy.noConnectionSubtitle,
+        ),
+      );
+      allDataIsLoaded = false;
+      return;
+    }
+
     try {
-      final loadedProfile = await _repository.loadProfile();
-      profile = loadedProfile;
-      nicknameDraft = loadedProfile.nickname ?? '';
-      optInAgreed = loadedProfile.leaderboardOptIn;
-      final list = await _repository.loadLeaderboard(year);
-      entries = entries.toValue(list);
+      await () async {
+        final loadedProfile = await _repository.loadProfile();
+        profile = loadedProfile;
+        nicknameDraft = loadedProfile.nickname ?? '';
+        optInAgreed = loadedProfile.leaderboardOptIn;
+        final list = await _repository.loadLeaderboard(year);
+        entries = entries.toValue(list);
+      }().timeout(_leaderboardLoadTimeout);
+    } on TimeoutException catch (e, st) {
+      if (entries.exception == null && entries.value == null) {
+        entries = entries.toErrorFrom(
+          CustomException(
+            title: ErrorCopy.noConnection,
+            subtitle: ErrorCopy.noConnectionSubtitle,
+            parentException: e,
+            stackTrace: st,
+          ),
+        );
+      }
     } on Object catch (e, st) {
       entries = entries.toErrorFrom(
         CustomException(

@@ -98,6 +98,12 @@ bool _shouldRetry(CustomException ex) {
     return false;
   }
 
+  // Нет сети / не достучались — retry только крутит лоадер.
+  if (parent.type == DioExceptionType.connectionTimeout ||
+      parent.type == DioExceptionType.connectionError) {
+    return false;
+  }
+
   final status = parent.response?.statusCode;
   if (status == null) {
     return true;

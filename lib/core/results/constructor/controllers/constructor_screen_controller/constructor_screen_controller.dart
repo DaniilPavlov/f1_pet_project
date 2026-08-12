@@ -1,7 +1,11 @@
+import 'dart:async';
+
+import 'package:f1_pet_project/common/localization/error_copy.dart';
 import 'package:f1_pet_project/common/models/career/career_stats.dart';
 import 'package:f1_pet_project/common/repositories/espn/espn_media_repository.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/network_reachability.dart';
 import 'package:f1_pet_project/core/news/models/news_article_model.dart';
 import 'package:f1_pet_project/core/results/constructor/repositories/constructor_career_repository.dart';
 import 'package:f1_pet_project/data/exceptions/custom_exception.dart';
@@ -32,6 +36,9 @@ abstract class ConstructorScreenControllerBase with Store {
        _dataRefresh = dataRefresh,
        _fetchCareerStatsForTest = fetchCareerStatsForTest;
 
+  static const _careerLoadTimeout = Duration(seconds: 40);
+  static const _espnLoadTimeout = Duration(seconds: 15);
+
   final ConstructorModel constructor;
   final List<DriverModel> currentDrivers;
   final EspnMediaRepository _espnMediaRepository;
@@ -58,6 +65,16 @@ abstract class ConstructorScreenControllerBase with Store {
   /// Загружает карьеру и ESPN-новости параллельно.
   @action
   Future<void> loadAll() async {
+    if (await NetworkReachability.isOffline()) {
+      careerStats = careerStats.toErrorFrom(
+        CustomException(
+          title: ErrorCopy.noConnection,
+          subtitle: ErrorCopy.noConnectionSubtitle,
+        ),
+      );
+      espnNews = espnNews.toValue(const []);
+      return;
+    }
     await Future.wait([loadCareerStats(), loadEspnNews()]);
   }
 
@@ -71,27 +88,46 @@ abstract class ConstructorScreenControllerBase with Store {
   /// Загружает (или перезагружает) карьерную статистику.
   @action
   Future<void> loadCareerStats() async {
-    await runAsyncLoad(
-      fetch: () => _fetchCareerStats(constructorId: constructor.constructorId, current: currentDrivers),
-      getField: () => careerStats,
-      setField: (value) => careerStats = value,
-      onSuccess: (data) {
-        if (data != null) {
-          careerStats = careerStats.toValue(data);
-        }
-      },
-    );
+    try {
+      await runAsyncLoad(
+        fetch: () => _fetchCareerStats(constructorId: constructor.constructorId, current: currentDrivers),
+        getField: () => careerStats,
+        setField: (value) => careerStats = value,
+        onSuccess: (data) {
+          if (data != null) {
+            careerStats = careerStats.toValue(data);
+          }
+        },
+      ).timeout(_careerLoadTimeout);
+    } on TimeoutException catch (e, st) {
+      if (careerStats.value == null && careerStats.exception == null) {
+        careerStats = careerStats.toErrorFrom(
+          CustomException(
+            title: ErrorCopy.noConnection,
+            subtitle: ErrorCopy.noConnectionSubtitle,
+            parentException: e,
+            stackTrace: st,
+          ),
+        );
+      }
+    }
   }
 
   /// ESPN-новости команды (ошибка → пустой список, экран не ломаем).
   @action
   Future<void> loadEspnNews() async {
     espnNews = espnNews.toLoading();
+    if (await NetworkReachability.isOffline()) {
+      espnNews = espnNews.toValue(const []);
+      return;
+    }
     try {
-      final data = await _espnMediaRepository.constructorNews(
-        constructorId: constructor.constructorId,
-        constructorName: constructor.name,
-      );
+      final data = await _espnMediaRepository
+          .constructorNews(
+            constructorId: constructor.constructorId,
+            constructorName: constructor.name,
+          )
+          .timeout(_espnLoadTimeout);
       espnNews = espnNews.toValue(data);
     } on Object {
       espnNews = espnNews.toValue(const []);
