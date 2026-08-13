@@ -133,8 +133,8 @@ mixin _$PredictorWeekendDetailController
   );
 
   @override
-  Future<void> _loadDriversMap() {
-    return _$_loadDriversMapAsyncAction.run(() => super._loadDriversMap());
+  Future<void> _loadDriversMap(int epoch) {
+    return _$_loadDriversMapAsyncAction.run(() => super._loadDriversMap(epoch));
   }
 
   late final _$_loadQualifyingAsyncAction = AsyncAction(
@@ -143,8 +143,8 @@ mixin _$PredictorWeekendDetailController
   );
 
   @override
-  Future<void> _loadQualifying() {
-    return _$_loadQualifyingAsyncAction.run(() => super._loadQualifying());
+  Future<void> _loadQualifying(int epoch) {
+    return _$_loadQualifyingAsyncAction.run(() => super._loadQualifying(epoch));
   }
 
   late final _$_loadRaceAsyncAction = AsyncAction(
@@ -153,8 +153,8 @@ mixin _$PredictorWeekendDetailController
   );
 
   @override
-  Future<void> _loadRace() {
-    return _$_loadRaceAsyncAction.run(() => super._loadRace());
+  Future<void> _loadRace(int epoch) {
+    return _$_loadRaceAsyncAction.run(() => super._loadRace(epoch));
   }
 
   late final _$PredictorWeekendDetailControllerBaseActionController =

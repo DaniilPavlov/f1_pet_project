@@ -1,6 +1,7 @@
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
+import 'package:f1_pet_project/common/widgets/live_banner_backdrop.dart';
 import 'package:f1_pet_project/services/live_weekend/live_weekend_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -26,24 +27,26 @@ class LiveSessionBanner extends StatelessWidget {
             : context.l10n.liveSessionBannerWithSession(abbr);
 
         return Material(
-          color: AppTheme.red,
-          child: InkWell(
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      label,
-                      style: AppStyles.body.copyWith(
-                        color: AppTheme.onChrome,
-                        fontWeight: FontWeight.w600,
+          color: Colors.transparent,
+          child: LiveBannerBackdrop(
+            child: InkWell(
+              onTap: onTap,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(28, 10, 16, 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        label,
+                        style: AppStyles.body.copyWith(
+                          color: AppTheme.onChrome,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ),
-                  const Icon(Icons.chevron_right, color: AppTheme.onChrome, size: 20),
-                ],
+                    const Icon(Icons.chevron_right, color: AppTheme.onChrome, size: 20),
+                  ],
+                ),
               ),
             ),
           ),

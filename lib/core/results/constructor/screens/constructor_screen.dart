@@ -6,9 +6,9 @@ import 'package:f1_pet_project/common/utils/constructor_colors.dart';
 import 'package:f1_pet_project/common/utils/helpers/share_helper.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/app_refresh_indicator.dart';
 import 'package:f1_pet_project/common/widgets/career/career_info_row.dart';
 import 'package:f1_pet_project/common/widgets/career/career_list_tile.dart';
 import 'package:f1_pet_project/common/widgets/career/career_race_results_sheet.dart';
@@ -87,8 +87,7 @@ class ConstructorScreen extends StatelessWidget {
                     return const CareerScreenShimmer(showPhoto: false);
                   }
 
-                  return RefreshIndicator(
-                    color: AppTheme.red,
+                  return AppRefreshIndicator(
                     onRefresh: controller.refreshAll,
                     child: CustomScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),

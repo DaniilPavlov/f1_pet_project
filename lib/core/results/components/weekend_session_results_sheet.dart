@@ -6,6 +6,7 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/bottom_sheets/default_bottom_sheet.dart';
 import 'package:f1_pet_project/common/widgets/country_flag.dart';
+import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
@@ -119,9 +120,9 @@ class _WeekendSessionResultsSheetState extends State<WeekendSessionResultsSheet>
                                 ),
                                 if (isOpening)
                                   const SizedBox(
-                                    width: 18,
-                                    height: 18,
-                                    child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.red),
+                                    width: 22,
+                                    height: 22,
+                                    child: CustomLoadingIndicator(size: 28),
                                   )
                                 else if (entry.country != null)
                                   CountryFlag(countryOrNationality: entry.country, fontSize: 20),

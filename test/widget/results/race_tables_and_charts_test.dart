@@ -3,6 +3,7 @@ import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/career/espn_driver_photo.dart';
 import 'package:f1_pet_project/common/widgets/career/network_hero_photo.dart';
+import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/tables/tournament_constructors_table.dart';
 import 'package:f1_pet_project/core/results/components/race_table_detail_row.dart';
 import 'package:f1_pet_project/core/results/components/weekend_scoreboard_section.dart';
@@ -132,7 +133,7 @@ void main() {
     testWidgets('delegates to NetworkHeroPhoto', (tester) async {
       await tester.pumpApp(const EspnDriverPhoto(photoUrl: null, isLoading: true));
       expect(find.byType(NetworkHeroPhoto), findsOneWidget);
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(CustomLoadingIndicator), findsOneWidget);
     });
   });
 

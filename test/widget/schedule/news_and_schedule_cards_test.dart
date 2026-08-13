@@ -55,8 +55,8 @@ void main() {
       expect(find.text('Monaco Grand Prix'), findsOneWidget);
       expect(find.text('Monaco'), findsOneWidget);
       expect(find.text('2'), findsOneWidget);
-      expect(find.text('3'), findsOneWidget);
-      expect(find.text('4'), findsOneWidget);
+      expect(find.text('03'), findsOneWidget);
+      expect(find.text('04'), findsOneWidget);
 
       await tester.ensureVisible(find.text(cta));
       await tester.tap(find.text(cta));

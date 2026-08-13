@@ -5,8 +5,8 @@ import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/localization/locale_controller.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/app_refresh_indicator.dart';
 import 'package:f1_pet_project/common/widgets/cached_data_banner.dart';
 import 'package:f1_pet_project/common/widgets/containers/red_border_container.dart';
 import 'package:f1_pet_project/common/widgets/custom_calendar.dart';
@@ -71,8 +71,7 @@ class ScheduleScreen extends StatelessWidget {
 
                         final upcoming = controller.upcomingRace;
 
-                        return RefreshIndicator(
-                          color: AppTheme.red,
+                        return AppRefreshIndicator(
                           onRefresh: controller.refreshAll,
                           child: CustomScrollView(
                             controller: controller.scrollController,

@@ -1,4 +1,5 @@
 import 'package:f1_pet_project/common/widgets/career/network_hero_photo.dart';
+import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/career_screen_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/circuit_screen_shimmer.dart';
 import 'package:f1_pet_project/common/widgets/shimmer/h2h_compare_shimmer.dart';
@@ -103,7 +104,7 @@ void main() {
   group('NetworkHeroPhoto', () {
     testWidgets('shows loading and placeholder states', (tester) async {
       await tester.pumpApp(const NetworkHeroPhoto(photoUrl: null, isLoading: true));
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(CustomLoadingIndicator), findsOneWidget);
 
       await tester.pumpApp(const NetworkHeroPhoto(photoUrl: null));
       expect(find.byIcon(Icons.person), findsOneWidget);

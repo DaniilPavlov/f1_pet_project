@@ -1,4 +1,6 @@
 import 'package:f1_pet_project/app.dart';
+import 'package:f1_pet_project/common/debug_tools/debug_tools_controller.dart';
+import 'package:f1_pet_project/common/debug_tools/debug_tools_helper.dart';
 import 'package:f1_pet_project/common/localization/locale_controller.dart';
 import 'package:f1_pet_project/common/packages/mapkit_init_stub.dart'
     if (dart.library.io) 'package:f1_pet_project/common/packages/mapkit_init_io.dart' as mapkit_init;
@@ -73,6 +75,8 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
+        if (DebugToolsHelper.isEnabled && DebugToolsHelper.showOverlay)
+          ChangeNotifierProvider(create: (_) => DebugToolsController()),
         Provider(create: (_) => LocaleController()),
         Provider(create: (_) => ThemeController()),
         Provider<ScheduleRepository>.value(value: scheduleRepository),

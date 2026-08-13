@@ -60,45 +60,54 @@ class TournamentDriversTable extends StatelessWidget {
         ),
         ExcludeSemantics(
           child: LayoutBuilder(
-            builder: (context, constraints) => SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                child: Table(
-                  columnWidths: const {
-                    0: FixedColumnWidth(32),
-                    1: FlexColumnWidth(0.24),
-                    2: FlexColumnWidth(0.11),
-                    3: FlexColumnWidth(0.18),
-                    4: FlexColumnWidth(0.08),
-                    5: FlexColumnWidth(0.27),
-                  },
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  children: [
-                    driversPrimaryRow(context.l10n),
-                    ...List.generate(drivers.length, (i) {
-                      final standing = drivers[i];
-                      return TableRow(
-                        decoration: ConstructorColors.tableRowDecoration(
-                          zebraColor: context.colors.grayBG,
-                          bottomBorderColor: context.colors.strokeGray,
-                          index: i,
-                          constructorId: standing.constructors.isNotEmpty
-                              ? standing.constructors.first.constructorId
-                              : null,
-                        ),
-                        children: tappableDriverRowCells(
-                          context: context,
-                          driver: standing.driver,
-                          currentConstructors: passCurrentRoster ? standing.constructors : const [],
-                          children: tournamentTableDriversDetailRowChildren(standing, i + 1),
-                        ),
-                      );
-                    }),
-                  ],
+            builder: (context, constraints) {
+              final maxPoints = drivers
+                  .map((d) => double.tryParse(d.points) ?? 0)
+                  .fold<double>(0, (a, b) => a > b ? a : b);
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: Table(
+                    columnWidths: const {
+                      0: FixedColumnWidth(32),
+                      1: FlexColumnWidth(0.24),
+                      2: FlexColumnWidth(0.11),
+                      3: FlexColumnWidth(0.18),
+                      4: FlexColumnWidth(0.08),
+                      5: FlexColumnWidth(0.27),
+                    },
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: [
+                      driversPrimaryRow(context.l10n),
+                      ...List.generate(drivers.length, (i) {
+                        final standing = drivers[i];
+                        return TableRow(
+                          decoration: ConstructorColors.tableRowDecoration(
+                            zebraColor: context.colors.grayBG,
+                            bottomBorderColor: context.colors.strokeGray,
+                            index: i,
+                            constructorId: standing.constructors.isNotEmpty
+                                ? standing.constructors.first.constructorId
+                                : null,
+                          ),
+                          children: tappableDriverRowCells(
+                            context: context,
+                            driver: standing.driver,
+                            currentConstructors: passCurrentRoster ? standing.constructors : const [],
+                            children: tournamentTableDriversDetailRowChildren(
+                              standing,
+                              i + 1,
+                              maxPoints: maxPoints,
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ],

@@ -4,8 +4,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:f1_pet_project/common/localization/l10n_extensions.dart';
 import 'package:f1_pet_project/common/utils/platform_capabilities.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/app_refresh_indicator.dart';
 import 'package:f1_pet_project/common/widgets/cached_data_banner.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/common/widgets/on_app_resumed.dart';
@@ -180,8 +180,7 @@ class _HomeViewState extends State<_HomeView> {
               );
             }
 
-            return RefreshIndicator(
-              color: AppTheme.red,
+            return AppRefreshIndicator(
               onRefresh: () => _refresh(controller),
               child: NotificationListener<ScrollNotification>(
                 onNotification: (notification) {

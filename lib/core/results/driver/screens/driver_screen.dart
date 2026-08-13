@@ -9,6 +9,7 @@ import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/app_refresh_indicator.dart';
 import 'package:f1_pet_project/common/widgets/career/career_info_row.dart';
 import 'package:f1_pet_project/common/widgets/career/career_list_tile.dart';
 import 'package:f1_pet_project/common/widgets/career/career_race_results_sheet.dart';
@@ -96,8 +97,7 @@ class DriverScreen extends StatelessWidget {
                       ? AppTheme.red
                       : ConstructorColors.forConstructorId(teamConstructor.constructorId);
 
-                  return RefreshIndicator(
-                    color: AppTheme.red,
+                  return AppRefreshIndicator(
                     onRefresh: controller.refreshAll,
                     child: CustomScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),

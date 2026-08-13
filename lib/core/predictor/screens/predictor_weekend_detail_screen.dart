@@ -6,10 +6,11 @@ import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/app_refresh_indicator.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
 import 'package:f1_pet_project/core/predictor/components/predictor_auth_gate.dart';
-import 'package:f1_pet_project/core/predictor/components/predictor_comparison_tile.dart';
+import 'package:f1_pet_project/core/predictor/components/predictor_session_reveal.dart';
 import 'package:f1_pet_project/core/predictor/controllers/predictor_weekend_detail_controller/predictor_weekend_detail_controller.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_weekend_prediction.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
@@ -67,8 +68,7 @@ class PredictorWeekendDetailScreen extends StatelessWidget {
                 final compare = controller.activeCompare;
                 final points = compare?.points ?? 0;
 
-                return RefreshIndicator(
-                  color: AppTheme.red,
+                return AppRefreshIndicator(
                   onRefresh: controller.refreshAll,
                   child: ScrollConfiguration(
                     behavior: AntiGlowBehavior(),
@@ -81,11 +81,6 @@ class PredictorWeekendDetailScreen extends StatelessWidget {
                         StaticData.defaultVerticalPadding,
                       ),
                       children: [
-                        Text(
-                          context.l10n.predictorSessionPoints(points),
-                          style: AppStyles.caption.copyWith(color: context.colors.textGray),
-                        ),
-                        const SizedBox(height: 12),
                         SegmentedButton<PredictorDetailSession>(
                           showSelectedIcon: false,
                           style: ButtonStyle(
@@ -125,16 +120,16 @@ class PredictorWeekendDetailScreen extends StatelessWidget {
                             style: AppStyles.caption.copyWith(color: context.colors.textGray),
                           )
                         else
-                          ...compare.rows.map(
-                            (row) => Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: PredictorComparisonTile(
-                                row: row,
-                                driversById: Map.of(controller.driversById),
-                                predictedLabel: context.l10n.predictorPredicted,
-                                actualLabel: context.l10n.predictorActual,
-                              ),
+                          PredictorSessionReveal(
+                            key: ValueKey(
+                              '${controller.selectedSession}_${compare.points}_${compare.rows.length}',
                             ),
+                            rows: compare.rows,
+                            points: points,
+                            pointsLabelBuilder: context.l10n.predictorSessionPoints,
+                            driversById: Map.of(controller.driversById),
+                            predictedLabel: context.l10n.predictorPredicted,
+                            actualLabel: context.l10n.predictorActual,
                           ),
                       ],
                     ),

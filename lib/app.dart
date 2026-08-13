@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:f1_pet_project/common/debug_tools/debug_tools_wrapper.dart';
 import 'package:f1_pet_project/common/localization/error_copy.dart';
 import 'package:f1_pet_project/common/localization/locale_controller.dart';
 import 'package:f1_pet_project/common/utils/loggers/logger.dart';
@@ -259,11 +260,14 @@ class _AppFrame extends StatelessWidget {
         data: media,
         child: DefaultTextStyle(
           style: Theme.of(context).textTheme.bodyMedium!,
-          child: Stack(
-            children: [
-              content,
-              F1PetDeepLinkHandler(forceUpdate: forceUpdate, router: router),
-            ],
+          child: DebugToolsWrapper(
+            navigatorKey: router.navigatorKey,
+            child: Stack(
+              children: [
+                content,
+                F1PetDeepLinkHandler(forceUpdate: forceUpdate, router: router),
+              ],
+            ),
           ),
         ),
       ),

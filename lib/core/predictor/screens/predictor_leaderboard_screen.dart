@@ -6,6 +6,7 @@ import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/app_refresh_indicator.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
 import 'package:f1_pet_project/common/widgets/error_body.dart';
@@ -18,7 +19,6 @@ import 'package:f1_pet_project/core/predictor/utils/predictor_leaderboard_error_
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 /// Лидерборд предиктора за сезон + opt-in с ником.
@@ -81,9 +81,6 @@ class _LeaderboardBody extends StatefulWidget {
 }
 
 class _LeaderboardBodyState extends State<_LeaderboardBody> {
-  /// Высота [BlackButton]: vertical padding 12×2 + [AppStyles.h3] fontSize 25.
-  static const _primaryButtonHeight = 49.0;
-
   late final TextEditingController _nicknameController;
 
   @override
@@ -114,7 +111,7 @@ class _LeaderboardBodyState extends State<_LeaderboardBody> {
 
         return ScrollConfiguration(
           behavior: AntiGlowBehavior(),
-          child: RefreshIndicator(
+          child: AppRefreshIndicator(
             onRefresh: controller.load,
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -158,17 +155,12 @@ class _LeaderboardBodyState extends State<_LeaderboardBody> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  if (controller.isSaving)
-                    const SizedBox(
-                      height: _primaryButtonHeight,
-                      child: Center(child: _LeaderboardActionLoader()),
-                    )
-                  else
-                    BlackButton(
-                      text: context.l10n.predictorLeaderboardJoin,
-                      isDisabled: false,
-                      onTap: controller.join,
-                    ),
+                  BlackButton(
+                    text: context.l10n.predictorLeaderboardJoin,
+                    isDisabled: false,
+                    isLoading: controller.isSaving,
+                    onTap: controller.join,
+                  ),
                   const SizedBox(height: 24),
                 ] else ...[
                   if (myEntry != null) ...[
@@ -195,17 +187,13 @@ class _LeaderboardBodyState extends State<_LeaderboardBody> {
                     errorText: formError.isEmpty ? null : formError,
                   ),
                   const SizedBox(height: 12),
-                  if (controller.isSaving)
-                    const SizedBox(
-                      height: _primaryButtonHeight,
-                      child: Center(child: _LeaderboardActionLoader()),
-                    )
-                  else ...[
-                    BlackButton(
-                      text: context.l10n.predictorNicknameSave,
-                      isDisabled: false,
-                      onTap: controller.saveNickname,
-                    ),
+                  BlackButton(
+                    text: context.l10n.predictorNicknameSave,
+                    isDisabled: false,
+                    isLoading: controller.isSaving,
+                    onTap: controller.saveNickname,
+                  ),
+                  if (!controller.isSaving) ...[
                     const SizedBox(height: 12),
                     _LeaveLeaderboardButton(
                       isDisabled: false,
@@ -269,19 +257,6 @@ class _LeaveLeaderboardButton extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _LeaderboardActionLoader extends StatelessWidget {
-  const _LeaderboardActionLoader();
-
-  @override
-  Widget build(BuildContext context) {
-    return LoadingAnimationWidget.twistingDots(
-      leftDotColor: context.colors.black,
-      rightDotColor: AppTheme.red,
-      size: 28,
     );
   }
 }

@@ -38,6 +38,7 @@ Same idea, other stacks:
 | Navigation | Auto Route + `app_links` deep links |
 | Network | Dio (`AppDio`, Jolpica `RequestHandler`) |
 | Data | Feature repositories + `AppDataRefresh` (pull-to-refresh) |
+| Native / FFI | `dart:ffi` + C zlib (`native/cache_zlib`) for Jolpica disk-cache compression |
 | Codegen | json_serializable, mobx_codegen, auto_route_generator, envied |
 | Map | Yandex MapKit |
 | Backend | Firebase (Core, Auth, App Check, Firestore, Analytics, Crashlytics, Remote Config), AppMetrica |
@@ -49,14 +50,43 @@ Same idea, other stacks:
 - **Jolpica** — one `RequestHandler` wired via `ApiLoader.configure` (static access from repos); screens do not call Dio.
 - **Repositories** — Jolpica/ESPN/Wikipedia live in `*/repositories/`.
 - **`AppDataRefresh.clearAll()`** — soft-invalidate on pull-to-refresh; cached data kept for offline.
-- **Cache** — Jolpica: `CacheInterceptor` (memory + prefs). ESPN/schedule/seasons: `PrefsJsonStore` / `DayPrefsJsonStore`.
+- **Cache** — Jolpica: `CacheInterceptor` (memory + prefs). Disk payloads compressed via **Dart FFI → native zlib** (`native/cache_zlib`, see [Native zlib (FFI)](#native-zlib-ffi)). ESPN/schedule/seasons: `PrefsJsonStore` / `DayPrefsJsonStore`.
 - **Theme** — `ThemeController` + `AppThemeData` / `AppColors` (light & dark).
 - **Analytics** — typed `AnalyticsEvent` + `AnalyticsGateway` (Firebase + AppMetrica); route observer for screens.
 - **Deep links** — `F1PetDeepLinkHandler` (`f1pet://driver|constructor|circuit/<id>`, `f1pet://race/live`).
 - **Home widgets (Android)** — standings top-3 + next GP countdown; synced via method channel.
 - **Firebase** — `bootstrapFirebase()` in `main`. Client configs **gitignored**; CI uses `tool/ci` stubs.
 - **AppMetrica** — `bootstrapAppMetrica()` from `.env` (envied).
-- **Logging** — package `logger` + Dio `LogInterceptor` in debug.
+- **Logging** — package `logger` + Talker / Dio logger in debug (`lib/common/debug_tools/`; eye FAB → inspector + Talker).
+- **iOS deps** — Swift Package Manager (CocoaPods removed). MapKit variant: `ios/YandexMapkit.variant` (`full` / `lite`).
+
+## Native zlib (FFI)
+
+Jolpica GET responses are cached in SharedPreferences. JSON repeats a lot of keys, so disk entries are compressed with a thin **C zlib** wrapper called from Dart through **`dart:ffi`** (not MethodChannel, not `dart:io` gzip).
+
+| Piece | Role |
+|-------|------|
+| `native/cache_zlib/` | C API: `cache_zlib_compress` / `decompress` / `free` (malloc ownership on the native side) |
+| Android | CMake → `libf1_cache_zlib.so` (`android/app` `externalNativeBuild`) |
+| iOS | `cache_zlib.c` linked into Runner + `libz`; `-Wl,-u,_cache_zlib_*` keeps symbols from dead-strip |
+| `lib/services/cache/zlib/` | Hand-written FFI bindings, library loader, envelope codec |
+| `CachePayloadCodec` | Interceptor hook; FFI when the native lib loads, else plain JSON (web / missing dylib) |
+
+**Wire format in prefs:** `z1:` + base64(`uint32_be uncompressed_len` ‖ zlib bytes). Values without the prefix are treated as legacy uncompressed JSON (still readable).
+
+**Why FFI here:** real offline cache size win; shows `DynamicLibrary` (`.so` vs `process()`), `Pointer`/`Arena` lifecycle, and ABI ownership (`cache_zlib_free`) on a path the app already owns.
+
+Host dylib for the FFI unit test (optional; test skips if missing):
+
+```bash
+# cmake, or clang if cmake is not installed:
+clang -shared -fPIC -O2 -I native/cache_zlib/include \
+  native/cache_zlib/src/cache_zlib.c -lz \
+  -o build/cache_zlib/libf1_cache_zlib.dylib
+
+F1_CACHE_ZLIB_LIB="$PWD/build/cache_zlib/libf1_cache_zlib.dylib" \
+  flutter test test/units/services/cache/
+```
 
 ## Structure
 
@@ -66,16 +96,21 @@ f1_pet_project/
 │   ├── common/
 │   ├── core/        # home, results, schedule, news, circuits
 │   ├── data/
-│   ├── services/    # analytics, deeplinks, firebase, home_widget, …
+│   ├── services/    # analytics, cache (+ zlib FFI), deeplinks, firebase, home_widget, …
 │   ├── app_config.dart
 │   └── router/
+├── native/
+│   └── cache_zlib/  # C zlib wrapper for Dart FFI
 ├── tool/ci/
 ├── assets/
+│   ├── fonts/       # HelveticaNeueCyr-Bold, Inter-Regular
+│   ├── circuits/ …
+│   └── …
 ├── test/
 │   ├── helpers/     # fixtures, fakes, pumpApp / screen smoke
 │   ├── units/       # mirrors lib/ (common, core, services)
 │   └── widget/      # common, home, results, schedule, circuits, screens, misc + goldens/
-├── android/ / ios/
+├── android/ / ios/  # iOS: SPM (no Podfile)
 └── .github/workflows/
 ```
 
@@ -106,7 +141,6 @@ Firebase files from FlutterFire are gitignored; CI uses stubs.
 ```bash
 firebase login
 flutterfire configure --yes --project=<PROJECT_ID> --platforms=android,ios,web
-# ios: cd ios && pod install
 ```
 
 Remote Config: `min_app_version` (string).
@@ -117,12 +151,12 @@ Remote Config: `min_app_version` (string).
 
 | Workflow | When | What |
 |----------|------|------|
-| `ci.yml` | push / PR → `master` | analyze, test, coverage gate (≥75%, excl. generated/l10n) |
+| `ci.yml` | push / PR → `master` | analyze, test, coverage gate (≥80%, excl. generated/l10n) |
 | `release.yml` | tag `v*` | APK + GitHub Release |
 
 ```bash
 flutter test --coverage
-dart run tool/ci/check_coverage.dart --min 75 --path coverage/lcov.info
+dart run tool/ci/check_coverage.dart --min 80 --path coverage/lcov.info
 ```
 
 ```bash
@@ -130,7 +164,7 @@ dart run tool/ci/check_coverage.dart --min 75 --path coverage/lcov.info
 git tag v1.6.3 && git push origin v1.6.3
 ```
 
-Release secrets: `YANDEX_MAPKIT_API_KEY`, `ANDROID_KEYSTORE_*` (required); `APPMETRICA_API_KEY`, `FIREBASE_OPTIONS_DART`, `GOOGLE_SERVICES_JSON`, `FIREBASE_TOKEN` (optional; token enables Crashlytics Dart symbol upload).
+Release secrets: `YANDEX_MAPKIT_API_KEY`, `ANDROID_KEYSTORE_*` (required); `APPMETRICA_API_KEY`, `FIREBASE_OPTIONS_DART`, `GOOGLE_SERVICES_JSON` (optional).
 
 ```bash
 keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
@@ -143,6 +177,8 @@ base64 -i upload-keystore.jks | pbcopy   # → ANDROID_KEYSTORE_BASE64
 flutter build web --release
 flutter analyze && flutter test
 ```
+
+Optional FFI host lib for `test/units/services/cache/zlib/` (see [Native zlib (FFI)](#native-zlib-ffi)).
 
 ## Deep links
 

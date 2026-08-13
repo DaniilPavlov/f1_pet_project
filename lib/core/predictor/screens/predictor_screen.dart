@@ -7,6 +7,7 @@ import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/app_refresh_indicator.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/common/widgets/containers/red_border_container.dart';
 import 'package:f1_pet_project/common/widgets/custom_loading_indicator.dart';
@@ -112,8 +113,7 @@ class _PredictorBody extends StatelessWidget {
             prediction.qualiPoints == null &&
             prediction.racePoints == null;
 
-        return RefreshIndicator(
-          color: AppTheme.red,
+        return AppRefreshIndicator(
           onRefresh: controller.refreshAll,
           child: ScrollConfiguration(
             behavior: AntiGlowBehavior(),

@@ -7,10 +7,11 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 /// Инициализация Firebase + App Check + Analytics + Crashlytics + Remote Config.
 Future<RemoteConfigService> bootstrapFirebase() async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await _ensureFirebaseApp();
   await _activateAppCheck();
 
   // Crashlytics не поддерживает web — иначе bootstrap падает до runApp (белый экран).
@@ -39,6 +40,27 @@ Future<RemoteConfigService> bootstrapFirebase() async {
   }
 
   return remoteConfig;
+}
+
+/// `google-services` / native SDK часто уже создают `[DEFAULT]`, а Dart-side
+/// `Firebase.apps` ещё пустой — тогда `initializeApp` кидает `duplicate-app`.
+Future<void> _ensureFirebaseApp() async {
+  if (Firebase.apps.isNotEmpty) {
+    return;
+  }
+  try {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  } on FirebaseException catch (error) {
+    if (error.code == 'duplicate-app') {
+      return;
+    }
+    rethrow;
+  } on PlatformException catch (error) {
+    if (error.code == 'duplicate-app' || (error.message?.contains('duplicate-app') ?? false)) {
+      return;
+    }
+    rethrow;
+  }
 }
 
 Future<void> _activateAppCheck() async {

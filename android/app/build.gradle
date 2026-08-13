@@ -73,16 +73,10 @@ if (keystorePropertiesFile.exists()) {
     println "____________"
 }
 
-// CI uses tool/ci/google-services.stub.json — Crashlytics mapping upload would 400 against it.
-def googleServicesJson = file('google-services.json')
-def isFirebaseCiStub = googleServicesJson.exists() && googleServicesJson.getText('UTF-8').contains('"project_id": "ci-stub"')
-if (isFirebaseCiStub) {
-    println "Firebase google-services.json is CI stub — Crashlytics mapping upload disabled"
-}
-
 android {
     namespace 'com.example.f1_pet_project'
-    compileSdk 36
+    compileSdk 37
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         // Flag to enable support for the new language APIs
@@ -113,6 +107,18 @@ android {
         // Do not set archivesBaseName here — names like "1.6.1(202607230)" break install
         // on some devices ("App not installed").
         buildConfigField "String", "YANDEX_MAPKIT_API_KEY", "\"${yandexMapKitApiKey}\""
+        externalNativeBuild {
+            cmake {
+                // Match Flutter's preferred ABIs; NDK ships zlib.
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+        }
     }
 
     // Keep default Gradle/Flutter APK names (app-release.apk). Custom outputFileName
@@ -134,12 +140,6 @@ android {
                 signingConfig signingConfigs.release
             } else {
                 signingConfig signingConfigs.debug
-            }
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            firebaseCrashlytics {
-                mappingFileUploadEnabled = !isFirebaseCiStub
             }
         }
     }
@@ -164,7 +164,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.2.0"
-    implementation 'com.yandex.android:maps.mobile:4.3.2-full'
+    implementation 'com.yandex.android:maps.mobile:4.42.0-full'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
     implementation "androidx.work:work-runtime:2.8.1"

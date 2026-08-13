@@ -322,9 +322,9 @@ mixin _$PredictorScreenController on PredictorScreenControllerBase, Store {
   );
 
   @override
-  Future<void> _loadPredictionsStore() {
+  Future<void> _loadPredictionsStore(int epoch) {
     return _$_loadPredictionsStoreAsyncAction.run(
-      () => super._loadPredictionsStore(),
+      () => super._loadPredictionsStore(epoch),
     );
   }
 
@@ -412,8 +412,8 @@ mixin _$PredictorScreenController on PredictorScreenControllerBase, Store {
   );
 
   @override
-  Future<void> _loadSchedule() {
-    return _$_loadScheduleAsyncAction.run(() => super._loadSchedule());
+  Future<void> _loadSchedule(int epoch) {
+    return _$_loadScheduleAsyncAction.run(() => super._loadSchedule(epoch));
   }
 
   late final _$_loadDriversListAsyncAction = AsyncAction(
@@ -422,8 +422,10 @@ mixin _$PredictorScreenController on PredictorScreenControllerBase, Store {
   );
 
   @override
-  Future<void> _loadDriversList() {
-    return _$_loadDriversListAsyncAction.run(() => super._loadDriversList());
+  Future<void> _loadDriversList(int epoch) {
+    return _$_loadDriversListAsyncAction.run(
+      () => super._loadDriversList(epoch),
+    );
   }
 
   late final _$_loadConstructorsByDriverAsyncAction = AsyncAction(
@@ -432,9 +434,9 @@ mixin _$PredictorScreenController on PredictorScreenControllerBase, Store {
   );
 
   @override
-  Future<void> _loadConstructorsByDriver() {
+  Future<void> _loadConstructorsByDriver(int epoch) {
     return _$_loadConstructorsByDriverAsyncAction.run(
-      () => super._loadConstructorsByDriver(),
+      () => super._loadConstructorsByDriver(epoch),
     );
   }
 

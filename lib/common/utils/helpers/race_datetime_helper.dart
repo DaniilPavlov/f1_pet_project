@@ -75,4 +75,7 @@ class CountdownParts {
   final int seconds;
 
   bool get isZero => days == 0 && hours == 0 && minutes == 0 && seconds == 0;
+
+  /// Полные оставшиеся секунды (для колец прогресса).
+  int get totalSeconds => days * 86400 + hours * 3600 + minutes * 60 + seconds;
 }

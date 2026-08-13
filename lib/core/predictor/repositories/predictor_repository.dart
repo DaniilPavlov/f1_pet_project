@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_season.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_store.dart';
@@ -25,6 +27,8 @@ class PredictorRepository {
       _firestore = null,
       _memoryBackend = {},
       _uidProvider = uidProvider;
+
+  static const _firestoreTimeout = Duration(seconds: 40);
 
   final AuthService? _authService;
   final FirebaseFirestore? _firestore;
@@ -61,7 +65,7 @@ class PredictorRepository {
           seasons[entry.key] = PredictorSeason.fromJson(entry.key, entry.value);
         }
       } else {
-        final snap = await _seasonsCol(uid).get();
+        final snap = await _seasonsCol(uid).get().timeout(_firestoreTimeout);
         for (final doc in snap.docs) {
           seasons[doc.id] = PredictorSeason.fromJson(doc.id, doc.data());
         }
@@ -147,6 +151,6 @@ class PredictorRepository {
     await _seasonsCol(uid).doc(year).set({
       ...payload,
       'updatedAt': FieldValue.serverTimestamp(),
-    });
+    }).timeout(_firestoreTimeout);
   }
 }

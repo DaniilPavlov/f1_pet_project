@@ -5,9 +5,9 @@ import 'package:f1_pet_project/common/utils/constants/static_data.dart';
 import 'package:f1_pet_project/common/utils/helpers/share_helper.dart';
 import 'package:f1_pet_project/common/utils/theme/anti_glow_behavior.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
-import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/utils/utils.dart';
 import 'package:f1_pet_project/common/widgets/app_bar/custom_app_bar.dart';
+import 'package:f1_pet_project/common/widgets/app_refresh_indicator.dart';
 import 'package:f1_pet_project/common/widgets/career/career_list_tile.dart';
 import 'package:f1_pet_project/common/widgets/career/network_hero_photo.dart';
 import 'package:f1_pet_project/common/widgets/circuits/circuit_layout_image.dart';
@@ -81,8 +81,7 @@ class CircuitScreen extends StatelessWidget {
               final hasLayout = CircuitLayoutAssets.hasLayout(circuitModel.circuitId);
               final stats = controller.circuitStats;
 
-              return RefreshIndicator(
-                color: AppTheme.red,
+              return AppRefreshIndicator(
                 onRefresh: controller.refreshAll,
                 child: CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),

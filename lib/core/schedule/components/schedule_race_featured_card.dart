@@ -6,6 +6,7 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/common/widgets/buttons/black_button.dart';
 import 'package:f1_pet_project/common/widgets/circuits/circuit_layout_image.dart';
 import 'package:f1_pet_project/core/circuits/stats/circuit_layout_assets.dart';
+import 'package:f1_pet_project/core/schedule/components/schedule_countdown_panel.dart';
 import 'package:f1_pet_project/core/schedule/models/races_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -59,12 +60,11 @@ class ScheduleRaceFeaturedCard extends StatelessWidget {
             const SizedBox(height: 16),
             Text(context.l10n.scheduleCountdownTitle, style: AppStyles.caption.copyWith(color: context.colors.textGray)),
             const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(child: _CountdownCell(value: '${countdown.days}', label: context.l10n.scheduleDays)),
-                Expanded(child: _CountdownCell(value: '${countdown.hours}', label: context.l10n.scheduleHours)),
-                Expanded(child: _CountdownCell(value: '${countdown.minutes}', label: context.l10n.scheduleMinutes)),
-              ],
+            ScheduleCountdownPanel(
+              countdown: countdown,
+              daysLabel: context.l10n.scheduleDays,
+              hoursLabel: context.l10n.scheduleHours,
+              minutesLabel: context.l10n.scheduleMinutes,
             ),
           ],
           const SizedBox(height: 16),
@@ -75,24 +75,6 @@ class ScheduleRaceFeaturedCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _CountdownCell extends StatelessWidget {
-  const _CountdownCell({required this.value, required this.label});
-
-  final String value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(value, style: AppStyles.h3),
-        const SizedBox(height: 2),
-        Text(label, style: AppStyles.caption.copyWith(color: context.colors.textGray)),
-      ],
     );
   }
 }

@@ -1,5 +1,9 @@
+import 'dart:async';
+
+import 'package:f1_pet_project/common/localization/error_copy.dart';
 import 'package:f1_pet_project/common/utils/helpers/async_load_helper.dart';
 import 'package:f1_pet_project/common/utils/helpers/mobx_async_value.dart';
+import 'package:f1_pet_project/common/utils/helpers/network_reachability.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_comparison.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_weekend_prediction.dart';
 import 'package:f1_pet_project/core/predictor/services/predictor_score_service.dart';
@@ -46,6 +50,12 @@ abstract class PredictorWeekendDetailControllerBase with Store {
   final Future<ScheduleModel> Function({required String year, required String round})? _fetchRaceResultsForTest;
   final Future<List<DriverModel>> Function() _loadDrivers;
 
+  /// Жёсткий потолок ожидания сети.
+  static const _detailLoadTimeout = Duration(seconds: 40);
+
+  /// Поколение [load]: после таймаута отсекаем поздние setField(toLoading).
+  int _loadEpoch = 0;
+
   @observable
   AsyncValue<PredictorSessionCompare> qualifyingCompare = const AsyncValue.loading();
 
@@ -61,6 +71,8 @@ abstract class PredictorWeekendDetailControllerBase with Store {
   @observable
   bool allDataIsLoaded = false;
 
+  bool _isLoadEpoch(int epoch) => epoch == _loadEpoch;
+
   @computed
   CustomException? get screenError => firstException([qualifyingCompare, raceCompare]);
 
@@ -75,8 +87,60 @@ abstract class PredictorWeekendDetailControllerBase with Store {
 
   @action
   Future<void> load() async {
+    final epoch = ++_loadEpoch;
     allDataIsLoaded = false;
-    await Future.wait([_loadDriversMap(), _loadQualifying(), _loadRace()]);
+    qualifyingCompare = const AsyncValue.loading();
+    raceCompare = const AsyncValue.loading();
+
+    if (await NetworkReachability.isOffline()) {
+      if (!_isLoadEpoch(epoch)) {
+        return;
+      }
+      final exception = CustomException(
+        title: ErrorCopy.noConnection,
+        subtitle: ErrorCopy.noConnectionSubtitle,
+      );
+      qualifyingCompare = qualifyingCompare.toErrorFrom(exception);
+      raceCompare = raceCompare.toErrorFrom(exception);
+      allDataIsLoaded = false;
+      return;
+    }
+
+    try {
+      await Future.wait([
+        _loadDriversMap(epoch),
+        _loadQualifying(epoch),
+        _loadRace(epoch),
+      ]).timeout(_detailLoadTimeout);
+    } on TimeoutException catch (e, st) {
+      if (!_isLoadEpoch(epoch)) {
+        return;
+      }
+      final exception = CustomException(
+        title: ErrorCopy.noConnection,
+        subtitle: ErrorCopy.noConnectionSubtitle,
+        parentException: e,
+        stackTrace: st,
+      );
+      if (qualifyingCompare.exception == null && qualifyingCompare.value == null) {
+        qualifyingCompare = qualifyingCompare.toErrorFrom(exception);
+      }
+      if (raceCompare.exception == null && raceCompare.value == null) {
+        raceCompare = raceCompare.toErrorFrom(exception);
+      }
+      _loadEpoch++;
+      allDataIsLoaded = qualifyingCompare.value != null || raceCompare.value != null;
+      return;
+    }
+    if (!_isLoadEpoch(epoch)) {
+      return;
+    }
+    if (screenError?.title == ErrorCopy.noConnection &&
+        qualifyingCompare.value == null &&
+        raceCompare.value == null) {
+      allDataIsLoaded = false;
+      return;
+    }
     allDataIsLoaded = screenError == null || qualifyingCompare.value != null || raceCompare.value != null;
   }
 
@@ -84,9 +148,12 @@ abstract class PredictorWeekendDetailControllerBase with Store {
   Future<void> refreshAll() => load();
 
   @action
-  Future<void> _loadDriversMap() async {
+  Future<void> _loadDriversMap(int epoch) async {
     try {
       final list = await _loadDrivers();
+      if (!_isLoadEpoch(epoch)) {
+        return;
+      }
       driversById = ObservableMap.of({for (final d in list) d.driverId: d});
     } on Object {
       // Каталог опционален — подписи упадут на driverId.
@@ -94,7 +161,7 @@ abstract class PredictorWeekendDetailControllerBase with Store {
   }
 
   @action
-  Future<void> _loadQualifying() async {
+  Future<void> _loadQualifying(int epoch) async {
     await runAsyncLoad<List<String>, PredictorSessionCompare>(
       fetch: () async {
         final cached = weekend.actualQualifyingOrder;
@@ -112,8 +179,16 @@ abstract class PredictorWeekendDetailControllerBase with Store {
         }
       },
       getField: () => qualifyingCompare,
-      setField: (value) => qualifyingCompare = value,
+      setField: (value) {
+        if (!_isLoadEpoch(epoch)) {
+          return;
+        }
+        qualifyingCompare = value;
+      },
       onSuccess: (actual) {
+        if (!_isLoadEpoch(epoch)) {
+          return;
+        }
         qualifyingCompare = qualifyingCompare.toValue(
           PredictorSessionCompare.fromOrders(
             predicted: weekend.qualifyingOrder,
@@ -125,7 +200,7 @@ abstract class PredictorWeekendDetailControllerBase with Store {
   }
 
   @action
-  Future<void> _loadRace() async {
+  Future<void> _loadRace(int epoch) async {
     await runAsyncLoad<List<String>, PredictorSessionCompare>(
       fetch: () async {
         final cached = weekend.actualRaceOrder;
@@ -143,8 +218,16 @@ abstract class PredictorWeekendDetailControllerBase with Store {
         }
       },
       getField: () => raceCompare,
-      setField: (value) => raceCompare = value,
+      setField: (value) {
+        if (!_isLoadEpoch(epoch)) {
+          return;
+        }
+        raceCompare = value;
+      },
       onSuccess: (actual) {
+        if (!_isLoadEpoch(epoch)) {
+          return;
+        }
         raceCompare = raceCompare.toValue(
           PredictorSessionCompare.fromOrders(
             predicted: weekend.raceOrder,

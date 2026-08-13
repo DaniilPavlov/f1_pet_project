@@ -7,13 +7,16 @@ import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/core/results/h2h/models/h2h_points_timeline.dart';
 import 'package:flutter/material.dart';
 
-/// Линейный график накопленных очков двух участников (CustomPainter).
-class H2hPointsChart extends StatelessWidget {
+/// Линейный график накопленных очков двух участников.
+///
+/// Линии рисует [CustomPainter]; появление — явный [AnimationController].
+class H2hPointsChart extends StatefulWidget {
   const H2hPointsChart({
     required this.timeline,
     required this.colorA,
     required this.colorB,
     this.height = 220,
+    this.animationDuration = const Duration(milliseconds: 1400),
     super.key,
   });
 
@@ -21,6 +24,47 @@ class H2hPointsChart extends StatelessWidget {
   final Color colorA;
   final Color colorB;
   final double height;
+  final Duration animationDuration;
+
+  @override
+  State<H2hPointsChart> createState() => _H2hPointsChartState();
+}
+
+/// Состояние анимации появления линий графика.
+class _H2hPointsChartState extends State<H2hPointsChart> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _progress;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: widget.animationDuration);
+    _progress = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
+    if (widget.timeline.points.isNotEmpty) {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant H2hPointsChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.animationDuration != widget.animationDuration) {
+      _controller.duration = widget.animationDuration;
+    }
+    if (oldWidget.timeline != widget.timeline) {
+      if (widget.timeline.points.isEmpty) {
+        _controller.value = 0;
+      } else {
+        _controller.forward(from: 0);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,22 +73,29 @@ class H2hPointsChart extends StatelessWidget {
     final labelStyle = AppStyles.caption.copyWith(color: context.colors.textGray, fontSize: 10);
 
     return SizedBox(
-      height: height,
+      height: widget.height,
       width: double.infinity,
-      child: CustomPaint(
-        painter: _H2hPointsChartPainter(
-          timeline: timeline,
-          colorA: colorA,
-          colorB: colorB,
-          axisColor: axisColor,
-          gridColor: gridColor,
-          labelStyle: labelStyle,
-        ),
+      child: AnimatedBuilder(
+        animation: _progress,
+        builder: (context, _) {
+          return CustomPaint(
+            painter: _H2hPointsChartPainter(
+              timeline: widget.timeline,
+              colorA: widget.colorA,
+              colorB: widget.colorB,
+              axisColor: axisColor,
+              gridColor: gridColor,
+              labelStyle: labelStyle,
+              progress: _progress.value,
+            ),
+          );
+        },
       ),
     );
   }
 }
 
+/// Отрисовка осей, сеток и двух серий с прогрессом [progress] (`0…1`).
 class _H2hPointsChartPainter extends CustomPainter {
   _H2hPointsChartPainter({
     required this.timeline,
@@ -53,6 +104,7 @@ class _H2hPointsChartPainter extends CustomPainter {
     required this.axisColor,
     required this.gridColor,
     required this.labelStyle,
+    required this.progress,
   });
 
   final H2hPointsTimeline timeline;
@@ -61,6 +113,7 @@ class _H2hPointsChartPainter extends CustomPainter {
   final Color axisColor;
   final Color gridColor;
   final TextStyle labelStyle;
+  final double progress;
 
   static const _leftPad = 36.0;
   static const _rightPad = 8.0;
@@ -128,8 +181,44 @@ class _H2hPointsChartPainter extends CustomPainter {
           path.lineTo(p.dx, p.dy);
         }
       }
+
+      final metrics = path.computeMetrics().toList();
+      final metric = metrics.isEmpty ? null : metrics.first;
+      final drawProgress = progress.clamp(0.0, 1.0);
+      final Path visiblePath;
+      ui.Tangent? tip;
+      if (metric == null || metric.length <= 0) {
+        visiblePath = drawProgress > 0 ? path : Path();
+        if (points.isNotEmpty && drawProgress > 0) {
+          tip = ui.Tangent(pointAt(0, valueOf(points[0])), const Offset(1, 0));
+        }
+      } else {
+        visiblePath = metric.extractPath(0, metric.length * drawProgress);
+        tip = metric.getTangentForOffset(metric.length * drawProgress);
+      }
+
+      if (tip != null && drawProgress > 0) {
+        final first = pointAt(0, valueOf(points[0]));
+        final fillPath = Path.from(visiblePath)
+          ..lineTo(tip.position.dx, chart.bottom)
+          ..lineTo(first.dx, chart.bottom)
+          ..close();
+        canvas.drawPath(
+          fillPath,
+          Paint()
+            ..shader = ui.Gradient.linear(
+              Offset(chart.left, chart.top),
+              Offset(chart.left, chart.bottom),
+              [
+                color.withValues(alpha: 0.22 * drawProgress),
+                color.withValues(alpha: 0.02),
+              ],
+            ),
+        );
+      }
+
       canvas.drawPath(
-        path,
+        visiblePath,
         Paint()
           ..color = color
           ..style = PaintingStyle.stroke
@@ -138,15 +227,41 @@ class _H2hPointsChartPainter extends CustomPainter {
           ..strokeJoin = StrokeJoin.round,
       );
 
+      if (tip != null && drawProgress > 0) {
+        canvas
+          ..drawCircle(
+            tip.position,
+            5,
+            Paint()..color = color.withValues(alpha: 0.35),
+          )
+          ..drawCircle(tip.position, 3, Paint()..color = color);
+      }
+
       final dotPaint = Paint()..color = color;
+      final dotRadius = points.length > 30 ? 1.5 : 3.0;
       for (var i = 0; i < points.length; i++) {
-        final p = pointAt(i, valueOf(points[i]));
-        canvas.drawCircle(p, points.length > 30 ? 1.5 : 3, dotPaint);
+        final t = points.length == 1 ? 1.0 : i / (points.length - 1);
+        if (t > drawProgress + 0.001) {
+          break;
+        }
+        canvas.drawCircle(pointAt(i, valueOf(points[i])), dotRadius, dotPaint);
       }
     }
 
     drawSeries(colorA, (p) => p.cumulativeA);
     drawSeries(colorB, (p) => p.cumulativeB);
+
+    if (progress > 0.02 && points.length > 1) {
+      final scrubX = chart.left + chart.width * progress.clamp(0.0, 1.0);
+      canvas.drawLine(
+        Offset(scrubX, chart.top),
+        Offset(scrubX, chart.bottom),
+        Paint()
+          ..color = axisColor.withValues(alpha: 0.35)
+          ..strokeWidth = 1
+          ..style = PaintingStyle.stroke,
+      );
+    }
 
     final labelStep = _labelStep(points.length);
     for (var i = 0; i < points.length; i += labelStep) {
@@ -226,7 +341,8 @@ class _H2hPointsChartPainter extends CustomPainter {
         oldDelegate.colorA != colorA ||
         oldDelegate.colorB != colorB ||
         oldDelegate.axisColor != axisColor ||
-        oldDelegate.gridColor != gridColor;
+        oldDelegate.gridColor != gridColor ||
+        oldDelegate.progress != progress;
   }
 }
 
