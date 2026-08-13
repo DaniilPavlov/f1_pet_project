@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:f1_pet_project/common/debug_tools/debug_tools_helper.dart';
+import 'package:f1_pet_project/common/debug_tools/talker_repository.dart';
 import 'package:f1_pet_project/common/utils/constants/static_data.dart';
-import 'package:flutter/foundation.dart';
+import 'package:talker_dio_logger/talker_dio_logger.dart';
 
 /// Фабрика Dio: общие таймауты (заголовки Jolpica задаёт [RequestHandler]).
 ///
@@ -34,11 +36,22 @@ abstract final class AppDio {
     return dio;
   }
 
-  /// В debug логирует method/url/status без тел и заголовков (ответы большие).
+  /// В debug tools пишет method/url/status в Talker (без тел — ответы большие).
   static void _attachDebugLogging(Dio dio) {
-    if (!kDebugMode) {
+    if (!DebugToolsHelper.isEnabled) {
       return;
     }
-    dio.interceptors.add(LogInterceptor(requestHeader: false, responseHeader: false));
+    dio.interceptors.add(
+      TalkerDioLogger(
+        talker: TalkerRepository.talker,
+        settings: const TalkerDioLoggerSettings(
+          printRequestHeaders: false,
+          printResponseHeaders: false,
+          printRequestData: false,
+          printResponseData: false,
+          printResponseMessage: true,
+        ),
+      ),
+    );
   }
 }

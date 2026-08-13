@@ -3,7 +3,7 @@ description: F1 stats app (Jolpica + ESPN). MobX, Provider, Auto Route, Dio.
 
 publish_to: "none"
 
-version: 2.1.1+202608120
+version: 2.1.1+202608130
 
 environment:
   sdk: ">=3.10.0 <4.0.0"
@@ -35,6 +35,7 @@ dependencies:
   flutter_timezone: ^5.1.0
   fluttertoast: ^10.0.0
   geolocator: ^14.0.3
+  inspector: ^4.0.0
   intl: ^0.20.2
   json_annotation: ^4.12.0
   logger: ^2.6.1
@@ -46,6 +47,8 @@ dependencies:
   share_plus: ^13.3.0
   shared_preferences: ^2.5.3
   table_calendar: ^3.2.0
+  talker_dio_logger: ^5.1.20
+  talker_flutter: ^5.1.20
   timezone: ^0.11.1
   url_launcher: ^6.3.2
   visibility_detector: ^0.4.0+2
@@ -94,8 +97,8 @@ flutter:
   fonts:
     - family: HelveticaNeueCyr-Bold
       fonts:
-        - asset: fonts/HelveticaNeueCyr-Bold.ttf
+        - asset: assets/fonts/HelveticaNeueCyr-Bold.ttf
 
     - family: Inter-Regular
       fonts:
-        - asset: fonts/Inter-Regular.ttf
+        - asset: assets/fonts/Inter-Regular.ttf

@@ -57,7 +57,8 @@ Same idea, other stacks:
 - **Home widgets (Android)** — standings top-3 + next GP countdown; synced via method channel.
 - **Firebase** — `bootstrapFirebase()` in `main`. Client configs **gitignored**; CI uses `tool/ci` stubs.
 - **AppMetrica** — `bootstrapAppMetrica()` from `.env` (envied).
-- **Logging** — package `logger` + Dio `LogInterceptor` in debug.
+- **Logging** — package `logger` + Talker / Dio logger in debug (`lib/common/debug_tools/`; eye FAB → inspector + Talker).
+- **iOS deps** — Swift Package Manager (CocoaPods removed). MapKit variant: `ios/YandexMapkit.variant` (`full` / `lite`).
 
 ## Native zlib (FFI)
 
@@ -102,11 +103,14 @@ f1_pet_project/
 │   └── cache_zlib/  # C zlib wrapper for Dart FFI
 ├── tool/ci/
 ├── assets/
+│   ├── fonts/       # HelveticaNeueCyr-Bold, Inter-Regular
+│   ├── circuits/ …
+│   └── …
 ├── test/
 │   ├── helpers/     # fixtures, fakes, pumpApp / screen smoke
 │   ├── units/       # mirrors lib/ (common, core, services)
 │   └── widget/      # common, home, results, schedule, circuits, screens, misc + goldens/
-├── android/ / ios/
+├── android/ / ios/  # iOS: SPM (no Podfile)
 └── .github/workflows/
 ```
 
@@ -147,12 +151,12 @@ Remote Config: `min_app_version` (string).
 
 | Workflow | When | What |
 |----------|------|------|
-| `ci.yml` | push / PR → `master` | analyze, test, coverage gate (≥75%, excl. generated/l10n) |
+| `ci.yml` | push / PR → `master` | analyze, test, coverage gate (≥80%, excl. generated/l10n) |
 | `release.yml` | tag `v*` | APK + GitHub Release |
 
 ```bash
 flutter test --coverage
-dart run tool/ci/check_coverage.dart --min 75 --path coverage/lcov.info
+dart run tool/ci/check_coverage.dart --min 80 --path coverage/lcov.info
 ```
 
 ```bash
