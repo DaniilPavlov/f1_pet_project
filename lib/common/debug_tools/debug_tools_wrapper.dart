@@ -25,7 +25,7 @@ class DebugToolsWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!DebugToolsHelper.isEnabled) {
+    if (!DebugToolsHelper.isEnabled || !DebugToolsHelper.showOverlay) {
       return child;
     }
 

@@ -75,7 +75,7 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        if (DebugToolsHelper.isEnabled)
+        if (DebugToolsHelper.isEnabled && DebugToolsHelper.showOverlay)
           ChangeNotifierProvider(create: (_) => DebugToolsController()),
         Provider(create: (_) => LocaleController()),
         Provider(create: (_) => ThemeController()),
