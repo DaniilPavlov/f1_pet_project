@@ -28,7 +28,7 @@ dependencies:
   firebase_remote_config: ^6.5.5
   flutter:
     sdk: flutter
-  flutter_local_notifications: ^22.2.0
+  flutter_local_notifications: ^22.3.0
   flutter_localizations:
     sdk: flutter
   flutter_mobx: ^2.3.0
