@@ -42,7 +42,7 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: flutter pub get
+        run: flutter pub get --enforce-lockfile
 
       - name: Configure Firebase (secrets or CI stubs)
         env:
@@ -95,7 +95,7 @@ jobs:
           printf 'yandex.mapkit.apiKey=%s\n' "$YANDEX_MAPKIT_API_KEY" > android/mapkit.properties
           printf 'APPMETRICA_API_KEY=%s\nYANDEX_MAPKIT_API_KEY=%s\n' \
             "${APPMETRICA_API_KEY:-}" "$YANDEX_MAPKIT_API_KEY" > .env
-          dart run build_runner build --delete-conflicting-outputs
+          dart run build_runner build
 
       - name: Accept Android licenses
         run: yes | flutter doctor --android-licenses
@@ -127,13 +127,13 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: flutter pub get
+        run: flutter pub get --enforce-lockfile
 
       - name: Write CI stubs
         run: |
           cp tool/ci/firebase_options.stub.dart lib/firebase_options.dart
           printf 'APPMETRICA_API_KEY=\n' > .env
-          dart run build_runner build --delete-conflicting-outputs
+          dart run build_runner build
 
       - name: Build Web
         run: flutter build web --release
