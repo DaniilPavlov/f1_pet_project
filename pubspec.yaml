@@ -39,7 +39,7 @@ dependencies:
   intl: ^0.20.2
   json_annotation: ^4.12.0
   logger: ^2.8.0
-  mobx: ^2.5.0
+  mobx: ^2.7.0
   package_info_plus: ^10.2.1
   # 13.x → permission_handler_android 14 (AGP 9 / built-in Kotlin only; breaks on AGP 8.11)
   permission_handler: ^12.0.3
