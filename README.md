@@ -116,7 +116,7 @@ f1_pet_project/
 
 ## Requirements
 
-- Flutter **≥3.38** (CI: **3.44.8**), Dart **≥3.10**, Java **21**
+- Flutter **3.38.5** (CI pinned), Dart **≥3.10**, Java **21** (Android release)
 - Yandex MapKit API key, Firebase project
 
 ## Secrets
@@ -129,7 +129,7 @@ YANDEX_MAPKIT_API_KEY=...
 ```
 
 ```bash
-dart run build_runner build
+dart run build_runner build --force-jit
 flutter run
 ```
 

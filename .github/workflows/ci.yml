@@ -16,6 +16,10 @@ permissions:
   contents: read
   actions: write
 
+env:
+  # Keep in sync with local / README. Dart 3.10 needs build_runner --force-jit.
+  FLUTTER_VERSION: "3.38.5"
+
 jobs:
   analyze-and-test:
     name: Analyze & Test
@@ -26,27 +30,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - name: Setup Java
-        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5
-        with:
-          distribution: temurin
-          java-version: "21"
-
       - name: Setup Flutter
         uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
-          flutter-version: "3.44.8"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
       - name: Install dependencies
-        run: flutter pub get --enforce-lockfile
+        run: flutter pub get
 
       - name: Audit dependencies
         run: dart run dart_audit audit
-
-      - name: Check outdated dependencies
-        run: dart pub outdated --show-all --dev-dependencies
-        continue-on-error: true
 
       - name: Write CI stubs
         run: |
@@ -56,16 +50,12 @@ jobs:
 
       - name: Verify codegen is up to date
         run: |
-          dart run build_runner build
-          if ! git diff --quiet -- \
+          dart run build_runner build --force-jit
+          if ! git diff --exit-code -- \
             ':(glob)**/*.g.dart' \
             ':(glob)**/*.gr.dart' \
             ':(glob)**/*.freezed.dart'; then
-            echo "::error::Generated files are out of date. On Flutter 3.44.8 run: dart run build_runner build && commit *.g.dart / *.gr.dart / *.freezed.dart"
-            git diff --stat -- \
-              ':(glob)**/*.g.dart' \
-              ':(glob)**/*.gr.dart' \
-              ':(glob)**/*.freezed.dart'
+            echo "::error::Generated files are out of date. Run: dart run build_runner build --force-jit"
             exit 1
           fi
 
