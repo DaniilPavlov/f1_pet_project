@@ -24,48 +24,57 @@ class PredictorComparisonTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final predicted = predictorDriverLabel(driversById[row.predictedDriverId], row.predictedDriverId);
     final actual = predictorDriverLabel(driversById[row.actualDriverId], row.actualDriverId);
-    final tint = row.isCorrect ? const Color(0xFF1B7F4A) : AppTheme.red;
+    final counts = row.countsForPoints;
+    final tint = !counts
+        ? context.colors.textGray
+        : row.isCorrect
+            ? const Color(0xFF1B7F4A)
+            : AppTheme.red;
+    final icon = !counts
+        ? Icons.remove_circle_outline
+        : row.isCorrect
+            ? Icons.check_circle
+            : Icons.cancel;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: context.colors.grayBG,
-        borderRadius: AppTheme.defaultBorderRadius,
-        border: Border(left: BorderSide(color: tint, width: 4)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 28,
-            child: Text(
-              '${row.position}',
-              style: AppStyles.body.copyWith(fontFamily: 'HelveticaNeueCyr-Bold'),
+    return Opacity(
+      opacity: counts ? 1 : 0.55,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: context.colors.grayBG,
+          borderRadius: AppTheme.defaultBorderRadius,
+          border: Border(left: BorderSide(color: tint, width: 4)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 28,
+              child: Text(
+                '${row.position}',
+                style: AppStyles.body.copyWith(fontFamily: 'HelveticaNeueCyr-Bold'),
+              ),
             ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$predictedLabel: $predicted',
-                  style: AppStyles.body,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  '$actualLabel: $actual',
-                  style: AppStyles.caption.copyWith(color: context.colors.textGray),
-                ),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$predictedLabel: $predicted',
+                    style: AppStyles.body,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '$actualLabel: $actual',
+                    style: AppStyles.caption.copyWith(color: context.colors.textGray),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Icon(
-            row.isCorrect ? Icons.check_circle : Icons.cancel,
-            color: tint,
-            size: 20,
-          ),
-        ],
+            Icon(icon, color: tint, size: 20),
+          ],
+        ),
       ),
     );
   }

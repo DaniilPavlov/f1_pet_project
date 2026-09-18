@@ -84,6 +84,12 @@
   },
   "predictorMoveToHint": "Swap with that position — others stay put",
   "predictorCopyQualifyingToRace": "Set same as qualifying",
+  "predictorPointsCutoff": "Points only for P1–P{count}",
+  "@predictorPointsCutoff": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "predictorHistoryTitle": "Season history",
   "predictorHistoryEmpty": "No scored weekends yet",
   "predictorWeekendPoints": "Q {quali} · R {race} · {total} pts",

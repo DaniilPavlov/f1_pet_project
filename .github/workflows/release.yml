@@ -18,6 +18,9 @@ on:
 permissions:
   contents: write
 
+env:
+  FLUTTER_VERSION: "3.38.5"
+
 jobs:
   build-android:
     name: Android APK
@@ -38,7 +41,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
-          flutter-version: "3.44.8"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
       - name: Install dependencies
@@ -95,7 +98,7 @@ jobs:
           printf 'yandex.mapkit.apiKey=%s\n' "$YANDEX_MAPKIT_API_KEY" > android/mapkit.properties
           printf 'APPMETRICA_API_KEY=%s\nYANDEX_MAPKIT_API_KEY=%s\n' \
             "${APPMETRICA_API_KEY:-}" "$YANDEX_MAPKIT_API_KEY" > .env
-          dart run build_runner build --delete-conflicting-outputs
+          dart run build_runner build --force-jit
 
       - name: Accept Android licenses
         run: yes | flutter doctor --android-licenses
@@ -123,7 +126,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
-          flutter-version: "3.44.8"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
       - name: Install dependencies
@@ -133,7 +136,7 @@ jobs:
         run: |
           cp tool/ci/firebase_options.stub.dart lib/firebase_options.dart
           printf 'APPMETRICA_API_KEY=\n' > .env
-          dart run build_runner build --delete-conflicting-outputs
+          dart run build_runner build --force-jit
 
       - name: Build Web
         run: flutter build web --release

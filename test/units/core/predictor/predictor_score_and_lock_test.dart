@@ -29,6 +29,28 @@ void main() {
         0,
       );
     });
+
+    test('ignores matches beyond scoredPositions', () {
+      final predicted = List.generate(24, (i) => 'd$i');
+      final actual = List.generate(24, (i) => 'd$i');
+      expect(
+        PredictorScoreService.scoreOrders(predicted: predicted, actualByPosition: actual),
+        PredictorScoreService.scoredPositions,
+      );
+
+      actual[22] = 'other';
+      actual[23] = 'other2';
+      expect(
+        PredictorScoreService.scoreOrders(predicted: predicted, actualByPosition: actual),
+        PredictorScoreService.scoredPositions,
+      );
+
+      predicted[21] = 'wrong';
+      expect(
+        PredictorScoreService.scoreOrders(predicted: predicted, actualByPosition: actual),
+        PredictorScoreService.scoredPositions - 1,
+      );
+    });
   });
 
   group('hasUsableDriverCode', () {

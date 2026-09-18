@@ -4,13 +4,17 @@ import 'package:f1_pet_project/core/results/models/results_model.dart';
 
 /// Strategy (статический scoring): 1 очко за точное совпадение места.
 abstract final class PredictorScoreService {
+  /// Очки начисляются только за первые [scoredPositions] мест (P1…P22).
+  static const int scoredPositions = 22;
+
   /// Сравнивает предсказанный порядок с фактическим (индекс 0 = 1 место).
   static int scoreOrders({
     required List<String> predicted,
     required List<String> actualByPosition,
   }) {
     var points = 0;
-    final length = predicted.length < actualByPosition.length ? predicted.length : actualByPosition.length;
+    final shared = predicted.length < actualByPosition.length ? predicted.length : actualByPosition.length;
+    final length = shared < scoredPositions ? shared : scoredPositions;
     for (var i = 0; i < length; i++) {
       if (predicted[i] == actualByPosition[i]) {
         points++;

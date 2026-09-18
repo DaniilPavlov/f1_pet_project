@@ -29,8 +29,9 @@ class CircuitsMapBottomSheet extends StatelessWidget {
           Spacer(),
           BlackButton(
             onTap: () async {
+              final router = context.router;
               Navigator.of(context).pop();
-              await context.router.push(CircuitRoute(circuitModel: circuit));
+              await router.push(CircuitRoute(circuitModel: circuit));
             },
             text: context.l10n.circuitDetails,
             isDisabled: false,

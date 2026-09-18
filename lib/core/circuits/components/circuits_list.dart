@@ -6,7 +6,6 @@ import 'package:f1_pet_project/core/circuits/models/circuit_model.dart';
 import 'package:f1_pet_project/core/circuits/stats/circuit_layout_assets.dart';
 import 'package:f1_pet_project/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 /// Прокручиваемый список трасс с переходом к деталям.
 class CircuitsList extends StatefulWidget {
@@ -27,7 +26,6 @@ class _CircuitsListState extends State<CircuitsList> with AutomaticKeepAliveClie
     super.build(context);
     return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      scrollCacheExtent: const ScrollCacheExtent.pixels(double.maxFinite),
       slivers: [
         const SliverToBoxAdapter(child: SizedBox(height: 12)),
         SliverList(

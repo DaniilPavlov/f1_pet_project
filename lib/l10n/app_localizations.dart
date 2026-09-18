@@ -476,6 +476,12 @@ abstract class AppLocalizations {
   /// **'Установить как в квалификации'**
   String get predictorCopyQualifyingToRace;
 
+  /// No description provided for @predictorPointsCutoff.
+  ///
+  /// In ru, this message translates to:
+  /// **'Очки только за P1–P{count}'**
+  String predictorPointsCutoff(int count);
+
   /// No description provided for @predictorHistoryTitle.
   ///
   /// In ru, this message translates to:

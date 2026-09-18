@@ -135,6 +135,27 @@ void main() {
       expect(calls, 2);
     });
 
+    test('stale TTL triggers network without waiting for next calendar day', () async {
+      var calls = 0;
+      final store = const PrefsJsonStore('scoreboard_ttl_stale');
+      await store.write(
+        scoreboardPayload(),
+        cachedAt: DateTime.now().subtract(StaticData.espnScoreboardCacheTtl + const Duration(minutes: 1)),
+      );
+
+      final repo = EspnScoreboardRepository(
+        dio: fakeDio((_) {
+          calls++;
+          return scoreboardPayload();
+        }),
+        store: store,
+      );
+
+      await repo.loadEvent();
+      expect(calls, 1);
+      expect(repo.isFresh, isTrue);
+    });
+
     test('empty events list returns null', () async {
       final repo = EspnScoreboardRepository(
         dio: fakeDio((_) => {'events': <dynamic>[]}),

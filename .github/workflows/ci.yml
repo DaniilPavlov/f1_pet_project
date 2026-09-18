@@ -16,6 +16,10 @@ permissions:
   contents: read
   actions: write
 
+env:
+  # Keep in sync with local / README. Dart 3.10 needs build_runner --force-jit.
+  FLUTTER_VERSION: "3.38.5"
+
 jobs:
   analyze-and-test:
     name: Analyze & Test
@@ -35,7 +39,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
-          flutter-version: "3.44.8"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
       - name: Install dependencies
@@ -43,10 +47,6 @@ jobs:
 
       - name: Audit dependencies
         run: dart run dart_audit audit
-
-      - name: Check outdated dependencies
-        run: dart pub outdated --show-all --dev-dependencies
-        continue-on-error: true
 
       - name: Write CI stubs
         run: |
@@ -56,18 +56,12 @@ jobs:
 
       - name: Verify codegen is up to date
         run: |
-          dart run build_runner build --delete-conflicting-outputs
-          if ! git diff --quiet -- . \
-            ':!lib/firebase_options.dart' \
-            ':!android/app/google-services.json' \
-            ':!lib/app_config.g.dart' \
-            ':!.env'; then
-            echo "::error::Generated files are out of date. Run 'dart run build_runner build' locally and commit the changes."
-            git diff --stat -- . \
-              ':!lib/firebase_options.dart' \
-              ':!android/app/google-services.json' \
-              ':!lib/app_config.g.dart' \
-              ':!.env'
+          dart run build_runner build --force-jit
+          if ! git diff --exit-code -- \
+            ':(glob)**/*.g.dart' \
+            ':(glob)**/*.gr.dart' \
+            ':(glob)**/*.freezed.dart'; then
+            echo "::error::Generated files are out of date. Run: dart run build_runner build --force-jit"
             exit 1
           fi
 

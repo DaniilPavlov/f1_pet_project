@@ -24,7 +24,10 @@ class EspnScoreboardRepository {
 
   EspnScoreboardEvent? get peek => _cache;
 
-  bool get isFresh => _hasValue && isSameCalendarDay(_cachedAt);
+  bool get isFresh =>
+      _hasValue &&
+      _cachedAt != null &&
+      DateTime.now().difference(_cachedAt!) < StaticData.espnScoreboardCacheTtl;
 
   Future<EspnScoreboardEvent?> loadEvent({bool forceRefresh = false}) async {
     if (!forceRefresh && isFresh) {
