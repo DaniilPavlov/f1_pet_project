@@ -26,7 +26,6 @@ class _CircuitsListState extends State<CircuitsList> with AutomaticKeepAliveClie
     super.build(context);
     return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      cacheExtent: double.infinity,
       slivers: [
         const SliverToBoxAdapter(child: SizedBox(height: 12)),
         SliverList(
