@@ -215,6 +215,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get predictorCopyQualifyingToRace => 'Установить как в квалификации';
 
   @override
+  String predictorPointsCutoff(int count) {
+    return 'Очки только за P1–P$count';
+  }
+
+  @override
   String get predictorHistoryTitle => 'История сезона';
 
   @override

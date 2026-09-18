@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/common/debug_tools/auto_dismiss_scaffold_messenger.dart';
 import 'package:f1_pet_project/common/debug_tools/debug_tools_controller.dart';
 import 'package:f1_pet_project/common/debug_tools/debug_tools_helper.dart';
 import 'package:f1_pet_project/common/debug_tools/talker_repository.dart';
@@ -29,26 +30,30 @@ class DebugToolsWrapper extends StatelessWidget {
       return child;
     }
 
-    return Consumer<DebugToolsController>(
-      builder: (context, controller, _) {
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            Inspector(
-              isEnabled: controller.inspectorVisible,
-              isPanelVisible: controller.inspectorVisible,
-              child: child,
-            ),
-            if (controller.inspectorVisible)
-              Positioned(
-                right: 16,
-                bottom: 96,
-                child: _TalkerButton(navigatorKey: navigatorKey),
+    // Вложенный messenger: snackbar pick tint из inspector иначе persist'ится
+    // бесконечно (Flutter 3.38+ / SnackBar with action).
+    return AutoDismissScaffoldMessenger(
+      child: Consumer<DebugToolsController>(
+        builder: (context, controller, _) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              Inspector(
+                isEnabled: controller.inspectorVisible,
+                isPanelVisible: controller.inspectorVisible,
+                child: child,
               ),
-            const _EyeButton(),
-          ],
-        );
-      },
+              if (controller.inspectorVisible)
+                Positioned(
+                  right: 16,
+                  bottom: 96,
+                  child: _TalkerButton(navigatorKey: navigatorKey),
+                ),
+              const _EyeButton(),
+            ],
+          );
+        },
+      ),
     );
   }
 }

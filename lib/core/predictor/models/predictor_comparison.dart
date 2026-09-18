@@ -1,3 +1,4 @@
+import 'package:f1_pet_project/core/predictor/services/predictor_score_service.dart';
 import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
 
 /// Одна строка сравнения предикта с фактом.
@@ -13,6 +14,9 @@ class PredictorComparisonRow {
   final String? predictedDriverId;
   final String? actualDriverId;
   final bool isCorrect;
+
+  /// Позиция входит в зону начисления очков (P1…P22).
+  bool get countsForPoints => position <= PredictorScoreService.scoredPositions;
 }
 
 /// Результат сравнения сессии (quali или race).
@@ -36,7 +40,8 @@ class PredictorSessionCompare {
       final predictedId = i < predicted.length ? predicted[i] : null;
       final actualId = i < actual.length ? actual[i] : null;
       final correct = predictedId != null && actualId != null && predictedId == actualId;
-      if (correct) {
+      final counts = i < PredictorScoreService.scoredPositions;
+      if (correct && counts) {
         points++;
       }
       rows.add(

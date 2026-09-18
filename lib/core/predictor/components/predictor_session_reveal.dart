@@ -2,7 +2,9 @@ import 'package:f1_pet_project/common/utils/theme/app_colors.dart';
 import 'package:f1_pet_project/common/utils/theme/app_styles.dart';
 import 'package:f1_pet_project/common/utils/theme/app_theme.dart';
 import 'package:f1_pet_project/core/predictor/components/predictor_comparison_tile.dart';
+import 'package:f1_pet_project/core/predictor/components/predictor_points_cutoff_banner.dart';
 import 'package:f1_pet_project/core/predictor/models/predictor_comparison.dart';
+import 'package:f1_pet_project/core/predictor/services/predictor_score_service.dart';
 import 'package:f1_pet_project/data/models/standings/driver/driver_model.dart';
 import 'package:flutter/material.dart';
 
@@ -122,7 +124,12 @@ class _PredictorSessionRevealState extends State<PredictorSessionReveal>
                   actualLabel: widget.actualLabel,
                 ),
               ),
-              if (i != widget.rows.length - 1) const SizedBox(height: 8),
+              if (i == PredictorScoreService.scoredPositions - 1 &&
+                  i < widget.rows.length - 1)
+                const PredictorPointsCutoffBanner(),
+              if (i != widget.rows.length - 1 &&
+                  i != PredictorScoreService.scoredPositions - 1)
+                const SizedBox(height: 8),
             ],
           ],
         );

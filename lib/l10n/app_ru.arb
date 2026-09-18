@@ -84,6 +84,12 @@
   },
   "predictorMoveToHint": "Обмен с этой позицией — остальные не сдвигаются",
   "predictorCopyQualifyingToRace": "Установить как в квалификации",
+  "predictorPointsCutoff": "Очки только за P1–P{count}",
+  "@predictorPointsCutoff": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "predictorHistoryTitle": "История сезона",
   "predictorHistoryEmpty": "Пока нет учтённых уикендов",
   "predictorWeekendPoints": "Q {quali} · R {race} · {total} очк.",

@@ -212,6 +212,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get predictorCopyQualifyingToRace => 'Set same as qualifying';
 
   @override
+  String predictorPointsCutoff(int count) {
+    return 'Points only for P1–P$count';
+  }
+
+  @override
   String get predictorHistoryTitle => 'Season history';
 
   @override

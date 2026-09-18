@@ -16,6 +16,7 @@ import 'package:f1_pet_project/core/home/repositories/current_standings_reposito
 import 'package:f1_pet_project/core/predictor/components/predictor_auth_gate.dart';
 import 'package:f1_pet_project/core/predictor/components/predictor_driver_tile.dart';
 import 'package:f1_pet_project/core/predictor/components/predictor_history_tile.dart';
+import 'package:f1_pet_project/core/predictor/components/predictor_points_cutoff_banner.dart';
 import 'package:f1_pet_project/core/predictor/components/predictor_position_picker.dart';
 import 'package:f1_pet_project/core/predictor/components/predictor_weekend_header.dart';
 import 'package:f1_pet_project/core/predictor/controllers/predictor_screen_controller/predictor_screen_controller.dart';
@@ -23,6 +24,7 @@ import 'package:f1_pet_project/core/predictor/models/predictor_season_summary.da
 import 'package:f1_pet_project/core/predictor/models/predictor_weekend_prediction.dart';
 import 'package:f1_pet_project/core/predictor/repositories/predictor_leaderboard_repository.dart';
 import 'package:f1_pet_project/core/predictor/repositories/predictor_repository.dart';
+import 'package:f1_pet_project/core/predictor/services/predictor_score_service.dart';
 import 'package:f1_pet_project/core/results/driver/repositories/driver_catalog_repository.dart';
 import 'package:f1_pet_project/core/results/repositories/race_weekend_repository.dart';
 import 'package:f1_pet_project/core/schedule/repositories/schedule_repository.dart';
@@ -272,7 +274,7 @@ class _PredictorBody extends StatelessWidget {
                     ),
                   SliverReorderableList(
                     itemCount: order.length,
-                    onReorderItem: locked
+                    onReorder: locked
                         ? (_, _) {}
                         : (oldIndex, newIndex) {
                             controller.reorderDraft(oldIndex: oldIndex, newIndex: newIndex);
@@ -290,8 +292,9 @@ class _PredictorBody extends StatelessWidget {
                             code: id,
                             permanentNumber: null,
                           );
-                      return PredictorDriverTile(
-                        key: ValueKey('${selectedGrid.name}_$id'),
+                      final showCutoff = index == PredictorScoreService.scoredPositions - 1 &&
+                          order.length > PredictorScoreService.scoredPositions;
+                      final tile = PredictorDriverTile(
                         index: index,
                         driver: driver,
                         constructor: constructorsById[id],
@@ -313,6 +316,23 @@ class _PredictorBody extends StatelessWidget {
                                 }
                                 await controller.moveDraftTo(fromIndex: index, toIndex: toIndex);
                               },
+                      );
+                      if (!showCutoff) {
+                        return KeyedSubtree(
+                          key: ValueKey('${selectedGrid.name}_$id'),
+                          child: tile,
+                        );
+                      }
+                      return KeyedSubtree(
+                        key: ValueKey('${selectedGrid.name}_$id'),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            tile,
+                            const PredictorPointsCutoffBanner(),
+                          ],
+                        ),
                       );
                     },
                   ),
