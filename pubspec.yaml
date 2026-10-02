@@ -65,7 +65,7 @@ dependencies:
 
 dev_dependencies:
   # ^10.6 → lean_builder needs Dart >=3.12
-  auto_route_generator: ^10.5.0
+  auto_route_generator: ^10.6.0
   # ^2.15.2+ needs Dart >=3.11
   build_runner: ^2.15.1
   dart_audit: ^0.3.1
