@@ -40,7 +40,7 @@ dependencies:
   geolocator: ^14.1.1
   inspector: ^4.0.0
   # Flutter 3.38 flutter_localizations pins intl 0.20.2
-  intl: ^0.20.2
+  intl: ^0.20.3
   json_annotation: ^4.12.0
   logger: ^2.8.0
   # 2.7.x → meta ^1.19; Flutter 3.38 pins meta 1.17.0
