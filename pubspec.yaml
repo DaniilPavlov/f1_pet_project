@@ -33,7 +33,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   # 2.4.x → mobx ^2.7 → meta ^1.19; Flutter 3.38 pins meta 1.17.0
-  flutter_mobx: ^2.3.0
+  flutter_mobx: ^2.4.0
   flutter_timezone: ^5.1.0
   # 10.x needs Dart >=3.11 / Flutter >=3.44
   fluttertoast: ^9.0.0
