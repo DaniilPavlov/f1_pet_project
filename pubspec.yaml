@@ -12,13 +12,14 @@ environment:
 dependencies:
   app_links: ^7.0.0
   appmetrica_plugin: ^4.1.0
-  auto_route: ^11.1.0
+  # 11.2.x uses Viewport.scrollCacheExtent (Flutter >3.38)
+  auto_route: 11.1.0
   cloud_firestore: ^6.10.0
   collection: any
   colorful_safe_area: ^1.0.0
   connectivity_plus: ^7.3.1
   dio: ^5.11.1
-  envied: ^1.3.9
+  envied: ^1.3.10
   ffi: ^2.1.4
   firebase_analytics: ^12.6.0
   firebase_app_check: ^0.4.8
@@ -31,21 +32,25 @@ dependencies:
   flutter_local_notifications: ^22.3.1
   flutter_localizations:
     sdk: flutter
+  # 2.4.x → mobx ^2.7 → meta ^1.19; Flutter 3.38 pins meta 1.17.0
   flutter_mobx: ^2.3.0
   flutter_timezone: ^5.1.0
+  # 10.x needs Dart >=3.11 / Flutter >=3.44
   fluttertoast: ^9.0.0
-  geolocator: ^14.0.3
+  geolocator: ^14.1.1
   inspector: ^4.0.0
+  # Flutter 3.38 flutter_localizations pins intl 0.20.2
   intl: ^0.20.2
   json_annotation: ^4.12.0
   logger: ^2.8.0
+  # 2.7.x → meta ^1.19; Flutter 3.38 pins meta 1.17.0
   mobx: ^2.5.0
-  package_info_plus: ^10.2.1
+  package_info_plus: ^10.2.2
   # 13.x → permission_handler_android 14 (AGP 9 / built-in Kotlin only; breaks on AGP 8.11)
   permission_handler: ^12.0.3
   provider: ^6.1.5
   responsive_framework: ^1.5.1
-  share_plus: ^13.3.0
+  share_plus: ^13.3.1
   shared_preferences: ^2.5.3
   table_calendar: ^3.2.1
   talker_dio_logger: ^5.1.20
@@ -59,22 +64,25 @@ dependencies:
       ref: a6eb1b11e4470e6cf9763ddae365d6d5bfa1eed4
 
 dev_dependencies:
-  # ^10.6 / build_runner ^2.15.2 blocked by mobx_codegen analyzer range
+  # ^10.6 → lean_builder needs Dart >=3.12
   auto_route_generator: ^10.5.0
+  # ^2.15.2+ needs Dart >=3.11
   build_runner: ^2.15.1
   dart_audit: ^0.3.1
-  envied_generator: ^1.3.9
+  envied_generator: ^1.3.10
   fake_async: ^1.3.3
   flutter_test:
     sdk: flutter
   # flutter_native_splash: ^2.2.17
   # flutter_launcher_icons: ^0.14.3
   json_serializable: ^6.14.1
+  # Flutter 3.38 pins meta 1.17.0
   meta: any
   meykuless_lint_rules:
     git:
       url: https://github.com/DaniilPavlov/meykuless_lint_rules.git
       ref: 3ba5652f8a54126678b8e96232d1a89f110875e9
+  # ^2.8 needs Dart >=3.11
   mobx_codegen: ^2.7.7
 
 # flutter_icons:
